@@ -3,12 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { ProfilRoutingModule } from './profil-routing.module';
 
-
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule,
-    ProfilRoutingModule
-  ]
+  imports: [CommonModule, ProfilRoutingModule],
 })
-export class ProfilModule { }
+export class ProfilModule {}

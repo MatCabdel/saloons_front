@@ -1,0 +1,16 @@
+<app-header></app-header>
+<div class="list-places-container">
+    <div class="toggle-switch">
+        <label class="switch">
+          <input type="checkbox" (change)="toggleView($event)" [checked]="isMapView">
+          <span class="slider">
+            <span class="label left">Liste</span>
+            <span class="label right">Carte</span>
+          </span>
+        </label>
+    </div>
+    <div class="list-places">
+        <app-place-card *ngFor="let place of places" [place]="place"></app-place-card>
+      </div>
+      
+</div>

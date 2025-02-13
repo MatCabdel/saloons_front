@@ -6,6 +6,7 @@ export const routes: Routes = [
     path: '',
     component: AppComponent,
   },
-  { path: 'home', loadChildren: () =>  import('./modules/home/home.module').then(m  => m.HomeModule) },
-  { path: 'auth', loadChildren: () =>  import('./modules/auth/auth.module').then(m  => m.AuthModule) },
+  { path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule) },
+  { path: 'auth', loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule) },
+  { path: 'place', loadChildren: () => import('./modules/place/place.module').then(m => m.PlaceModule) },
 ];
