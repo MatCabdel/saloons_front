@@ -1,0 +1,65 @@
+.welcome-container {
+    background: linear-gradient(to bottom, #f9c255, #745b29);
+    min-height: 100vh;
+    min-width: 100vw;
+    margin: 0 auto;
+  
+    h1 {
+      text-align: center;
+      color: white;
+      padding-top: 150px;
+      font-family: 'Jomhuria', serif;
+      font-size: 4em;
+      font-weight: 400;
+      margin: 0;
+    }
+    h2 {
+      text-align: center;
+      color: white;
+      font-size: 2em;
+      font-family: 'Jomhuria', serif;
+      font-weight: 100;
+      font-style: normal;
+      margin: 0;
+    }
+  
+    .welcome-container-img {
+      margin-top: 30px;
+      height: 150px;
+      text-align: center;
+  
+      img {
+        width: 100px;
+      }
+    }
+  
+    .welcome-container-btn {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+  
+      button {
+        width: 200px;
+        margin: 0 auto;
+      }
+  
+      #btn-register {
+        height: 40px;
+        background-color: white;
+        color: #a14343;
+        border: 1px solid #a14343;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+  
+      #btn-login {
+        border: none;
+        color: white;
+        background: none;
+        cursor: pointer;
+        margin-top: 5px;
+      }
+    }
+  }
+  
