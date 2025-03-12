@@ -3,21 +3,21 @@
       {
         "id": 1,
         "name": "L'Engrenage",
-        "photo": "assets/images/engrenage.webp",
+        "picture": "assets/images/engrenage.webp",
         "address": "12 Rue de la Soif, Paris",
         "visitors": 8
       },
       {
         "id": 2,
         "name": "Le Vintage Café",
-        "photo": "assets/images/vintage.webp",
+        "picture": "assets/images/vintage.webp",
         "address": "5 Place du Marché, Lyon",
         "visitors": 11
       },
       {
         "id": 3,
         "name": "Le Sherlock Holmes",
-        "photo": "assets/images/sherlock.jpg",
+        "picture": "assets/images/sherlock.jpg",
         "address": "99 Boulevard du Rock, Marseille",
         "visitors": 6
       }
