@@ -24,7 +24,7 @@ export class RegisterFormComponent implements OnInit {
   registerForm = this._formBuilder.nonNullable.group(
     {
       lastname: ['', [Validators.required]],
-      firstname: ['', [Validators.required]],
+    //  firstname: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, strongPasswordValidator()]],
       checkPassword: ['', [Validators.required]],
