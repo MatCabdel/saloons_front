@@ -1,0 +1,93 @@
+.formulaire {
+    width: 100%;
+  }
+
+.container-input {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    width: 50%;
+  }
+
+  .container-input span {
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 400;
+  }
+  
+  .btn-connexion {
+    margin-top: 50px;
+  }
+  
+  .label-form {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    color: black;
+    
+  }
+  
+  .input-form {
+    padding: 12px 10px;
+    border: solid 1px black;
+    border-radius: 5px;
+    margin-top: 6px;
+    &::placeholder {
+      color: rgb(151, 150, 150);
+      font-style: italic;
+    }
+    width: 100%;
+  }
+  
+  .formulaire.ng-submitted input.ng-invalid {
+    border-color: red;
+  }
+  .error {
+    font-size: 14px;
+    color: red;
+    margin-top: 5px;
+    font-style: italic;
+  }
+  
+  .mdp-error {
+    font-size: 14px;
+    color: black;
+    margin-top: 5px;
+    font-style: italic;
+  }
+
+  .btn-connexion {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    margin: 20px auto;
+
+  button {
+    width: 100%;
+    height: 30px;
+    background-color: rgb(104, 104, 222);
+    color: white;
+    border-radius: 4px;
+  }
+}
+
+.checkbox-cgv {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Espace entre la checkbox et le texte */
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.checkbox-cgv input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.checkbox-cgv label {
+    font-weight: 400;
+    font-size: 14px;
+    font-style: italic;
+    cursor: pointer;
+}
