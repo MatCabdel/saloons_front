@@ -1,0 +1,22 @@
+<form class="formulaire" [formGroup]="loginForm" (ngSubmit)="loginForm.valid && login()" #formLogin="ngForm">
+  <div class="container-input">
+    <label class="label-form" for="email">Email *</label>
+    <input class="input-form" type="text" id="email" name="email" formControlName="email" placeholder="Votre email" />
+    <div class="error" *ngIf="formLogin.submitted && loginForm.controls['email'].errors">
+      <div [hidden]="!loginForm.controls['email'].errors['required']">L'email est requis</div>
+      <div [hidden]="!loginForm.controls['email'].invalid">L'email est invalide</div>
+    </div>
+  </div>
+  <div class="container-input">
+    <label class="label-form" for="password">Mot de passe *</label>
+    <input class="input-form" type="password" id="password" name="password" formControlName="password" placeholder="Votre mot de passe" />
+    <div class="error" *ngIf="formLogin.submitted && loginForm.get('password')?.errors?.['required']">Mot de passe requis</div>
+  </div>
+
+  <div class="btn-connexion">
+    <button type="button" (click)="login()">Connexion</button>
+  </div>
+</form>
+<!-- <div class="forgot-pwd">
+  <h3 (click)="modalVisible = true">Mot de passe oublié ?</h3>
+</div> -->
