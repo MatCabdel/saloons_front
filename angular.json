@@ -36,7 +36,8 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              "src/assets"
             ],
             "styles": [
               "src/styles.scss"
@@ -171,9 +172,10 @@
   },
   "cli": {
     "schematicCollections": [
+      "@schematics/angular",
       "@cypress/schematic",
-      "@angular-eslint/schematics",
-      "@schematics/angular"
-    ]
+      "@angular-eslint/schematics"
+    ],
+    "analytics": false
   }
 }

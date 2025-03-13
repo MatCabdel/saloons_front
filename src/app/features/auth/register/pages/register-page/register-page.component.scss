@@ -1,0 +1,24 @@
+.container-login-page {
+  background: linear-gradient(to bottom, #f9c255, #745b29);
+  min-height: 100vh;
+  min-width: 100vw;
+  margin: 0 auto;
+
+  .contain {
+    width: 70%;
+    height: 70vh;
+    position: absolute;
+    top: 15vh;
+    left: 50%;
+    transform: translateX(-50%);
+
+    .title {
+      padding: 16px 0;
+    }
+
+    .acount {
+      text-align: center;
+      padding: 20px 0;
+    }
+  }
+}
