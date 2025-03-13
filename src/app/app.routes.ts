@@ -6,6 +6,8 @@ import { WelcomePageComponent } from './features/home/pages/welcome-page/welcome
 import { ListSaloonPageComponent } from './features/saloon/pages/list-saloon-page/list-saloon-page.component';
 import { RegisterPageComponent } from './features/auth/register/pages/register-page/register-page.component';
 import { LoginPageComponent } from './features/auth/login/pages/login-page/login-page.component';
+import { isLoggedInGuard } from './common/guards/is-logged-in.guard';
+import { DashboardPageComponent } from './features/admin/pages/dashboard-page/dashboard-page.component';
 
 export const routes: Routes = [
   {
@@ -15,7 +17,8 @@ export const routes: Routes = [
   //{path: 'login', component: LoginComponent},
   //{path: 'register', component: RegisterComponent},
   { path: 'welcome', component: WelcomePageComponent },
-  { path: 'saloons', component: ListSaloonPageComponent },
+  { path: 'saloons', component: ListSaloonPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'register', component: RegisterPageComponent },
   { path: 'login', component: LoginPageComponent },
+  { path: 'dashboard', component: DashboardPageComponent, canActivate: [isLoggedInGuard] },
 ];

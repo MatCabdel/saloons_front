@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { UserStoreService } from '../../user/store/user-store.service';
-// import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment.development';
 import { jwtDecode } from 'jwt-decode';
 // import { UserDTO } from '../../user/models/userDTO';
 // import { LoginDTO } from '../models/loginDTO';
@@ -16,15 +16,15 @@ export class AuthApiService {
   private _http: HttpClient = inject(HttpClient);
   private _userStore = inject(UserStoreService);
 
-  // private readonly BASE_URL_API = environment.apiUrl;
+  private readonly BASE_URL_API = environment.apiUrl;
 
   public register$(email: string, password: string): Observable<boolean> {
-    return this._http.post<boolean>('/api/auth/register', { email, password });
+    return this._http.post<boolean>(`${this.BASE_URL_API}/auth/register`, { email, password });
   }
 
   public login$(email: string, password: string): Observable<string> {
     // Méthode POST "classique" pour se connecter
-    return this._http.post<string>('/auth/login', { email, password }).pipe(tap((token: string) => this.saveToken(token)));
+    return this._http.post(`${this.BASE_URL_API}/auth/login`, { email, password }, { responseType: 'text' }).pipe(tap((token: string) => this.saveToken(token)));
 
     // Pour cet atelier, on simplifie avec un token en dur
     // return of('fake-token').pipe(
@@ -103,8 +103,18 @@ export class AuthApiService {
     return jwtDecode(token);
   }
 
-  getUserRole(): string | null {
+  public getUserRoles(): string[] {
     const decodedToken = this.getDecodedToken();
-    return decodedToken ? decodedToken.role : null;
+    // "roles" est un tableau d'objets { authority: string }
+    if (decodedToken && decodedToken.roles && Array.isArray(decodedToken.roles)) {
+      // On mappe chaque objet { authority: "ROLE_USER" } en simple string "ROLE_USER"
+      return decodedToken.roles.map((roleObj: any) => roleObj.authority);
+    }
+    return [];
+  }
+
+  public getUserRole(): string | null {
+    const roles = this.getUserRoles(); 
+    return roles.length > 0 ? roles[0] : null;
   }
 }
