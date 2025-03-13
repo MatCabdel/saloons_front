@@ -3,11 +3,12 @@ import { HeaderComponent } from '../../../../common/components/header/header.com
 import { HttpClient } from '@angular/common/http';
 import { Saloon } from '../../models/saloonModel';
 import { SaloonCardComponent } from '../../components/saloon-card/saloon-card.component';
+import { NavbarComponent } from 'src/app/common/components/navbar/navbar.component';
 
 @Component({
   selector: 'app-list-saloon-page',
   standalone: true,
-  imports: [HeaderComponent, SaloonCardComponent],
+  imports: [HeaderComponent, SaloonCardComponent, NavbarComponent],
   templateUrl: './list-saloon-page.component.html',
   styleUrl: './list-saloon-page.component.scss',
 })
