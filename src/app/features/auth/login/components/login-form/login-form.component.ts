@@ -23,7 +23,7 @@ export class LoginFormComponent {
 
   login(): void {
     const { email, password } = this.loginForm.value;
-  
+
     this._authService.login$(email!, password!).subscribe({
       next: () => {
         const role = this._authService.getUserRole();
@@ -33,9 +33,9 @@ export class LoginFormComponent {
           this._router.navigate(['/saloons']);
         }
       },
-      error: (err) => {
+      error: err => {
         console.error('Erreur lors de la connexion :', err);
-      }
+      },
     });
   }
 }

@@ -16,50 +16,17 @@ export class AuthApiService {
   private _http: HttpClient = inject(HttpClient);
   private _userStore = inject(UserStoreService);
 
-  private readonly BASE_URL_API = environment.apiUrl;
+  private readonly _BASE_URL_API = environment.apiUrl;
 
   public register$(email: string, password: string): Observable<boolean> {
-    return this._http.post<boolean>(`${this.BASE_URL_API}/auth/register`, { email, password });
+    return this._http.post<boolean>(`${this._BASE_URL_API}/auth/register`, { email, password });
   }
 
   public login$(email: string, password: string): Observable<string> {
-    // Méthode POST "classique" pour se connecter
-    return this._http.post(`${this.BASE_URL_API}/auth/login`, { email, password }, { responseType: 'text' }).pipe(tap((token: string) => this.saveToken(token)));
-
-    // Pour cet atelier, on simplifie avec un token en dur
-    // return of('fake-token').pipe(
-    //  tap((token: string) => this.saveToken(token))
-    // );
-  }
-
-  /* login(email: string, password: string): Observable<UserDTO | null> {
-    const user = { email, password } as LoginDTO;
     return this._http
-      .post<any>(`${this.BASE_URL_API}//auth/login`, user)
-      .pipe(
-        tap((users) => {
-          if (users) {
-            const user = users;
-            this._userStore.setUserConnected(user);
-            this._userStore.token$.next(user.token);
-            window.localStorage.setItem('token', user.token);
-            this.publish({
-              type: 'login',
-              payload: this._userStore.getUserConnected$().value,
-            });
-
-            if (user.role === 'USER') {
-              this._router.navigate(['/welcome']);
-            }
-            if (user.role === 'ADMIN') {
-              this._router.navigate(['/dashboard']);
-            }
-          } else {
-            alert('Identifiants incorrects');
-          }
-        })
-      );
-  } */
+      .post(`${this._BASE_URL_API}/auth/login`, { email, password }, { responseType: 'text' })
+      .pipe(tap((token: string) => this.saveToken(token)));
+  }
 
   public saveToken(token: string): void {
     localStorage.setItem('token', token);
@@ -114,7 +81,7 @@ export class AuthApiService {
   }
 
   public getUserRole(): string | null {
-    const roles = this.getUserRoles(); 
+    const roles = this.getUserRoles();
     return roles.length > 0 ? roles[0] : null;
   }
 }
