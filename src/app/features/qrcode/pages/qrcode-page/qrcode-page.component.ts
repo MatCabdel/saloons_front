@@ -5,8 +5,6 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './qrcode-page.component.html',
-  styleUrl: './qrcode-page.component.scss'
+  styleUrl: './qrcode-page.component.scss',
 })
-export class QrcodePageComponent {
-
-}
+export class QrcodePageComponent {}
