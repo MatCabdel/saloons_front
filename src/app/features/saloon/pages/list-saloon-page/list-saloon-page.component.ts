@@ -18,7 +18,7 @@ export class ListSaloonPageComponent implements OnInit {
   saloons: Saloon[] = [];
 
   private _http = inject(HttpClient);
-  private _router = inject(Router)
+  private _router = inject(Router);
 
   toggleView(event: any): void {
     this.isMapView = event.target.checked;

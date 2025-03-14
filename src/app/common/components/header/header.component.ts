@@ -9,10 +9,9 @@ import { Router } from '@angular/router';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
-
-  private _router = inject(Router) 
+  private _router = inject(Router);
 
   public navigateToWelcome(): void {
-    this._router.navigate(['/saloons']); 
+    this._router.navigate(['/saloons']);
   }
 }

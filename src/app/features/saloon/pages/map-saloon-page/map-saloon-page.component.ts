@@ -11,9 +11,8 @@ import { Router } from '@angular/router';
   styleUrl: './map-saloon-page.component.scss',
 })
 export class MapSaloonPageComponent {
-
   isMapView = false;
-  private _router = inject(Router)
+  private _router = inject(Router);
 
   toggleView(event: any): void {
     this.isMapView = event.target.checked;

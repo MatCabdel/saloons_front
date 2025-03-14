@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ScanComponent } from '../../components/scan/scan.component';
 import { NavbarComponent } from 'src/app/common/components/navbar/navbar.component';
-import { HeaderComponent } from "../../../../common/components/header/header.component";
+import { HeaderComponent } from '../../../../common/components/header/header.component';
 
 @Component({
   selector: 'app-qrcode-page',
