@@ -6,18 +6,18 @@ import { LOAD_WASM, NgxScannerQrcodeModule } from 'ngx-scanner-qrcode';
 import { importProvidersFrom } from '@angular/core';
 
 LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe({
-    next: () => console.log('WASM loaded'),
-    error: (err) => console.error('WASM failed to load', err),
-  });
+  next: () => console.log('WASM loaded'),
+  error: err => console.error('WASM failed to load', err),
+});
 
 verifyEnvironment();
 bootstrapApplication(AppComponent, {
-    ...appConfig,
-    providers: [
-      // On récupère tous les providers déjà définis dans appConfig
-      ...(appConfig.providers ?? []),
-  
-      // Et on ajoute l'import du module NgxScannerQrcodeModule
-      importProvidersFrom(NgxScannerQrcodeModule),
-    ],
-  }).catch((err) => console.error(err));
+  ...appConfig,
+  providers: [
+    // On récupère tous les providers déjà définis dans appConfig
+    ...(appConfig.providers ?? []),
+
+    // Et on ajoute l'import du module NgxScannerQrcodeModule
+    importProvidersFrom(NgxScannerQrcodeModule),
+  ],
+}).catch(err => console.error(err));

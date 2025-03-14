@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { NgxScannerQrcodeModule, NgxScannerQrcodeService, ScannerQRCodeConfig, ScannerQRCodeResult, ScannerQRCodeSelectedFiles } from 'ngx-scanner-qrcode';
+import {
+  NgxScannerQrcodeModule,
+  NgxScannerQrcodeService,
+  ScannerQRCodeConfig,
+  ScannerQRCodeResult,
+  ScannerQRCodeSelectedFiles,
+} from 'ngx-scanner-qrcode';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
@@ -9,29 +15,27 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
   imports: [CommonModule, NgxScannerQrcodeModule],
   templateUrl: './scan.component.html',
   styleUrl: './scan.component.scss',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ScanComponent {
-
   scannedUrl: string = '';
 
-  
-    public qrCodeResult: ScannerQRCodeSelectedFiles[] = [];
+  public qrCodeResult: ScannerQRCodeSelectedFiles[] = [];
 
   public config: ScannerQRCodeConfig = {
-    constraints: { 
+    constraints: {
       video: {
-        width: window.innerWidth
-      }
-    } 
+        width: window.innerWidth,
+      },
+    },
   };
 
-  constructor(private _qrcode: NgxScannerQrcodeService) { }
+  constructor(private _qrcode: NgxScannerQrcodeService) {}
 
   public onSelects(files: any): void {
     this._qrcode.loadFiles(files).subscribe((res: ScannerQRCodeSelectedFiles[]) => {
       this.qrCodeResult = res;
-      console.log("res:", res.values)
+      console.log('res:', res.values);
     });
   }
   public onEvent(e: ScannerQRCodeResult[]): void {

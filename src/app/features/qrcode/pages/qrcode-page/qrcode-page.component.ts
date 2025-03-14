@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ScanComponent } from "../../components/scan/scan.component";
+import { ScanComponent } from '../../components/scan/scan.component';
 import { NavbarComponent } from 'src/app/common/components/navbar/navbar.component';
 
 @Component({
