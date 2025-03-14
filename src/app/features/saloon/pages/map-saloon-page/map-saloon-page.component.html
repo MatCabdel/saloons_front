@@ -1,4 +1,17 @@
-<app-header></app-header>
-<div class="map-places-container">
-  <h3>Bientot la map de pendor ici</h3>
+<div class="list-places-container">
+  <app-header></app-header>
+  <div class="toggle-switch">
+    <label class="switch">
+      <input type="checkbox" (change)="toggleView($event)" [checked]="isMapView" />
+      <span class="slider">
+        <span class="label left">Liste</span>
+        <span class="label right">Carte</span>
+      </span>
+    </label>
+  </div>
+  <div class="map-places-container">
+    <h1>Bientot une jolie Carte ici</h1>
+    <h2>(Avec de le géoloc je l'espère...)</h2>
+  </div>
+  <app-navbar></app-navbar>
 </div>

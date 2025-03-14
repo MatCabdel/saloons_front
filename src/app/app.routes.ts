@@ -10,6 +10,7 @@ import { QrcodePageComponent } from './features/qrcode/pages/qrcode-page/qrcode-
 import { ProfilPageComponent } from './features/profil/pages/profil-page/profil-page.component';
 import { MessagesPageComponent } from './features/messages/pages/messages-page/messages-page.component';
 import { MySaloonPageComponent } from './features/saloon/pages/my-saloon-page/my-saloon-page.component';
+import { MapSaloonPageComponent } from './features/saloon/pages/map-saloon-page/map-saloon-page.component';
 
 export const routes: Routes = [
   {
@@ -18,6 +19,7 @@ export const routes: Routes = [
   },
   { path: 'welcome', component: WelcomePageComponent },
   { path: 'saloons', component: ListSaloonPageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'map', component: MapSaloonPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'register', component: RegisterPageComponent },
   { path: 'login', component: LoginPageComponent },
   { path: 'dashboard', component: DashboardPageComponent, canActivate: [isLoggedInGuard] },

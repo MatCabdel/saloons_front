@@ -1,8 +1,17 @@
+.list-places-container {
+  background: linear-gradient(to bottom, #f9c255, #745b29);
+  min-height: 100vh;
+  min-width: 100vw;
+  margin: 0 auto;
+
+
 .toggle-switch {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px;
+  padding: 20px 0;
+  background-color: #FFFBF3;
+  width: 100%;
 }
 
 .switch {
@@ -25,7 +34,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #a14343;
+  background-color: #5F79E0;
   border-radius: 20px;
   transition: 0.4s;
   display: flex;
@@ -65,7 +74,7 @@
 }
 
 input:checked + .slider {
-  background-color: #a14343;
+  background-color: #5F79E0;
 }
 
 input:checked + .slider:before {
@@ -77,4 +86,6 @@ input:checked + .slider:before {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  background-color: #FFFBF3;
+}
 }
