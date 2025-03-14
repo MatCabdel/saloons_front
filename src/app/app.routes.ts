@@ -9,6 +9,7 @@ import { DashboardPageComponent } from './features/admin/pages/dashboard-page/da
 import { QrcodePageComponent } from './features/qrcode/pages/qrcode-page/qrcode-page.component';
 import { ProfilPageComponent } from './features/profil/pages/profil-page/profil-page.component';
 import { MessagesPageComponent } from './features/messages/pages/messages-page/messages-page.component';
+import { MySaloonPageComponent } from './features/saloon/pages/my-saloon-page/my-saloon-page.component';
 
 export const routes: Routes = [
   {
@@ -23,4 +24,5 @@ export const routes: Routes = [
   { path: 'scan', component: QrcodePageComponent, canActivate: [isLoggedInGuard] },
   { path: 'profil', component: ProfilPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'chat', component: MessagesPageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'mysaloon', component: MySaloonPageComponent, canActivate: [isLoggedInGuard] },
 ];

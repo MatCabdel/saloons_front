@@ -37,6 +37,11 @@
                 "glob": "**/*",
                 "input": "public"
               },
+              {
+                "glob": "**/*",
+                "input": "node_modules/ngx-scanner-qrcode/wasm/",
+                "output": "assets/wasm/"
+              },
               "src/assets"
             ],
             "styles": [
