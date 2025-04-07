@@ -111,6 +111,9 @@ jobs:
 
       - name: Run Cypress tests for the target branch
         run: |
+          BASE="${{ github.event.pull_request.base.ref }}"
+          echo "Base branch is $BASE"
+          
           if [ "${{ github.base_ref }}" == "staging" ]; then
             echo "Running e2e tests for staging"
             npm run e2e:ci:staging
