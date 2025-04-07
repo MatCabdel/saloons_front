@@ -2,11 +2,13 @@ import { Component, inject } from '@angular/core';
 import { HeaderComponent } from '../../../../common/components/header/header.component';
 import { NavbarComponent } from 'src/app/common/components/navbar/navbar.component';
 import { Router } from '@angular/router';
+import { MapComponent } from '../../components/map/map.component';
+import { SwitchListMapComponent } from "../../../../common/components/switch-list-map/switch-list-map.component";
 
 @Component({
   selector: 'app-map-saloon-page',
   standalone: true,
-  imports: [HeaderComponent, NavbarComponent],
+  imports: [HeaderComponent, NavbarComponent, MapComponent, SwitchListMapComponent],
   templateUrl: './map-saloon-page.component.html',
   styleUrl: './map-saloon-page.component.scss',
 })

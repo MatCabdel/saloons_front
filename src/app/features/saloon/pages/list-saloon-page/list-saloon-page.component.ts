@@ -5,11 +5,12 @@ import { Saloon } from '../../models/saloonModel';
 import { SaloonCardComponent } from '../../components/saloon-card/saloon-card.component';
 import { NavbarComponent } from 'src/app/common/components/navbar/navbar.component';
 import { Router, RouterModule } from '@angular/router';
+import { SwitchListMapComponent } from "../../../../common/components/switch-list-map/switch-list-map.component";
 
 @Component({
   selector: 'app-list-saloon-page',
   standalone: true,
-  imports: [HeaderComponent, SaloonCardComponent, NavbarComponent, RouterModule],
+  imports: [HeaderComponent, SaloonCardComponent, NavbarComponent, RouterModule, SwitchListMapComponent],
   templateUrl: './list-saloon-page.component.html',
   styleUrl: './list-saloon-page.component.scss',
 })

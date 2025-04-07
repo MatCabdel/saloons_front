@@ -14,7 +14,29 @@ on:
       - production
 
 jobs:
+ validate-pr-source:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Validate PR source
+        run: |
+          echo "Validating PR source: base=${{ github.base_ref }}, head=${{ github.head_ref }}"
+
+          # Autoriser uniquement development vers staging
+          if [ "${{ github.base_ref }}" == "staging" ] && [ "${{ github.head_ref }}" != "development" ]; then
+            echo "❌ Seul 'development' peut faire un PR vers 'staging'"
+            exit 1
+          fi
+
+          # Autoriser uniquement staging vers production
+          if [ "${{ github.base_ref }}" == "production" ] && [ "${{ github.head_ref }}" != "staging" ]; then
+            echo "❌ Seul 'staging' peut faire un PR vers 'production'"
+            exit 1
+          fi
+
+          echo "✅ Validation réussie"
   lint:
+    needs: validate-pr-source
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -40,6 +62,7 @@ jobs:
         run: npm run lint
 
   test:
+    needs: validate-pr-source
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -60,6 +83,7 @@ jobs:
         run: npm test
 
   e2e:
+    needs: validate-pr-source
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && (github.base_ref == 'staging' || github.base_ref == 'production')
     steps:
