@@ -86,7 +86,6 @@ jobs:
         run: npm test
 
   e2e:
-    needs: validate-pr-source
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && (github.base_ref == 'staging' || github.base_ref == 'production')
     steps:
@@ -113,7 +112,7 @@ jobs:
         run: |
           BASE="${{ github.event.pull_request.base.ref }}"
           echo "Base branch is $BASE"
-          
+
           if [ "${{ github.base_ref }}" == "staging" ]; then
             echo "Running e2e tests for staging"
             npm run e2e:ci:staging
