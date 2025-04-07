@@ -14,7 +14,7 @@ on:
       - production
 
 jobs:
- validate-pr-source:
+  validate-pr-source:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
