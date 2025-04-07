@@ -20,7 +20,10 @@ jobs:
     steps:
       - name: Validate PR source
         run: |
-          echo "Validating PR source: base=${{ github.base_ref }}, head=${{ github.head_ref }}"
+          BASE="${{ github.event.pull_request.base.ref }}"
+          HEAD="${{ github.event.pull_request.head.ref }}"
+          echo "Base branch: $BASE"
+          echo "Head branch: $HEAD"
 
           # Autoriser uniquement development vers staging
           if [ "${{ github.base_ref }}" == "staging" ] && [ "${{ github.head_ref }}" != "development" ]; then
