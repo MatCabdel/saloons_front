@@ -1,17 +1,11 @@
-<app-header></app-header>
 <div class="list-places-container">
-  <div class="toggle-switch">
-    <label class="switch">
-      <input type="checkbox" (change)="toggleView($event)" [checked]="isMapView" />
-      <span class="slider">
-        <span class="label left">Liste</span>
-        <span class="label right">Carte</span>
-      </span>
-    </label>
-  </div>
+  <app-header></app-header>
+  <app-switch-list-map></app-switch-list-map>
+  <h1>Saloons à proximité:</h1>
   <div class="list-places">
     @for (saloon of saloons; track saloon.id) {
       <app-saloon-card [saloon]="saloon"></app-saloon-card>
     }
   </div>
+  <app-navbar></app-navbar>
 </div>

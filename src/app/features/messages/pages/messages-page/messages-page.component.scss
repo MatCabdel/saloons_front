@@ -1,4 +1,4 @@
-.list-places-container {
+.messages-container {
   background: linear-gradient(to bottom, #f9c255, #745b29);
   min-height: 100vh;
   min-width: 100vw;
@@ -16,18 +16,8 @@
     padding-top: 30px;
   }
 
-  .list-places {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background-color: #fffbf3;
-  }
-
-  h3 {
-    font-size: 1.1em;
-    font-weight: bold;
-    padding: 10px;
+  p {
+    text-align: center;
     color: white;
   }
 }

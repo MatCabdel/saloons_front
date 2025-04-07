@@ -2,6 +2,22 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
 import { verifyEnvironment } from './environments/verify-environment';
+import { LOAD_WASM, NgxScannerQrcodeModule } from 'ngx-scanner-qrcode';
+import { importProvidersFrom } from '@angular/core';
+
+LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe({
+  next: () => console.log('WASM loaded'),
+  error: err => console.error('WASM failed to load', err),
+});
 
 verifyEnvironment();
-bootstrapApplication(AppComponent, appConfig).catch(err => console.error(err));
+bootstrapApplication(AppComponent, {
+  ...appConfig,
+  providers: [
+    // On récupère tous les providers déjà définis dans appConfig
+    ...(appConfig.providers ?? []),
+
+    // Et on ajoute l'import du module NgxScannerQrcodeModule
+    importProvidersFrom(NgxScannerQrcodeModule),
+  ],
+}).catch(err => console.error(err));

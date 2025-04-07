@@ -1,0 +1,16 @@
+<ngx-scanner-qrcode #action="scanner" [config]="config" (event)="onEvent($event)"></ngx-scanner-qrcode>
+
+<!-- Loading -->
+<p class="loader" *ngIf="action.isLoading">⌛ Loading...</p>
+
+<!-- start -->
+
+<div class="btn-container">
+  <button type="button" (click)="action.isStart ? action.stop() : action.start()">
+    <img [src]="action.isStart ? 'assets/icons/cameraOff.svg' : 'assets/icons/camera.svg'" alt="camera" />
+  </button>
+</div>
+
+<div class="scanned-link" *ngIf="scannedUrl">
+  <button type="button" (click)="openScannedUrl()">Entrez dans le saloon</button>
+</div>
