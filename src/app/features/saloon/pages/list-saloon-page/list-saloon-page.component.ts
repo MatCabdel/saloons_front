@@ -5,7 +5,7 @@ import { Saloon } from '../../models/saloonModel';
 import { SaloonCardComponent } from '../../components/saloon-card/saloon-card.component';
 import { NavbarComponent } from 'src/app/common/components/navbar/navbar.component';
 import { Router, RouterModule } from '@angular/router';
-import { SwitchListMapComponent } from "../../../../common/components/switch-list-map/switch-list-map.component";
+import { SwitchListMapComponent } from '../../../../common/components/switch-list-map/switch-list-map.component';
 
 @Component({
   selector: 'app-list-saloon-page',

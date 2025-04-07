@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [],
   templateUrl: './switch-list-map.component.html',
-  styleUrl: './switch-list-map.component.scss'
+  styleUrl: './switch-list-map.component.scss',
 })
 export class SwitchListMapComponent {
   isMapView = false;
@@ -22,6 +22,4 @@ export class SwitchListMapComponent {
     }
     console.log('Vue actuelle :', this.isMapView ? 'Carte' : 'Liste');
   }
-
-
 }

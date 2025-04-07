@@ -3,7 +3,7 @@ import { HeaderComponent } from '../../../../common/components/header/header.com
 import { NavbarComponent } from 'src/app/common/components/navbar/navbar.component';
 import { Router } from '@angular/router';
 import { MapComponent } from '../../components/map/map.component';
-import { SwitchListMapComponent } from "../../../../common/components/switch-list-map/switch-list-map.component";
+import { SwitchListMapComponent } from '../../../../common/components/switch-list-map/switch-list-map.component';
 
 @Component({
   selector: 'app-map-saloon-page',
