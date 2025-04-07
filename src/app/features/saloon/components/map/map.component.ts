@@ -48,8 +48,8 @@ export class MapComponent implements OnInit {
         </div>
       `;
       const marker = L.marker([loc.lat, loc.lng], { icon: this._customIcon })
-        .addTo(this.map)
-        .bindPopup(popupContent);
+      .addTo(this.map)
+      .bindPopup(popupContent);
 
       this._markers.push(marker);
     });
