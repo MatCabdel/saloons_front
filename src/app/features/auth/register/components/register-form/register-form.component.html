@@ -4,7 +4,7 @@
       <div class="container-input">
         <label class="label-form" for="lastname">Nom *</label>
         <input class="input-form" type="text" id="lastname" name="lastname" formControlName="lastname" placeholder="Votre nom" autocomplete="on" />
-        @if(formRegister.submitted && registerForm.controls['lastname'].errors){
+        @if (formRegister.submitted && registerForm.controls['lastname'].errors) {
           <div class="error">
             <div [hidden]="!registerForm.controls['lastname'].errors['required']">Le nom est requis</div>
           </div>
@@ -36,30 +36,28 @@
       </span></label
     >
     <input class="input-form" type="text" id="email" name="email" formControlName="email" placeholder="Votre email" autocomplete="on" />
-    @if(formRegister.submitted && registerForm.get('email')?.errors?.['required']){
+    @if (formRegister.submitted && registerForm.get('email')?.errors?.['required']) {
       <div class="error">L'email est requis</div>
     }
-    @if(formRegister.submitted && registerForm.get('email')?.errors?.['email']){
+    @if (formRegister.submitted && registerForm.get('email')?.errors?.['email']) {
       <div class="error">L'email est invalide</div>
     }
-  @if(registerForm.get('email')?.errors?.['extension'] && formRegister.submitted){
-    <div class="error">
-      L'email doit appartenir au domaine
-      {{ registerForm.get('email')?.errors?.['extension']?.expected }}
-    </div>
-  }
+    @if (registerForm.get('email')?.errors?.['extension'] && formRegister.submitted) {
+      <div class="error">
+        L'email doit appartenir au domaine
+        {{ registerForm.get('email')?.errors?.['extension']?.expected }}
+      </div>
+    }
   </div>
 
   <div class="container-input">
     <label class="label-form" for="password">Mot de passe *</label>
     <input class="input-form" type="password" id="password" name="password" formControlName="password" placeholder="Votre mot de passe" />
-    @if(formRegister.submitted && registerForm.get('password')?.errors?.['required']){
+    @if (formRegister.submitted && registerForm.get('password')?.errors?.['required']) {
       <div class="error">Mot de passe requis</div>
     }
-    @if(registerForm.get('password')?.errors?.['strongPassword']){
-      <div class="mdp-error">
-        Le mot de passe doit contenir au moins une lettre majuscule et avoir une longueur minimale de 8 caractères.
-      </div>
+    @if (registerForm.get('password')?.errors?.['strongPassword']) {
+      <div class="mdp-error">Le mot de passe doit contenir au moins une lettre majuscule et avoir une longueur minimale de 8 caractères.</div>
     }
   </div>
   <div class="container-input">
@@ -71,21 +69,19 @@
       name="checkPassword"
       formControlName="checkPassword"
       placeholder="Confirmation de votre mot de passe" />
-      @if(formRegister.submitted && registerForm.get('checkPassword')?.errors?.['required']){ 
-        <div class="error">Le mot de passe est requis</div>
-      }
-      @if(formRegister.submitted && registerForm.errors?.['notEqual']){
-        <div class="error">Les mots de passe doivent être identiques</div>
-      }
+    @if (formRegister.submitted && registerForm.get('checkPassword')?.errors?.['required']) {
+      <div class="error">Le mot de passe est requis</div>
+    }
+    @if (formRegister.submitted && registerForm.errors?.['notEqual']) {
+      <div class="error">Les mots de passe doivent être identiques</div>
+    }
   </div>
   <div class="checkbox-cgv">
     <input class="input-form" type="checkbox" formControlName="checkboxCgv" id="checkbox-cgv" />
     <label for="checkbox-cgv">J'accepte les conditions générales d'utilisation</label>
   </div>
-  @if(formRegister.submitted && registerForm.get('checkboxCgv')?.errors?.['required']){
-    <div class="error">
-      Vous devez accepter les conditions générales d'utilisation.
-    </div>
+  @if (formRegister.submitted && registerForm.get('checkboxCgv')?.errors?.['required']) {
+    <div class="error">Vous devez accepter les conditions générales d'utilisation.</div>
   }
   <div class="btn-connexion">
     <button type="submit" [disabled]="!registerForm.valid">S'inscrire</button>

@@ -40,9 +40,7 @@ export class RegisterFormComponent implements OnInit, OnDestroy {
   role!: string;
 
   ngOnInit(): void {
-    this._route.data
-    .pipe(takeUntil(this._destroy$))
-    .subscribe(data => {
+    this._route.data.pipe(takeUntil(this._destroy$)).subscribe(data => {
       this.role = data['role'];
     });
   }
@@ -54,21 +52,21 @@ export class RegisterFormComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-
     if (this.registerForm.invalid) {
       return;
     }
 
-    this._userService.createUser(this.registerForm.value)
-    .pipe(takeUntil(this._destroy$))
-    .subscribe({
-      next: () => {
-        alert('Inscription réussie !');
-        this._router.navigate(['/login']);
-      },
-      error: err => {
-        console.error("Erreur lors de l'inscription :", err);
-      },
-    });
+    this._userService
+      .createUser(this.registerForm.value)
+      .pipe(takeUntil(this._destroy$))
+      .subscribe({
+        next: () => {
+          alert('Inscription réussie !');
+          this._router.navigate(['/login']);
+        },
+        error: err => {
+          console.error("Erreur lors de l'inscription :", err);
+        },
+      });
   }
 }

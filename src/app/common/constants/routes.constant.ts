@@ -1,4 +1,4 @@
 export const APP_ROUTES = {
-    SALOONS: '/saloons',
-    WELCOME: '/welcome',
-  };
+  SALOONS: '/saloons',
+  WELCOME: '/welcome',
+};
