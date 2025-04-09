@@ -20,6 +20,5 @@ export class SwitchListMapComponent {
     } else {
       this._router.navigate(['/saloons']);
     }
-    console.log('Vue actuelle :', this.isMapView ? 'Carte' : 'Liste');
   }
 }

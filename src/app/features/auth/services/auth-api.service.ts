@@ -5,8 +5,6 @@ import { Observable, tap } from 'rxjs';
 import { UserStoreService } from '../../user/store/user-store.service';
 import { environment } from 'src/environments/environment.development';
 import { jwtDecode } from 'jwt-decode';
-// import { UserDTO } from '../../user/models/userDTO';
-// import { LoginDTO } from '../models/loginDTO';
 
 @Injectable({
   providedIn: 'root',

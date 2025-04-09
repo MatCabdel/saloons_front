@@ -3,7 +3,7 @@
   <app-switch-list-map></app-switch-list-map>
   <h1>Saloons à proximité:</h1>
   <div class="list-places">
-    @for (saloon of saloons; track saloon.id) {
+    @for (saloon of saloons$ | async; track saloon.id) {
       <app-saloon-card [saloon]="saloon"></app-saloon-card>
     }
   </div>

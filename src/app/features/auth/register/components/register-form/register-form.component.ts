@@ -1,12 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { strongPasswordValidator } from '../validator-password/password-strengh';
 import { checkEqualityValidator } from '../validator-password/equality-passwords';
 import { CommonModule } from '@angular/common';
-import { environment } from 'src/environments/environment.production';
 import { UserService } from '../../../../user/services/user.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-register-form',
@@ -15,11 +15,13 @@ import { UserService } from '../../../../user/services/user.service';
   templateUrl: './register-form.component.html',
   styleUrl: './register-form.component.scss',
 })
-export class RegisterFormComponent implements OnInit {
+export class RegisterFormComponent implements OnInit, OnDestroy {
   private _formBuilder = inject(FormBuilder);
   private _router = inject(Router);
   private _route = inject(ActivatedRoute);
   private _userService = inject(UserService);
+
+  private _destroy$ = new Subject();
 
   registerForm = this._formBuilder.nonNullable.group(
     {
@@ -38,31 +40,33 @@ export class RegisterFormComponent implements OnInit {
   role!: string;
 
   ngOnInit(): void {
-    this._route.data.subscribe(data => {
+    this._route.data.pipe(takeUntil(this._destroy$)).subscribe(data => {
       this.role = data['role'];
     });
   }
 
-  onSubmit(): void {
-    console.log("🟢 Bouton S'inscrire cliqué");
+  ngOnDestroy(): void {
+    console.log('[🧹] Composant détruit, unsubscribe effectué.');
+    this._destroy$.next(true);
+    this._destroy$.complete();
+  }
 
+  onSubmit(): void {
     if (this.registerForm.invalid) {
-      console.log('🔴 Formulaire invalide :', this.registerForm.value);
       return;
     }
 
-    console.log('📡 Envoi de la requête API à :', `${environment.apiUrl}`);
-    console.log('📦 Données envoyées :', this.registerForm.value);
-
-    this._userService.createUser(this.registerForm.value).subscribe({
-      next: response => {
-        console.log('✅ Utilisateur inscrit avec succès :', response);
-        alert('Inscription réussie !');
-        this._router.navigate(['/login']);
-      },
-      error: err => {
-        console.error("❌ Erreur lors de l'inscription :", err);
-      },
-    });
+    this._userService
+      .createUser(this.registerForm.value)
+      .pipe(takeUntil(this._destroy$))
+      .subscribe({
+        next: () => {
+          alert('Inscription réussie !');
+          this._router.navigate(['/login']);
+        },
+        error: err => {
+          console.error("Erreur lors de l'inscription :", err);
+        },
+      });
   }
 }
