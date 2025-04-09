@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   NgxScannerQrcodeModule,
   NgxScannerQrcodeService,
@@ -18,6 +18,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ScanComponent {
+
+  private _qrcode = inject(NgxScannerQrcodeService);
+
   scannedUrl: string = '';
 
   public qrCodeResult: ScannerQRCodeSelectedFiles[] = [];
@@ -30,19 +33,15 @@ export class ScanComponent {
     },
   };
 
-  constructor(private _qrcode: NgxScannerQrcodeService) {}
-
   public onSelects(files: any): void {
     this._qrcode.loadFiles(files).subscribe((res: ScannerQRCodeSelectedFiles[]) => {
       this.qrCodeResult = res;
-      console.log('res:', res.values);
     });
   }
   public onEvent(e: ScannerQRCodeResult[]): void {
     if (e.length > 0) {
       this.scannedUrl = e[0].value;
     }
-    console.log('QR Code Scanné :', this.scannedUrl);
   }
 
   public openScannedUrl(): void {
