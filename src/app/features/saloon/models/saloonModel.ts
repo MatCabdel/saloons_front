@@ -1,7 +1,7 @@
 export type Saloon = {
   id: number;
   name: string;
-  picture: string;
+  imgUrl: string;
   address: string;
   visitors: number;
 };
