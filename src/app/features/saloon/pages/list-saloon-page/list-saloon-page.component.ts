@@ -8,6 +8,7 @@ import { Router, RouterModule } from '@angular/router';
 import { SwitchListMapComponent } from '../../../../common/components/switch-list-map/switch-list-map.component';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { SaloonApiService } from '../../services/saloon-api.service';
 
 @Component({
   selector: 'app-list-saloon-page',
@@ -21,8 +22,9 @@ export class ListSaloonPageComponent {
 
   private _http = inject(HttpClient);
   private _router = inject(Router);
+  private _saloonApiService = inject(SaloonApiService);
 
-  saloons$: Observable<Saloon[]> = this._http.get<Saloon[]>('http://localhost:3000/places');
+  saloons$: Observable<Saloon[]> = this._saloonApiService.getListSaloon();
 
   toggleView(event: any): void {
     this.isMapView = event.target.checked;
