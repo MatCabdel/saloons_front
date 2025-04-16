@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthApiService } from '../../../services/auth-api.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-login-form',
@@ -11,10 +12,11 @@ import { Router } from '@angular/router';
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.scss',
 })
-export class LoginFormComponent {
+export class LoginFormComponent implements OnDestroy{
   private _formBuilder = inject(FormBuilder);
   private _authService = inject(AuthApiService);
   private _router = inject(Router);
+  private _destroy$ = new Subject<void>();
 
   loginForm = this._formBuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -22,9 +24,15 @@ export class LoginFormComponent {
   });
 
   login(): void {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
     const { email, password } = this.loginForm.value;
 
-    this._authService.login$(email!, password!).subscribe({
+    this._authService.login$(email!, password!)
+    .pipe(takeUntil(this._destroy$))
+    .subscribe({
       next: () => {
         const role = this._authService.getUserRole();
         if (role === 'ROLE_ADMIN') {
@@ -32,10 +40,12 @@ export class LoginFormComponent {
         } else {
           this._router.navigate(['/saloons']);
         }
-      },
-      error: err => {
-        console.error('Erreur lors de la connexion :', err);
-      },
+      }
     });
+  }
+
+  ngOnDestroy(): void {
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 }
