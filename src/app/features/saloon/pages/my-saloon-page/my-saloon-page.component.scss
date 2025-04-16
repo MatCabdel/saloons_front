@@ -5,71 +5,71 @@
   margin: 0 auto;
 
   .profils-container {
-    background-color: #FFFBF3;
+    background-color: #fffbf3;
     min-height: 100vh;
 
-  h1 {
-    color: #A14343;
-    padding: 10px;
-    font-size: 0.9em;
-  }
+    h1 {
+      color: #a14343;
+      padding: 10px;
+      font-size: 0.9em;
+    }
 
-  h2 {
-    text-align: center;
-    color: #A14343;
-    padding-top: 30px;
-  }
+    h2 {
+      text-align: center;
+      color: #a14343;
+      padding-top: 30px;
+    }
 
-  p {
-    text-align: center;
-    color: #A14343;
-  }
+    p {
+      text-align: center;
+      color: #a14343;
+    }
 
-  .list-visitor {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
+    .list-visitor {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
 
-  .visitor-card-container {
-    width: 50%;
-    box-sizing: border-box;
-    padding: 10px;
-    height: 300px;
-    margin-bottom: 10px;
+    .visitor-card-container {
+      width: 50%;
+      box-sizing: border-box;
+      padding: 10px;
+      height: 300px;
+      margin-bottom: 10px;
+    }
   }
-}
 }
 
 .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-  
-    .modal-content {
-      background: #fff;
-      padding: 30px 40px;
-      border-radius: 12px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-      max-width: 200px;
-      text-align: center;
-  
-      h2 {
-        margin-bottom: 10px;
-        font-size: 1em;
-        color: #a14343;
-      }
-  
-      p {
-        font-size: 0.8em;
-        color: #444;
-      }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+
+  .modal-content {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    max-width: 200px;
+    text-align: center;
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: 1em;
+      color: #a14343;
+    }
+
+    p {
+      font-size: 0.8em;
+      color: #444;
     }
   }
+}

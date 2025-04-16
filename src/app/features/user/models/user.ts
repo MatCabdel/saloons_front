@@ -5,4 +5,4 @@ export type User = {
   role: string;
   imgUrl: string;
   userName: string;
-}
+};

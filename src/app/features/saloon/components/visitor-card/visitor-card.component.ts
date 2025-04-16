@@ -6,7 +6,7 @@ import { User } from 'src/app/features/user/models/user';
   standalone: true,
   imports: [],
   templateUrl: './visitor-card.component.html',
-  styleUrl: './visitor-card.component.scss'
+  styleUrl: './visitor-card.component.scss',
 })
 export class VisitorCardComponent {
   @Input() user!: User;
