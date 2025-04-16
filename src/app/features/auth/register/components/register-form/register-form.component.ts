@@ -26,7 +26,6 @@ export class RegisterFormComponent implements OnInit, OnDestroy {
   registerForm = this._formBuilder.nonNullable.group(
     {
       lastname: ['', [Validators.required]],
-      //  firstname: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, strongPasswordValidator()]],
       checkPassword: ['', [Validators.required]],
@@ -46,7 +45,6 @@ export class RegisterFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('[🧹] Composant détruit, unsubscribe effectué.');
     this._destroy$.next(true);
     this._destroy$.complete();
   }

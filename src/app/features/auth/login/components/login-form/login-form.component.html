@@ -1,4 +1,4 @@
-<form class="formulaire" [formGroup]="loginForm" (ngSubmit)="loginForm.valid && login()" #formLogin="ngForm">
+<form class="formulaire" [formGroup]="loginForm" (ngSubmit)="login()" #formLogin="ngForm">
   <div class="container-input">
     <label class="label-form" for="email">Email *</label>
     <input class="input-form" type="text" id="email" name="email" formControlName="email" placeholder="Votre email" />
@@ -18,6 +18,6 @@
   </div>
 
   <div class="btn-connexion">
-    <button type="button" (click)="login()">Connexion</button>
+    <button type="submit" (click)="login()">Connexion</button>
   </div>
 </form>

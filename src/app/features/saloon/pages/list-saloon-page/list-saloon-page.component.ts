@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { HeaderComponent } from '../../../../common/components/header/header.component';
-import { HttpClient } from '@angular/common/http';
 import { Saloon } from '../../models/saloonModel';
 import { SaloonCardComponent } from '../../components/saloon-card/saloon-card.component';
 import { NavbarComponent } from 'src/app/common/components/navbar/navbar.component';
@@ -20,7 +19,6 @@ import { SaloonApiService } from '../../services/saloon-api.service';
 export class ListSaloonPageComponent {
   isMapView = false;
 
-  private _http = inject(HttpClient);
   private _router = inject(Router);
   private _saloonApiService = inject(SaloonApiService);
 
@@ -34,6 +32,5 @@ export class ListSaloonPageComponent {
     } else {
       this._router.navigate(['/saloons']);
     }
-    console.log('Vue actuelle :', this.isMapView ? 'Carte' : 'Liste');
   }
 }
