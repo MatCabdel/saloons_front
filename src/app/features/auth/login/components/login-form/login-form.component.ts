@@ -12,7 +12,7 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.scss',
 })
-export class LoginFormComponent implements OnDestroy{
+export class LoginFormComponent implements OnDestroy {
   private _formBuilder = inject(FormBuilder);
   private _authService = inject(AuthApiService);
   private _router = inject(Router);
@@ -30,18 +30,19 @@ export class LoginFormComponent implements OnDestroy{
     }
     const { email, password } = this.loginForm.value;
 
-    this._authService.login$(email!, password!)
-    .pipe(takeUntil(this._destroy$))
-    .subscribe({
-      next: () => {
-        const role = this._authService.getUserRole();
-        if (role === 'ROLE_ADMIN') {
-          this._router.navigate(['/dashboard']);
-        } else {
-          this._router.navigate(['/saloons']);
-        }
-      }
-    });
+    this._authService
+      .login$(email!, password!)
+      .pipe(takeUntil(this._destroy$))
+      .subscribe({
+        next: () => {
+          const role = this._authService.getUserRole();
+          if (role === 'ROLE_ADMIN') {
+            this._router.navigate(['/dashboard']);
+          } else {
+            this._router.navigate(['/saloons']);
+          }
+        },
+      });
   }
 
   ngOnDestroy(): void {
