@@ -21,4 +21,13 @@ export class UserService {
       })
     );
   }
+
+  getListUser(): Observable<User[]> {
+    const token = localStorage.getItem('token');
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    return this._http.get<User[]>(this._BASE_URL_API + '/profile', { headers });
+  }
 }

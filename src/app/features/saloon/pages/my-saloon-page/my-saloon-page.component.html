@@ -1,6 +1,23 @@
 <div class="my-saloon-container">
-  <h1>Bienvenue dans le saloon:</h1>
-  <h2>L'ENGRENAGE</h2>
-  <p>(Par exemple)</p>
+  @if (showModal) {
+    <div class="modal-backdrop" tabindex="0" (click)="closeModal()" (keydown.enter)="closeModal()">
+      <div class="modal-content" tabindex="0" (click)="$event.stopPropagation()" (keydown)="stopPropagation($event)">
+        <h2>Bienvenue dans le saloon:</h2>
+        <h2>L'Engrenage</h2>
+        <p>Fais connaissance avec les autres visiteurs présents.</p>
+      </div>
+    </div>
+  }
+  <app-header></app-header>
+  <div class="profils-container">
+    <h1>3 visiteurs sont actuellement connecté dans le saloon</h1>
+    <div class="list-visitor">
+      @for (user of users$ | async; track user.id) {
+        <div class="visitor-card-container">
+          <app-visitor-card [user]="user"></app-visitor-card>
+        </div>
+      }
+    </div>
+  </div>
 </div>
 <app-navbar></app-navbar>
