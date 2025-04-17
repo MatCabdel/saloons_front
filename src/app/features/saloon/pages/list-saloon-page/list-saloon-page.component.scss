@@ -1,5 +1,5 @@
 .list-places-container {
-  background: linear-gradient(to bottom, #f9c255, #745b29);
+  background-color: #FFFBF3;
   min-height: 100vh;
   min-width: 100vw;
   margin: 0 auto;
@@ -16,6 +16,7 @@
     font-size: 1.1em;
     font-weight: bold;
     padding: 10px;
-    color: white;
+    color: black;
+    margin: 0;
   }
 }
