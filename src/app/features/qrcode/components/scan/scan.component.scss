@@ -25,17 +25,20 @@
 }
 
 .loader {
-    text-align: center;
-    padding-top: 15px;
-    color: white;
-    animation: blink 1s infinite alternate;
-  }
+  text-align: center;
+  padding-top: 15px;
+  color: white;
+  animation: blink 1s infinite alternate;
+}
 
-  @keyframes blink {
-    from { opacity: 1; }
-    to { opacity: 0.5; }
+@keyframes blink {
+  from {
+    opacity: 1;
   }
-  
+  to {
+    opacity: 0.5;
+  }
+}
 
 .scanned-link {
   text-align: center;

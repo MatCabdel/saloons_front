@@ -6,7 +6,8 @@
   padding: 0;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
 }
@@ -15,5 +16,5 @@ app-root,
 router-outlet {
   margin: 0;
   padding: 0;
-  display: block;    /* au besoin */
+  display: block; /* au besoin */
 }

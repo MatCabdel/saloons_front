@@ -27,7 +27,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #A14343;
+  background-color: #a14343;
   border-radius: 20px;
   transition: 0.4s;
   display: flex;
@@ -67,7 +67,7 @@
 }
 
 input:checked + .slider {
-  background-color: #A14343;
+  background-color: #a14343;
 }
 
 input:checked + .slider:before {
@@ -75,13 +75,13 @@ input:checked + .slider:before {
 }
 
 .slider .label {
-    color: #fff;
-  }
-  
-  .switch input:not(:checked) + .slider .label.left {
-    color: #A14343;
-  }
-  
-  .switch input:checked + .slider .label.right {
-    color: #A14343;
-  }
+  color: #fff;
+}
+
+.switch input:not(:checked) + .slider .label.left {
+  color: #a14343;
+}
+
+.switch input:checked + .slider .label.right {
+  color: #a14343;
+}
