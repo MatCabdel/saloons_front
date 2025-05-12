@@ -1,13 +1,14 @@
 <div class="container-login-page">
+  <app-header></app-header>
   <div class="contain">
     <div class="title">
-      <h2>Créer votre compte</h2>
+      <h2>S'inscrire</h2>
     </div>
     <app-register-profil class="inner-right"></app-register-profil>
     <div>
       <h4 class="acount">
         Vous avez déjà un compte ?
-        <span><a [routerLink]="['/login']">Connexion</a></span>
+        <span><a class="connexion-button" [routerLink]="['/login']">Connectez-vous!</a></span>
       </h4>
     </div>
   </div>

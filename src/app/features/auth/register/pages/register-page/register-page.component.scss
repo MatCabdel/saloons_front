@@ -1,5 +1,5 @@
 .container-login-page {
-  background: linear-gradient(to bottom, #f9c255, #745b29);
+  background-color: #413443;
   min-height: 100vh;
   min-width: 100vw;
   margin: 0 auto;
@@ -14,11 +14,22 @@
 
     .title {
       padding: 16px 0;
+      text-align: center;
+      color: white;
+      font-family: Urbanist, sans-serif;
     }
 
     .acount {
       text-align: center;
       padding: 20px 0;
+      color: white;
+    }
+    .connexion-button {
+      color: #ffc122;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      outline: none;
     }
   }
 }
