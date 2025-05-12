@@ -1,9 +1,11 @@
 <div class="upload">
   <ng-container *ngIf="imageUrl">
-    <img [src]="imageUrl" alt="" width="75" height="75" />
+    <img [src]="imageUrl" alt="" width="200" height="200" />
   </ng-container>
   <button type="button" class="button-with-icon" (click)="fileUpload.click()">
-    <img src="/assets/svgs/upload-img.svg" alt="Icône" class="icon" />
+    <div class="icon">
+      <img src="/assets/icons/upload.svg" alt="Icône" />
+    </div>
     <span>Choisir une image</span>
   </button>
 

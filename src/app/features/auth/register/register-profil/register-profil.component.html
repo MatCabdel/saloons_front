@@ -1,9 +1,9 @@
 <form [formGroup]="formGroup" class="formulaire" (ngSubmit)="onFinish()">
   <!-- indicateur simple -->
   <div class="stepper-indicator">
-    <div class="step" [class.active]="step === 1">1. Vos infos</div>
-    <div class="step" [class.active]="step === 2">2. Photo</div>
-    <div class="step" [class.active]="step === 3">3. Pseudo</div>
+    <div class="step" [class.active]="step === 1">Etape 1</div>
+    <div class="step" [class.active]="step === 2">Etape 2</div>
+    <div class="step" [class.active]="step === 3">Etape 3</div>
   </div>
 
   <ng-container [ngSwitch]="step">

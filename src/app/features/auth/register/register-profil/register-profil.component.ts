@@ -6,7 +6,6 @@ import { UserService } from 'src/app/features/user/services/user.service';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FileUploadComponent } from '../../../../common/components/file-upload/file-upload.component';
-import { UserRegistrationDTO } from 'src/app/features/user/models/userDTO';
 
 @Component({
   selector: 'app-register-profil',
@@ -74,20 +73,13 @@ export class RegisterProfilComponent implements OnInit {
     }
 
     const { account, meta } = this.formGroup.value;
-    const userDto: UserRegistrationDTO = {
-      firstName: account.firstName,
-      lastName: account.lastName,
-      email: account.email,
-      password: account.password,
-      username: meta.username,
-    };
 
     const formData = new FormData();
-    // partie JSON
-    formData.append('user', new Blob([JSON.stringify(userDto)], { type: 'application/json' }));
-    // partie fichier
+    formData.append('email', account.email);
+    formData.append('password', account.password);
+    formData.append('username', meta.username);
     if (this.file) {
-      formData.append('imageFile', this.file, this.fileName);
+      formData.append('image', this.file, this.fileName);
     }
 
     // 3) Appel au service
