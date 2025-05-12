@@ -4,6 +4,7 @@ import { AppComponent } from './app/app.component';
 import { verifyEnvironment } from './environments/verify-environment';
 import { LOAD_WASM, NgxScannerQrcodeModule } from 'ngx-scanner-qrcode';
 import { importProvidersFrom } from '@angular/core';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe({
   next: () => console.log('WASM loaded'),
@@ -19,5 +20,6 @@ bootstrapApplication(AppComponent, {
 
     // Et on ajoute l'import du module NgxScannerQrcodeModule
     importProvidersFrom(NgxScannerQrcodeModule),
+    provideAnimationsAsync(),
   ],
 }).catch(err => console.error(err));

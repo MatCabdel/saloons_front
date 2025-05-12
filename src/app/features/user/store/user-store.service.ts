@@ -17,6 +17,8 @@ export class UserStoreService {
       password: '',
       role: '',
       token: '',
+      imgUrl: '',
+      description: '',
     });
 
     this.token$ = new BehaviorSubject<string>('');
