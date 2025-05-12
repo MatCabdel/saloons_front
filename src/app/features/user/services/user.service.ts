@@ -37,7 +37,7 @@ export class UserService {
     return this._http.get<User[]>(this._BASE_URL_API + '/profile', { headers });
   }
 
-  updateMentorImage(file: File): Observable<UserDTO | void> {
+  updateUserImage(file: File): Observable<UserDTO | void> {
     // sortie rapide si pas de fichier (plus d'else après le return)
     if (!file) {
       return of();
@@ -48,7 +48,7 @@ export class UserService {
     formData.append('file', file);
 
     const headers = new HttpHeaders();
-    const url = `${this._BASE_URL_API}/user/upload/image/mentor/${this.userConnected.value.id}`;
+    const url = `${this._BASE_URL_API}/user/upload/image/${this.userConnected.value.id}`;
 
     return this._http.post<UserDTO>(url, formData, { headers }).pipe(
       tap((res): void => {
