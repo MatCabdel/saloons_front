@@ -5,6 +5,7 @@ import { Observable, tap } from 'rxjs';
 import { UserStoreService } from '../../user/store/user-store.service';
 import { environment } from 'src/environments/environment.development';
 import { jwtDecode } from 'jwt-decode';
+import { UserDTO } from '../../user/models/userDTO';
 
 @Injectable({
   providedIn: 'root',
@@ -20,10 +21,15 @@ export class AuthApiService {
     return this._http.post<boolean>(`${this._BASE_URL_API}/auth/register`, { email, password });
   }
 
-  public login$(email: string, password: string): Observable<string> {
+  public login$(email: string, password: string): Observable<UserDTO> {
     return this._http
-      .post(`${this._BASE_URL_API}/auth/login`, { email, password }, { responseType: 'text' })
-      .pipe(tap((token: string) => this.saveToken(token)));
+      .post<UserDTO>(`${this._BASE_URL_API}/auth/login`, { email, password })
+      .pipe(
+        tap((user: UserDTO) => {
+          this.saveToken(user.token);
+          localStorage.setItem('user', JSON.stringify(user));
+        })
+      );
   }
 
   public saveToken(token: string): void {

@@ -12,4 +12,5 @@ export type User = {
   description: string;
   birthdate: Date;
   city: string;
+  age: number;
 };

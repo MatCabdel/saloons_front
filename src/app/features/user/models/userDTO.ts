@@ -6,6 +6,10 @@ export type UserDTO = {
   token: string;
   imgUrl: string;
   description: string;
+  age: number;
+  firstName: string;
+  lastName: string;
+  userName: string;
 };
 
 export type UserRegistrationDTO = {
@@ -13,5 +17,6 @@ export type UserRegistrationDTO = {
   lastName: string;
   email: string;
   password: string;
-  username: string;
+  userName: string;
+  age: number
 };

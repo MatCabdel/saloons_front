@@ -1,22 +1,20 @@
 <div class="my-profil-container">
+  @if (user) {
   <div class="img-container">
-    <button class="top-right-button" type="button">change</button>
-    <img src="../../../../../assets/images/pilou.jpg" alt="pilou" />
+    <button class="top-right-button" type="button"><</button>
+    <img [src]="user.imgUrl" alt="profil" />
+    <button class="wink-button" type="button">😉</button>
   </div>
   <div class="description-container">
-    <button class="top-right-button" type="button">change</button>
-    <h1>Pilou, 30</h1>
+    <div class="top-right-button" type="button">Cenon</div>
+    <h1>{{ user.userName }}, 30 {{ user.age }}</h1>
     <div class="description">
-      <h2>A propos de moi</h2>
+      <h2>A propos</h2>
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic earum, accusamus odio qui odit consectetur voluptatum a error dolorum.
         Consequuntur commodi architecto assumenda aut natus in ullam est ratione fugiat!
       </p>
-      <h2>Le principal</h2>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic earum, accusamus odio qui odit consectetur voluptatum a error dolorum.
-        Consequuntur commodi
-      </p>
     </div>
   </div>
+}
 </div>
