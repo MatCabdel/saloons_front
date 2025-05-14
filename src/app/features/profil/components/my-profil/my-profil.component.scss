@@ -1,32 +1,49 @@
 .my-profil-container {
-  width: 90%;
-  height: 90vh;
+  width: 100%;
+  height: 100%;
   padding: 0 auto;
-  border-radius: 8px;
+  border-radius: 0 0 200px 0;
 
   .img-container {
-    height: 300px;
+    height: 400px;
     width: 100%;
-    border-radius: 8px;
+    border-radius: 0 0 200px 0;
     position: relative;
 
     img {
       height: 100%;
       width: 100%;
-      border-radius: 8px;
+      border-radius: 0 0 200px 0;
       object-fit: cover;
     }
     .top-right-button {
       position: absolute;
       top: 10px;
-      right: 10px;
-      background-color: rgba(0, 0, 0, 0.6);
+      left: 10px;
       color: white;
       border: none;
       border-radius: 50%;
       padding: 8px;
       cursor: pointer;
       z-index: 1;
+      background-color: rgba(0, 0, 0, 0.091);
+    }
+
+    .wink-button {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      bottom: 30px;
+      right: 30px;
+      color: white;
+      border: none;
+      border-radius: 100%;
+      background-color: #ffc022cd;
+      padding: 8px;
+      cursor: pointer;
+      z-index: 1;
+      font-size: 3em;
+      align-self: center;
     }
   }
 
@@ -34,8 +51,6 @@
     padding: 5px;
     position: relative;
     background-color: white;
-    box-shadow: 2px 3px 2px rgba(0, 0, 0, 0.243);
-    border-radius: 8px;
     height: 50%;
 
     .top-right-button {
@@ -45,25 +60,27 @@
       background-color: rgba(0, 0, 0, 0.6);
       color: white;
       border: none;
-      border-radius: 50%;
+      border-radius: 8%;
       padding: 8px;
       cursor: pointer;
       z-index: 1;
     }
 
     h1 {
-      font-size: 1.4em;
-      margin-bottom: 10px;
+      font-size: 1.2em;
+      margin: 10px;
     }
 
     h2 {
       font-size: 1em;
-      margin-bottom: 4px;
-      color: #a14343;
+      margin: 15px 10px;
+      color: black;
     }
 
     p {
-      margin-bottom: 10px;
+      margin: 10px;
+      font-size: 0.8em;
+      color: #747474;
     }
   }
 }

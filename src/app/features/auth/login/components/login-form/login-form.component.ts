@@ -4,6 +4,7 @@ import { AuthApiService } from '../../../services/auth-api.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
+import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 
 @Component({
   selector: 'app-login-form',
@@ -17,6 +18,7 @@ export class LoginFormComponent implements OnDestroy {
   private _authService = inject(AuthApiService);
   private _router = inject(Router);
   private _destroy$ = new Subject<void>();
+  private _userStore = inject(UserStoreService);
 
   loginForm = this._formBuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -34,7 +36,8 @@ export class LoginFormComponent implements OnDestroy {
       .login$(email!, password!)
       .pipe(takeUntil(this._destroy$))
       .subscribe({
-        next: () => {
+        next: userDTO => {
+          this._userStore.setUserConnected(userDTO);
           const role = this._authService.getUserRole();
           if (role === 'ROLE_ADMIN') {
             this._router.navigate(['/dashboard']);

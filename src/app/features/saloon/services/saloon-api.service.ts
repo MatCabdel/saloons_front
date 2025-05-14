@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Saloon } from '../models/saloonModel';
 import { environment } from 'src/environments/environment.development';
 import { Observable } from 'rxjs';
+import { User } from '../../user/models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -19,5 +20,19 @@ export class SaloonApiService {
       Authorization: `Bearer ${token}`,
     };
     return this._http.get<Saloon[]>(this._BASE_URL_API + '/saloon', { headers });
+  }
+
+  getSaloonById(id: string): Observable<Saloon> {
+    const token = localStorage.getItem('token');
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    return this._http.get<Saloon>(`${this._BASE_URL_API}/saloon/${id}`, { headers });
+  }
+
+  getUsersInSaloon(saloonId: string): Observable<User[]> {
+    const token = localStorage.getItem('token');
+    const headers = { Authorization: `Bearer ${token}` };
+    return this._http.get<User[]>(`${this._BASE_URL_API}/saloon/${saloonId}/users`, { headers });
   }
 }

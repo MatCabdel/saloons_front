@@ -1,23 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Jomhuria&family=Koulen&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+
 .my-saloon-container {
-  background: linear-gradient(to bottom, #f9c255, #745b29);
+  background-color: white;
   min-height: 100vh;
   min-width: 100vw;
-  margin: 0 auto;
+  padding-bottom: 100px;
 
   .profils-container {
-    background-color: #fffbf3;
+    background-color: #ffffff;
     min-height: 100vh;
 
     h1 {
-      color: #a14343;
+      color: black;
       padding: 10px;
-      font-size: 0.9em;
+      font-size: 0.8em;
+      font-family: 'Koulen', sans-serif;
     }
 
     h2 {
       text-align: center;
-      color: #a14343;
+      color: #ffc122;
       padding-top: 30px;
+      font-family: 'Koulen', sans-serif;
     }
 
     p {
@@ -28,7 +32,7 @@
     .list-visitor {
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
+      justify-content: flex-start;
     }
 
     .visitor-card-container {
@@ -38,6 +42,23 @@
       height: 300px;
       margin-bottom: 10px;
     }
+  }
+}
+
+.btn-deconnexion {
+  text-align: center;
+  padding-top: 40px;
+
+  button {
+    background-color: #413443;
+    width: 300px;
+    height: 50px;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    box-shadow: 2px 3px 2px rgba(0, 0, 0, 0.237);
   }
 }
 
@@ -63,13 +84,21 @@
 
     h2 {
       margin-bottom: 10px;
-      font-size: 1em;
-      color: #a14343;
+      font-size: 2em;
+      font-weight: 200;
+      color: #ffc122;
+      font-family: 'Koulen', sans-serif;
+    }
+
+    h3 {
+      font-size: 0.8em;
+      font-weight: 200;
     }
 
     p {
       font-size: 0.8em;
       color: #444;
+      margin: 10px 0;
     }
   }
 }

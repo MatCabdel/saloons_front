@@ -11,15 +11,19 @@ export class UserStoreService {
   token$: BehaviorSubject<string>;
 
   constructor() {
-    this._userConnected$ = new BehaviorSubject<UserDTO>({
-      id: 0,
-      email: '',
-      password: '',
-      role: '',
-      token: '',
-      imgUrl: '',
-      description: '',
-    });
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    this._userConnected$ = new BehaviorSubject<UserDTO>(
+      user || {
+        id: 0,
+        email: '',
+        password: '',
+        role: '',
+        token: '',
+        imgUrl: '',
+        description: '',
+        age: 0,
+      }
+    );
 
     this.token$ = new BehaviorSubject<string>('');
   }

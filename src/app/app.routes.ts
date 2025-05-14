@@ -26,5 +26,5 @@ export const routes: Routes = [
   { path: 'scan', component: QrcodePageComponent, canActivate: [isLoggedInGuard] },
   { path: 'profil', component: ProfilPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'chat', component: MessagesPageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'mysaloon', component: MySaloonPageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'mysaloon/:id', component: MySaloonPageComponent, canActivate: [isLoggedInGuard] },
 ];

@@ -4,11 +4,12 @@ import { NavbarComponent } from 'src/app/common/components/navbar/navbar.compone
 import { Router } from '@angular/router';
 import { MapComponent } from '../../components/map/map.component';
 import { SwitchListMapComponent } from '../../../../common/components/switch-list-map/switch-list-map.component';
+import { HeaderReverseComponent } from '../../../../common/components/header-reverse/header-reverse.component';
 
 @Component({
   selector: 'app-map-saloon-page',
   standalone: true,
-  imports: [HeaderComponent, NavbarComponent, MapComponent, SwitchListMapComponent],
+  imports: [HeaderComponent, NavbarComponent, MapComponent, SwitchListMapComponent, HeaderReverseComponent],
   templateUrl: './map-saloon-page.component.html',
   styleUrl: './map-saloon-page.component.scss',
 })
