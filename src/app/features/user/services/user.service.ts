@@ -37,6 +37,10 @@ export class UserService {
     return this._http.get<User[]>(this._BASE_URL_API + '/profile', { headers });
   }
 
+  getUserById(id: number): Observable<User> {
+    return this._http.get<User>(`${this._BASE_URL_API}/profile/profile/${id}`);
+  }
+
   updateUserImage(file: File): Observable<UserDTO | void> {
     // sortie rapide si pas de fichier (plus d'else après le return)
     if (!file) {

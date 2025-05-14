@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { User } from 'src/app/features/user/models/user';
 
 @Component({
@@ -10,4 +10,9 @@ import { User } from 'src/app/features/user/models/user';
 })
 export class VisitorCardComponent {
   @Input() user!: User;
+  @Output() cardClick = new EventEmitter<number>();
+
+  onCardClick(): void {
+    this.cardClick.emit(this.user.id);
+  }
 }
