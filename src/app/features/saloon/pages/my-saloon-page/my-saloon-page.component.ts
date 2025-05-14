@@ -25,15 +25,9 @@ export class MySaloonPageComponent {
   private _router = inject(Router);
   private _userStore = inject(UserStoreService);
 
-  users$: Observable<User[]> = this._route.paramMap.pipe(
-    switchMap(params => this._saloonApi.getUsersInSaloon(params.get('id')!))
-  );
+  users$: Observable<User[]> = this._route.paramMap.pipe(switchMap(params => this._saloonApi.getUsersInSaloon(params.get('id')!)));
 
-  saloon$: Observable<Saloon> = this._route.paramMap.pipe(
-    switchMap(params => this._saloonApi.getSaloonById(params.get('id')!))
-  );
-
-
+  saloon$: Observable<Saloon> = this._route.paramMap.pipe(switchMap(params => this._saloonApi.getSaloonById(params.get('id')!)));
 
   showModal = true;
 
@@ -52,9 +46,9 @@ export class MySaloonPageComponent {
       next: () => {
         this._router.navigate(['/saloons']);
       },
-      error: (err) => {
+      error: err => {
         console.error('Erreur lors de la déconnexion', err);
-      }
+      },
     });
   }
 }

@@ -22,14 +22,12 @@ export class AuthApiService {
   }
 
   public login$(email: string, password: string): Observable<UserDTO> {
-    return this._http
-      .post<UserDTO>(`${this._BASE_URL_API}/auth/login`, { email, password })
-      .pipe(
-        tap((user: UserDTO) => {
-          this.saveToken(user.token);
-          localStorage.setItem('user', JSON.stringify(user));
-        })
-      );
+    return this._http.post<UserDTO>(`${this._BASE_URL_API}/auth/login`, { email, password }).pipe(
+      tap((user: UserDTO) => {
+        this.saveToken(user.token);
+        localStorage.setItem('user', JSON.stringify(user));
+      })
+    );
   }
 
   public saveToken(token: string): void {

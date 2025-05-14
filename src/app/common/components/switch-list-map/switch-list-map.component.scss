@@ -80,9 +80,9 @@ input:checked + .slider:before {
 }
 
 .switch input:not(:checked) + .slider .label.left {
-  color: #FFC122;
+  color: #ffc122;
 }
 
 .switch input:checked + .slider .label.right {
-  color: #FFC122;
+  color: #ffc122;
 }

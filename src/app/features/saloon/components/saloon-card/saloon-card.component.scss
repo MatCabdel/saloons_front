@@ -1,14 +1,13 @@
 .place-card-container {
   margin: 0 auto;
 
-
   .img-card {
     position: relative;
     height: 300px;
     width: 90vw;
     overflow: hidden;
     border-radius: 8px;
-  
+
     img {
       width: 100%;
       height: 100%;
@@ -16,20 +15,20 @@
       object-position: 30% 30%;
     }
   }
-  
+
   .title-img {
     width: 100%;
     display: flex;
     flex-direction: column;
     margin: 8px;
   }
-  
+
   .title-img h1 {
     font-size: 0.9em;
     color: #222222;
     margin: 4px 0;
   }
-  
+
   .title-img p {
     font-size: 0.8em;
     color: #747474;
@@ -37,7 +36,6 @@
     display: flex;
     gap: 3px;
   }
- 
 }
 
 .img-card {

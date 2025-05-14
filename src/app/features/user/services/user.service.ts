@@ -61,20 +61,12 @@ export class UserService {
   connectUserToSaloon(userId: number, saloonId: number): Observable<UserDTO> {
     const token = localStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}` };
-    return this._http.patch<UserDTO>(
-      `${this._BASE_URL_API}/profile/${userId}/connect-saloon/${saloonId}`,
-      {},
-      { headers }
-    );
+    return this._http.patch<UserDTO>(`${this._BASE_URL_API}/profile/${userId}/connect-saloon/${saloonId}`, {}, { headers });
   }
-  
+
   disconnectUserFromSaloon(userId: number): Observable<UserDTO> {
     const token = localStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}` };
-    return this._http.patch<UserDTO>(
-      `${this._BASE_URL_API}/profile/${userId}/disconnect-saloon`,
-      {},
-      { headers }
-    );
+    return this._http.patch<UserDTO>(`${this._BASE_URL_API}/profile/${userId}/disconnect-saloon`, {}, { headers });
   }
 }

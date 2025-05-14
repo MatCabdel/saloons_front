@@ -10,7 +10,6 @@ import { UserStoreService } from 'src/app/features/user/store/user-store.service
   styleUrl: './my-profil.component.scss',
 })
 export class MyProfilComponent {
-
   private _userStore = inject(UserStoreService);
   user: UserDTO | null = null;
 

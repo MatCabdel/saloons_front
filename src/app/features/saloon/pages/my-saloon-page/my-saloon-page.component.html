@@ -3,17 +3,19 @@
     <div class="modal-backdrop" tabindex="0" (click)="closeModal()" (keydown.enter)="closeModal()">
       <div class="modal-content" tabindex="0" (click)="$event.stopPropagation()" (keydown)="stopPropagation($event)">
         <h2>Bienvenue !</h2>
-         @if (saloon$ | async; as saloon) {
-        <h3>Vous venez de rentrez dans notre saloon: <strong>{{saloon.name}}</strong></h3>
-        <p>Vous serez connecté pour une durée maximale de 3 heures</p>
-      }
+        @if (saloon$ | async; as saloon) {
+          <h3>
+            Vous venez de rentrez dans notre saloon: <strong>{{ saloon.name }}</strong>
+          </h3>
+          <p>Vous serez connecté pour une durée maximale de 3 heures</p>
+        }
       </div>
     </div>
   }
   <app-header-reverse></app-header-reverse>
   <div class="profils-container">
     @if (users$ | async; as users) {
-    <h1>{{users.length}} visiteurs sont actuellement connecté dans le saloon</h1>
+      <h1>{{ users.length }} visiteurs sont actuellement connecté dans le saloon</h1>
     }
     <div class="list-visitor">
       @for (user of users$ | async; track user.id) {
@@ -23,8 +25,8 @@
       }
     </div>
     <div class="btn-deconnexion">
-    <button class="btn-logout" type="button" (click)="disconnectUserFromSaloon()">Sortir du Saloon</button>
-  </div>
+      <button class="btn-logout" type="button" (click)="disconnectUserFromSaloon()">Sortir du Saloon</button>
+    </div>
   </div>
 </div>
 <app-navbar></app-navbar>

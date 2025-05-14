@@ -18,5 +18,5 @@ export type UserRegistrationDTO = {
   email: string;
   password: string;
   userName: string;
-  age: number
+  age: number;
 };

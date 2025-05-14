@@ -36,7 +36,7 @@ export class LoginFormComponent implements OnDestroy {
       .login$(email!, password!)
       .pipe(takeUntil(this._destroy$))
       .subscribe({
-        next: (userDTO) => {
+        next: userDTO => {
           this._userStore.setUserConnected(userDTO);
           const role = this._authService.getUserRole();
           if (role === 'ROLE_ADMIN') {

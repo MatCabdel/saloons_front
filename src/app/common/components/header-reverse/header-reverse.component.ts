@@ -7,13 +7,12 @@ import { APP_ROUTES } from '../../constants/routes.constant';
   standalone: true,
   imports: [],
   templateUrl: './header-reverse.component.html',
-  styleUrl: './header-reverse.component.scss'
+  styleUrl: './header-reverse.component.scss',
 })
 export class HeaderReverseComponent {
+  private _router = inject(Router);
 
-    private _router = inject(Router);
-  
-    public navigateToWelcome(): void {
-      this._router.navigate([APP_ROUTES.SALOONS]);
-    }
+  public navigateToWelcome(): void {
+    this._router.navigate([APP_ROUTES.SALOONS]);
+  }
 }

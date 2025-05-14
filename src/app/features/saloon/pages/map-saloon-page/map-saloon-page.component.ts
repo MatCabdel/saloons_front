@@ -4,7 +4,7 @@ import { NavbarComponent } from 'src/app/common/components/navbar/navbar.compone
 import { Router } from '@angular/router';
 import { MapComponent } from '../../components/map/map.component';
 import { SwitchListMapComponent } from '../../../../common/components/switch-list-map/switch-list-map.component';
-import { HeaderReverseComponent } from "../../../../common/components/header-reverse/header-reverse.component";
+import { HeaderReverseComponent } from '../../../../common/components/header-reverse/header-reverse.component';
 
 @Component({
   selector: 'app-map-saloon-page',

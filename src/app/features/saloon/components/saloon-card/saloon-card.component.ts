@@ -17,7 +17,7 @@ export class SaloonCardComponent implements OnInit {
 
   usersInSaloon$!: Observable<User[]>;
 
-  private _saloonApi = inject(SaloonApiService)
+  private _saloonApi = inject(SaloonApiService);
 
   ngOnInit(): void {
     this.usersInSaloon$ = this._saloonApi.getUsersInSaloon(this.saloon.id.toString());

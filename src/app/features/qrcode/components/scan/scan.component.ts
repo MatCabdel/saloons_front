@@ -27,7 +27,6 @@ export class ScanComponent {
   private _userStore = inject(UserStoreService);
   private _router = inject(Router);
   private _http = inject(HttpClient);
-  
 
   scannedUrl: string = '';
 
@@ -57,7 +56,7 @@ export class ScanComponent {
 
     // 1. Suivre la redirection pour obtenir l'URL finale
     this._http.get(this.scannedUrl!, { observe: 'response', responseType: 'text' }).subscribe({
-      next: (response) => {
+      next: response => {
         // L'URL finale est dans response.url
         const finalUrl = response.url || this.scannedUrl!;
         console.log('finalUrl:', finalUrl);
@@ -68,19 +67,19 @@ export class ScanComponent {
         console.log('userId:', userId, 'saloonId:', saloonId);
 
         if (!userId || !saloonId || isNaN(userId) || isNaN(saloonId)) {
-          alert('Impossible de récupérer l\'utilisateur ou le saloon.');
+          alert("Impossible de récupérer l'utilisateur ou le saloon.");
           return;
         }
 
         this._userService.connectUserToSaloon(userId, saloonId).subscribe({
           next: () => {
             this._router.navigate([`/mysaloon/${saloonId}`]);
-          }
+          },
         });
       },
       error: (err: Error) => {
         alert('Impossible de suivre le lien QR code.' + err.message);
-      }
+      },
     });
   }
   extractSaloonIdFromUrl(url: string): number {
