@@ -14,18 +14,22 @@
   }
   <app-header-reverse></app-header-reverse>
   <div class="profils-container">
-    @if (users$ | async; as users) {
-      <h1>{{ users.length }} visiteurs sont actuellement connecté dans le saloon</h1>
-    }
-    <div class="list-visitor">
-      @for (user of users$ | async; track user.id) {
-        <div class="visitor-card-container">
-          <app-visitor-card [user]="user"></app-visitor-card>
-        </div>
+    @if (saloon$ | async; as saloon) {
+      @if (users$ | async; as users) {
+        <h1>{{ users.length }} visiteurs sont actuellement connecté dans le saloon</h1>
       }
-    </div>
+      <div class="list-visitor">
+        @for (user of users$ | async; track user.id) {
+          <div class="visitor-card-container">
+            <app-visitor-card [user]="user" (cardClick)="goToVisitorProfil($event, saloon.id)"></app-visitor-card>
+          </div>
+        }
+      </div>
+    }
     <div class="btn-deconnexion">
-      <button class="btn-logout" type="button" (click)="disconnectUserFromSaloon()">Sortir du Saloon</button>
+      <button class="btn-logout" type="button" (click)="disconnectUserFromSaloon()">
+        Sortir du Saloon <app-countdown-timer></app-countdown-timer>
+      </button>
     </div>
   </div>
 </div>

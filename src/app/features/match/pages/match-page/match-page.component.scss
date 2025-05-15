@@ -1,0 +1,130 @@
+@keyframes slideFromRight {
+  from {
+    transform: translateX(120vw) rotate(15deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(15deg) translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideFromLeft {
+  from {
+    transform: translateX(-120vw) rotate(-12deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(-12deg) translateX(0);
+    opacity: 1;
+  }
+}
+
+.match-page-container {
+  background-color: #413443;
+  min-height: 100vh;
+  min-width: 100vw;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  h1 {
+    text-align: center;
+    color: white;
+    padding-top: 30px;
+  }
+
+  h2 {
+    text-align: center;
+    color: #ffc022;
+    margin-bottom: 40px;
+  }
+
+  .match-img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 220px;
+    margin-bottom: 30px;
+    padding: 0 20px;
+
+    img {
+      width: 160px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      position: absolute;
+      transition: transform 0.3s;
+    }
+
+    img:first-child {
+      left: 0;
+      z-index: 2;
+      transform: rotate(15deg) translateX(0);
+      border: 2px solid #ffc022;
+      background: white;
+      animation: slideFromRight 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+
+    img:last-child {
+      right: 0;
+      z-index: 1;
+      transform: rotate(-12deg) translateX(0);
+      border: 2px solid #fff;
+      background: white;
+      animation: slideFromLeft 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+  }
+
+  p {
+    color: white;
+    text-align: center;
+    font-size: 0.8em;
+    margin-top: 20px;
+    padding: 0 40px;
+  }
+
+  .btn-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 18px;
+    margin-top: 30px;
+
+    .btn-match {
+      width: 70%;
+      padding: 10px 0;
+      font-size: 1.1em;
+      border-radius: 37px;
+      border: none;
+      font-weight: 300;
+      cursor: pointer;
+      transition:
+        background 0.2s,
+        color 0.2s;
+      margin: 0 auto;
+      display: block;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .btn-match:first-child {
+      background: #ffc122;
+      color: #413443;
+      border-style: double;
+      border-width: 4px;
+    }
+
+    .btn-match:last-child {
+      background: #413443;
+      color: #fff;
+      border: 1px solid #ffc122;
+      border-style: double;
+      border-width: 2px;
+    }
+  }
+}

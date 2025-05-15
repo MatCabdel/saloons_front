@@ -10,11 +10,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SaloonApiService } from '../../services/saloon-api.service';
 import { Saloon } from '../../models/saloonModel';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
+import { CountdownTimerComponent } from '../../components/countdown-timer/countdown-timer.component';
 
 @Component({
   selector: 'app-my-saloon-page',
   standalone: true,
-  imports: [NavbarComponent, HeaderReverseComponent, VisitorCardComponent, CommonModule],
+  imports: [NavbarComponent, HeaderReverseComponent, VisitorCardComponent, CommonModule, CountdownTimerComponent],
   templateUrl: './my-saloon-page.component.html',
   styleUrl: './my-saloon-page.component.scss',
 })
@@ -37,6 +38,10 @@ export class MySaloonPageComponent {
 
   stopPropagation(event: KeyboardEvent): void {
     event.stopPropagation();
+  }
+
+  goToVisitorProfil(userId: number, saloonId: number): void {
+    this._router.navigate(['/profil-visitor', userId], { queryParams: { saloonId } });
   }
 
   disconnectUserFromSaloon(): void {

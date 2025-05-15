@@ -1,4 +1,4 @@
-<div class="visitor-card-container">
+<div class="visitor-card-container" tabindex="0" (click)="onCardClick()" (keydown.enter)="onCardClick()">
   <div class="img-card">
     <img [src]="user.imgUrl" [alt]="user.userName" />
     <div class="title-img">
