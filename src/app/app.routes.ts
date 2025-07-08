@@ -13,6 +13,7 @@ import { MySaloonPageComponent } from './features/saloon/pages/my-saloon-page/my
 import { MapSaloonPageComponent } from './features/saloon/pages/map-saloon-page/map-saloon-page.component';
 import { ProfilVisitorPageComponent } from './features/profil/pages/profil-visitor-page/profil-visitor-page.component';
 import { MatchPageComponent } from './features/match/pages/match-page/match-page.component';
+import { ConversationsPageComponent } from './features/conversation/pages/conversations-page/conversations-page.component';
 
 export const routes: Routes = [
   {
@@ -27,8 +28,9 @@ export const routes: Routes = [
   { path: 'dashboard', component: DashboardPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'scan', component: QrcodePageComponent, canActivate: [isLoggedInGuard] },
   { path: 'profil', component: ProfilPageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'chat', component: MessagesPageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'chat', component: ConversationsPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'mysaloon/:id', component: MySaloonPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'profil-visitor/:id', component: ProfilVisitorPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'match/:userId1/:userId2', component: MatchPageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'messages/:conversationId', component: MessagesPageComponent, canActivate: [isLoggedInGuard] },
 ];

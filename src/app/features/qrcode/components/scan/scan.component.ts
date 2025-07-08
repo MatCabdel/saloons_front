@@ -52,19 +52,12 @@ export class ScanComponent {
   }
 
   public openScannedUrl(): void {
-    console.log('scannedUrl:', this.scannedUrl);
-
-    // 1. Suivre la redirection pour obtenir l'URL finale
     this._http.get(this.scannedUrl!, { observe: 'response', responseType: 'text' }).subscribe({
       next: response => {
-        // L'URL finale est dans response.url
         const finalUrl = response.url || this.scannedUrl!;
-        console.log('finalUrl:', finalUrl);
 
         const saloonId = this.extractSaloonIdFromUrl(finalUrl);
         const userId = this._userStore.getUserId();
-
-        console.log('userId:', userId, 'saloonId:', saloonId);
 
         if (!userId || !saloonId || isNaN(userId) || isNaN(saloonId)) {
           alert("Impossible de récupérer l'utilisateur ou le saloon.");

@@ -1,10 +1,10 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthApiService } from '../../../services/auth-api.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-login-form',
@@ -13,12 +13,12 @@ import { UserStoreService } from 'src/app/features/user/store/user-store.service
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.scss',
 })
-export class LoginFormComponent implements OnDestroy {
+export class LoginFormComponent {
   private _formBuilder = inject(FormBuilder);
   private _authService = inject(AuthApiService);
   private _router = inject(Router);
-  private _destroy$ = new Subject<void>();
   private _userStore = inject(UserStoreService);
+  private _destroyRef = inject(DestroyRef);
 
   loginForm = this._formBuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -34,7 +34,7 @@ export class LoginFormComponent implements OnDestroy {
 
     this._authService
       .login$(email!, password!)
-      .pipe(takeUntil(this._destroy$))
+      .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe({
         next: userDTO => {
           this._userStore.setUserConnected(userDTO);
@@ -46,10 +46,5 @@ export class LoginFormComponent implements OnDestroy {
           }
         },
       });
-  }
-
-  ngOnDestroy(): void {
-    this._destroy$.next();
-    this._destroy$.complete();
   }
 }

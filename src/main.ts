@@ -14,12 +14,5 @@ LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm').subscribe({
 verifyEnvironment();
 bootstrapApplication(AppComponent, {
   ...appConfig,
-  providers: [
-    // On récupère tous les providers déjà définis dans appConfig
-    ...(appConfig.providers ?? []),
-
-    // Et on ajoute l'import du module NgxScannerQrcodeModule
-    importProvidersFrom(NgxScannerQrcodeModule),
-    provideAnimationsAsync(),
-  ],
+  providers: [...(appConfig.providers ?? []), importProvidersFrom(NgxScannerQrcodeModule), provideAnimationsAsync()],
 }).catch(err => console.error(err));

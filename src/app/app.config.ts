@@ -10,11 +10,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(
-      withInterceptorsFromDi(),
-      // injecte en plus ton interceptor fonctionnel jwtInterceptor
-      withInterceptors([jwtInterceptor])
-    ),
+    provideHttpClient(withInterceptorsFromDi(), withInterceptors([jwtInterceptor])),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,
