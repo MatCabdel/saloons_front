@@ -31,7 +31,7 @@ export class CountdownTimerComponent implements OnInit, OnDestroy {
 
   startCountdown(connectedAt: string): void {
     const start = new Date(connectedAt).getTime();
-    const end = start + 3 * 60 * 60 * 1000; 
+    const end = start + 3 * 60 * 60 * 1000;
 
     this._sub = interval(1000).subscribe(() => {
       const now = Date.now();

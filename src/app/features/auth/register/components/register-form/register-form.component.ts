@@ -6,7 +6,7 @@ import { strongPasswordValidator } from '../validator-password/password-strengh'
 import { checkEqualityValidator } from '../validator-password/equality-passwords';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../../user/services/user.service';
-import { FieldErrorComponent } from "../../../common/field-error/field-error.component";
+import { FieldErrorComponent } from '../../../common/field-error/field-error.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -22,7 +22,6 @@ export class RegisterFormComponent implements OnInit {
   private _route = inject(ActivatedRoute);
   private _userService = inject(UserService);
   private _destroyRef = inject(DestroyRef);
-
 
   registerForm = this._formBuilder.nonNullable.group(
     {
@@ -45,7 +44,6 @@ export class RegisterFormComponent implements OnInit {
     });
   }
 
-
   onSubmit(): void {
     if (this.registerForm.invalid) {
       return;
@@ -56,7 +54,6 @@ export class RegisterFormComponent implements OnInit {
     formData.append('lastname', formValue.lastname ?? '');
     formData.append('email', formValue.email ?? '');
     formData.append('password', formValue.password ?? '');
-
 
     this._userService
       .createUser(formData)

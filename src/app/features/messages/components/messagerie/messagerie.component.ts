@@ -13,23 +13,21 @@ import { UserService } from 'src/app/features/user/services/user.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './messagerie.component.html',
-  styleUrl: './messagerie.component.scss'
+  styleUrl: './messagerie.component.scss',
 })
 export class MessagerieComponent implements OnInit {
-
   conversationId!: number;
   messages: any[] = [];
   newMessage = '';
   myId!: number;
   myImgUrl?: string;
   participants: User[] = [];
-  
-  private _route = inject(ActivatedRoute)
-  private _conversationService = inject(ConversationService)
+
+  private _route = inject(ActivatedRoute);
+  private _conversationService = inject(ConversationService);
   private _webSocketService = inject(WebSocketService);
   private _userStore = inject(UserStoreService);
-  private _userService = inject(UserService);  
-
+  private _userService = inject(UserService);
 
   ngOnInit(): void {
     this.conversationId = +this._route.snapshot.paramMap.get('conversationId')!;
@@ -46,11 +44,11 @@ export class MessagerieComponent implements OnInit {
       this.loadMessages();
       this._webSocketService.connect(this.conversationId);
       this._webSocketService.getMessages().subscribe(msg => {
-        if (!this.messages.some(m =>
-          m.content === msg.content &&
-          m.sender === msg.sender &&
-          new Date(m.sentAt).getTime() === new Date(msg.sentAt).getTime()
-        )) {
+        if (
+          !this.messages.some(
+            m => m.content === msg.content && m.sender === msg.sender && new Date(m.sentAt).getTime() === new Date(msg.sentAt).getTime()
+          )
+        ) {
           if (!this.participants.find(p => p.id === msg.sender || p.id === msg.senderId)) {
             this._userService.getUserById(msg.sender || msg.senderId).subscribe(user => {
               this.participants.push(user);
@@ -83,12 +81,12 @@ export class MessagerieComponent implements OnInit {
 
   sendMessage(): void {
     const chatMessage = {
-      conversation: { id: this.conversationId }, 
+      conversation: { id: this.conversationId },
       sender: this.myId,
       senderName: this.participants.find(p => p.id === this.myId)?.userName ?? 'Moi',
       content: this.newMessage,
       sentAt: new Date(),
-      type: 'CHAT'
+      type: 'CHAT',
     };
     this._webSocketService.sendMessage(chatMessage);
     this.newMessage = '';
@@ -100,5 +98,4 @@ export class MessagerieComponent implements OnInit {
     }
     return this.participants.find(p => p.id === senderId)?.userName;
   }
-
 }

@@ -5,8 +5,6 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './switch-message-type.component.html',
-  styleUrl: './switch-message-type.component.scss'
+  styleUrl: './switch-message-type.component.scss',
 })
-export class SwitchMessageTypeComponent {
-
-}
+export class SwitchMessageTypeComponent {}

@@ -52,7 +52,6 @@ export class ScanComponent {
   }
 
   public openScannedUrl(): void {
-
     this._http.get(this.scannedUrl!, { observe: 'response', responseType: 'text' }).subscribe({
       next: response => {
         const finalUrl = response.url || this.scannedUrl!;

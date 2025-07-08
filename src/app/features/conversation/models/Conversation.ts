@@ -1,4 +1,4 @@
-import { User } from "../../user/models/user";
+import { User } from '../../user/models/user';
 
 export type LastMessage = {
   id: number;
@@ -10,8 +10,8 @@ export type LastMessage = {
 };
 
 export type Conversation = {
-    id: number;
-    participants: User[];
-    lastMessage: LastMessage;
-    lastMessageDate: string;
-  };
+  id: number;
+  participants: User[];
+  lastMessage: LastMessage;
+  lastMessageDate: string;
+};

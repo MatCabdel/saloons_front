@@ -7,20 +7,19 @@ import { UserDTO } from '../models/userDTO';
 })
 export class UserStoreService {
   private _userConnected$ = new BehaviorSubject<UserDTO>(
-      JSON.parse(localStorage.getItem('user') || 'null') || {
-        id: 0,
-        email: '',
-        password: '',
-        role: '',
-        token: '',
-        imgUrl: '',
-        description: '',
-        age: 0,
-      }
-    );
+    JSON.parse(localStorage.getItem('user') || 'null') || {
+      id: 0,
+      email: '',
+      password: '',
+      role: '',
+      token: '',
+      imgUrl: '',
+      description: '',
+      age: 0,
+    }
+  );
 
   token$ = new BehaviorSubject<string>('');
-
 
   getUserConnected$(): BehaviorSubject<UserDTO> {
     return this._userConnected$;

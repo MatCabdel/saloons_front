@@ -6,7 +6,7 @@ import { UserService } from 'src/app/features/user/services/user.service';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FileUploadComponent } from '../../../../common/components/file-upload/file-upload.component';
-import { FieldErrorComponent } from "../../common/field-error/field-error.component";
+import { FieldErrorComponent } from '../../common/field-error/field-error.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -27,7 +27,6 @@ export class RegisterProfilComponent implements OnInit {
   fileName = '';
   imageUrl: SafeUrl | null = null;
   submitted = false;
-
 
   private _fb = inject(FormBuilder);
   private _userService = inject(UserService);
@@ -87,8 +86,9 @@ export class RegisterProfilComponent implements OnInit {
       formData.append('image', this.file, this.fileName);
     }
 
-    this._userService.createUser(formData)
-    .pipe(takeUntilDestroyed(this._destroyRef))
-    .subscribe(() => alert('Inscription réussie !'));
+    this._userService
+      .createUser(formData)
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe(() => alert('Inscription réussie !'));
   }
 }

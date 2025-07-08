@@ -1,29 +1,29 @@
 <div class="error" *ngIf="control && control.errors && (control.dirty || control.touched || submitted)">
-    @if (control.errors['required'] && label === 'lastname') {
-        <div>Le nom est requis</div>
-      }
-      @if (control.errors['required'] && label === 'email') {
-        <div>L'email est requis</div>
-      }
-      @if (control.errors['email']) {
-        <div>L'email est invalide</div>
-      }
-      @if (control.errors['extension']) {
-        <div>L'email doit appartenir au domaine {{ control.errors['extension']?.expected }}</div>
-      }
-      @if (control.errors['required'] && label === 'password') {
-        <div>Mot de passe requis</div>
-      }
-      @if (control.errors['strongPassword']) {
-        <div>Le mot de passe doit contenir au moins une lettre majuscule et avoir une longueur minimale de 8 caractères.</div>
-      }
-      @if (control.errors['required'] && label === 'checkPassword') {
-        <div>Confirmation requise</div>
-      }
-      @if (control.errors['notEqual']) {
-        <div>Les mots de passe doivent être identiques</div>
-      }
-      @if (control.errors['required'] && label === 'username') {
-        <div>Pseudo requis</div>
-      }
-  </div>
+  @if (control.errors['required'] && label === 'lastname') {
+    <div>Le nom est requis</div>
+  }
+  @if (control.errors['required'] && label === 'email') {
+    <div>L'email est requis</div>
+  }
+  @if (control.errors['email']) {
+    <div>L'email est invalide</div>
+  }
+  @if (control.errors['extension']) {
+    <div>L'email doit appartenir au domaine {{ control.errors['extension']?.expected }}</div>
+  }
+  @if (control.errors['required'] && label === 'password') {
+    <div>Mot de passe requis</div>
+  }
+  @if (control.errors['strongPassword']) {
+    <div>Le mot de passe doit contenir au moins une lettre majuscule et avoir une longueur minimale de 8 caractères.</div>
+  }
+  @if (control.errors['required'] && label === 'checkPassword') {
+    <div>Confirmation requise</div>
+  }
+  @if (control.errors['notEqual']) {
+    <div>Les mots de passe doivent être identiques</div>
+  }
+  @if (control.errors['required'] && label === 'username') {
+    <div>Pseudo requis</div>
+  }
+</div>

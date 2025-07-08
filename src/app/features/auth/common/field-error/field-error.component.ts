@@ -7,12 +7,10 @@ import { AbstractControl } from '@angular/forms';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './field-error.component.html',
-  styleUrl: './field-error.component.scss'
+  styleUrl: './field-error.component.scss',
 })
 export class FieldErrorComponent {
-
   @Input() control!: AbstractControl | null;
   @Input() submitted = false;
-  @Input() label = ''; 
-
+  @Input() label = '';
 }

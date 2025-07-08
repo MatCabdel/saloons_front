@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { SwitchMessageTypeComponent } from "../switch-message-type/switch-message-type.component";
+import { SwitchMessageTypeComponent } from '../switch-message-type/switch-message-type.component';
 import { ConversationService } from '../../services/conversation.service';
 import { Router } from '@angular/router';
 import { User } from 'src/app/features/user/models/user';
@@ -12,24 +12,21 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [SwitchMessageTypeComponent, CommonModule],
   templateUrl: './list-conversation.component.html',
-  styleUrl: './list-conversation.component.scss'
+  styleUrl: './list-conversation.component.scss',
 })
 export class ListConversationComponent implements OnInit {
-
   conversations: Conversation[] = [];
 
-  private _conversationService = inject(ConversationService) 
-  private _router = inject(Router)
+  private _conversationService = inject(ConversationService);
+  private _router = inject(Router);
   private _userStore = inject(UserStoreService);
 
   myId = this._userStore.getUserId();
 
   ngOnInit(): void {
     this._conversationService.getUserConversations().subscribe(data => {
-      this.conversations = Array.isArray(data.payload)
-      ? data.payload.filter(conv => conv && conv.id !== undefined)
-      : [];
-  });
+      this.conversations = Array.isArray(data.payload) ? data.payload.filter(conv => conv && conv.id !== undefined) : [];
+    });
   }
 
   openConversation(conversationId: number): void {
@@ -39,5 +36,4 @@ export class ListConversationComponent implements OnInit {
   otherParticipant(conv: Conversation): User | undefined {
     return conv.participants.find(p => p.id !== this.myId);
   }
-
 }
