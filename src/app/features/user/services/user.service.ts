@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, tap } from 'rxjs';
 import { User } from '../models/user';
 import { environment } from 'src/environments/environment.development';
 import { UserDTO } from '../models/userDTO';
@@ -21,7 +21,7 @@ export class UserService {
 
   createUser(registerFormValues: FormData): Observable<UserDTO> {
     return this._http.post<UserDTO>(`${this._BASE_URL_API}/auth/register`, registerFormValues).pipe(
-      map((data: UserDTO) => {
+      tap((data: UserDTO) => {
         this._router.navigate(['/login']);
         return data;
       })
@@ -42,7 +42,6 @@ export class UserService {
   }
 
   updateUserImage(file: File): Observable<UserDTO | void> {
-    // sortie rapide si pas de fichier (plus d'else après le return)
     if (!file) {
       return of();
     }

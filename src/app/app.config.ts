@@ -12,7 +12,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(
       withInterceptorsFromDi(),
-      // injecte en plus ton interceptor fonctionnel jwtInterceptor
       withInterceptors([jwtInterceptor])
     ),
     {

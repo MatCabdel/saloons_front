@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { strongPasswordValidator } from '../components/validator-password/password-strengh';
 import { checkEqualityValidator } from '../components/validator-password/equality-passwords';
@@ -6,11 +6,13 @@ import { UserService } from 'src/app/features/user/services/user.service';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FileUploadComponent } from '../../../../common/components/file-upload/file-upload.component';
+import { FieldErrorComponent } from "../../common/field-error/field-error.component";
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-register-profil',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, FileUploadComponent],
+  imports: [ReactiveFormsModule, CommonModule, FileUploadComponent, FieldErrorComponent],
   templateUrl: './register-profil.component.html',
   styleUrl: './register-profil.component.scss',
 })
@@ -24,10 +26,13 @@ export class RegisterProfilComponent implements OnInit {
   file: File | null = null;
   fileName = '';
   imageUrl: SafeUrl | null = null;
+  submitted = false;
+
 
   private _fb = inject(FormBuilder);
   private _userService = inject(UserService);
   private _sanitizer = inject(DomSanitizer);
+  private _destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
     this.formGroup = this._fb.group({
@@ -59,14 +64,14 @@ export class RegisterProfilComponent implements OnInit {
   receiveImage(event: { file: File; fileName: string }): void {
     this.file = event.file;
     this.fileName = event.fileName;
-    // Aperçu :
+
     this.imageUrl = this._sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(event.file));
-    // Injecte le File dans le FormControl pour lever la validation
+
     this.formGroup.get('profile.imgUrl')!.setValue(event.file);
   }
 
-  /** Envoi final : construit un FormData et appelle le service */
   onFinish(): void {
+    this.submitted = true;
     if (this.formGroup.invalid) {
       this.formGroup.markAllAsTouched();
       return;
@@ -82,10 +87,8 @@ export class RegisterProfilComponent implements OnInit {
       formData.append('image', this.file, this.fileName);
     }
 
-    // 3) Appel au service
-    this._userService.createUser(formData).subscribe({
-      next: () => alert('Inscription réussie !'),
-      error: err => console.error("Erreur à l'inscription :", err),
-    });
+    this._userService.createUser(formData)
+    .pipe(takeUntilDestroyed(this._destroyRef))
+    .subscribe(() => alert('Inscription réussie !'));
   }
 }

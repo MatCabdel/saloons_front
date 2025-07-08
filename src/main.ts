@@ -15,10 +15,7 @@ verifyEnvironment();
 bootstrapApplication(AppComponent, {
   ...appConfig,
   providers: [
-    // On récupère tous les providers déjà définis dans appConfig
     ...(appConfig.providers ?? []),
-
-    // Et on ajoute l'import du module NgxScannerQrcodeModule
     importProvidersFrom(NgxScannerQrcodeModule),
     provideAnimationsAsync(),
   ],

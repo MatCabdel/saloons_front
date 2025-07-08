@@ -1,0 +1,17 @@
+<div class="message-list">
+    @for (msg of messages; track msg.id) {
+      <div class="message-row" [ngClass]="{'me': msg.sender === myId || msg.senderId === myId}">
+        @if (!(msg.sender === myId || msg.senderId === myId)) {
+          <img [src]="getUserImg(msg.sender ?? msg.senderId)" alt="avatar" />
+        }
+        <div class="bubble">
+          <span class="name">{{ getUserName(msg.sender ?? msg.senderId) }}</span>
+          <span class="content">{{ msg.content }}</span>
+        </div>
+      </div>
+    }
+  </div>
+  <div class="send-box">
+    <input [(ngModel)]="newMessage" placeholder="Votre message..." />
+    <button type="button" (click)="sendMessage()" [disabled]="!newMessage.trim()">Envoyer</button>
+  </div>

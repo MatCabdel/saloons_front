@@ -4,20 +4,66 @@
   min-width: 100vw;
   margin: 0 auto;
 
-  h1 {
-    text-align: center;
-    color: black;
-    padding-top: 150px;
-  }
+  .header-messages {
+    height: 20vh;
+    background-color: #413443;
 
-  h2 {
-    text-align: center;
-    color: black;
-    padding-top: 30px;
-  }
+    .nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 20px;
 
-  p {
-    text-align: center;
-    color: black;
+      button {
+        background-color: rgba(255, 255, 255, 0.524);
+        height: 30px;
+        width: 30px;
+        border-radius: 8px;
+        border: none;
+        color: black;
+        font-size: 1.2em;
+        cursor: pointer;
+        padding: 5px;
+
+        &:hover {
+          color: #ffffff;
+        }
+        &:active {
+          color: #ffffff;
+        }
+      }
+      
+    }
+
+    .btn-burger {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 40px;
+      height: 40px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      gap: 6px;
+    
+      span {
+        display: block;
+        width: 90%;
+        height: 2px;
+        background: #413443;
+        border-radius: 2px;
+        transition: all 0.3s;
+      }
+    }
+
+    h1 {
+      text-align: left;
+      color: white;
+      padding-top: 35px;
+      padding-left: 20px;
+      font-size: 1.2em;
+    }
   }
 }

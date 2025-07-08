@@ -5,6 +5,8 @@
     <img [src]="action.isStart ? 'assets/icons/cameraOff.svg' : 'assets/icons/camera.svg'" alt="camera" />
   </button>
 </div>
-<div class="scanned-link" *ngIf="scannedUrl">
-  <button type="button" (click)="openScannedUrl()">Entrez dans le saloon</button>
-</div>
+@if (scannedUrl) {
+  <div class="scanned-link">
+    <button type="button" (click)="openScannedUrl()">Entrez dans le saloon</button>
+  </div>
+}

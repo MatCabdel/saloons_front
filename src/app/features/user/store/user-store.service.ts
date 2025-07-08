@@ -6,14 +6,8 @@ import { UserDTO } from '../models/userDTO';
   providedIn: 'root',
 })
 export class UserStoreService {
-  private _userConnected$: BehaviorSubject<UserDTO>;
-
-  token$: BehaviorSubject<string>;
-
-  constructor() {
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
-    this._userConnected$ = new BehaviorSubject<UserDTO>(
-      user || {
+  private _userConnected$ = new BehaviorSubject<UserDTO>(
+      JSON.parse(localStorage.getItem('user') || 'null') || {
         id: 0,
         email: '',
         password: '',
@@ -25,8 +19,8 @@ export class UserStoreService {
       }
     );
 
-    this.token$ = new BehaviorSubject<string>('');
-  }
+  token$ = new BehaviorSubject<string>('');
+
 
   getUserConnected$(): BehaviorSubject<UserDTO> {
     return this._userConnected$;
