@@ -13,4 +13,8 @@ export class MatchService {
   createLike(userId1: number, userId2: number): Observable<{ message: string }> {
     return this._http.post<{ message: string }>(`${this._BASE_URL_API}/match/${userId1}/like/${userId2}`, {});
   }
+
+  getMatches(): Observable<any[]> {
+    return this._http.get<any[]>(`${this._BASE_URL_API}/match/matches`);
+  }
 }

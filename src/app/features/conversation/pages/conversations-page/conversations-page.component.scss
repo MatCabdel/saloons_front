@@ -1,16 +1,17 @@
 .messages-container {
-  background-color: #ffffff;
-  min-height: 100vh;
-  min-width: 100vw;
-  margin: 0 auto;
+    background-color: #ffffff;
+    min-width: 100vw;
+    margin: 0 auto;
+    height: 70vh;
 
   .header-messages {
+    position: relative;
     height: 20vh;
     background-color: #413443;
 
     .nav-header {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
       padding: 8px 20px;
 
@@ -60,7 +61,7 @@
     h1 {
       text-align: left;
       color: white;
-      padding-top: 35px;
+      padding-top: 12px;
       padding-left: 20px;
       font-size: 1.2em;
     }

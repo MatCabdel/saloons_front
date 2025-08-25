@@ -1,9 +1,9 @@
 import { User } from '../../user/models/user';
 
-export type LastMessage = {
+export type Message = {
   id: number;
   conversationId: number;
-  senderId: number;
+  sender: number;
   senderName: string;
   content: string;
   sentAt: string;
@@ -12,6 +12,6 @@ export type LastMessage = {
 export type Conversation = {
   id: number;
   participants: User[];
-  lastMessage: LastMessage;
+  lastMessage: Message;
   lastMessageDate: string;
 };

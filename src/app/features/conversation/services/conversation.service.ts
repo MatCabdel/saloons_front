@@ -24,4 +24,8 @@ export class ConversationService {
   getMessages(conversationId: number): Observable<any[]> {
     return this._http.get<any[]>(`${this._apiUrl}/${conversationId}/messages`);
   }
+
+  createConversation(participantId: number): Observable<Conversation> {
+    return this._http.post<Conversation>(`${this._apiUrl}`, participantId );
+  }
 }

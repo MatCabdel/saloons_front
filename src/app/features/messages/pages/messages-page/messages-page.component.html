@@ -1,7 +1,7 @@
 <div class="messages-container">
   <div class="header-messages">
     <div class="nav-header">
-      <button type="button" class="btn-return"><</button>
+      <button type="button" class="btn-return" (click)="goBack()"><</button>
       <app-header></app-header>
       <button type="button" class="btn-burger">
         <span></span>
@@ -9,7 +9,23 @@
         <span></span>
       </button>
     </div>
-    <h1>New winks</h1>
+    <div class="onglets">
+    <h1>Messages</h1>
+    @if (userTarget) {
+      <div class="user-header">
+        <img [src]="userTarget.imgUrl" alt="avatar" class="avatar-header" />
+        <span class="user-name">{{ userTarget.userName }}</span>
+      </div>
+    }
+    <h1 class="clickable-header" 
+    tabindex="0" 
+    role="button"
+    (click)="goToUserProfil()"
+    (keyup.enter)="goToUserProfil()"
+    (keyup.space)="goToUserProfil()">
+  voir profil
+</h1>
   </div>
-  <app-messagerie></app-messagerie>>
+  </div>
+  <app-messagerie></app-messagerie>
 </div>

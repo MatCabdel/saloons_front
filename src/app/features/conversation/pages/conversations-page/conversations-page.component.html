@@ -1,16 +1,17 @@
 <div class="messages-container">
   <div class="header-messages">
     <div class="nav-header">
-      <button type="button" class="btn-return"><</button>
       <app-header></app-header>
-      <button type="button" class="btn-burger">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
     </div>
     <h1>New winks</h1>
+    <app-list-match [excludeUserIds]="conversationUserIds"></app-list-match>
   </div>
-  <app-list-conversation></app-list-conversation>
+  <app-list-conversation (conversationUserIdsChange)="updateConversationUserIds($event)"></app-list-conversation>
+  @if (monSaloonId !== undefined) {
+    <app-enter-saloon [saloonId]="monSaloonId"></app-enter-saloon>
+  }
+  <app-navbar></app-navbar>
 </div>
-<app-navbar></app-navbar>
+
+
+

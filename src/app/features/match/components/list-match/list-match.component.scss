@@ -1,0 +1,48 @@
+.match-list {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 80%;
+    transform: none;
+    display: flex;
+    gap: 16px;
+    background: transparent;
+    z-index: 10;
+    padding: 0 12px;
+    overflow-x: auto;
+  }
+
+  .match-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 6px solid rgba(255, 255, 255, 0.672);
+  }
+  .username {
+    margin-top: 6px;
+    font-size: 0.95em;
+    color: #6c47b6;
+    text-align: center;
+    max-width: 80px;
+    word-break: break-word;
+  }
+
+  .match-item {
+    cursor: pointer;
+    outline: none;
+    
+    &:focus {
+      outline: 2px solid #007bff;
+      outline-offset: 2px;
+    }
+    
+    &:hover {
+      opacity: 0.9;
+    }
+  }

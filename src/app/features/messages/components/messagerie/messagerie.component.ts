@@ -7,6 +7,7 @@ import { WebSocketService } from 'src/app/common/services/web-socket.service';
 import { User } from 'src/app/features/user/models/user';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { UserService } from 'src/app/features/user/services/user.service';
+import { Message } from 'src/app/features/conversation/models/Conversation';
 
 @Component({
   selector: 'app-messagerie',
@@ -17,7 +18,7 @@ import { UserService } from 'src/app/features/user/services/user.service';
 })
 export class MessagerieComponent implements OnInit {
   conversationId!: number;
-  messages: any[] = [];
+  messages: Message[] = [];
   newMessage = '';
   myId!: number;
   myImgUrl?: string;
@@ -31,29 +32,34 @@ export class MessagerieComponent implements OnInit {
 
   ngOnInit(): void {
     this.conversationId = +this._route.snapshot.paramMap.get('conversationId')!;
-    this.myId = this._userStore.getUserId();
-
+    this.myId = Number(this._userStore.getUserId());
+  
     this._conversationService.getConversation(this.conversationId).subscribe(conv => {
-      this.participants = conv.participants;
+      this.participants = conv.participants ?? [];
       const me = this.participants.find(p => p.id === this.myId);
       if (me && Array.isArray(me.imgUrl) && me.imgUrl.length > 0) {
         this.myImgUrl = me.imgUrl[0].url as string;
+      } else if (me && typeof me.imgUrl === 'string') {
+        this.myImgUrl = me.imgUrl;
       } else {
         this.myImgUrl = undefined;
       }
-      this.loadMessages();
+  
+      this._conversationService.getMessages(this.conversationId).subscribe(data => {
+        this.messages = data.map(msg => ({
+          ...msg,
+          sender: Number(msg.sender ?? msg.senderId),
+        }));
+      });
+  
       this._webSocketService.connect(this.conversationId);
       this._webSocketService.getMessages().subscribe(msg => {
+        msg.sender = Number(msg.sender);
         if (
           !this.messages.some(
             m => m.content === msg.content && m.sender === msg.sender && new Date(m.sentAt).getTime() === new Date(msg.sentAt).getTime()
           )
         ) {
-          if (!this.participants.find(p => p.id === msg.sender || p.id === msg.senderId)) {
-            this._userService.getUserById(msg.sender || msg.senderId).subscribe(user => {
-              this.participants.push(user);
-            });
-          }
           this.messages.push(msg);
         }
       });
@@ -62,7 +68,10 @@ export class MessagerieComponent implements OnInit {
 
   loadMessages(): void {
     this._conversationService.getMessages(this.conversationId).subscribe(data => {
-      this.messages = data;
+      this.messages = data.map(msg => ({
+        ...msg,
+        sender: Number(msg.sender)
+      }));
     });
   }
 

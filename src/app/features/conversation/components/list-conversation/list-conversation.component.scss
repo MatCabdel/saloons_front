@@ -1,62 +1,61 @@
 .messagerie-container {
-  height: 70vh;
   background: #faf9f6;
-}
-
-.conversation-list {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  height: calc(100% - 50px);
   padding: 20px 0;
-}
 
-.conversation-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  width: 100%;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(120, 80, 200, 0.04);
-  padding: 12px 20px;
-  cursor: pointer;
-  transition: background 0.2s;
-  border: 1px solid #ececec;
-  &:hover {
-    background: #f0e9ff;
+  .conversation-list {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px 0;
+
+    .conversation-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(120, 80, 200, 0.04);
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: 1px solid #ececec;
+      &:hover {
+        background: #f0e9ff;
+      }
+    }
+
+    .conversation-card img {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #e0d7ff;
+      background: #fff;
+    }
+
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .card-content .name {
+      font-weight: 600;
+      color: #6c47b6;
+      font-size: 1.1em;
+    }
+
+    .card-content .last-message {
+      color: #888;
+      font-size: 0.95em;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 300px;
+    }
   }
-}
-
-.conversation-card img {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #e0d7ff;
-  background: #fff;
-}
-
-.card-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.card-content .name {
-  font-weight: 600;
-  color: #6c47b6;
-  font-size: 1.1em;
-}
-
-.card-content .last-message {
-  color: #888;
-  font-size: 0.95em;
-  margin-top: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 300px;
 }

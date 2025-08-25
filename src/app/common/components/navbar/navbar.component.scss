@@ -1,10 +1,13 @@
 .nav-container {
-  width: 100%;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
   height: 70px;
   background-color: #ffffff;
-  position: fixed;
   z-index: 99990;
-  bottom: 10px;
+  
 
   &::before {
     content: '';

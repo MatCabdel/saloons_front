@@ -1,16 +1,14 @@
 <div class="messagerie-container">
   <app-switch-message-type></app-switch-message-type>
   <div class="conversation-list">
-    @for (conv of conversations; track conv.id) {
-      @if (conv.lastMessage && conv.participants) {
-        <div class="conversation-card" (click)="openConversation(conv.id)" (keydown.enter)="openConversation(conv.id)" tabindex="0">
-          <img [src]="otherParticipant(conv)?.imgUrl" alt="avatar" />
-          <div class="card-content">
-            <span class="name">{{ otherParticipant(conv)?.userName }}</span>
-            <span class="last-message">{{ conv.lastMessage.content }}</span>
-          </div>
-        </div>
-      }
-    }
+    @for (conv of conversations; track conv.id) { @if (conv.lastMessage && conv.participants) {
+    <div class="conversation-card" (click)="openConversation(conv.id)" (keydown.enter)="openConversation(conv.id)" tabindex="0">
+      <img [src]="otherParticipant(conv)?.imgUrl" alt="avatar" />
+      <div class="card-content">
+        <span class="name">{{ otherParticipant(conv)?.userName }}</span>
+        <span class="last-message">{{ conv.lastMessage.content }}</span>
+      </div>
+    </div>
+    } }
   </div>
 </div>
