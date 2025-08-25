@@ -1,23 +1,23 @@
 <div class="message-list">
-    @for (msg of messages; track $index) {
-        <div class="message-row" [ngClass]="{ me: msg.sender === myId, other: msg.sender !== myId }">
-            @if (msg.sender !== myId) {
-              <img [src]="getUserImg(msg.sender)" alt="avatar" />
-            }
-            <div class="bubble">
-                <span class="name">
-                    @if (msg.sender === myId) {
-                      Moi
-                    } @else {
-                      {{ getUserName(msg.sender) }}
-                    }
-                  </span>
-              <span class="content">{{ msg.content }}</span>
-            </div>
-          </div>
-    }
-  </div>
-  <div class="send-box">
-    <input [(ngModel)]="newMessage" placeholder="Ecrire un message..." />
-    <button type="button" (click)="sendMessage()" [disabled]="!newMessage.trim()">Envoyer</button>
-  </div>
+  @for (msg of messages; track $index) {
+    <div class="message-row" [ngClass]="{ me: msg.sender === myId, other: msg.sender !== myId }">
+      @if (msg.sender !== myId) {
+        <img [src]="getUserImg(msg.sender)" alt="avatar" />
+      }
+      <div class="bubble">
+        <span class="name">
+          @if (msg.sender === myId) {
+            Moi
+          } @else {
+            {{ getUserName(msg.sender) }}
+          }
+        </span>
+        <span class="content">{{ msg.content }}</span>
+      </div>
+    </div>
+  }
+</div>
+<div class="send-box">
+  <input [(ngModel)]="newMessage" placeholder="Ecrire un message..." />
+  <button type="button" (click)="sendMessage()" [disabled]="!newMessage.trim()">Envoyer</button>
+</div>

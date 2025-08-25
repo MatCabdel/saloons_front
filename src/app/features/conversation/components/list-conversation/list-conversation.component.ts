@@ -6,7 +6,7 @@ import { User } from 'src/app/features/user/models/user';
 import { Conversation } from '../../models/Conversation';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from "../../../../common/components/navbar/navbar.component";
+import { NavbarComponent } from '../../../../common/components/navbar/navbar.component';
 
 @Component({
   selector: 'app-list-conversation',
@@ -28,7 +28,7 @@ export class ListConversationComponent implements OnInit {
   ngOnInit(): void {
     this._conversationService.getUserConversations().subscribe(data => {
       this.conversations = Array.isArray(data.payload) ? data.payload.filter(conv => conv && conv.id !== undefined) : [];
-       const ids = this.conversations
+      const ids = this.conversations
         .flatMap(conv => conv.participants)
         .filter(p => p.id !== this.myId)
         .map(p => p.id);

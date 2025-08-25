@@ -3,7 +3,7 @@ import { NavbarComponent } from '../../../../common/components/navbar/navbar.com
 import { HeaderComponent } from '../../../../common/components/header/header.component';
 import { MessagerieComponent } from '../../components/messagerie/messagerie.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ListMatchComponent } from "../../../match/components/list-match/list-match.component";
+import { ListMatchComponent } from '../../../match/components/list-match/list-match.component';
 import { ConversationService } from 'src/app/features/conversation/services/conversation.service';
 import { User } from 'src/app/features/user/models/user';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
@@ -29,8 +29,7 @@ export class MessagesPageComponent implements OnInit {
   ngOnInit(): void {
     const conversationId = Number(this._route.snapshot.paramMap.get('conversationId'));
     this._conversationService.getConversation(conversationId).subscribe(conv => {
-     
-      const myId = this._userStore.getUserId()
+      const myId = this._userStore.getUserId();
       this.userTarget = conv.participants.find((u: User) => u.id !== myId);
     });
   }
@@ -40,6 +39,4 @@ export class MessagesPageComponent implements OnInit {
       this._router.navigate(['/profil-visitor', this.userTarget.id]);
     }
   }
-
-
 }

@@ -74,17 +74,17 @@
   }
 }
 .send-box {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #fff;
-    padding: 12px 20px 12px 20px;
-    border-top: 1px solid #eee;
-    display: flex;
-    align-items: center;
-    z-index: 10;
-   
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  padding: 12px 20px 12px 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+
   input {
     flex: 1;
     padding: 8px;
@@ -98,4 +98,3 @@
     color: white;
   }
 }
-

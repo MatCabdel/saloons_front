@@ -26,6 +26,6 @@ export class ConversationService {
   }
 
   createConversation(participantId: number): Observable<Conversation> {
-    return this._http.post<Conversation>(`${this._apiUrl}`, participantId );
+    return this._http.post<Conversation>(`${this._apiUrl}`, participantId);
   }
 }

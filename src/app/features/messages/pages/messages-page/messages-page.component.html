@@ -10,22 +10,23 @@
       </button>
     </div>
     <div class="onglets">
-    <h1>Messages</h1>
-    @if (userTarget) {
-      <div class="user-header">
-        <img [src]="userTarget.imgUrl" alt="avatar" class="avatar-header" />
-        <span class="user-name">{{ userTarget.userName }}</span>
-      </div>
-    }
-    <h1 class="clickable-header" 
-    tabindex="0" 
-    role="button"
-    (click)="goToUserProfil()"
-    (keyup.enter)="goToUserProfil()"
-    (keyup.space)="goToUserProfil()">
-  voir profil
-</h1>
-  </div>
+      <h1>Messages</h1>
+      @if (userTarget) {
+        <div class="user-header">
+          <img [src]="userTarget.imgUrl" alt="avatar" class="avatar-header" />
+          <span class="user-name">{{ userTarget.userName }}</span>
+        </div>
+      }
+      <h1
+        class="clickable-header"
+        tabindex="0"
+        role="button"
+        (click)="goToUserProfil()"
+        (keyup.enter)="goToUserProfil()"
+        (keyup.space)="goToUserProfil()">
+        voir profil
+      </h1>
+    </div>
   </div>
   <app-messagerie></app-messagerie>
 </div>

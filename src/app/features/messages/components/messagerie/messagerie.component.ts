@@ -33,7 +33,7 @@ export class MessagerieComponent implements OnInit {
   ngOnInit(): void {
     this.conversationId = +this._route.snapshot.paramMap.get('conversationId')!;
     this.myId = Number(this._userStore.getUserId());
-  
+
     this._conversationService.getConversation(this.conversationId).subscribe(conv => {
       this.participants = conv.participants ?? [];
       const me = this.participants.find(p => p.id === this.myId);
@@ -44,14 +44,14 @@ export class MessagerieComponent implements OnInit {
       } else {
         this.myImgUrl = undefined;
       }
-  
+
       this._conversationService.getMessages(this.conversationId).subscribe(data => {
         this.messages = data.map(msg => ({
           ...msg,
           sender: Number(msg.sender ?? msg.senderId),
         }));
       });
-  
+
       this._webSocketService.connect(this.conversationId);
       this._webSocketService.getMessages().subscribe(msg => {
         msg.sender = Number(msg.sender);
@@ -70,7 +70,7 @@ export class MessagerieComponent implements OnInit {
     this._conversationService.getMessages(this.conversationId).subscribe(data => {
       this.messages = data.map(msg => ({
         ...msg,
-        sender: Number(msg.sender)
+        sender: Number(msg.sender),
       }));
     });
   }

@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [],
   templateUrl: './enter-saloon.component.html',
-  styleUrl: './enter-saloon.component.scss'
+  styleUrl: './enter-saloon.component.scss',
 })
 export class EnterSaloonComponent {
   @Input() saloonId!: number;

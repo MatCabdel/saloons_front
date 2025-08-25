@@ -79,24 +79,24 @@
       display: flex;
       justify-content: space-between;
 
-    h1 {
-      color: white;
-      padding: 35px 20px 0px 20px;
-      font-size: 1em;
+      h1 {
+        color: white;
+        padding: 35px 20px 0px 20px;
+        font-size: 1em;
+      }
     }
-  }
   }
 }
 
 .clickable-header {
   cursor: pointer;
   outline: none;
-  
+
   &:focus {
     outline: 2px solid #007bff;
     outline-offset: 2px;
   }
-  
+
   &:hover {
     opacity: 0.8;
   }
