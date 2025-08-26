@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { strongPasswordValidator } from '../components/validator-password/password-strengh';
 import { checkEqualityValidator } from '../components/validator-password/equality-passwords';
-import { UserService } from 'src/app/features/user/services/user.service';
+import { UserService } from '../../../user/services/user.service';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FileUploadComponent } from '../../../../common/components/file-upload/file-upload.component';
