@@ -1,0 +1,163 @@
+name: CI Pipeline for Angular
+
+on:
+  push:
+    branches-ignore:
+      - development
+      - staging
+      - production
+
+  pull_request:
+    branches:
+      - development
+      - staging
+      - production
+
+jobs:
+  lint-test:
+    name: 🧪 Lint + Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            ./node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node
+
+      - name: Use npm mirror
+        run: npm config set registry https://registry.npmmirror.com
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Run unit tests
+        run: npm run test
+
+  build:
+    name: 🏗 Build
+    runs-on: ubuntu-latest
+    needs: lint-test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            ./node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node
+
+      - name: Use npm mirror
+        run: npm config set registry https://registry.npmmirror.com
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Recreate environment.secret.ts
+        run: |
+          echo "export const environmentSecret = { apiMapKey: '${{ secrets.MAP_API_KEY }}', };" > src/environments/environment.secret.ts
+
+      - name: Build Angular app
+        run: |
+          if [ "${{ github.base_ref }}" == "production" ]; then
+            npx ng build --configuration=production
+          elif [ "${{ github.base_ref }}" == "staging" ]; then
+            npx ng build --configuration=staging
+          else
+            npx ng build
+          fi
+
+  e2e-tests:
+    name: 🚀 E2E Tests
+    runs-on: ubuntu-latest
+    needs: lint-test
+    if: github.event_name == 'pull_request' && (github.base_ref == 'staging' || github.base_ref == 'production')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            ./node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node
+
+      - name: Use npm mirror
+        run: npm config set registry https://registry.npmmirror.com
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Angular app for E2E
+        run: |
+          if [ "${{ github.base_ref }}" == "production" ]; then
+            npx ng build --configuration=production
+          else
+            npx ng build --configuration=staging
+          fi
+
+      - name: Install Cypress dependencies
+        run: npx cypress install
+
+      - name: Run E2E tests
+        run: |
+          npx serve -s dist/frontend/browser -l 4200 &
+          SERVER_PID=$!
+          
+          for i in {1..30}; do
+            if curl -s http://localhost:4200 > /dev/null 2>&1; then
+              echo "✅ Server is ready!"
+              break
+            fi
+            echo "Waiting for server... ($i/30)"
+            sleep 2
+          done
+          
+          if ! curl -s http://localhost:4200 > /dev/null 2>&1; then
+            echo "❌ Server failed to start"
+            kill $SERVER_PID 2>/dev/null || true
+            exit 1
+          fi
+          
+          npx cypress run --config baseUrl=http://localhost:4200
+          TEST_EXIT_CODE=$?
+          
+          kill $SERVER_PID 2>/dev/null || true
+          
+          exit $TEST_EXIT_CODE
