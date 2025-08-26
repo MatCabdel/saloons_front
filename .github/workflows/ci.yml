@@ -37,6 +37,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node
 
+      - name: Use npm mirror
+        run: npm config set registry https://registry.npmmirror.com
+
       - name: Install dependencies
         run: npm ci
 
@@ -69,6 +72,9 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node
+
+      - name: Use npm mirror
+        run: npm config set registry https://registry.npmmirror.com
 
       - name: Install dependencies
         run: npm ci
@@ -111,6 +117,9 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node
+
+      - name: Use npm mirror
+        run: npm config set registry https://registry.npmmirror.com
 
       - name: Install dependencies
         run: npm ci
