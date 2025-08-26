@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of, tap } from 'rxjs';
 import { User } from '../models/user';
-import { environment } from 'src/environments/environment.development';
+import { environment } from '../../../../environments/environment.development';
 import { UserDTO } from '../models/userDTO';
 import { UserStoreService } from '../store/user-store.service';
 
