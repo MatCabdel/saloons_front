@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Saloon } from '../models/saloonModel';
-import { environment } from 'src/environments/environment.development';
+import { environment } from '../../../../environments/environment.development';
 import { Observable } from 'rxjs';
 import { User } from '../../user/models/user';
 
