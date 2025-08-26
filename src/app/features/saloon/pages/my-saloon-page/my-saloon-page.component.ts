@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { NavbarComponent } from '../../../../common/components/navbar/navbar.component';
 import { VisitorCardComponent } from '../../components/visitor-card/visitor-card.component';
-import { Observable, switchMap } from 'rxjs';
+import { map, Observable, switchMap } from 'rxjs';
 import { User } from 'src/app/features/user/models/user';
 import { CommonModule } from '@angular/common';
 import { UserService } from 'src/app/features/user/services/user.service';
@@ -26,7 +26,10 @@ export class MySaloonPageComponent {
   private _router = inject(Router);
   private _userStore = inject(UserStoreService);
 
-  users$: Observable<User[]> = this._route.paramMap.pipe(switchMap(params => this._saloonApi.getUsersInSaloon(params.get('id')!)));
+  users$: Observable<User[]> = this._route.paramMap.pipe(
+    switchMap(params => this._saloonApi.getUsersInSaloon(params.get('id')!)),
+    map(users => users.filter(user => user.id !== Number(this._userStore.getUserId())))
+  );
 
   saloon$: Observable<Saloon> = this._route.paramMap.pipe(switchMap(params => this._saloonApi.getSaloonById(params.get('id')!)));
 
