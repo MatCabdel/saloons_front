@@ -1,15 +1,15 @@
 <div class="my-profil-container">
-  @if (user) {
+  @if (data$ | async; as data) {
     <div class="img-container">
       <button class="top-right-button" type="button" (click)="goBack()"><</button>
-      <img [src]="user.imgUrl" alt="profil" />
-      @if (user.id !== myId) {
+      <img [src]="data.user.imgUrl" alt="profil" />
+      @if (data.user.id !== myId) {
         <button class="wink-button" type="button" (click)="wink()">😉</button>
       }
     </div>
     <div class="description-container">
       <div class="top-right-button" type="button">Cenon</div>
-      <h1>{{ user.userName }}, {{ user.age }}</h1>
+      <h1>{{ data.user.userName }}, {{ data.user.age }}</h1>
       <div class="description">
         <h2>A propos</h2>
         <p>

@@ -2,14 +2,16 @@
   <h1>CLIN D'OEIL</h1>
   <h2>RECIPROQUE !</h2>
   <div class="match-img">
-    @if (user1 && user2) {
-      <img [src]="user2.imgUrl" alt="Profil matché" />
-      <img [src]="user1.imgUrl" alt="Mon profil" />
+    @if (users$ | async; as users) {
+      <img [src]="users.user2.imgUrl" alt="Profil matché" />
+      <img [src]="users.user1.imgUrl" alt="Mon profil" />
     }
   </div>
   <p>Vous avez désormais 3 heures pour faire connaissances</p>
   <div class="btn-container">
-    <button class="btn-match" type="button" (click)="openChat()">Discuter maintenant</button>
+    @if (users$ | async; as users) {
+      <button class="btn-match" type="button" (click)="openChat(users.user2)">Discuter maintenant</button>
+    }
     <button class="btn-match" type="button">Discuter plus tard</button>
   </div>
 </div>

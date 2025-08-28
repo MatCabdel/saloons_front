@@ -1,16 +1,11 @@
 <div class="nav-container">
   <div class="buttons-container">
-    <div>
-      <button type="button" [routerLink]="['/scan']"><img src="assets/icons/qrcode2.svg" alt="qrcode" /></button>
-    </div>
-    <div>
-      <button type="button" [routerLink]="['/profil']"><img src="assets/icons/user.svg" alt="profil" /></button>
-    </div>
-    <div>
-      <button type="button" [routerLink]="['/saloons']"><img src="assets/icons/home.svg" alt="tchat" /></button>
-    </div>
-    <div>
-      <button type="button" [routerLink]="['/chat']"><img src="assets/icons/chat3.svg" alt="tchat" /></button>
-    </div>
+    @for (item of navItems; track item.route) {
+      <div>
+        <button type="button" [routerLink]="[item.route]">
+          <img [src]="item.icon" [alt]="item.alt" />
+        </button>
+      </div>
+    }
   </div>
 </div>

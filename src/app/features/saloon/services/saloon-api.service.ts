@@ -10,29 +10,17 @@ import { User } from '../../user/models/user';
 })
 export class SaloonApiService {
   private _http = inject(HttpClient);
-
   private readonly _BASE_URL_API = environment.apiUrl;
 
   getListSaloon(): Observable<Saloon[]> {
-    const token = localStorage.getItem('token');
-
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
-    return this._http.get<Saloon[]>(this._BASE_URL_API + '/saloon', { headers });
+    return this._http.get<Saloon[]>(this._BASE_URL_API + '/saloon');
   }
 
   getSaloonById(id: string): Observable<Saloon> {
-    const token = localStorage.getItem('token');
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
-    return this._http.get<Saloon>(`${this._BASE_URL_API}/saloon/${id}`, { headers });
+    return this._http.get<Saloon>(`${this._BASE_URL_API}/saloon/${id}`);
   }
 
   getUsersInSaloon(saloonId: string): Observable<User[]> {
-    const token = localStorage.getItem('token');
-    const headers = { Authorization: `Bearer ${token}` };
-    return this._http.get<User[]>(`${this._BASE_URL_API}/saloon/${saloonId}/users`, { headers });
+    return this._http.get<User[]>(`${this._BASE_URL_API}/saloon/${saloonId}/users`);
   }
 }

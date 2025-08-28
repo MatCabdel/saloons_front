@@ -2,14 +2,14 @@
   @for (msg of messages; track $index) {
     <div class="message-row" [ngClass]="{ me: msg.sender === myId, other: msg.sender !== myId }">
       @if (msg.sender !== myId) {
-        <img [src]="getUserImg(msg.sender)" alt="avatar" />
+        <img [src]="getParticipantById(msg.sender)?.imgUrl || 'assets/img/default-avatar.png'" alt="avatar" />
       }
       <div class="bubble">
         <span class="name">
           @if (msg.sender === myId) {
             Moi
           } @else {
-            {{ getUserName(msg.sender) }}
+            {{ getParticipantById(msg.sender)?.userName || 'Inconnu' }}
           }
         </span>
         <span class="content">{{ msg.content }}</span>

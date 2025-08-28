@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of, tap } from 'rxjs';
@@ -29,12 +29,7 @@ export class UserService {
   }
 
   getListUser(): Observable<User[]> {
-    const token = localStorage.getItem('token');
-
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
-    return this._http.get<User[]>(this._BASE_URL_API + '/profile', { headers });
+    return this._http.get<User[]>(this._BASE_URL_API + '/profile');
   }
 
   getUserById(id: number): Observable<User> {
@@ -50,10 +45,9 @@ export class UserService {
     const formData = new FormData();
     formData.append('file', file);
 
-    const headers = new HttpHeaders();
     const url = `${this._BASE_URL_API}/user/upload/image/${this.userConnected.value.id}`;
 
-    return this._http.post<UserDTO>(url, formData, { headers }).pipe(
+    return this._http.post<UserDTO>(url, formData).pipe(
       tap((res): void => {
         this.activeUserProfil$.next(res);
         this.isLoading$.next(false);
@@ -62,14 +56,10 @@ export class UserService {
   }
 
   connectUserToSaloon(userId: number, saloonId: number): Observable<UserDTO> {
-    const token = localStorage.getItem('token');
-    const headers = { Authorization: `Bearer ${token}` };
-    return this._http.patch<UserDTO>(`${this._BASE_URL_API}/profile/${userId}/connect-saloon/${saloonId}`, {}, { headers });
+    return this._http.patch<UserDTO>(`${this._BASE_URL_API}/profile/${userId}/connect-saloon/${saloonId}`, {});
   }
 
   disconnectUserFromSaloon(userId: number): Observable<UserDTO> {
-    const token = localStorage.getItem('token');
-    const headers = { Authorization: `Bearer ${token}` };
-    return this._http.patch<UserDTO>(`${this._BASE_URL_API}/profile/${userId}/disconnect-saloon`, {}, { headers });
+    return this._http.patch<UserDTO>(`${this._BASE_URL_API}/profile/${userId}/disconnect-saloon`, {});
   }
 }
