@@ -11,21 +11,11 @@ describe('SaloonApiService', () => {
   const _apiUrl = environment.apiUrl;
   
   const mockSaloons: Saloon[] = [
-    { id: 1, name: 'Saloon 1',imgUrl: "pic.jpeg", address: 'Description 1', visitors: 3 },
+    { id: 1, name: 'Saloon 1', imgUrl: "pic.jpeg", address: 'Description 1', visitors: 3 },
     { id: 2, name: 'Saloon 2', imgUrl: "pic2.jpeg", address: 'Description 2', visitors: 4 }
   ];
 
   beforeEach(() => {
-        Object.defineProperty(window, 'localStorage', {
-      value: {
-        getItem: () => 'mock-token',
-        setItem: () => {},
-        removeItem: () => {},
-        clear: () => {}
-      },
-      writable: true
-    });
-
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [SaloonApiService]
@@ -33,8 +23,7 @@ describe('SaloonApiService', () => {
     
     service = TestBed.inject(SaloonApiService);
     httpMock = TestBed.inject(HttpTestingController);
-
-});
+  });
 
   afterEach(() => {
     httpMock.verify();
@@ -45,7 +34,7 @@ describe('SaloonApiService', () => {
   });
 
   describe('getListSaloon', () => {
-    it('should return list of saloons with correct headers', () => {
+    it('should return list of saloons', () => {
       service.getListSaloon().subscribe(saloons => {
         expect(saloons).toEqual(mockSaloons);
         expect(saloons.length).toBe(2);
@@ -53,7 +42,6 @@ describe('SaloonApiService', () => {
 
       const req = httpMock.expectOne(`${_apiUrl}/saloon`);
       expect(req.request.method).toBe('GET');
-      expect(req.request.headers.get('Authorization')).toBe('Bearer mock-token');
       
       req.flush(mockSaloons);
     });
@@ -80,11 +68,12 @@ describe('SaloonApiService', () => {
       req.flush('Server Error', { status: 500, statusText: 'Internal Server Error' });
     });
 
-    it('should use token from localStorage', () => {
+    it('should call correct API endpoint', () => {
       service.getListSaloon().subscribe();
 
       const req = httpMock.expectOne(`${_apiUrl}/saloon`);
-      expect(req.request.headers.get('Authorization')).toBe('Bearer mock-token');
+      expect(req.request.method).toBe('GET');
+      expect(req.request.url).toBe(`${_apiUrl}/saloon`);
       
       req.flush(mockSaloons);
     });

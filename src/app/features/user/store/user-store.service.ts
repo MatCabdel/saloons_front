@@ -6,20 +6,24 @@ import { UserDTO } from '../models/userDTO';
   providedIn: 'root',
 })
 export class UserStoreService {
-  private _userConnected$ = new BehaviorSubject<UserDTO>(
-    JSON.parse(localStorage.getItem('user') || 'null') || {
-      id: 0,
-      email: '',
-      password: '',
-      role: '',
-      token: '',
-      imgUrl: '',
-      description: '',
-      age: 0,
-    }
-  );
+  private _userConnected$ = new BehaviorSubject<UserDTO>(this.initializeUserFromStorage());
 
   token$ = new BehaviorSubject<string>('');
+
+  initializeUserFromStorage(): UserDTO {
+    return (
+      JSON.parse(localStorage.getItem('user') || 'null') || {
+        id: 0,
+        email: '',
+        password: '',
+        role: '',
+        token: '',
+        imgUrl: '',
+        description: '',
+        age: 0,
+      }
+    );
+  }
 
   getUserConnected$(): BehaviorSubject<UserDTO> {
     return this._userConnected$;

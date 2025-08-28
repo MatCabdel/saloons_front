@@ -18,11 +18,11 @@ export class ConversationService {
   }
 
   getConversation(id: number): Observable<any> {
-    return this._http.get<any>(`${this._apiUrl}/${id}`);
+    return this._http.get<Conversation>(`${this._apiUrl}/${id}`);
   }
 
   getMessages(conversationId: number): Observable<any[]> {
-    return this._http.get<any[]>(`${this._apiUrl}/${conversationId}/messages`);
+    return this._http.get<Conversation[]>(`${this._apiUrl}/${conversationId}/messages`);
   }
 
   createConversation(participantId: number): Observable<Conversation> {

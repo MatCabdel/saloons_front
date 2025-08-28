@@ -45,7 +45,6 @@ export class AuthApiService {
     localStorage.removeItem('token');
   }
 
-  // "Vraie" méthode pour se connecter
   isLoggedIn(): boolean {
     const token = this.getToken();
     if (!token) return false;
@@ -58,7 +57,6 @@ export class AuthApiService {
     return true;
   }
 
-  // Méthode simplifiée pour cet atelier :
   isLoggedInSimplified(): boolean {
     if (localStorage.getItem('token')) {
       return true;
@@ -74,9 +72,7 @@ export class AuthApiService {
 
   public getUserRoles(): string[] {
     const decodedToken = this.getDecodedToken();
-    // "roles" est un tableau d'objets { authority: string }
     if (decodedToken && decodedToken.roles && Array.isArray(decodedToken.roles)) {
-      // On mappe chaque objet { authority: "ROLE_USER" } en simple string "ROLE_USER"
       return decodedToken.roles.map((roleObj: any) => roleObj.authority);
     }
     return [];

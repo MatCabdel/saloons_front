@@ -7,6 +7,7 @@ import { Conversation } from '../../models/Conversation';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../../../../common/components/navbar/navbar.component';
+import { map, Observable, tap } from 'rxjs';
 
 @Component({
   selector: 'app-list-conversation',
@@ -16,7 +17,7 @@ import { NavbarComponent } from '../../../../common/components/navbar/navbar.com
   styleUrl: './list-conversation.component.scss',
 })
 export class ListConversationComponent implements OnInit {
-  conversations: Conversation[] = [];
+  conversations$!: Observable<Conversation[]>;
   @Output() conversationUserIdsChange = new EventEmitter<number[]>();
 
   private _conversationService = inject(ConversationService);
@@ -26,14 +27,16 @@ export class ListConversationComponent implements OnInit {
   myId = this._userStore.getUserId();
 
   ngOnInit(): void {
-    this._conversationService.getUserConversations().subscribe(data => {
-      this.conversations = Array.isArray(data.payload) ? data.payload.filter(conv => conv && conv.id !== undefined) : [];
-      const ids = this.conversations
-        .flatMap(conv => conv.participants)
-        .filter(p => p.id !== this.myId)
-        .map(p => p.id);
-      this.conversationUserIdsChange.emit(ids);
-    });
+    this.conversations$ = this._conversationService.getUserConversations().pipe(
+      map(data => (Array.isArray(data.payload) ? data.payload.filter(conv => conv && conv.id !== undefined) : [])),
+      tap(conversations => {
+        const ids = conversations
+          .flatMap(conv => conv.participants)
+          .filter(p => p.id !== this.myId)
+          .map(p => p.id);
+        this.conversationUserIdsChange.emit(ids);
+      })
+    );
   }
 
   openConversation(conversationId: number): void {

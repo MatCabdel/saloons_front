@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import {
+  LOAD_WASM,
   NgxScannerQrcodeModule,
   NgxScannerQrcodeService,
   ScannerQRCodeConfig,
@@ -8,10 +9,8 @@ import {
   ScannerQRCodeSelectedFiles,
 } from 'ngx-scanner-qrcode';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { UserService } from 'src/app/features/user/services/user.service';
-import { UserStoreService } from 'src/app/features/user/store/user-store.service';
-import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { QrScannerService } from '../../services/qr-scanner.service';
 
 @Component({
   selector: 'app-scan',
@@ -21,14 +20,13 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './scan.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class ScanComponent {
+export class ScanComponent implements OnInit {
   private _qrcode = inject(NgxScannerQrcodeService);
-  private _userService = inject(UserService);
-  private _userStore = inject(UserStoreService);
-  private _router = inject(Router);
-  private _http = inject(HttpClient);
+  private _qrScannerService = inject(QrScannerService);
+  private _destroyRef = inject(DestroyRef);
 
   scannedUrl: string = '';
+  isWasmLoaded = false;
 
   public qrCodeResult: ScannerQRCodeSelectedFiles[] = [];
 
@@ -40,10 +38,32 @@ export class ScanComponent {
     },
   };
 
+  ngOnInit(): void {
+    this.initializeWasm();
+  }
+
+  initializeWasm(): void {
+    LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm')
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe({
+        next: () => {
+          console.log('WASM loaded for QR scanner');
+          this.isWasmLoaded = true;
+        },
+        error: err => {
+          console.error('WASM failed to load:', err);
+          alert('Impossible de charger le scanner QR code');
+        },
+      });
+  }
+
   public onSelects(files: any): void {
-    this._qrcode.loadFiles(files).subscribe((res: ScannerQRCodeSelectedFiles[]) => {
-      this.qrCodeResult = res;
-    });
+    this._qrcode
+      .loadFiles(files)
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe((res: ScannerQRCodeSelectedFiles[]) => {
+        this.qrCodeResult = res;
+      });
   }
   public onEvent(e: ScannerQRCodeResult[]): void {
     if (e.length > 0) {
@@ -52,29 +72,19 @@ export class ScanComponent {
   }
 
   public openScannedUrl(): void {
-    this._http.get(this.scannedUrl!, { observe: 'response', responseType: 'text' }).subscribe({
-      next: response => {
-        const finalUrl = response.url || this.scannedUrl!;
+    if (!this.scannedUrl) {
+      alert('Aucun QR code scanné');
+      return;
+    }
 
-        const saloonId = this.extractSaloonIdFromUrl(finalUrl);
-        const userId = this._userStore.getUserId();
-
-        if (!userId || !saloonId || isNaN(userId) || isNaN(saloonId)) {
-          alert("Impossible de récupérer l'utilisateur ou le saloon.");
-          return;
-        }
-
-        this._userService.connectUserToSaloon(userId, saloonId).subscribe({
-          next: () => {
-            this._router.navigate([`/mysaloon/${saloonId}`]);
-          },
-        });
-      },
-      error: (err: Error) => {
-        alert('Impossible de suivre le lien QR code.' + err.message);
-      },
-    });
+    this._qrScannerService
+      .processScannedUrl(this.scannedUrl)
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe({
+        error: err => console.error('Erreur lors du traitement du QR code:', err),
+      });
   }
+
   extractSaloonIdFromUrl(url: string): number {
     const parts = url.split('/').filter(Boolean);
     return Number(parts[parts.length - 1]);
