@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import {
   LOAD_WASM,
-  NgxScannerQrcodeModule,
   NgxScannerQrcodeService,
   ScannerQRCodeConfig,
   ScannerQRCodeResult,
@@ -15,7 +14,7 @@ import { QrScannerService } from '../../services/qr-scanner.service';
 @Component({
   selector: 'app-scan',
   standalone: true,
-  imports: [CommonModule, NgxScannerQrcodeModule],
+  imports: [CommonModule],
   templateUrl: './scan.component.html',
   styleUrl: './scan.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
