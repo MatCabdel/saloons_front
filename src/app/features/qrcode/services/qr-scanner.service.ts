@@ -36,7 +36,7 @@ export class QrScannerService {
         const saloonId = this.extractSaloonIdFromUrl(scannedUrl);
         this._router.navigate([`/mysaloon/${saloonId}`]);
       }),
-      switchMap(() => []) 
+      switchMap(() => [])
     );
   }
   extractSaloonIdFromUrl(url: string): number {

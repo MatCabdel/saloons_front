@@ -11,9 +11,9 @@ import { QrScannerService } from '../../services/qr-scanner.service';
   templateUrl: './scan.component.html',
   styleUrl: './scan.component.scss',
 })
-export class ScanComponent  {
+export class ScanComponent {
   @ViewChild('action', { static: false }) scanner!: ZXingScannerComponent;
-  
+
   private _qrScannerService = inject(QrScannerService);
   private _destroyRef = inject(DestroyRef);
 
@@ -35,10 +35,7 @@ export class ScanComponent  {
   public onCamerasFound(devices: MediaDeviceInfo[]): void {
     this.availableDevices = devices;
     if (devices && devices.length > 0) {
-      const backCamera = devices.find(device => 
-        device.label.toLowerCase().includes('back') ||
-        device.label.toLowerCase().includes('rear')
-      );
+      const backCamera = devices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear'));
       this.currentDevice = backCamera || devices[0];
     }
   }

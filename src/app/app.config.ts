@@ -17,6 +17,6 @@ export const appConfig: ApplicationConfig = {
       useClass: HttpErrorInterceptor,
       multi: true,
     },
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
   ],
 };
