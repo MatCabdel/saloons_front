@@ -20,7 +20,7 @@ export const routes: Routes = [
     path: '',
     component: AppComponent,
   },
-  { path: 'welcome', component: WelcomePageComponent },
+  { path: '/', component: WelcomePageComponent },
   { path: 'saloons', component: ListSaloonPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'map', component: MapSaloonPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'register', component: RegisterPageComponent },
