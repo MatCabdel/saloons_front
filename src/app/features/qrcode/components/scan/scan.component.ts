@@ -1,12 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import {
-  LOAD_WASM,
-  NgxScannerQrcodeService,
-  ScannerQRCodeConfig,
-  ScannerQRCodeResult,
-  ScannerQRCodeSelectedFiles,
-} from 'ngx-scanner-qrcode';
+import { LOAD_WASM, NgxScannerQrcodeService, ScannerQRCodeConfig, ScannerQRCodeResult, ScannerQRCodeSelectedFiles } from 'ngx-scanner-qrcode';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { QrScannerService } from '../../services/qr-scanner.service';
