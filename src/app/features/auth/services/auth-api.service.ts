@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { UserStoreService } from '../../user/store/user-store.service';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment';
 import { jwtDecode } from 'jwt-decode';
 import { UserDTO } from '../../user/models/userDTO';
 
