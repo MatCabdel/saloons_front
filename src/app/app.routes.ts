@@ -15,7 +15,6 @@ import { MatchPageComponent } from './features/match/pages/match-page/match-page
 import { ConversationsPageComponent } from './features/conversation/pages/conversations-page/conversations-page.component';
 
 export const routes: Routes = [
-
   { path: '', component: WelcomePageComponent },
   { path: 'saloons', component: ListSaloonPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'map', component: MapSaloonPageComponent, canActivate: [isLoggedInGuard] },
@@ -29,5 +28,5 @@ export const routes: Routes = [
   { path: 'profil-visitor/:id', component: ProfilVisitorPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'match/:userId1/:userId2', component: MatchPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'messages/:conversationId', component: MessagesPageComponent, canActivate: [isLoggedInGuard] },
-  { path: '**', redirectTo: '' } 
+  { path: '**', redirectTo: '' },
 ];
