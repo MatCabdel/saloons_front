@@ -1,66 +1,58 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { LOAD_WASM, NgxScannerQrcodeService, ScannerQRCodeConfig, ScannerQRCodeResult, ScannerQRCodeSelectedFiles } from 'ngx-scanner-qrcode';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, DestroyRef, inject, ViewChild } from '@angular/core';
+import { ZXingScannerModule, ZXingScannerComponent } from '@zxing/ngx-scanner';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { QrScannerService } from '../../services/qr-scanner.service';
 
 @Component({
   selector: 'app-scan',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ZXingScannerModule],
   templateUrl: './scan.component.html',
   styleUrl: './scan.component.scss',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class ScanComponent implements OnInit {
-  private _qrcode = inject(NgxScannerQrcodeService);
+export class ScanComponent {
+  @ViewChild('action', { static: false }) scanner!: ZXingScannerComponent;
+
   private _qrScannerService = inject(QrScannerService);
   private _destroyRef = inject(DestroyRef);
 
   scannedUrl: string = '';
-  isWasmLoaded = false;
+  isLoading = false;
+  isStarted = false;
+  availableDevices: MediaDeviceInfo[] = [];
+  currentDevice?: MediaDeviceInfo;
 
-  public qrCodeResult: ScannerQRCodeSelectedFiles[] = [];
-
-  public config: ScannerQRCodeConfig = {
-    constraints: {
-      video: {
-        width: window.innerWidth,
-      },
-    },
-  };
-
-  ngOnInit(): void {
-    this.initializeWasm();
+  public onScanSuccess(result: string): void {
+    this.scannedUrl = result;
+    console.log('QR Code scanné:', result);
   }
 
-  initializeWasm(): void {
-    LOAD_WASM('assets/wasm/ngx-scanner-qrcode.wasm')
-      .pipe(takeUntilDestroyed(this._destroyRef))
-      .subscribe({
-        next: () => {
-          console.log('WASM loaded for QR scanner');
-          this.isWasmLoaded = true;
-        },
-        error: err => {
-          console.error('WASM failed to load:', err);
-          alert('Impossible de charger le scanner QR code');
-        },
-      });
+  public onScanError(error: any): void {
+    console.warn('Erreur scan:', error);
   }
 
-  public onSelects(files: any): void {
-    this._qrcode
-      .loadFiles(files)
-      .pipe(takeUntilDestroyed(this._destroyRef))
-      .subscribe((res: ScannerQRCodeSelectedFiles[]) => {
-        this.qrCodeResult = res;
-      });
+  public onCamerasFound(devices: MediaDeviceInfo[]): void {
+    this.availableDevices = devices;
+    if (devices && devices.length > 0) {
+      const backCamera = devices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear'));
+      this.currentDevice = backCamera || devices[0];
+    }
   }
-  public onEvent(e: ScannerQRCodeResult[]): void {
-    if (e.length > 0) {
-      this.scannedUrl = e[0].value;
+
+  public onPermissionResponse(permission: boolean): void {
+    console.log('Permission caméra:', permission);
+  }
+
+  public toggleScanner(): void {
+    if (this.scanner) {
+      if (this.isStarted) {
+        this.scanner.camerasNotFound.emit();
+        this.isStarted = false;
+      } else {
+        this.scanner.camerasFound.emit(this.availableDevices);
+        this.isStarted = true;
+      }
     }
   }
 

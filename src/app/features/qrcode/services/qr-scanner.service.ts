@@ -39,7 +39,6 @@ export class QrScannerService {
       switchMap(() => [])
     );
   }
-
   extractSaloonIdFromUrl(url: string): number {
     const parts = url.split('/').filter(Boolean);
     const lastPart = parts[parts.length - 1];
