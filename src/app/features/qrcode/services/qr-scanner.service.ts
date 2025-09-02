@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../../user/services/user.service';
 import { UserStoreService } from '../../user/store/user-store.service';
 import { Observable, switchMap, tap } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -21,19 +22,23 @@ export class QrScannerService {
       throw new Error('Utilisateur non connecté');
     }
 
-    return this._http.get(scannedUrl, { observe: 'response', responseType: 'text' }).pipe(
-      switchMap(response => {
-        const finalUrl = response.url || scannedUrl;
-        const saloonId = this.extractSaloonIdFromUrl(finalUrl);
+    // 🔥 CORRECTIF - Corrigez l'URL scannée avec l'environnement
+    let correctedUrl = scannedUrl;
+    if (scannedUrl.includes('localhost')) {
+      correctedUrl = scannedUrl.replace(/https?:\/\/localhost:\d+/, environment.frontendUrl);
+      console.log('🔧 URL corrigée avec environnement:', correctedUrl);
+    }
 
-        if (!saloonId || isNaN(saloonId)) {
-          throw new Error("Impossible d'extraire l'ID du saloon depuis l'URL");
-        }
+    // 🔥 SIMPLIFICATION - Pas besoin d'appeler l'URL, juste extraire l'ID et rediriger
+    const saloonId = this.extractSaloonIdFromUrl(correctedUrl);
 
-        return this._userService.connectUserToSaloon(userId, saloonId);
-      }),
+    if (!saloonId || isNaN(saloonId)) {
+      throw new Error("Impossible d'extraire l'ID du saloon depuis l'URL");
+    }
+
+    return this._userService.connectUserToSaloon(userId, saloonId).pipe(
       tap(() => {
-        const saloonId = this.extractSaloonIdFromUrl(scannedUrl);
+        console.log('🚀 Redirection vers /mysaloon/' + saloonId);
         this._router.navigate([`/mysaloon/${saloonId}`]);
       }),
       switchMap(() => [])
