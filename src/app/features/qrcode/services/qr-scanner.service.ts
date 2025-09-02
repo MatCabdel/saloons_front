@@ -31,7 +31,7 @@ export class QrScannerService {
 
     // 🔥 SIMPLIFICATION - Pas besoin d'appeler l'URL, juste extraire l'ID et rediriger
     const saloonId = this.extractSaloonIdFromUrl(correctedUrl);
-    
+
     if (!saloonId || isNaN(saloonId)) {
       throw new Error("Impossible d'extraire l'ID du saloon depuis l'URL");
     }
