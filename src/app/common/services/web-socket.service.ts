@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Client, IMessage } from '@stomp/stompjs';
 import { Observable, Subject } from 'rxjs';
 import { Message } from 'src/app/features/conversation/models/Conversation';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +12,11 @@ export class WebSocketService {
   private _messageSubject = new Subject<any>();
 
   connect(conversationId: number): void {
+    const wsUrl = this.getWebSocketUrl();
+    console.log('🔌 Connexion WebSocket:', wsUrl);
+
     this._stompClient = new Client({
-      webSocketFactory: (): any => new WebSocket('ws://localhost:8080/websocket'),
+      webSocketFactory: (): any => new WebSocket(wsUrl),
       reconnectDelay: 5000,
     });
 
@@ -27,6 +31,20 @@ export class WebSocketService {
     };
 
     this._stompClient.activate();
+  }
+
+    public getWebSocketUrl(): string { 
+    const apiUrl = environment.apiUrl;
+    
+    if (apiUrl.startsWith('https://')) {
+      return apiUrl.replace('https://', 'wss://') + '/websocket';
+    }
+    
+    if (apiUrl.startsWith('http://')) {
+      return apiUrl.replace('http://', 'ws://') + '/websocket';
+    }
+    
+    return 'ws://localhost:8080/websocket';
   }
 
   sendMessage(message: any): void {
