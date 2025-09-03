@@ -33,17 +33,17 @@ export class WebSocketService {
     this._stompClient.activate();
   }
 
-    public getWebSocketUrl(): string { 
+  public getWebSocketUrl(): string {
     const apiUrl = environment.apiUrl;
-    
+
     if (apiUrl.startsWith('https://')) {
       return apiUrl.replace('https://', 'wss://') + '/websocket';
     }
-    
+
     if (apiUrl.startsWith('http://')) {
       return apiUrl.replace('http://', 'ws://') + '/websocket';
     }
-    
+
     return 'ws://localhost:8080/websocket';
   }
 
