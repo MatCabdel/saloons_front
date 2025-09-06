@@ -29,15 +29,17 @@ export class ListConversationComponent implements OnInit {
   ngOnInit(): void {
     this.conversations$ = this._conversationService.getUserConversations().pipe(
       map(data => (Array.isArray(data.payload) ? data.payload.filter(conv => conv && conv.id !== undefined) : [])),
-      map(conversations => conversations.sort((a, b) => {
-        if (!a.lastMessage && !b.lastMessage) return 0;
-        if (!a.lastMessage) return 1;
-        if (!b.lastMessage) return -1;
-        
-        const dateA = new Date(a.lastMessage.sentAt);
-        const dateB = new Date(b.lastMessage.sentAt);
-        return dateB.getTime() - dateA.getTime();
-      })),
+      map(conversations =>
+        conversations.sort((a, b) => {
+          if (!a.lastMessage && !b.lastMessage) return 0;
+          if (!a.lastMessage) return 1;
+          if (!b.lastMessage) return -1;
+
+          const dateA = new Date(a.lastMessage.sentAt);
+          const dateB = new Date(b.lastMessage.sentAt);
+          return dateB.getTime() - dateA.getTime();
+        })
+      ),
       tap(conversations => {
         const ids = conversations
           .flatMap(conv => conv.participants)

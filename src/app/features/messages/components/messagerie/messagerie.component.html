@@ -18,7 +18,9 @@
   }
 </div>
 <div class="send-box">
-  <textarea [(ngModel)]="newMessage" placeholder="Ecrire un message..."
+  <textarea
+    [(ngModel)]="newMessage"
+    placeholder="Ecrire un message..."
     (keydown)="onEnterPress($event)"
     #messageInput
     rows="1"

@@ -57,7 +57,7 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
           ...msg,
           sender: Number(msg.sender ?? msg.senderId),
         }));
-       
+
         this._hasScrolledToBottom = false;
         setTimeout(() => this.jumpToBottom(), 100);
       });
@@ -70,7 +70,7 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
       .subscribe(msg => {
         this.handleNewMessage(msg);
 
-         setTimeout(() => this.jumpToBottom(), 50);
+        setTimeout(() => this.jumpToBottom(), 50);
       });
   }
   ngAfterViewInit(): void {
@@ -81,7 +81,7 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
     }, 200);
   }
 
-    ngAfterViewChecked(): void {
+  ngAfterViewChecked(): void {
     if (this.messages.length > 0 && this.messagesList?.nativeElement) {
       const element = this.messagesList.nativeElement;
       if (element.scrollTop < element.scrollHeight - element.clientHeight - 10) {
@@ -96,7 +96,7 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
     try {
       if (this.messagesList && this.messagesList.nativeElement) {
         const element = this.messagesList.nativeElement;
-        
+
         element.scrollTop = element.scrollHeight;
       } else {
         console.warn('⚠️ messagesList non disponible');
@@ -105,7 +105,6 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
       console.warn('⚠️ Erreur positionnement:', err);
     }
   }
-
 
   setupMyImage(): void {
     const me = this.getParticipantById(this.myId);
@@ -171,31 +170,31 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
   }
 
   sendMessage(): void {
-  if (!this.newMessage.trim()) {
-    return;
-  }
-
-  const chatMessage = {
-    conversation: { id: this.conversationId },
-    sender: this.myId,
-    senderName: this.getParticipantById(this.myId)?.userName ?? 'Moi',
-    content: this.newMessage,
-    sentAt: new Date(),
-    type: 'CHAT',
-  };
-
-  this._webSocketService.sendMessage(chatMessage);
-  
-  this.newMessage = '';
-
-  setTimeout(() => this.jumpToBottom(), 50);
-  
-  setTimeout((): void => {
-    const textarea = document.querySelector('textarea');
-    if (textarea) {
-      textarea.style.height = 'auto';
-      console.log('🔧 Textarea reset');
+    if (!this.newMessage.trim()) {
+      return;
     }
-  }, 0);
-}
+
+    const chatMessage = {
+      conversation: { id: this.conversationId },
+      sender: this.myId,
+      senderName: this.getParticipantById(this.myId)?.userName ?? 'Moi',
+      content: this.newMessage,
+      sentAt: new Date(),
+      type: 'CHAT',
+    };
+
+    this._webSocketService.sendMessage(chatMessage);
+
+    this.newMessage = '';
+
+    setTimeout(() => this.jumpToBottom(), 50);
+
+    setTimeout((): void => {
+      const textarea = document.querySelector('textarea');
+      if (textarea) {
+        textarea.style.height = 'auto';
+        console.log('🔧 Textarea reset');
+      }
+    }, 0);
+  }
 }

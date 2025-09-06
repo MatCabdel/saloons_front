@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 12px;
   padding: 20px;
-  padding-bottom: 20px; 
+  padding-bottom: 20px;
   height: calc(100vh - 120px - 80px);
   overflow-y: auto;
   background: #f8f9fa;
@@ -42,7 +42,7 @@
   flex-direction: column;
   min-width: 80px;
   max-width: 320px;
-  word-wrap: break-word; 
+  word-wrap: break-word;
 }
 
 .message-row.me .bubble {
