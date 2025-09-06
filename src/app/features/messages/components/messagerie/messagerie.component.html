@@ -1,4 +1,4 @@
-<div class="message-list">
+<div class="message-list" #messagesList>
   @for (msg of messages; track $index) {
     <div class="message-row" [ngClass]="{ me: msg.sender === myId, other: msg.sender !== myId }">
       @if (msg.sender !== myId) {
@@ -18,6 +18,10 @@
   }
 </div>
 <div class="send-box">
-  <input [(ngModel)]="newMessage" placeholder="Ecrire un message..." />
+  <textarea [(ngModel)]="newMessage" placeholder="Ecrire un message..."
+    (keydown)="onEnterPress($event)"
+    #messageInput
+    rows="1"
+    maxlength="1000"></textarea>
   <button type="button" (click)="sendMessage()" [disabled]="!newMessage.trim()">Envoyer</button>
 </div>

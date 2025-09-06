@@ -1,11 +1,16 @@
 .messages-container {
   background-color: #ffffff;
-  min-width: 100vw;
+  width: 100vw;
+  height: 100vh;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; 
 
   .header-messages {
-    height: 20vh;
     background-color: #413443;
+    flex-shrink: 0; 
+    height: 120px; 
 
     .nav-header {
       display: flex;
@@ -59,7 +64,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-bottom: 8px;
+      padding-bottom: 6px;
     }
     .avatar-header {
       width: 40px;
@@ -73,6 +78,7 @@
       font-size: 1em;
       color: white;
       font-weight: 400;
+      padding-bottom: 12px;
     }
 
     .onglets {

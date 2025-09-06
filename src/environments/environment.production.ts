@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   name: 'production',
-  apiUrl: 'http://saloons.fr',
-  BASE_URL: 'http://localhost:3310',
+  apiUrl: 'https://api.saloons.fr',
+  BASE_URL: 'https://api.saloons.fr',
+  frontendUrl: 'https://saloons.fr',
 };

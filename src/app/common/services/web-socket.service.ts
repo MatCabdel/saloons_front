@@ -13,14 +13,13 @@ export class WebSocketService {
 
   connect(conversationId: number): void {
     const wsUrl = this.getWebSocketUrl();
-    console.log('🔌 Connexion WebSocket:', wsUrl);
 
     this._stompClient = new Client({
       webSocketFactory: (): any => new WebSocket(wsUrl),
       reconnectDelay: 5000,
     });
 
-    this._stompClient.onConnect = (): any => {
+    this._stompClient.onConnect = (): void => {
       this._stompClient.subscribe(`/queue/conversation.${conversationId}`, (message: IMessage) => {
         this._messageSubject.next(JSON.parse(message.body));
       });
