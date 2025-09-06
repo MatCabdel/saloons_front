@@ -11,8 +11,8 @@
     background-color: #413443;
     flex-shrink: 0;
     height: 120px;
-    position: sticky; 
-    top: 0; 
+    position: sticky;
+    top: 0;
     z-index: 1000;
 
     .nav-header {
@@ -98,10 +98,10 @@
   }
 
   .messagerie-content {
-    flex: 1; 
-    display: flex; 
-    flex-direction: column; 
-    overflow: hidden; 
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     position: relative;
   }
 }
