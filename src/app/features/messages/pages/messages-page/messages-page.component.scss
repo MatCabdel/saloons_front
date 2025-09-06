@@ -11,6 +11,8 @@
     background-color: #413443;
     flex-shrink: 0;
     height: 120px;
+    position: relative;
+    z-index: 1000;
 
     .nav-header {
       display: flex;
@@ -27,6 +29,7 @@
         font-size: 1.2em;
         cursor: pointer;
         padding: 5px;
+        background: none;
 
         &:hover {
           color: #ffffff;
@@ -91,6 +94,12 @@
         font-size: 1em;
       }
     }
+  }
+
+  .messagerie-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
   }
 }
 
