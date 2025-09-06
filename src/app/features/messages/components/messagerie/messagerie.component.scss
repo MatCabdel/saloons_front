@@ -3,12 +3,14 @@
   flex-direction: column;
   gap: 12px;
   padding: 20px;
-  padding-bottom: 20px;
-  height: calc(100vh - 120px - 70px);
+  padding-bottom: 100px;
+  height: calc(100vh - 120px);
   overflow-y: auto;
   background: #f8f9fa;
   position: relative;
   box-sizing: border-box;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
 }
 
 .message-row {
