@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { ConversationService } from 'src/app/features/conversation/services/conversation.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -18,13 +18,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   templateUrl: './messagerie.component.html',
   styleUrl: './messagerie.component.scss',
 })
-export class MessagerieComponent implements OnInit {
+export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChecked {
   conversationId!: number;
   messages: Message[] = [];
   newMessage = '';
   myId!: number;
   myImgUrl?: string;
   participants: User[] = [];
+
+  private _hasScrolledToBottom = false;
+
+  @ViewChild('messagesList', { static: false }) messagesList!: ElementRef<HTMLDivElement>;
 
   private _route = inject(ActivatedRoute);
   private _conversationService = inject(ConversationService);
@@ -53,6 +57,9 @@ export class MessagerieComponent implements OnInit {
           ...msg,
           sender: Number(msg.sender ?? msg.senderId),
         }));
+
+        this._hasScrolledToBottom = false;
+        setTimeout(() => this.jumpToBottom(), 100);
       });
 
     webSocketMessages$
@@ -62,7 +69,41 @@ export class MessagerieComponent implements OnInit {
       )
       .subscribe(msg => {
         this.handleNewMessage(msg);
+
+        setTimeout(() => this.jumpToBottom(), 50);
       });
+  }
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      if (!this._hasScrolledToBottom) {
+        this.jumpToBottom();
+      }
+    }, 200);
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.messages.length > 0 && this.messagesList?.nativeElement) {
+      const element = this.messagesList.nativeElement;
+      if (element.scrollTop < element.scrollHeight - element.clientHeight - 10) {
+        setTimeout(() => {
+          this.jumpToBottom();
+        }, 0);
+      }
+    }
+  }
+
+  public jumpToBottom(): void {
+    try {
+      if (this.messagesList && this.messagesList.nativeElement) {
+        const element = this.messagesList.nativeElement;
+
+        element.scrollTop = element.scrollHeight;
+      } else {
+        console.warn('⚠️ messagesList non disponible');
+      }
+    } catch (err) {
+      console.warn('⚠️ Erreur positionnement:', err);
+    }
   }
 
   setupMyImage(): void {
@@ -121,7 +162,18 @@ export class MessagerieComponent implements OnInit {
     return this.participants.find(p => p.id === id);
   }
 
+  onEnterPress(event: KeyboardEvent): void {
+    if (event.key === 'Enter' && !event.shiftKey && !event.ctrlKey) {
+      event.preventDefault();
+      this.sendMessage();
+    }
+  }
+
   sendMessage(): void {
+    if (!this.newMessage.trim()) {
+      return;
+    }
+
     const chatMessage = {
       conversation: { id: this.conversationId },
       sender: this.myId,
@@ -130,7 +182,19 @@ export class MessagerieComponent implements OnInit {
       sentAt: new Date(),
       type: 'CHAT',
     };
+
     this._webSocketService.sendMessage(chatMessage);
+
     this.newMessage = '';
+
+    setTimeout(() => this.jumpToBottom(), 50);
+
+    setTimeout((): void => {
+      const textarea = document.querySelector('textarea');
+      if (textarea) {
+        textarea.style.height = 'auto';
+        console.log('🔧 Textarea reset');
+      }
+    }, 0);
   }
 }
