@@ -27,6 +27,8 @@ export class RegisterProfilComponent implements OnInit {
   fileName = '';
   imageUrl: SafeUrl | null = null;
   submitted = false;
+  showPassword = false;
+  showConfirmPassword = false;
 
   private _fb = inject(FormBuilder);
   private _userService = inject(UserService);
@@ -90,5 +92,13 @@ export class RegisterProfilComponent implements OnInit {
       .createUser(formData)
       .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe(() => alert('Inscription réussie !'));
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 }

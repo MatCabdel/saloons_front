@@ -6,6 +6,53 @@
 .container-input {
   margin-top: 10px;
   width: 98%;
+
+    .password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .input-form {
+      padding: 8px 45px 8px 10px !important;
+      border: none;
+      border-radius: 5px;
+      margin-top: 6px;
+      width: 100%;
+      box-sizing: border-box;
+
+      &::placeholder {
+        color: rgb(151, 150, 150);
+        font-style: italic;
+      }
+    }
+
+    .password-toggle-btn {
+      position: absolute;
+      right: 12px;
+      top: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      color: #666;
+      font-size: 16px;
+      transition: color 0.2s ease;
+      z-index: 1;
+
+      &:hover {
+        color: #ffc122;
+      }
+
+      &:focus {
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+
+      i {
+        pointer-events: none;
+      }
+    }
+  }
 }
 
 .container-input span {
@@ -22,16 +69,17 @@
 }
 
 .input-form {
-  padding: 8px 0;
+  padding: 8px 10px;
   border: none;
   border-radius: 5px;
   margin-top: 6px;
+  width: 100%;
+  box-sizing: border-box;
+
   &::placeholder {
     color: rgb(151, 150, 150);
     font-style: italic;
-    padding-left: 10px;
   }
-  width: 100%;
 }
 
 .formulaire.ng-submitted input.ng-invalid {
