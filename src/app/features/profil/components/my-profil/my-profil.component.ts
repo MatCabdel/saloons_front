@@ -15,7 +15,7 @@ export class MyProfilComponent {
   private _userStore = inject(UserStoreService);
 
   user$: Observable<UserDTO | null> = this._userStore.getUserConnected$().pipe(
-    map((u) => {
+    map(u => {
       if (!u || !u.birthDate) return u;
       const d = new Date(u.birthDate);
       const diff = Date.now() - d.getTime();
@@ -23,5 +23,4 @@ export class MyProfilComponent {
       return { ...u, age };
     })
   );
-  
 }

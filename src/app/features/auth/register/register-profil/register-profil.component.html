@@ -31,23 +31,23 @@
 
         <div class="container-input">
           <label class="label-form" for="password">Mot de passe *</label>
-            <input
-              class="input-form"
-              id="password"
-              [type]="showPassword ? 'text' : 'password'"
-              formControlName="password"
-              placeholder="Votre mot de passe" />
+          <input
+            class="input-form"
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Votre mot de passe" />
           <app-field-error [control]="formGroup.get('account.password')" [submitted]="submitted" label="password"></app-field-error>
         </div>
 
         <div class="container-input">
           <label class="label-form" for="checkPassword">Confirmation du mot de passe *</label>
-            <input
-              class="input-form"
-              id="checkPassword"
-              [type]="showConfirmPassword ? 'text' : 'password'"
-              formControlName="checkPassword"
-              placeholder="Confirmation de votre mot de passe" />
+          <input
+            class="input-form"
+            id="checkPassword"
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            formControlName="checkPassword"
+            placeholder="Confirmation de votre mot de passe" />
           <app-field-error [control]="formGroup.get('account.checkPassword')" [submitted]="submitted" label="checkPassword"></app-field-error>
           <app-field-error [control]="formGroup.get('account')" [submitted]="submitted"></app-field-error>
         </div>
@@ -86,7 +86,7 @@
       <div formGroupName="birth">
         <div class="container-input">
           <label class="label-form" for="dateOfBirth">Date de naissance *</label>
-          <div class="date-input-wrapper" >
+          <div class="date-input-wrapper">
             <input
               class="input-form"
               id="dateOfBirth"
@@ -96,10 +96,7 @@
               placeholder="JJ/MM/AAAA"
               #dobInput />
           </div>
-          <app-field-error
-            [control]="formGroup.get('birth.dateOfBirth')"
-            [submitted]="submitted"
-            label="date de naissance"></app-field-error>
+          <app-field-error [control]="formGroup.get('birth.dateOfBirth')" [submitted]="submitted" label="date de naissance"></app-field-error>
         </div>
         <div class="btn-connexion">
           <button type="button" (click)="prevStep()">Précédent</button>
@@ -119,10 +116,7 @@
             rows="4"
             maxlength="280"
             placeholder="Parle un peu de toi (280 caractères max)"></textarea>
-          <app-field-error
-            [control]="formGroup.get('bio.description')"
-            [submitted]="submitted"
-            label="description"></app-field-error>
+          <app-field-error [control]="formGroup.get('bio.description')" [submitted]="submitted" label="description"></app-field-error>
         </div>
         <div class="btn-connexion">
           <button type="button" (click)="prevStep()">Précédent</button>
@@ -136,10 +130,7 @@
         <div class="container-input">
           <label class="label-form" for="city">Ville *</label>
           <input class="input-form" id="city" type="text" formControlName="city" placeholder="Votre ville" />
-          <app-field-error
-            [control]="formGroup.get('location.city')"
-            [submitted]="submitted"
-            label="ville"></app-field-error>
+          <app-field-error [control]="formGroup.get('location.city')" [submitted]="submitted" label="ville"></app-field-error>
         </div>
         <div class="btn-connexion">
           <button type="button" (click)="prevStep()">Précédent</button>

@@ -171,7 +171,10 @@
     background: rgba(255, 255, 255, 0.06);
     color: #fff;
     width: 100%;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background 0.2s ease;
 
     &:focus {
       outline: none;
@@ -185,7 +188,6 @@
       font-style: italic;
     }
 
-
     &::-webkit-datetime-edit,
     &::-webkit-datetime-edit-text,
     &::-webkit-datetime-edit-day-field,
@@ -197,7 +199,9 @@
       cursor: pointer;
       opacity: 0.85;
       filter: invert(86%) sepia(52%) saturate(731%) hue-rotate(344deg) brightness(101%) contrast(104%); /* teinte #ffc122 */
-      transition: opacity 0.2s ease, transform 0.2s ease;
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
       &:hover {
         opacity: 1;
         transform: scale(1.05);
@@ -219,7 +223,9 @@
     padding: 8px;
     color: #bdbdbd;
     font-size: 16px;
-    transition: color 0.2s ease, transform 0.2s ease;
+    transition:
+      color 0.2s ease,
+      transform 0.2s ease;
     z-index: 1;
 
     &:hover {
@@ -248,7 +254,10 @@
   color: #fff;
   resize: vertical;
   line-height: 1.4;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 
   &:focus {
     outline: none;

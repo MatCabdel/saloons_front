@@ -10,8 +10,8 @@ export type UserDTO = {
   userName: string;
   city?: string | null;
   description?: string | null;
-  birthDate?: string | null; 
-  age?: number | null; 
+  birthDate?: string | null;
+  age?: number | null;
 };
 
 export type UserRegistrationDTO = {

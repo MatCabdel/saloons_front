@@ -128,7 +128,7 @@ export class RegisterProfilComponent implements OnInit {
       return age >= minYears ? null : { minAge: { requiredAge: minYears, actualAge: age } };
     };
   }
-    openDatePicker(input: HTMLInputElement): void {
+  openDatePicker(input: HTMLInputElement): void {
     (input as any).showPicker?.();
     input.focus();
   }
