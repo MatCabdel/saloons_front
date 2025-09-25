@@ -6,11 +6,11 @@
       <button class="wink-button" type="button">😉</button>
     </div>
     <div class="description-container">
-      <div class="top-right-button" type="button">Bordeaux</div>
-      <h1>{{ user.userName }}, 30 {{ user.age }}</h1>
+      <div class="top-right-button" type="button">{{user.city}}</div>
+      <h1>{{ user.userName }},  {{ user.age }}</h1>
       <div class="description">
         <h2>A propos</h2>
-        <p>Nouveau sur Bordeaux</p>
+        <p>{{user.description}}</p>
       </div>
     </div>
   }

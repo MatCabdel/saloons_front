@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { UserDTO } from 'src/app/features/user/models/userDTO';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 
@@ -14,5 +14,14 @@ import { UserStoreService } from 'src/app/features/user/store/user-store.service
 export class MyProfilComponent {
   private _userStore = inject(UserStoreService);
 
-  user$: Observable<UserDTO | null> = this._userStore.getUserConnected$();
+  user$: Observable<UserDTO | null> = this._userStore.getUserConnected$().pipe(
+    map((u) => {
+      if (!u || !u.birthDate) return u;
+      const d = new Date(u.birthDate);
+      const diff = Date.now() - d.getTime();
+      const age = Math.abs(new Date(diff).getUTCFullYear() - 1970);
+      return { ...u, age };
+    })
+  );
+  
 }
