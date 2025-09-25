@@ -22,20 +22,44 @@
   </div>
 
   <div class="container-input">
-    <label class="label-form" for="password">Mot de passe *</label>
-    <input class="input-form" type="password" id="password" name="password" formControlName="password" placeholder="Votre mot de passe" />
+    <div class="password-input-wrapper">
+      <label class="label-form" for="password">Mot de passe *</label>
+      <input
+        class="input-form"
+        [type]="showPassword ? 'text' : 'password'"
+        id="password"
+        name="password"
+        formControlName="password"
+        placeholder="Votre mot de passe" />
+      <button
+        type="button"
+        class="password-toggle-btn"
+        (click)="togglePasswordVisibility()"
+        [attr.aria-label]="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'">
+        <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+      </button>
+    </div>
     <app-field-error [control]="registerForm.get('password')" [submitted]="formRegister.submitted"></app-field-error>
   </div>
 
   <div class="container-input">
     <label class="label-form" for="checkPassword">Confirmation du mot de passe *</label>
-    <input
-      class="input-form"
-      type="password"
-      id="checkPassword"
-      name="checkPassword"
-      formControlName="checkPassword"
-      placeholder="Confirmation de votre mot de passe" />
+    <div>
+      <input
+        class="input-form"
+        [type]="showPassword ? 'text' : 'password'"
+        id="checkPassword"
+        name="checkPassword"
+        formControlName="checkPassword"
+        placeholder="Confirmation de votre mot de passe" />
+      <button
+        type="button"
+        class="password-toggle-btn"
+        (click)="toggleConfirmPasswordVisibility()"
+        [attr.aria-label]="showConfirmPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'">
+        <i class="fas" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
+      </button>
+    </div>
     <app-field-error [control]="registerForm.get('checkPassword')" [submitted]="formRegister.submitted"></app-field-error>
     @if (formRegister.submitted && registerForm.errors?.['notEqual']) {
       <div class="error">Les mots de passe doivent être identiques</div>

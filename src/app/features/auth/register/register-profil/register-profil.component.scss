@@ -6,6 +6,53 @@
 .container-input {
   margin-top: 10px;
   width: 98%;
+
+  .password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .input-form {
+      padding: 8px 45px 8px 10px !important;
+      border: none;
+      border-radius: 5px;
+      margin-top: 6px;
+      width: 100%;
+      box-sizing: border-box;
+
+      &::placeholder {
+        color: rgb(151, 150, 150);
+        font-style: italic;
+      }
+    }
+
+    .password-toggle-btn {
+      position: absolute;
+      right: 12px;
+      top: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      color: #666;
+      font-size: 16px;
+      transition: color 0.2s ease;
+      z-index: 1;
+
+      &:hover {
+        color: #ffc122;
+      }
+
+      &:focus {
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+
+      i {
+        pointer-events: none;
+      }
+    }
+  }
 }
 
 .container-input span {
@@ -22,30 +69,31 @@
 }
 
 .input-form {
-  padding: 8px 0;
+  padding: 8px 10px;
   border: none;
   border-radius: 5px;
   margin-top: 6px;
+  width: 100%;
+  box-sizing: border-box;
+
   &::placeholder {
     color: rgb(151, 150, 150);
     font-style: italic;
-    padding-left: 10px;
   }
-  width: 100%;
 }
 
 .formulaire.ng-submitted input.ng-invalid {
   border-color: red;
 }
 .error {
-  font-size: 14px;
+  font-size: 10px;
   color: red;
   margin-top: 5px;
   font-style: italic;
 }
 
 .mdp-error {
-  font-size: 14px;
+  font-size: 10px;
   color: black;
   margin-top: 5px;
   font-style: italic;
@@ -108,5 +156,118 @@
     background: #ffc122;
     color: white;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.date-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input.input-form[type='date'] {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 193, 34, 0.35);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    width: 100%;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: #ffc122;
+      box-shadow: 0 0 0 3px rgba(255, 193, 34, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.55);
+      font-style: italic;
+    }
+
+    &::-webkit-datetime-edit,
+    &::-webkit-datetime-edit-text,
+    &::-webkit-datetime-edit-day-field,
+    &::-webkit-datetime-edit-month-field,
+    &::-webkit-datetime-edit-year-field {
+      color: #fff;
+    }
+    &::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      opacity: 0.85;
+      filter: invert(86%) sepia(52%) saturate(731%) hue-rotate(344deg) brightness(101%) contrast(104%); /* teinte #ffc122 */
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+      &:hover {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+    }
+
+    &::-webkit-inner-spin-button {
+      display: none;
+    }
+  }
+
+  .calendar-btn {
+    position: absolute;
+    right: 12px;
+    top: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    color: #bdbdbd;
+    font-size: 16px;
+    transition:
+      color 0.2s ease,
+      transform 0.2s ease;
+    z-index: 1;
+
+    &:hover {
+      color: #ffc122;
+      transform: scale(1.05);
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    i {
+      pointer-events: none;
+    }
+  }
+}
+
+.container-input textarea.input-form {
+  display: block;
+  width: 100%;
+  min-height: 120px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 193, 34, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  resize: vertical;
+  line-height: 1.4;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #ffc122;
+    box-shadow: 0 0 0 3px rgba(255, 193, 34, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+    font-style: italic;
   }
 }

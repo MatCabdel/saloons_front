@@ -5,11 +5,13 @@ export type UserDTO = {
   role: string;
   token: string;
   imgUrl: string;
-  description: string;
-  age: number;
   firstName: string;
   lastName: string;
   userName: string;
+  city?: string | null;
+  description?: string | null;
+  birthDate?: string | null;
+  age?: number | null;
 };
 
 export type UserRegistrationDTO = {

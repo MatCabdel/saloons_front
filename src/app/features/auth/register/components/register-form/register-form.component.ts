@@ -37,6 +37,8 @@ export class RegisterFormComponent implements OnInit {
   );
 
   role!: string;
+  showPassword = false;
+  showConfirmPassword = false;
 
   ngOnInit(): void {
     this._route.data.pipe(takeUntilDestroyed(this._destroyRef)).subscribe(data => {
@@ -67,5 +69,13 @@ export class RegisterFormComponent implements OnInit {
           console.error("Erreur lors de l'inscription :", err);
         },
       });
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 }

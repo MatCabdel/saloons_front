@@ -1,8 +1,11 @@
 <form [formGroup]="formGroup" class="formulaire" (ngSubmit)="onFinish()">
   <div class="stepper-indicator">
-    <div class="step" [class.active]="step === 1">Etape 1</div>
-    <div class="step" [class.active]="step === 2">Etape 2</div>
-    <div class="step" [class.active]="step === 3">Etape 3</div>
+    <div class="step" [class.active]="step === 1"></div>
+    <div class="step" [class.active]="step === 2"></div>
+    <div class="step" [class.active]="step === 3"></div>
+    <div class="step" [class.active]="step === 4"></div>
+    <div class="step" [class.active]="step === 5"></div>
+    <div class="step" [class.active]="step === 6"></div>
   </div>
 
   @switch (step) {
@@ -28,7 +31,12 @@
 
         <div class="container-input">
           <label class="label-form" for="password">Mot de passe *</label>
-          <input class="input-form" id="password" type="password" formControlName="password" placeholder="Votre mot de passe" />
+          <input
+            class="input-form"
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Votre mot de passe" />
           <app-field-error [control]="formGroup.get('account.password')" [submitted]="submitted" label="password"></app-field-error>
         </div>
 
@@ -37,7 +45,7 @@
           <input
             class="input-form"
             id="checkPassword"
-            type="password"
+            [type]="showConfirmPassword ? 'text' : 'password'"
             formControlName="checkPassword"
             placeholder="Confirmation de votre mot de passe" />
           <app-field-error [control]="formGroup.get('account.checkPassword')" [submitted]="submitted" label="checkPassword"></app-field-error>
@@ -49,6 +57,7 @@
         </div>
       </div>
     }
+
     @case (2) {
       <div formGroupName="profile">
         <app-file-upload (fileEmitter)="receiveImage($event)" [imageUrl]="imageUrl"></app-file-upload>
@@ -58,6 +67,7 @@
         </div>
       </div>
     }
+
     @case (3) {
       <div formGroupName="meta">
         <div class="container-input">
@@ -67,7 +77,64 @@
         </div>
         <div class="btn-connexion">
           <button type="button" (click)="prevStep()">Précédent</button>
-          <button type="submit" [disabled]="formGroup.get('meta')!.invalid">Terminer</button>
+          <button type="button" (click)="nextStep()" [disabled]="formGroup.get('meta')!.invalid">Suivant</button>
+        </div>
+      </div>
+    }
+
+    @case (4) {
+      <div formGroupName="birth">
+        <div class="container-input">
+          <label class="label-form" for="dateOfBirth">Date de naissance *</label>
+          <div class="date-input-wrapper">
+            <input
+              class="input-form"
+              id="dateOfBirth"
+              type="date"
+              [max]="maxBirthDate"
+              formControlName="dateOfBirth"
+              placeholder="JJ/MM/AAAA"
+              #dobInput />
+          </div>
+          <app-field-error [control]="formGroup.get('birth.dateOfBirth')" [submitted]="submitted" label="date de naissance"></app-field-error>
+        </div>
+        <div class="btn-connexion">
+          <button type="button" (click)="prevStep()">Précédent</button>
+          <button type="button" (click)="nextStep()" [disabled]="formGroup.get('birth')!.invalid">Suivant</button>
+        </div>
+      </div>
+    }
+
+    @case (5) {
+      <div formGroupName="bio">
+        <div class="container-input">
+          <label class="label-form" for="description">Petite description *</label>
+          <textarea
+            id="description"
+            class="input-form"
+            formControlName="description"
+            rows="4"
+            maxlength="280"
+            placeholder="Parle un peu de toi (280 caractères max)"></textarea>
+          <app-field-error [control]="formGroup.get('bio.description')" [submitted]="submitted" label="description"></app-field-error>
+        </div>
+        <div class="btn-connexion">
+          <button type="button" (click)="prevStep()">Précédent</button>
+          <button type="button" (click)="nextStep()" [disabled]="formGroup.get('bio')!.invalid">Suivant</button>
+        </div>
+      </div>
+    }
+
+    @case (6) {
+      <div formGroupName="location">
+        <div class="container-input">
+          <label class="label-form" for="city">Ville *</label>
+          <input class="input-form" id="city" type="text" formControlName="city" placeholder="Votre ville" />
+          <app-field-error [control]="formGroup.get('location.city')" [submitted]="submitted" label="ville"></app-field-error>
+        </div>
+        <div class="btn-connexion">
+          <button type="button" (click)="prevStep()">Précédent</button>
+          <button type="submit" [disabled]="formGroup.get('location')!.invalid">Terminer</button>
         </div>
       </div>
     }
