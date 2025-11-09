@@ -20,6 +20,8 @@
   height: 0;
 }
 
+// ...existing code...
+
 .slider {
   position: absolute;
   cursor: pointer;
@@ -31,58 +33,59 @@
   border-radius: 20px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
   transition: 0.4s;
-  display: flex;
+
+  /* Centrage parfait des labels */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 10px;
+  justify-items: center;
+
+  /* Retire le padding qui décale le knob */
+  padding: 0;
+
   font-size: 14px;
   font-weight: bold;
   color: white;
 }
 
+/* On n'utilise plus le pseudo-élément comme knob */
+.slider:before {
+  content: none;
+}
+
 .label {
-  position: absolute;
-  width: 50%;
+  position: relative; /* au lieu d'absolu */
+  width: 100%;
   text-align: center;
   line-height: 40px;
+  z-index: 2;
 }
 
-.left {
-  left: 0;
-}
-
-.right {
-  right: 0;
-}
-
-.slider:before {
-  content: '';
+/* Nouveau knob centré sur chaque moitié */
+.knob {
   position: absolute;
-  height: 32px;
-  width: 50%;
+  top: 4px;
   left: 4px;
-  bottom: 4px;
-  background-color: #413443;
+  height: 32px;
+  width: calc(50% - 4px);
+  background-color: #413443; /* même couleur */
   border-radius: 20px;
-  transition: 0.4s;
+  transition: transform 0.4s;
+  z-index: 1;
 }
 
-input:checked + .slider {
-  background-color: white;
+/* Déplacement exact vers la moitié droite au check */
+input:checked + .slider .knob {
+  transform: translateX(calc(100% + 2px));
 }
 
-input:checked + .slider:before {
-  transform: translateX(40px);
-}
-
+/* Couleurs des labels conservées */
 .slider .label {
   color: #fff;
 }
-
 .switch input:not(:checked) + .slider .label.left {
   color: #ffc122;
 }
-
 .switch input:checked + .slider .label.right {
   color: #ffc122;
 }

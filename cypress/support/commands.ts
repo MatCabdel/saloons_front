@@ -41,3 +41,9 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+Cypress.Commands.add('login', (email, password) => {
+  cy.request('POST', 'http://localhost:8080/auth/login', { email, password })
+    .then((resp) => {
+      window.localStorage.setItem('saloon_auth_token', resp.body.token);
+    });
+});

@@ -30,6 +30,7 @@ export class RegisterProfilComponent implements OnInit {
   submitted = false;
   showPassword = false;
   showConfirmPassword = false;
+  showConditionsModal = false;
 
   private _fb = inject(FormBuilder);
   private _userService = inject(UserService);
@@ -65,6 +66,7 @@ export class RegisterProfilComponent implements OnInit {
       }),
       location: this._fb.group({
         city: ['', [Validators.required, Validators.minLength(2)]],
+        rgpdAccepted: [false, Validators.requiredTrue]
       }),
     });
   }
@@ -101,6 +103,7 @@ export class RegisterProfilComponent implements OnInit {
     if (birth?.dateOfBirth) formData.append('birthDate', birth.dateOfBirth);
     if (bio?.description) formData.append('description', bio.description);
     if (location?.city) formData.append('city', location.city);
+    formData.append('rgpdAccepted', location.rgpdAccepted ? 'true' : 'false');
     if (this.file) {
       formData.append('image', this.file, this.fileName);
     }
@@ -132,4 +135,12 @@ export class RegisterProfilComponent implements OnInit {
     (input as any).showPicker?.();
     input.focus();
   }
+  openConditionsModal(event: Event): void {
+  event.preventDefault();
+  this.showConditionsModal = true;
+}
+closeConditionsModal(): void {
+  this.showConditionsModal = false;
+}
+
 }

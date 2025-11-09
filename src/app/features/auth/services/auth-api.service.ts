@@ -31,18 +31,18 @@ export class AuthApiService {
   }
 
   public saveToken(token: string): void {
-    localStorage.setItem('token', token);
+    localStorage.setItem('saloon_auth_token', token);
   }
 
   public getToken(): string {
-    if (localStorage.getItem('token')) {
-      return localStorage.getItem('token') as string;
+    if (localStorage.getItem('saloon_auth_token')) {
+      return localStorage.getItem('saloon_auth_token') as string;
     }
     throw new Error('Token not found');
   }
 
   public clearToken(): void {
-    localStorage.removeItem('token');
+    localStorage.removeItem('saloon_auth_token');
   }
 
   isLoggedIn(): boolean {
@@ -58,7 +58,7 @@ export class AuthApiService {
   }
 
   isLoggedInSimplified(): boolean {
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('saloon_auth_token')) {
       return true;
     }
     return false;

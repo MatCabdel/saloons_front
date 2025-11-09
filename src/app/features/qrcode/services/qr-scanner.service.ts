@@ -22,14 +22,11 @@ export class QrScannerService {
       throw new Error('Utilisateur non connecté');
     }
 
-    // 🔥 CORRECTIF - Corrigez l'URL scannée avec l'environnement
     let correctedUrl = scannedUrl;
     if (scannedUrl.includes('localhost')) {
       correctedUrl = scannedUrl.replace(/https?:\/\/localhost:\d+/, environment.frontendUrl);
-      console.log('🔧 URL corrigée avec environnement:', correctedUrl);
     }
 
-    // 🔥 SIMPLIFICATION - Pas besoin d'appeler l'URL, juste extraire l'ID et rediriger
     const saloonId = this.extractSaloonIdFromUrl(correctedUrl);
 
     if (!saloonId || isNaN(saloonId)) {
@@ -38,7 +35,6 @@ export class QrScannerService {
 
     return this._userService.connectUserToSaloon(userId, saloonId).pipe(
       tap(() => {
-        console.log('🚀 Redirection vers /mysaloon/' + saloonId);
         this._router.navigate([`/mysaloon/${saloonId}`]);
       }),
       switchMap(() => [])

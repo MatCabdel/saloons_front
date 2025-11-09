@@ -104,6 +104,7 @@
   display: flex;
   justify-content: center;
   margin: 20px auto;
+  gap: 5px;
 
   button {
     width: 100%;
@@ -113,6 +114,23 @@
     border-radius: 4px;
     padding: 5px 10px;
     border-radius: 44px;
+  }
+
+    .btn-prev {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff; /* contraste fort sur fond sombre */
+    border: 1px solid rgba(255, 255, 255, 0.35);
+
+    &:hover {
+      color: #ffc122;
+      border-color: #ffc122;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 193, 34, 0.25);
+    }
   }
 }
 
@@ -171,10 +189,7 @@
     background: rgba(255, 255, 255, 0.06);
     color: #fff;
     width: 100%;
-    transition:
-      border-color 0.2s ease,
-      box-shadow 0.2s ease,
-      background 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 
     &:focus {
       outline: none;
@@ -188,6 +203,7 @@
       font-style: italic;
     }
 
+
     &::-webkit-datetime-edit,
     &::-webkit-datetime-edit-text,
     &::-webkit-datetime-edit-day-field,
@@ -199,9 +215,7 @@
       cursor: pointer;
       opacity: 0.85;
       filter: invert(86%) sepia(52%) saturate(731%) hue-rotate(344deg) brightness(101%) contrast(104%); /* teinte #ffc122 */
-      transition:
-        opacity 0.2s ease,
-        transform 0.2s ease;
+      transition: opacity 0.2s ease, transform 0.2s ease;
       &:hover {
         opacity: 1;
         transform: scale(1.05);
@@ -223,9 +237,7 @@
     padding: 8px;
     color: #bdbdbd;
     font-size: 16px;
-    transition:
-      color 0.2s ease,
-      transform 0.2s ease;
+    transition: color 0.2s ease, transform 0.2s ease;
     z-index: 1;
 
     &:hover {
@@ -254,10 +266,7 @@
   color: #fff;
   resize: vertical;
   line-height: 1.4;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 
   &:focus {
     outline: none;
@@ -271,3 +280,123 @@
     font-style: italic;
   }
 }
+.checkbox-cgv {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  cursor: pointer;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #fff; // texte blanc sur fond sombre
+    font-weight: 400;
+    cursor: pointer;
+  }
+
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #ffc122; // couleur coche
+    margin-right: 8px;
+    cursor: pointer;
+  }
+
+  .cgv-text {
+    color: #fff; // texte blanc
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+  }
+
+  .cgv-link {
+    color: #ffc122; // jaune pour le lien
+    text-decoration: underline;
+    font-weight: 600;
+    margin-left: 4px;
+    cursor: pointer;
+    transition: color 0.2s;
+    &:hover {
+      color: #fff;
+      background: #ffc122;
+      border-radius: 2px;
+      text-decoration: none;
+      padding: 0 2px;
+    }
+    &:focus {
+      outline: 2px solid #ffc122;
+    }
+  }
+}
+.modal-rgpd {
+  position: fixed !important;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+    .modal-content {
+  background: #fff;
+  color: #2d0140;
+  padding: 2.5rem 2rem 2rem 2rem;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(40,0,60,0.25), 0 1.5px 0 #ffc122;
+  width: 100%;
+  box-sizing: border-box; // <-- Ajoute cette ligne
+  position: relative;
+  text-align: left;
+
+    h2 {
+      color: #2d0140; // titre violet foncé
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #ffc122; // touche jaune sous le titre
+      padding-bottom: 0.5rem;
+    }
+
+    .modal-body {
+      font-size: 1rem;
+      color: #2d0140;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      p {
+        margin: 0;
+      }
+      a {
+        color: #2d0140;
+        font-weight: 600;
+        text-decoration: underline;
+        transition: color 0.2s;
+        &:hover {
+          color: #ffc122;
+        }
+      }
+    }
+
+    button {
+      background: #ffc122;
+      color: #2d0140;
+      border: none;
+      border-radius: 8px;
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      box-shadow: 0 2px 8px rgba(40,0,60,0.12);
+
+      &:hover, &:focus {
+        background: #2d0140;
+        color: #ffc122;
+        outline: none;
+      }
+    }
+  }
+}
+

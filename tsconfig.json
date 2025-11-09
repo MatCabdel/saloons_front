@@ -39,6 +39,6 @@
     "strictTemplates": true,
     "enablecontrolFlow": true
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["src/**/*.spec.ts"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "exclude": []
 }
