@@ -29,13 +29,15 @@ export const routes: Routes = [
   { path: 'profil-visitor/:id', component: ProfilVisitorPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'match/:userId1/:userId2', component: MatchPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'messages/:conversationId', component: MessagesPageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'dashboard', 
+  {
+    path: 'dashboard',
     component: DashboardPageComponent,
-         children: [
+    children: [
       { path: 'statistics', component: StatisticsPageComponent },
       { path: 'users-list', component: UsersListPageComponent },
-      { path: '', redirectTo: 'statistics', pathMatch: 'full' }
+      { path: '', redirectTo: 'statistics', pathMatch: 'full' },
     ],
-    canActivate: [isLoggedInGuard] },
+    canActivate: [isLoggedInGuard],
+  },
   { path: '**', redirectTo: '' },
 ];

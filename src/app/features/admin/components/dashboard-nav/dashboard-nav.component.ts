@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [],
   templateUrl: './dashboard-nav.component.html',
-  styleUrl: './dashboard-nav.component.scss'
+  styleUrl: './dashboard-nav.component.scss',
 })
 export class DashboardNavComponent {
   constructor(private _router: Router) {}
@@ -14,5 +14,4 @@ export class DashboardNavComponent {
   navigate(page: string): void {
     this._router.navigate(['dashboard', page]);
   }
-
 }

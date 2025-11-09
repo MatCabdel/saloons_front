@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AppComponent } from "src/app/app.component";
+import { AppComponent } from 'src/app/app.component';
 
 @Component({
   selector: 'app-welcome-page',

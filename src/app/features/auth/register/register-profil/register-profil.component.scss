@@ -116,7 +116,7 @@
     border-radius: 44px;
   }
 
-    .btn-prev {
+  .btn-prev {
     background: rgba(255, 255, 255, 0.06);
     color: #fff; /* contraste fort sur fond sombre */
     border: 1px solid rgba(255, 255, 255, 0.35);
@@ -189,7 +189,10 @@
     background: rgba(255, 255, 255, 0.06);
     color: #fff;
     width: 100%;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background 0.2s ease;
 
     &:focus {
       outline: none;
@@ -203,7 +206,6 @@
       font-style: italic;
     }
 
-
     &::-webkit-datetime-edit,
     &::-webkit-datetime-edit-text,
     &::-webkit-datetime-edit-day-field,
@@ -215,7 +217,9 @@
       cursor: pointer;
       opacity: 0.85;
       filter: invert(86%) sepia(52%) saturate(731%) hue-rotate(344deg) brightness(101%) contrast(104%); /* teinte #ffc122 */
-      transition: opacity 0.2s ease, transform 0.2s ease;
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
       &:hover {
         opacity: 1;
         transform: scale(1.05);
@@ -237,7 +241,9 @@
     padding: 8px;
     color: #bdbdbd;
     font-size: 16px;
-    transition: color 0.2s ease, transform 0.2s ease;
+    transition:
+      color 0.2s ease,
+      transform 0.2s ease;
     z-index: 1;
 
     &:hover {
@@ -266,7 +272,10 @@
   color: #fff;
   resize: vertical;
   line-height: 1.4;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 
   &:focus {
     outline: none;
@@ -297,7 +306,7 @@
     cursor: pointer;
   }
 
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     width: 18px;
     height: 18px;
     accent-color: #ffc122; // couleur coche
@@ -333,22 +342,27 @@
 }
 .modal-rgpd {
   position: fixed !important;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
 
-    .modal-content {
-  background: #fff;
-  color: #2d0140;
-  padding: 2.5rem 2rem 2rem 2rem;
-  border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(40,0,60,0.25), 0 1.5px 0 #ffc122;
-  width: 100%;
-  box-sizing: border-box; // <-- Ajoute cette ligne
-  position: relative;
-  text-align: left;
+  .modal-content {
+    background: #fff;
+    color: #2d0140;
+    padding: 2.5rem 2rem 2rem 2rem;
+    border-radius: 18px;
+    box-shadow:
+      0 8px 32px rgba(40, 0, 60, 0.25),
+      0 1.5px 0 #ffc122;
+    width: 100%;
+    box-sizing: border-box; // <-- Ajoute cette ligne
+    position: relative;
+    text-align: left;
 
     h2 {
       color: #2d0140; // titre violet foncé
@@ -388,10 +402,13 @@
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      box-shadow: 0 2px 8px rgba(40,0,60,0.12);
+      transition:
+        background 0.2s,
+        color 0.2s;
+      box-shadow: 0 2px 8px rgba(40, 0, 60, 0.12);
 
-      &:hover, &:focus {
+      &:hover,
+      &:focus {
         background: #2d0140;
         color: #ffc122;
         outline: none;
@@ -399,4 +416,3 @@
     }
   }
 }
-

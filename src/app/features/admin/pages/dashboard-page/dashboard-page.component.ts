@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { DashboardNavComponent } from "../../components/dashboard-nav/dashboard-nav.component";
-import { StatisticsPageComponent } from "../statistics-page/statistics-page.component";
-import { UsersListPageComponent } from "../users-list-page/users-list-page.component";
-import { RouterModule } from "@angular/router";
+import { DashboardNavComponent } from '../../components/dashboard-nav/dashboard-nav.component';
+import { StatisticsPageComponent } from '../statistics-page/statistics-page.component';
+import { UsersListPageComponent } from '../users-list-page/users-list-page.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-page',

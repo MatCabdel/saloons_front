@@ -8,135 +8,142 @@
     <div class="step" [class.active]="step === 6"></div>
   </div>
 
-  @switch (step) { @case (1) {
-  <div formGroupName="account">
-    <div class="container-input">
-      <label class="label-form" for="lastname">Nom *</label>
-      <input class="input-form" id="lastname" type="text" formControlName="lastname" placeholder="Votre nom" autocomplete="on" />
-      <app-field-error [control]="formGroup.get('account.lastname')" [submitted]="submitted" label="lastname"></app-field-error>
-    </div>
+  @switch (step) {
+    @case (1) {
+      <div formGroupName="account">
+        <div class="container-input">
+          <label class="label-form" for="lastname">Nom *</label>
+          <input class="input-form" id="lastname" type="text" formControlName="lastname" placeholder="Votre nom" autocomplete="on" />
+          <app-field-error [control]="formGroup.get('account.lastname')" [submitted]="submitted" label="lastname"></app-field-error>
+        </div>
 
-    <div class="container-input">
-      <label class="label-form" for="email">
-        Email *
-        <span>
-          Utilisez votre domaine
-          {{ formGroup.get('account.email')?.errors?.['extension']?.expected }}
-        </span>
-      </label>
-      <input class="input-form" id="email" type="email" formControlName="email" placeholder="Votre email" autocomplete="on" />
-      <app-field-error [control]="formGroup.get('account.email')" [submitted]="submitted" label="email"></app-field-error>
-    </div>
+        <div class="container-input">
+          <label class="label-form" for="email">
+            Email *
+            <span>
+              Utilisez votre domaine
+              {{ formGroup.get('account.email')?.errors?.['extension']?.expected }}
+            </span>
+          </label>
+          <input class="input-form" id="email" type="email" formControlName="email" placeholder="Votre email" autocomplete="on" />
+          <app-field-error [control]="formGroup.get('account.email')" [submitted]="submitted" label="email"></app-field-error>
+        </div>
 
-    <div class="container-input">
-      <label class="label-form" for="password">Mot de passe *</label>
-      <input
-        class="input-form"
-        id="password"
-        [type]="showPassword ? 'text' : 'password'"
-        formControlName="password"
-        placeholder="Votre mot de passe" />
-      <app-field-error [control]="formGroup.get('account.password')" [submitted]="submitted" label="password"></app-field-error>
-    </div>
+        <div class="container-input">
+          <label class="label-form" for="password">Mot de passe *</label>
+          <input
+            class="input-form"
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Votre mot de passe" />
+          <app-field-error [control]="formGroup.get('account.password')" [submitted]="submitted" label="password"></app-field-error>
+        </div>
 
-    <div class="container-input">
-      <label class="label-form" for="checkPassword">Confirmation du mot de passe *</label>
-      <input
-        class="input-form"
-        id="checkPassword"
-        [type]="showConfirmPassword ? 'text' : 'password'"
-        formControlName="checkPassword"
-        placeholder="Confirmation de votre mot de passe" />
-      <app-field-error [control]="formGroup.get('account.checkPassword')" [submitted]="submitted" label="checkPassword"></app-field-error>
-      <app-field-error [control]="formGroup.get('account')" [submitted]="submitted"></app-field-error>
-    </div>
+        <div class="container-input">
+          <label class="label-form" for="checkPassword">Confirmation du mot de passe *</label>
+          <input
+            class="input-form"
+            id="checkPassword"
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            formControlName="checkPassword"
+            placeholder="Confirmation de votre mot de passe" />
+          <app-field-error [control]="formGroup.get('account.checkPassword')" [submitted]="submitted" label="checkPassword"></app-field-error>
+          <app-field-error [control]="formGroup.get('account')" [submitted]="submitted"></app-field-error>
+        </div>
 
-    <div class="btn-connexion">
-      <button type="button" (click)="nextStep()" [disabled]="formGroup.get('account')!.invalid">Suivant</button>
-    </div>
-  </div>
-  } @case (2) {
-  <div formGroupName="profile">
-    <app-file-upload (fileEmitter)="receiveImage($event)" [imageUrl]="imageUrl"></app-file-upload>
-    <div class="btn-connexion">
-      <button type="button" class="btn-prev" (click)="prevStep()">Précédent</button>
-      <button type="button" (click)="nextStep()" [disabled]="formGroup.get('profile.imgUrl')!.invalid">Suivant</button>
-    </div>
-  </div>
-  } @case (3) {
-  <div formGroupName="meta">
-    <div class="container-input">
-      <label class="label-form" for="username">Pseudo *</label>
-      <input class="input-form" id="username" type="text" formControlName="username" placeholder="Votre pseudo" />
-      <app-field-error [control]="formGroup.get('meta.username')" [submitted]="submitted" label="username"></app-field-error>
-    </div>
-    <div class="btn-connexion">
-      <button type="button" class="btn-prev" (click)="prevStep()">Précédent</button>
-      <button type="button" (click)="nextStep()" [disabled]="formGroup.get('meta')!.invalid">Suivant</button>
-    </div>
-  </div>
-  } @case (4) {
-  <div formGroupName="birth">
-    <div class="container-input">
-      <label class="label-form" for="dateOfBirth">Date de naissance *</label>
-      <div class="date-input-wrapper">
-        <input
-          class="input-form"
-          id="dateOfBirth"
-          type="date"
-          [max]="maxBirthDate"
-          formControlName="dateOfBirth"
-          placeholder="JJ/MM/AAAA"
-          #dobInput />
+        <div class="btn-connexion">
+          <button type="button" (click)="nextStep()" [disabled]="formGroup.get('account')!.invalid">Suivant</button>
+        </div>
       </div>
-      <app-field-error [control]="formGroup.get('birth.dateOfBirth')" [submitted]="submitted" label="date de naissance"></app-field-error>
-    </div>
-    <div class="btn-connexion">
-      <button type="button" class="btn-prev" (click)="prevStep()">Précédent</button>
-      <button type="button" (click)="nextStep()" [disabled]="formGroup.get('birth')!.invalid">Suivant</button>
-    </div>
-  </div>
-  } @case (5) {
-  <div formGroupName="bio">
-    <div class="container-input">
-      <label class="label-form" for="description">Petite description *</label>
-      <textarea
-        id="description"
-        class="input-form"
-        formControlName="description"
-        rows="4"
-        maxlength="280"
-        placeholder="Parle un peu de toi (280 caractères max)"></textarea>
-      <app-field-error [control]="formGroup.get('bio.description')" [submitted]="submitted" label="description"></app-field-error>
-    </div>
-    <div class="btn-connexion">
-      <button type="button" class="btn-prev" (click)="prevStep()">Précédent</button>
-      <button type="button" (click)="nextStep()" [disabled]="formGroup.get('bio')!.invalid">Suivant</button>
-    </div>
-  </div>
-  } @case (6) {
-  <div formGroupName="location">
-    <div class="container-input">
-      <label class="label-form" for="city">Ville *</label>
-      <input class="input-form" id="city" type="text" formControlName="city" placeholder="Votre ville" />
-      <app-field-error [control]="formGroup.get('location.city')" [submitted]="submitted" label="ville"></app-field-error>
-    </div>
-    <div class="container-input checkbox-cgv">
-      <label>
-        <input type="checkbox" formControlName="rgpdAccepted" />
-        <span class="cgv-text">
-          J’accepte les
-          <a class="cgv-link" href="#" (click)="openConditionsModal($event)">conditions d’utilisation et la politique RGPD</a>
-        </span>
-      </label>
-      <app-field-error [control]="formGroup.get('rgpdAccepted')" [submitted]="submitted" label="RGPD"></app-field-error>
-    </div>
-    <div class="btn-connexion">
-      <button type="button" class="btn-prev" (click)="prevStep()">Précédent</button>
-      <button type="submit" [disabled]="formGroup.get('location')!.invalid">Terminer</button>
-    </div>
-  </div>
-  } }
+    }
+    @case (2) {
+      <div formGroupName="profile">
+        <app-file-upload (fileEmitter)="receiveImage($event)" [imageUrl]="imageUrl"></app-file-upload>
+        <div class="btn-connexion">
+          <button type="button" class="btn-prev" (click)="prevStep()">Précédent</button>
+          <button type="button" (click)="nextStep()" [disabled]="formGroup.get('profile.imgUrl')!.invalid">Suivant</button>
+        </div>
+      </div>
+    }
+    @case (3) {
+      <div formGroupName="meta">
+        <div class="container-input">
+          <label class="label-form" for="username">Pseudo *</label>
+          <input class="input-form" id="username" type="text" formControlName="username" placeholder="Votre pseudo" />
+          <app-field-error [control]="formGroup.get('meta.username')" [submitted]="submitted" label="username"></app-field-error>
+        </div>
+        <div class="btn-connexion">
+          <button type="button" class="btn-prev" (click)="prevStep()">Précédent</button>
+          <button type="button" (click)="nextStep()" [disabled]="formGroup.get('meta')!.invalid">Suivant</button>
+        </div>
+      </div>
+    }
+    @case (4) {
+      <div formGroupName="birth">
+        <div class="container-input">
+          <label class="label-form" for="dateOfBirth">Date de naissance *</label>
+          <div class="date-input-wrapper">
+            <input
+              class="input-form"
+              id="dateOfBirth"
+              type="date"
+              [max]="maxBirthDate"
+              formControlName="dateOfBirth"
+              placeholder="JJ/MM/AAAA"
+              #dobInput />
+          </div>
+          <app-field-error [control]="formGroup.get('birth.dateOfBirth')" [submitted]="submitted" label="date de naissance"></app-field-error>
+        </div>
+        <div class="btn-connexion">
+          <button type="button" class="btn-prev" (click)="prevStep()">Précédent</button>
+          <button type="button" (click)="nextStep()" [disabled]="formGroup.get('birth')!.invalid">Suivant</button>
+        </div>
+      </div>
+    }
+    @case (5) {
+      <div formGroupName="bio">
+        <div class="container-input">
+          <label class="label-form" for="description">Petite description *</label>
+          <textarea
+            id="description"
+            class="input-form"
+            formControlName="description"
+            rows="4"
+            maxlength="280"
+            placeholder="Parle un peu de toi (280 caractères max)"></textarea>
+          <app-field-error [control]="formGroup.get('bio.description')" [submitted]="submitted" label="description"></app-field-error>
+        </div>
+        <div class="btn-connexion">
+          <button type="button" class="btn-prev" (click)="prevStep()">Précédent</button>
+          <button type="button" (click)="nextStep()" [disabled]="formGroup.get('bio')!.invalid">Suivant</button>
+        </div>
+      </div>
+    }
+    @case (6) {
+      <div formGroupName="location">
+        <div class="container-input">
+          <label class="label-form" for="city">Ville *</label>
+          <input class="input-form" id="city" type="text" formControlName="city" placeholder="Votre ville" />
+          <app-field-error [control]="formGroup.get('location.city')" [submitted]="submitted" label="ville"></app-field-error>
+        </div>
+        <div class="container-input checkbox-cgv">
+          <label>
+            <input type="checkbox" formControlName="rgpdAccepted" />
+            <span class="cgv-text">
+              J’accepte les
+              <a class="cgv-link" href="#" (click)="openConditionsModal($event)">conditions d’utilisation et la politique RGPD</a>
+            </span>
+          </label>
+          <app-field-error [control]="formGroup.get('rgpdAccepted')" [submitted]="submitted" label="RGPD"></app-field-error>
+        </div>
+        <div class="btn-connexion">
+          <button type="button" class="btn-prev" (click)="prevStep()">Précédent</button>
+          <button type="submit" [disabled]="formGroup.get('location')!.invalid">Terminer</button>
+        </div>
+      </div>
+    }
+  }
 </form>
 
 <!-- Modal RGPD -->

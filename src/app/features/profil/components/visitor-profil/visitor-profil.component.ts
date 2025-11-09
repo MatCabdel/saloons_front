@@ -43,7 +43,7 @@ export class VisitorProfilComponent implements OnInit {
     });
   }
 
-    private _computeAge(birthDateISO: string): number {
+  private _computeAge(birthDateISO: string): number {
     const d = new Date(birthDateISO);
     const diff = Date.now() - d.getTime();
     return Math.abs(new Date(diff).getUTCFullYear() - 1970);

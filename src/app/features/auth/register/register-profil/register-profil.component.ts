@@ -66,7 +66,7 @@ export class RegisterProfilComponent implements OnInit {
       }),
       location: this._fb.group({
         city: ['', [Validators.required, Validators.minLength(2)]],
-        rgpdAccepted: [false, Validators.requiredTrue]
+        rgpdAccepted: [false, Validators.requiredTrue],
       }),
     });
   }
@@ -136,11 +136,10 @@ export class RegisterProfilComponent implements OnInit {
     input.focus();
   }
   openConditionsModal(event: Event): void {
-  event.preventDefault();
-  this.showConditionsModal = true;
-}
-closeConditionsModal(): void {
-  this.showConditionsModal = false;
-}
-
+    event.preventDefault();
+    this.showConditionsModal = true;
+  }
+  closeConditionsModal(): void {
+    this.showConditionsModal = false;
+  }
 }
