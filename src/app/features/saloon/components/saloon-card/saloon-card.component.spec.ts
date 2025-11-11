@@ -1,32 +1,34 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SaloonCardComponent } from './saloon-card.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { SaloonApiService } from '../../services/saloon-api.service';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { environment } from '../../../../../environments/environment';
 
 describe('SaloonCardComponent (integration)', () => {
-  let component: SaloonCardComponent;
   let fixture: ComponentFixture<SaloonCardComponent>;
+  let httpMock: HttpTestingController;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SaloonCardComponent, HttpClientTestingModule],
-      providers: [SaloonApiService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SaloonCardComponent);
-    component = fixture.componentInstance;
-    component.saloon = {
-      id: 1,
-      name: 'Test Saloon',
-      imgUrl: 'test.jpg',
-      address: 'Test Address',
-      visitors: 5
-    };
+    httpMock = TestBed.inject(HttpTestingController);
+
+    fixture.componentInstance.saloon = { id: 1, name: 'Test Saloon', imgUrl: 'test.jpg', address: 'Test Address', visitors: 5 };
     fixture.detectChanges();
   });
 
-  it('affiche le nom du saloon dans le template', () => {
-    const h1 = fixture.nativeElement.querySelector('h1');
-    expect(h1.textContent).toContain('Test Saloon');
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  it('affiche le nombre de visiteurs récupéré via API', () => {
+    const req = httpMock.expectOne(`${environment.apiUrl}/saloon/1/users`);
+    req.flush([{ id: 10 }, { id: 11 }]); 
+
+    fixture.detectChanges();
+    const visitors = fixture.nativeElement.querySelector('p').textContent;
+    expect(visitors).toContain('2 visiteurs');
   });
 });

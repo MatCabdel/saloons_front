@@ -1,5 +1,7 @@
-import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-switch-list-map',
@@ -11,14 +13,27 @@ import { Router } from '@angular/router';
 export class SwitchListMapComponent {
   isMapView = false;
   private _router = inject(Router);
+  private _destroyRef = inject(DestroyRef);
 
-  toggleView(event: any): void {
-    this.isMapView = event.target.checked;
+  constructor() {
+    this.isMapView = this._router.url.includes('/map');
+    this._router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this._destroyRef)
+      )
+      .subscribe(event => {
+        this.isMapView = event.urlAfterRedirects.includes('/map');
+      });
+  }
 
-    if (this.isMapView) {
-      this._router.navigate(['/map']);
-    } else {
-      this._router.navigate(['/saloons']);
+  toggleView(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked === this.isMapView) {
+      return;
     }
+    this.isMapView = checked;
+    const targetTree = this._router.createUrlTree(checked ? ['/saloons', 'map'] : ['/saloons']);
+    this._router.navigateByUrl(targetTree);
   }
 }

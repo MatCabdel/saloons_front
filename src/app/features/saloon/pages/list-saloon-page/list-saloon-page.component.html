@@ -1,13 +1,5 @@
-<div class="list-places-container">
-  <app-header-reverse></app-header-reverse>
-  <div class="title-switch">
-    <h1>SAL<span class="yellow">OO</span>NS DANS LE COIN</h1>
-    <app-switch-list-map></app-switch-list-map>
-  </div>
-  <div class="list-places">
-    @for (saloon of saloons$ | async; track saloon.id) {
-      <app-saloon-card [saloon]="saloon"></app-saloon-card>
-    }
-  </div>
-  <app-navbar></app-navbar>
+<div class="list-places">
+  @for (saloon of saloons$ | async; track saloon.id) {
+    <app-saloon-card [saloon]="saloon"></app-saloon-card>
+  }
 </div>

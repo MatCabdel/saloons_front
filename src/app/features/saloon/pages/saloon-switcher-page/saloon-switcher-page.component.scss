@@ -1,0 +1,31 @@
+.list-places-container {
+  background-color: #ffffff;
+  min-height: 100vh;
+  min-width: 100vw;
+  margin: 0 auto;
+  padding-bottom: 100px;
+}
+
+.title-switch {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px 0 20px;
+}
+
+.content-wrapper {
+  width: 100%;
+}
+
+h1 {
+  font-size: 1em;
+  padding: 10px 0;
+  font-weight: 600;
+  color: black;
+  margin: 0;
+  font-family: 'Koulen', sans-serif;
+
+  .yellow {
+    color: #ffc122;
+  }
+}

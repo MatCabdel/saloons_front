@@ -15,11 +15,20 @@ import { MatchPageComponent } from './features/match/pages/match-page/match-page
 import { ConversationsPageComponent } from './features/conversation/pages/conversations-page/conversations-page.component';
 import { StatisticsPageComponent } from './features/admin/pages/statistics-page/statistics-page.component';
 import { UsersListPageComponent } from './features/admin/pages/users-list-page/users-list-page.component';
+import { SaloonSwitcherPageComponent } from './features/saloon/pages/saloon-switcher-page/saloon-switcher-page.component';
 
 export const routes: Routes = [
   { path: '', component: WelcomePageComponent },
-  { path: 'saloons', component: ListSaloonPageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'map', component: MapSaloonPageComponent, canActivate: [isLoggedInGuard] },
+  {
+    path: 'saloons',
+    component: SaloonSwitcherPageComponent,
+    canActivate: [isLoggedInGuard],
+    children: [
+      { path: '', component: ListSaloonPageComponent },
+      { path: 'map', component: MapSaloonPageComponent },
+    ],
+  },
+  { path: 'map', redirectTo: 'saloons/map', pathMatch: 'full' },
   { path: 'register', component: RegisterPageComponent },
   { path: 'login', component: LoginPageComponent },
   { path: 'scan', component: QrcodePageComponent, canActivate: [isLoggedInGuard] },
