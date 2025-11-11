@@ -1,41 +1,4 @@
-.list-places-container {
-  background-color: #ffffff;
-  min-height: 100vh;
-  min-width: 100vw;
-  margin: 0 auto;
-
-  .title-switch {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-right: 20px;
-  }
-
-  h1 {
-    font-size: 1em;
-    padding: 10px;
-    font-weight: 600;
-    color: black;
-    margin: 0;
-    font-family: 'Koulen', sans-serif;
-    padding-left: 20px;
-
-    .yellow {
-      color: #ffc122;
-    }
-  }
-
-  h2 {
-    text-align: center;
-    color: white;
-    padding-top: 30px;
-  }
-
-  .list-places {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background-color: #ffffff;
-  }
+:host {
+  display: block;
+  width: 100%;
 }

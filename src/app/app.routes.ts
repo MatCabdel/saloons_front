@@ -13,14 +13,24 @@ import { MapSaloonPageComponent } from './features/saloon/pages/map-saloon-page/
 import { ProfilVisitorPageComponent } from './features/profil/pages/profil-visitor-page/profil-visitor-page.component';
 import { MatchPageComponent } from './features/match/pages/match-page/match-page.component';
 import { ConversationsPageComponent } from './features/conversation/pages/conversations-page/conversations-page.component';
+import { StatisticsPageComponent } from './features/admin/pages/statistics-page/statistics-page.component';
+import { UsersListPageComponent } from './features/admin/pages/users-list-page/users-list-page.component';
+import { SaloonSwitcherPageComponent } from './features/saloon/pages/saloon-switcher-page/saloon-switcher-page.component';
 
 export const routes: Routes = [
   { path: '', component: WelcomePageComponent },
-  { path: 'saloons', component: ListSaloonPageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'map', component: MapSaloonPageComponent, canActivate: [isLoggedInGuard] },
+  {
+    path: 'saloons',
+    component: SaloonSwitcherPageComponent,
+    canActivate: [isLoggedInGuard],
+    children: [
+      { path: '', component: ListSaloonPageComponent },
+      { path: 'map', component: MapSaloonPageComponent },
+    ],
+  },
+  { path: 'map', redirectTo: 'saloons/map', pathMatch: 'full' },
   { path: 'register', component: RegisterPageComponent },
   { path: 'login', component: LoginPageComponent },
-  { path: 'dashboard', component: DashboardPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'scan', component: QrcodePageComponent, canActivate: [isLoggedInGuard] },
   { path: 'profil', component: ProfilPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'chat', component: ConversationsPageComponent, canActivate: [isLoggedInGuard] },
@@ -28,5 +38,15 @@ export const routes: Routes = [
   { path: 'profil-visitor/:id', component: ProfilVisitorPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'match/:userId1/:userId2', component: MatchPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'messages/:conversationId', component: MessagesPageComponent, canActivate: [isLoggedInGuard] },
+  {
+    path: 'dashboard',
+    component: DashboardPageComponent,
+    children: [
+      { path: 'statistics', component: StatisticsPageComponent },
+      { path: 'users-list', component: UsersListPageComponent },
+      { path: '', redirectTo: 'statistics', pathMatch: 'full' },
+    ],
+    canActivate: [isLoggedInGuard],
+  },
   { path: '**', redirectTo: '' },
 ];

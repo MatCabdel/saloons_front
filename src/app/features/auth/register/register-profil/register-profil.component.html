@@ -57,17 +57,15 @@
         </div>
       </div>
     }
-
     @case (2) {
       <div formGroupName="profile">
         <app-file-upload (fileEmitter)="receiveImage($event)" [imageUrl]="imageUrl"></app-file-upload>
         <div class="btn-connexion">
-          <button type="button" (click)="prevStep()">Précédent</button>
+          <button type="button" class="btn-prev" (click)="prevStep()">Précédent</button>
           <button type="button" (click)="nextStep()" [disabled]="formGroup.get('profile.imgUrl')!.invalid">Suivant</button>
         </div>
       </div>
     }
-
     @case (3) {
       <div formGroupName="meta">
         <div class="container-input">
@@ -76,12 +74,11 @@
           <app-field-error [control]="formGroup.get('meta.username')" [submitted]="submitted" label="username"></app-field-error>
         </div>
         <div class="btn-connexion">
-          <button type="button" (click)="prevStep()">Précédent</button>
+          <button type="button" class="btn-prev" (click)="prevStep()">Précédent</button>
           <button type="button" (click)="nextStep()" [disabled]="formGroup.get('meta')!.invalid">Suivant</button>
         </div>
       </div>
     }
-
     @case (4) {
       <div formGroupName="birth">
         <div class="container-input">
@@ -99,12 +96,11 @@
           <app-field-error [control]="formGroup.get('birth.dateOfBirth')" [submitted]="submitted" label="date de naissance"></app-field-error>
         </div>
         <div class="btn-connexion">
-          <button type="button" (click)="prevStep()">Précédent</button>
+          <button type="button" class="btn-prev" (click)="prevStep()">Précédent</button>
           <button type="button" (click)="nextStep()" [disabled]="formGroup.get('birth')!.invalid">Suivant</button>
         </div>
       </div>
     }
-
     @case (5) {
       <div formGroupName="bio">
         <div class="container-input">
@@ -119,12 +115,11 @@
           <app-field-error [control]="formGroup.get('bio.description')" [submitted]="submitted" label="description"></app-field-error>
         </div>
         <div class="btn-connexion">
-          <button type="button" (click)="prevStep()">Précédent</button>
+          <button type="button" class="btn-prev" (click)="prevStep()">Précédent</button>
           <button type="button" (click)="nextStep()" [disabled]="formGroup.get('bio')!.invalid">Suivant</button>
         </div>
       </div>
     }
-
     @case (6) {
       <div formGroupName="location">
         <div class="container-input">
@@ -132,11 +127,37 @@
           <input class="input-form" id="city" type="text" formControlName="city" placeholder="Votre ville" />
           <app-field-error [control]="formGroup.get('location.city')" [submitted]="submitted" label="ville"></app-field-error>
         </div>
+        <div class="container-input checkbox-cgv">
+          <label>
+            <input type="checkbox" formControlName="rgpdAccepted" />
+            <span class="cgv-text">
+              J’accepte les
+              <a class="cgv-link" href="#" (click)="openConditionsModal($event)">conditions d’utilisation et la politique RGPD</a>
+            </span>
+          </label>
+          <app-field-error [control]="formGroup.get('rgpdAccepted')" [submitted]="submitted" label="RGPD"></app-field-error>
+        </div>
         <div class="btn-connexion">
-          <button type="button" (click)="prevStep()">Précédent</button>
+          <button type="button" class="btn-prev" (click)="prevStep()">Précédent</button>
           <button type="submit" [disabled]="formGroup.get('location')!.invalid">Terminer</button>
         </div>
       </div>
     }
   }
 </form>
+
+<!-- Modal RGPD -->
+<div class="modal-rgpd" *ngIf="showConditionsModal">
+  <div class="modal-content">
+    <h2>Conditions d’utilisation et RGPD</h2>
+    <div class="modal-body">
+      <!-- Place ici ton texte RGPD complet -->
+      <p>
+        En vous inscrivant, vous acceptez nos conditions d’utilisation et la politique de confidentialité RGPD. Vos données seront utilisées
+        uniquement pour la gestion de votre compte et ne seront jamais transmises à des tiers sans votre consentement.
+        <!-- ...etc... -->
+      </p>
+    </div>
+    <button type="button" (click)="closeConditionsModal()">Fermer</button>
+  </div>
+</div>

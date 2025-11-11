@@ -8,13 +8,12 @@
       }
     </div>
     <div class="description-container">
-      <div class="top-right-button" type="button">Cenon</div>
+      <div class="top-right-button" type="button">{{ data.user.city }}</div>
       <h1>{{ data.user.userName }}, {{ data.user.age }}</h1>
       <div class="description">
         <h2>A propos</h2>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic earum, accusamus odio qui odit consectetur voluptatum a error dolorum.
-          Consequuntur commodi architecto assumenda aut natus in ullam est ratione fugiat!
+          {{ data.user.description }}
         </p>
       </div>
     </div>
