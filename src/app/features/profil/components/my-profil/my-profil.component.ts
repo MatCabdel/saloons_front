@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { map, Observable } from 'rxjs';
 import { UserDTO } from 'src/app/features/user/models/userDTO';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
@@ -13,6 +14,7 @@ import { UserStoreService } from 'src/app/features/user/store/user-store.service
 })
 export class MyProfilComponent {
   private _userStore = inject(UserStoreService);
+  private _router = inject(Router);
 
   user$: Observable<UserDTO | null> = this._userStore.getUserConnected$().pipe(
     map(u => {
@@ -23,4 +25,8 @@ export class MyProfilComponent {
       return { ...u, age };
     })
   );
+
+  navigateToEdit(): void {
+    this._router.navigate(['/profil/edit']);
+  }
 }

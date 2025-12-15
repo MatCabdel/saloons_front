@@ -7,7 +7,10 @@
     </div>
     <div class="description-container">
       <div class="top-right-button" type="button">{{ user.city }}</div>
-      <h1>{{ user.userName }}, {{ user.age }}</h1>
+      <div class="profile-header">
+        <h1>{{ user.userName }}, {{ user.age }}</h1>
+        <button class="edit-button" type="button" (click)="navigateToEdit()" aria-label="Modifier le profil">✏️</button>
+      </div>
       <div class="description">
         <h2>A propos</h2>
         <p>{{ user.description }}</p>
