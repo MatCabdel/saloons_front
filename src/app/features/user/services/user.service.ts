@@ -45,7 +45,7 @@ export class UserService {
     const formData = new FormData();
     formData.append('file', file);
 
-    const url = `${this._BASE_URL_API}/user/upload/image/${this.userConnected.value.id}`;
+    const url = `${this._BASE_URL_API}/user/upload/image/user/${this.userConnected.value.id}`;
 
     return this._http.post<UserDTO>(url, formData).pipe(
       tap((res): void => {
@@ -61,5 +61,16 @@ export class UserService {
 
   disconnectUserFromSaloon(userId: number): Observable<UserDTO> {
     return this._http.patch<UserDTO>(`${this._BASE_URL_API}/profile/${userId}/disconnect-saloon`, {});
+  }
+
+  updateUserProfile(
+    userId: number,
+    data: { userName: string; city: string; description: string }
+  ): Observable<UserDTO> {
+    return this._http.patch<UserDTO>(`${this._BASE_URL_API}/profile/${userId}`, data).pipe(
+      tap((res: UserDTO): void => {
+        this.activeUserProfil$.next(res);
+      })
+    );
   }
 }
