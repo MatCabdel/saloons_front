@@ -63,10 +63,7 @@ export class UserService {
     return this._http.patch<UserDTO>(`${this._BASE_URL_API}/profile/${userId}/disconnect-saloon`, {});
   }
 
-  updateUserProfile(
-    userId: number,
-    data: { userName: string; city: string; description: string }
-  ): Observable<UserDTO> {
+  updateUserProfile(userId: number, data: { userName: string; city: string; description: string }): Observable<UserDTO> {
     return this._http.patch<UserDTO>(`${this._BASE_URL_API}/profile/${userId}`, data).pipe(
       tap((res: UserDTO): void => {
         this.activeUserProfil$.next(res);
