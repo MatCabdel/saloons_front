@@ -35,29 +35,6 @@
       }
     }
 
-    .btn-burger {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      width: 40px;
-      height: 40px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      gap: 6px;
-
-      span {
-        display: block;
-        width: 90%;
-        height: 2px;
-        background: #413443;
-        border-radius: 2px;
-        transition: all 0.3s;
-      }
-    }
-
     h1 {
       text-align: left;
       color: white;

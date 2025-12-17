@@ -6,11 +6,19 @@ import { ListMatchComponent } from '../../../match/components/list-match/list-ma
 import { EnterSaloonComponent } from '../../../../common/components/enter-saloon/enter-saloon.component';
 import { SaloonSessionService } from 'src/app/features/saloon/services/saloon-session.service';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
+import { HeaderReverseComponent } from 'src/app/common/components/header-reverse/header-reverse.component';
 
 @Component({
   selector: 'app-conversations-page',
   standalone: true,
-  imports: [ListConversationComponent, HeaderComponent, NavbarComponent, ListMatchComponent, EnterSaloonComponent],
+  imports: [
+    ListConversationComponent,
+    HeaderComponent,
+    NavbarComponent,
+    ListMatchComponent,
+    EnterSaloonComponent,
+    HeaderReverseComponent,
+  ],
   templateUrl: './conversations-page.component.html',
   styleUrl: './conversations-page.component.scss',
 })

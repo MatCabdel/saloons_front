@@ -2,4 +2,9 @@
   <h1 (click)="navigateToWelcome()" class="clickable" (keydown.enter)="navigateToWelcome()" (keydown.space)="navigateToWelcome()" tabindex="0">
     SAL<span class="yellow">OO</span>NS
   </h1>
+  <button *ngIf="showBurger" class="burger-button" type="button" aria-label="Ouvrir le menu" (click)="triggerBurger()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 </div>
