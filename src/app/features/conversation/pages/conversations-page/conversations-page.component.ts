@@ -11,14 +11,7 @@ import { HeaderReverseComponent } from 'src/app/common/components/header-reverse
 @Component({
   selector: 'app-conversations-page',
   standalone: true,
-  imports: [
-    ListConversationComponent,
-    HeaderComponent,
-    NavbarComponent,
-    ListMatchComponent,
-    EnterSaloonComponent,
-    HeaderReverseComponent,
-  ],
+  imports: [ListConversationComponent, HeaderComponent, NavbarComponent, ListMatchComponent, EnterSaloonComponent, HeaderReverseComponent],
   templateUrl: './conversations-page.component.html',
   styleUrl: './conversations-page.component.scss',
 })

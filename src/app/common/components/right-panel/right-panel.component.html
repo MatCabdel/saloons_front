@@ -5,9 +5,13 @@
     tabindex="0"
     (click)="onOverlayClick()"
     (keydown.enter)="onOverlayKey($event)"
-    (keydown.space)="onOverlayKey($event)"
-  >
-    <aside class="right-panel" tabindex="0" (click)="stopPropagation($event)" (keydown.enter)="stopPropagation($event)" (keydown.space)="stopPropagation($event)">
+    (keydown.space)="onOverlayKey($event)">
+    <aside
+      class="right-panel"
+      tabindex="0"
+      (click)="stopPropagation($event)"
+      (keydown.enter)="stopPropagation($event)"
+      (keydown.space)="stopPropagation($event)">
       <button class="close-button" type="button" (click)="close()" aria-label="Fermer le panneau">✕</button>
       <div class="panel-content">
         <h2>Menu</h2>
