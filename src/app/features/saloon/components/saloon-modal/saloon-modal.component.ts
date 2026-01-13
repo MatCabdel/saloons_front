@@ -37,9 +37,8 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
     });
 
     // Charger la session active au démarrage
-    this._presenceService
-      .getMySession()
-      .pipe(takeUntil(this._destroy$))
+    // prettier-ignore
+    this._presenceService.getMySession().pipe(takeUntil(this._destroy$))
       .subscribe();
 
     // Charger le nombre réel de connectés
