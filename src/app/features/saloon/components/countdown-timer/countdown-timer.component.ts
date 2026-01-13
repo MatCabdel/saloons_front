@@ -1,56 +1,67 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { interval, Subscription } from 'rxjs';
-import { UserStoreService } from 'src/app/features/user/store/user-store.service';
-import { SaloonSessionService } from '../../services/saloon-session.service';
+import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
+import { PresenceService } from '../../services/presence.service';
 
 @Component({
   selector: 'app-countdown-timer',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './countdown-timer.component.html',
   styleUrl: './countdown-timer.component.scss',
 })
 export class CountdownTimerComponent implements OnInit {
   countdown: string = '';
-  private _sub?: Subscription;
+  saloonName: string = '';
+  isVisible = false;
 
-  private _sessionService = inject(SaloonSessionService);
-  private _userStore = inject(UserStoreService);
+  private _presenceService = inject(PresenceService);
+  private _router = inject(Router);
   private _destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    const userId = this._userStore.getUserId();
-    if (userId) {
-      this._sessionService
-        .getSession(userId)
-        .pipe(takeUntilDestroyed(this._destroyRef))
-        .subscribe({
-          next: session => this.startCountdown(session.connectedAt),
-          error: () => {
-            this.countdown = '';
-          },
-        });
-    }
+    // S'abonner aux changements de temps restant
+    this._presenceService.remainingSeconds$.pipe(takeUntilDestroyed(this._destroyRef)).subscribe(seconds => {
+      if (seconds > 0) {
+        this.countdown = this._presenceService.formatTime(seconds);
+        this.isVisible = true;
+      } else {
+        this.countdown = '';
+        this.isVisible = false;
+      }
+    });
+
+    // S'abonner à la session active pour le nom du saloon
+    this._presenceService.activeSession$.pipe(takeUntilDestroyed(this._destroyRef)).subscribe(session => {
+      if (session) {
+        this.saloonName = session.saloonName;
+      } else {
+        this.saloonName = '';
+      }
+    });
+
+    // Écouter l'expiration de la session pour rediriger
+    this._presenceService.sessionExpired$.pipe(takeUntilDestroyed(this._destroyRef)).subscribe(() => {
+      // Rediriger vers la liste des saloons
+      this._router.navigate(['/saloons']);
+    });
+
+    // Charger la session active au démarrage
+    // prettier-ignore
+    this._presenceService.getMySession().pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe();
   }
 
-  startCountdown(connectedAt: string): void {
-    const start = new Date(connectedAt).getTime();
-    const end = start + 3 * 60 * 60 * 1000;
-
-    this._sub = interval(1000)
+  /**
+   * Quitter le saloon actuel.
+   */
+  leaveSaloon(): void {
+    this._presenceService
+      .leaveCurrentSession()
       .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe(() => {
-        const now = Date.now();
-        const diff = end - now;
-        if (diff <= 0) {
-          this.countdown = '00:00:00';
-        } else {
-          const hours = Math.floor(diff / (1000 * 60 * 60));
-          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-          this.countdown = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
+        this._router.navigate(['/saloons']);
       });
   }
 }

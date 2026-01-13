@@ -10,9 +10,8 @@ import { RouterModule } from '@angular/router';
 })
 export class NavbarComponent {
   navItems = [
-    { route: '/scan', icon: 'assets/icons/qrcode2.svg', alt: 'qrcode' },
     { route: '/profil', icon: 'assets/icons/user.svg', alt: 'profil' },
-    { route: '/saloons', icon: 'assets/icons/home.svg', alt: 'tchat' },
+    { route: '/saloons', icon: 'assets/icons/home.svg', alt: 'home' },
     { route: '/chat', icon: 'assets/icons/chat3.svg', alt: 'tchat' },
   ];
 }

@@ -26,11 +26,8 @@
         }
       </div>
     }
-    <div class="btn-deconnexion">
-      <button class="btn-logout" type="button" (click)="disconnectUserFromSaloon()">
-        Sortir du Saloon <app-countdown-timer></app-countdown-timer>
-      </button>
-    </div>
+    <!-- Utilise le composant countdown-timer qui gère le timer et la déconnexion -->
+    <app-countdown-timer></app-countdown-timer>
   </div>
 </div>
 <app-navbar></app-navbar>
