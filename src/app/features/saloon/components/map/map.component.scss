@@ -1,9 +1,88 @@
 .map-container {
   height: 400px;
   width: 100%;
+  position: relative;
 
-  #map {
-    height: 100%;
+  #map,
+  .map-element {
+    height: 500px;
     width: 100%;
+  }
+}
+
+// Bouton de recentrage
+.center-btn {
+  position: absolute;
+  bottom: 0;
+  right: 20px;
+  z-index: 1000;
+  width: 44px;
+  height: 44px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+
+  svg {
+    color: #333;
+  }
+
+  &:hover {
+    background: #f5f5f5;
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// Marqueur de position utilisateur (point bleu pulsant)
+:host ::ng-deep {
+  .user-location-marker {
+    position: relative;
+  }
+
+  .user-marker-dot {
+    width: 14px;
+    height: 14px;
+    background: #4285f4;
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+  }
+
+  .user-marker-pulse {
+    width: 40px;
+    height: 40px;
+    background: rgba(66, 133, 244, 0.3);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 2s ease-out infinite;
+    z-index: 1;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: translate(-50%, -50%) scale(0.5);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1.5);
+      opacity: 0;
+    }
   }
 }

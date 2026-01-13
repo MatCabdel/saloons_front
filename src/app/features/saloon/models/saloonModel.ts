@@ -3,5 +3,10 @@ export type Saloon = {
   name: string;
   imgUrl: string;
   address: string;
-  visitors: number;
+  visitorNumber?: number; // Nombre de visiteurs depuis le backend
+  visitors?: number; // Alias pour compatibilité
+  latitude?: number;
+  longitude?: number;
+  city?: string;
+  radiusMeters?: number;
 };

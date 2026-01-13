@@ -1,6 +1,8 @@
-@if (countdown) {
-  <div class="countdown-timer-container">
-    (Temps restant dans le saloon : <strong>{{ countdown }}</strong
-    >)
+@if (isVisible && countdown) {
+  <div class="btn-container">
+    <button type="button" class="btn-leave" (click)="leaveSaloon()">
+      Sortir du Saloon
+      <span class="countdown">({{ countdown }})</span>
+    </button>
   </div>
 }

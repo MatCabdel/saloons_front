@@ -14,6 +14,7 @@ import { CommonModule } from '@angular/common';
 })
 export class SaloonCardComponent implements OnInit {
   @Input() saloon!: Saloon;
+  @Input() distanceMeters: number | null = null;
 
   usersInSaloon$!: Observable<User[]>;
 
@@ -21,5 +22,13 @@ export class SaloonCardComponent implements OnInit {
 
   ngOnInit(): void {
     this.usersInSaloon$ = this._saloonApi.getUsersInSaloon(this.saloon.id.toString());
+  }
+
+  get formattedDistance(): string {
+    if (this.distanceMeters === null) return '';
+    if (this.distanceMeters < 1000) {
+      return `${this.distanceMeters}m`;
+    }
+    return `${(this.distanceMeters / 1000).toFixed(1)}km`;
   }
 }
