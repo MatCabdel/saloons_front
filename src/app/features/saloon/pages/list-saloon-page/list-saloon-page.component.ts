@@ -32,7 +32,7 @@ export class ListSaloonPageComponent implements OnInit {
     this._userPosition$,
   ]).pipe(
     map(([saloons, position]) => {
-      const saloonsWithDistance = saloons.map((saloon) => ({
+      const saloonsWithDistance = saloons.map(saloon => ({
         ...saloon,
         distanceMeters:
           position && saloon.latitude && saloon.longitude
@@ -57,12 +57,12 @@ export class ListSaloonPageComponent implements OnInit {
   private _getUserLocation(): void {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        position => {
           this.userLat = position.coords.latitude;
           this.userLng = position.coords.longitude;
           this._userPosition$.next({ lat: this.userLat, lng: this.userLng });
         },
-        (error) => {
+        error => {
           console.warn('Géolocalisation non disponible:', error.message);
         }
       );
@@ -74,8 +74,7 @@ export class ListSaloonPageComponent implements OnInit {
     const dLat = this._toRad(lat2 - lat1);
     const dLng = this._toRad(lng2 - lng1);
     const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this._toRad(lat1)) * Math.cos(this._toRad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(this._toRad(lat1)) * Math.cos(this._toRad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }

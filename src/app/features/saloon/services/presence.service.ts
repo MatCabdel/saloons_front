@@ -108,7 +108,7 @@ export class PresenceService {
   joinSaloon(saloonId: number, lat: number | null, lng: number | null): Observable<JoinResponse> {
     const body: JoinRequest = { lat, lng };
     return this._http.post<JoinResponse>(`${this._BASE_URL_API}/api/saloons/${saloonId}/join`, body).pipe(
-      tap((response) => {
+      tap(response => {
         const session: ActiveSession = {
           userId: 0, // Sera mis à jour
           saloonId: response.saloonId,
@@ -142,7 +142,7 @@ export class PresenceService {
    */
   getPresence(saloonId: number): Observable<PresenceInfo> {
     return this._http.get<PresenceInfo>(`${this._BASE_URL_API}/api/saloons/${saloonId}/presence`).pipe(
-      tap((presence) => {
+      tap(presence => {
         this._currentPresence$.next(presence);
       })
     );
@@ -153,7 +153,7 @@ export class PresenceService {
    */
   getMySession(): Observable<SessionResponse> {
     return this._http.get<SessionResponse>(`${this._BASE_URL_API}/api/users/me/session`).pipe(
-      tap((response) => {
+      tap(response => {
         if (response.hasActiveSession && response.session) {
           this._activeSession$.next(response.session);
           this._startTimer(response.session.remainingSeconds);
@@ -216,7 +216,7 @@ export class PresenceService {
         connectedUsers: users,
       });
     } else if (event.type === 'USER_LEFT' && event.userId) {
-      const users = current.connectedUsers.filter((u) => u.id !== event.userId);
+      const users = current.connectedUsers.filter(u => u.id !== event.userId);
       this._currentPresence$.next({
         ...current,
         connectedCount: event.connectedCount,
@@ -240,15 +240,15 @@ export class PresenceService {
         this._activeSession$.next(null);
         this._currentPresence$.next(null);
         this._remainingSeconds$.next(0);
-        
+
         // Notifier le backend que la session a expiré (pour créer le cooldown)
         if (expiredSession) {
           this._http.post(`${this._BASE_URL_API}/api/saloons/${expiredSession.saloonId}/leave`, {}).subscribe({
             next: () => console.log('Session expirée, cooldown créé'),
-            error: (err) => console.warn('Erreur lors de la notification d\'expiration:', err)
+            error: err => console.warn("Erreur lors de la notification d'expiration:", err),
           });
         }
-        
+
         // Émettre l'événement d'expiration
         this._sessionExpired$.next();
       } else {

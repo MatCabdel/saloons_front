@@ -22,39 +22,34 @@ export class CountdownTimerComponent implements OnInit {
 
   ngOnInit(): void {
     // S'abonner aux changements de temps restant
-    this._presenceService.remainingSeconds$
-      .pipe(takeUntilDestroyed(this._destroyRef))
-      .subscribe((seconds) => {
-        if (seconds > 0) {
-          this.countdown = this._presenceService.formatTime(seconds);
-          this.isVisible = true;
-        } else {
-          this.countdown = '';
-          this.isVisible = false;
-        }
-      });
+    this._presenceService.remainingSeconds$.pipe(takeUntilDestroyed(this._destroyRef)).subscribe(seconds => {
+      if (seconds > 0) {
+        this.countdown = this._presenceService.formatTime(seconds);
+        this.isVisible = true;
+      } else {
+        this.countdown = '';
+        this.isVisible = false;
+      }
+    });
 
     // S'abonner à la session active pour le nom du saloon
-    this._presenceService.activeSession$
-      .pipe(takeUntilDestroyed(this._destroyRef))
-      .subscribe((session) => {
-        if (session) {
-          this.saloonName = session.saloonName;
-        } else {
-          this.saloonName = '';
-        }
-      });
+    this._presenceService.activeSession$.pipe(takeUntilDestroyed(this._destroyRef)).subscribe(session => {
+      if (session) {
+        this.saloonName = session.saloonName;
+      } else {
+        this.saloonName = '';
+      }
+    });
 
     // Écouter l'expiration de la session pour rediriger
-    this._presenceService.sessionExpired$
-      .pipe(takeUntilDestroyed(this._destroyRef))
-      .subscribe(() => {
-        // Rediriger vers la liste des saloons
-        this._router.navigate(['/saloons']);
-      });
+    this._presenceService.sessionExpired$.pipe(takeUntilDestroyed(this._destroyRef)).subscribe(() => {
+      // Rediriger vers la liste des saloons
+      this._router.navigate(['/saloons']);
+    });
 
     // Charger la session active au démarrage
-    this._presenceService.getMySession()
+    this._presenceService
+      .getMySession()
       .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe();
   }
@@ -63,7 +58,8 @@ export class CountdownTimerComponent implements OnInit {
    * Quitter le saloon actuel.
    */
   leaveSaloon(): void {
-    this._presenceService.leaveCurrentSession()
+    this._presenceService
+      .leaveCurrentSession()
       .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe(() => {
         this._router.navigate(['/saloons']);

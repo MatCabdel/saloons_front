@@ -63,17 +63,18 @@ export class MapComponent implements OnInit, OnDestroy {
    * Charge les saloons depuis l'API
    */
   private _loadSaloons(): void {
-    this._saloonApiService.getListSaloon()
+    this._saloonApiService
+      .getListSaloon()
       .pipe(takeUntil(this._destroy$))
       .subscribe({
-        next: (saloons) => {
+        next: saloons => {
           this._saloonsData = saloons.map(saloon => this._mapSaloonToMapItem(saloon));
           this._updateDistances();
           this._addMarkers();
         },
-        error: (err) => {
+        error: err => {
           console.error('Erreur lors du chargement des saloons:', err);
-        }
+        },
       });
   }
 
@@ -114,8 +115,7 @@ export class MapComponent implements OnInit, OnDestroy {
       // Ne pas ajouter si pas de coordonnées
       if (!saloon.latitude || !saloon.longitude) return;
 
-      const marker = L.marker([saloon.latitude, saloon.longitude], { icon: this._customIcon })
-        .addTo(this.map);
+      const marker = L.marker([saloon.latitude, saloon.longitude], { icon: this._customIcon }).addTo(this.map);
 
       // Au clic sur le marker, ouvrir le modal avec le saloon actualisé
       marker.on('click', () => {
@@ -132,20 +132,20 @@ export class MapComponent implements OnInit, OnDestroy {
   private _getUserLocation(): void {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        position => {
           this.userLat = position.coords.latitude;
           this.userLng = position.coords.longitude;
-          
+
           // Mettre à jour les distances
           this._updateDistances();
-          
+
           // Ajouter le marqueur de position utilisateur
           this._addUserMarker();
-          
+
           // Centrer la carte sur l'utilisateur
           this.map.setView([this.userLat, this.userLng], 15);
         },
-        (error) => {
+        error => {
           console.warn('Géolocalisation non disponible:', error.message);
         }
       );
@@ -154,15 +154,14 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private _addUserMarker(): void {
     if (this.userLat === null || this.userLng === null) return;
-    
+
     // Supprimer l'ancien marqueur s'il existe
     if (this._userMarker) {
       this.map.removeLayer(this._userMarker);
     }
-    
+
     // Ajouter le nouveau marqueur
-    this._userMarker = L.marker([this.userLat, this.userLng], { icon: this._userIcon })
-      .addTo(this.map);
+    this._userMarker = L.marker([this.userLat, this.userLng], { icon: this._userIcon }).addTo(this.map);
   }
 
   /**
@@ -182,12 +181,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this._saloonsData = this._saloonsData.map(saloon => ({
       ...saloon,
-      distanceMeters: Math.round(this._calculateDistance(
-        this.userLat!,
-        this.userLng!,
-        saloon.latitude,
-        saloon.longitude
-      )),
+      distanceMeters: Math.round(this._calculateDistance(this.userLat!, this.userLng!, saloon.latitude, saloon.longitude)),
     }));
   }
 
@@ -196,9 +190,7 @@ export class MapComponent implements OnInit, OnDestroy {
     const dLat = this._toRad(lat2 - lat1);
     const dLng = this._toRad(lng2 - lng1);
     const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this._toRad(lat1)) * Math.cos(this._toRad(lat2)) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(this._toRad(lat1)) * Math.cos(this._toRad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
@@ -210,12 +202,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private _openModal(saloon: SaloonMapItem): void {
     // Recalculer la distance pour ce saloon spécifique
     if (this.userLat !== null && this.userLng !== null) {
-      saloon.distanceMeters = Math.round(this._calculateDistance(
-        this.userLat,
-        this.userLng,
-        saloon.latitude,
-        saloon.longitude
-      ));
+      saloon.distanceMeters = Math.round(this._calculateDistance(this.userLat, this.userLng, saloon.latitude, saloon.longitude));
     }
     this.selectedSaloon = saloon;
     this.showModal = true;

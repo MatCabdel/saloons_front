@@ -31,13 +31,14 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit(): void {
     // Vérifier si l'utilisateur a déjà une session
-    this._presenceService.activeSession$.pipe(takeUntil(this._destroy$)).subscribe((session) => {
+    this._presenceService.activeSession$.pipe(takeUntil(this._destroy$)).subscribe(session => {
       this.activeSession = session;
       this.isInThisSaloon = session?.saloonId === this.saloon?.id;
     });
 
     // Charger la session active au démarrage
-    this._presenceService.getMySession()
+    this._presenceService
+      .getMySession()
       .pipe(takeUntil(this._destroy$))
       .subscribe();
 
@@ -61,17 +62,18 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
    */
   private _loadConnectedCount(): void {
     if (!this.saloon) return;
-    
-    this._presenceService.getPresence(this.saloon.id)
+
+    this._presenceService
+      .getPresence(this.saloon.id)
       .pipe(takeUntil(this._destroy$))
       .subscribe({
-        next: (presence) => {
+        next: presence => {
           this.realConnectedCount = presence.connectedCount;
         },
         error: () => {
           // En cas d'erreur, utiliser la valeur du saloon
           this.realConnectedCount = this.saloon?.connectedCount || 0;
-        }
+        },
       });
   }
 
@@ -98,7 +100,8 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this._presenceService.joinSaloon(this.saloon.id, this.userLat, this.userLng)
+    this._presenceService
+      .joinSaloon(this.saloon.id, this.userLat, this.userLng)
       .pipe(takeUntil(this._destroy$))
       .subscribe({
         next: () => {
@@ -109,11 +112,11 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
           this._router.navigate(['/mysaloon', this.saloon!.id]);
           this.close();
         },
-        error: (err) => {
-        this.isLoading = false;
-        this.errorMessage = err.error?.error || 'Une erreur est survenue';
-      },
-    });
+        error: err => {
+          this.isLoading = false;
+          this.errorMessage = err.error?.error || 'Une erreur est survenue';
+        },
+      });
   }
 
   /**
@@ -132,14 +135,15 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
     if (!this.activeSession) return;
 
     this.isLoading = true;
-    this._presenceService.leaveSaloon(this.activeSession.saloonId)
+    this._presenceService
+      .leaveSaloon(this.activeSession.saloonId)
       .pipe(takeUntil(this._destroy$))
       .subscribe({
         next: () => {
           this.isLoading = false;
           this._presenceWsService.disconnect();
         },
-        error: (err) => {
+        error: err => {
           this.isLoading = false;
           this.errorMessage = err.error?.error || 'Une erreur est survenue';
         },

@@ -30,12 +30,7 @@
     <!-- Nom d'utilisateur -->
     <div class="form-group">
       <label for="userName">Nom d'utilisateur</label>
-      <input
-        type="text"
-        id="userName"
-        formControlName="userName"
-        placeholder="Votre nom d'utilisateur"
-      />
+      <input type="text" id="userName" formControlName="userName" placeholder="Votre nom d'utilisateur" />
       @if (formGroup.get('userName')?.invalid && formGroup.get('userName')?.touched) {
         <span class="error-text">Le nom doit contenir entre 2 et 30 caractères</span>
       }
@@ -44,23 +39,13 @@
     <!-- Ville -->
     <div class="form-group">
       <label for="city">Ville</label>
-      <input
-        type="text"
-        id="city"
-        formControlName="city"
-        placeholder="Votre ville"
-      />
+      <input type="text" id="city" formControlName="city" placeholder="Votre ville" />
     </div>
 
     <!-- Description -->
     <div class="form-group">
       <label for="description">Description</label>
-      <textarea
-        id="description"
-        formControlName="description"
-        placeholder="Parlez de vous..."
-        rows="4"
-      ></textarea>
+      <textarea id="description" formControlName="description" placeholder="Parlez de vous..." rows="4"></textarea>
       @if (formGroup.get('description')?.invalid && formGroup.get('description')?.touched) {
         <span class="error-text">La description ne doit pas dépasser 500 caractères</span>
       }
@@ -68,11 +53,7 @@
 
     <!-- Bouton de soumission -->
     <div class="actions">
-      <button
-        type="submit"
-        class="submit-btn"
-        [disabled]="formGroup.invalid || isLoading"
-      >
+      <button type="submit" class="submit-btn" [disabled]="formGroup.invalid || isLoading">
         @if (isLoading) {
           <span class="spinner"></span>
           Enregistrement...

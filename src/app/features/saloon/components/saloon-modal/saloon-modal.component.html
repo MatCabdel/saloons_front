@@ -63,9 +63,7 @@
         <div class="actions">
           @if (isInThisSaloon) {
             <!-- Déjà dans ce saloon -->
-            <button type="button" class="btn btn-primary" (click)="goToSaloon()">
-              Revenir dans ce saloon
-            </button>
+            <button type="button" class="btn btn-primary" (click)="goToSaloon()">Revenir dans ce saloon</button>
             <button type="button" class="btn btn-secondary" (click)="leaveSaloon()" [disabled]="isLoading">
               @if (isLoading) {
                 <span class="spinner"></span>
@@ -75,12 +73,8 @@
             </button>
           } @else if (hasSessionElsewhere) {
             <!-- Session active dans un autre saloon -->
-            <p class="session-warning">
-              Vous êtes actuellement dans "{{ activeSession?.saloonName }}".
-            </p>
-            <button type="button" class="btn btn-primary" (click)="goToSaloon()">
-              Revenir dans {{ activeSession?.saloonName }}
-            </button>
+            <p class="session-warning">Vous êtes actuellement dans "{{ activeSession?.saloonName }}".</p>
+            <button type="button" class="btn btn-primary" (click)="goToSaloon()">Revenir dans {{ activeSession?.saloonName }}</button>
             <button type="button" class="btn btn-warning" (click)="leaveSaloon()" [disabled]="isLoading">
               @if (isLoading) {
                 <span class="spinner"></span>
@@ -90,11 +84,7 @@
             </button>
           } @else {
             <!-- Peut rejoindre -->
-            <button 
-              type="button"
-              class="btn btn-primary" 
-              (click)="joinSaloon()" 
-              [disabled]="isLoading || isTooFar">
+            <button type="button" class="btn btn-primary" (click)="joinSaloon()" [disabled]="isLoading || isTooFar">
               @if (isLoading) {
                 <span class="spinner"></span>
               } @else {
