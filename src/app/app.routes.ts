@@ -7,6 +7,7 @@ import { isLoggedInGuard } from './common/guards/is-logged-in.guard';
 import { DashboardPageComponent } from './features/admin/pages/dashboard-page/dashboard-page.component';
 import { QrcodePageComponent } from './features/qrcode/pages/qrcode-page/qrcode-page.component';
 import { ProfilPageComponent } from './features/profil/pages/profil-page/profil-page.component';
+import { EditProfilPageComponent } from './features/profil/pages/edit-profil-page/edit-profil-page.component';
 import { MessagesPageComponent } from './features/messages/pages/messages-page/messages-page.component';
 import { MySaloonPageComponent } from './features/saloon/pages/my-saloon-page/my-saloon-page.component';
 import { MapSaloonPageComponent } from './features/saloon/pages/map-saloon-page/map-saloon-page.component';
@@ -33,6 +34,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
   { path: 'scan', component: QrcodePageComponent, canActivate: [isLoggedInGuard] },
   { path: 'profil', component: ProfilPageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'profil/edit', component: EditProfilPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'chat', component: ConversationsPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'mysaloon/:id', component: MySaloonPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'profil-visitor/:id', component: ProfilVisitorPageComponent, canActivate: [isLoggedInGuard] },

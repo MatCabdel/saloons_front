@@ -45,7 +45,7 @@ export class UserService {
     const formData = new FormData();
     formData.append('file', file);
 
-    const url = `${this._BASE_URL_API}/user/upload/image/${this.userConnected.value.id}`;
+    const url = `${this._BASE_URL_API}/user/upload/image/user/${this.userConnected.value.id}`;
 
     return this._http.post<UserDTO>(url, formData).pipe(
       tap((res): void => {

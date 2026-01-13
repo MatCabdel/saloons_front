@@ -3,10 +3,10 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, take } from 'rxjs';
-import { FileUploadComponent } from '../../../../common/components/file-upload/file-upload.component';
-import { UserDTO } from '../../../user/models/userDTO';
-import { UserService } from '../../../user/services/user.service';
-import { UserStoreService } from '../../../user/store/user-store.service';
+import { FileUploadComponent } from 'src/app/common/components/file-upload/file-upload.component';
+import { UserDTO } from 'src/app/features/user/models/userDTO';
+import { UserService } from 'src/app/features/user/services/user.service';
+import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 
 @Component({
   selector: 'app-edit-profil',

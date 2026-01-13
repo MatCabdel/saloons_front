@@ -1,64 +1,45 @@
-<div class="edit-profil-container">
-  <div class="header">
-    <button class="back-btn" type="button" (click)="goBack()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="19" y1="12" x2="5" y2="12"></line>
-        <polyline points="12 19 5 12 12 5"></polyline>
-      </svg>
-    </button>
-    <h1>Modifier mon profil</h1>
-  </div>
-
-  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="edit-form">
+<div class="edit-profil-wrapper">
+  <form [formGroup]="formGroup" class="edit-form" (ngSubmit)="onSubmit()">
     <!-- Photo de profil -->
-    <div class="profile-image-section">
-      <div class="image-preview">
-        @if (imageUrl) {
-          <img [src]="imageUrl" alt="Photo de profil" />
-        } @else {
-          <div class="placeholder">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          </div>
+    <div class="photo-section">
+      <app-file-upload (fileEmitter)="receiveImage($event)" [imageUrl]="imageUrl"></app-file-upload>
+    </div>
+
+    <!-- Champs du formulaire -->
+    <div class="form-fields">
+      <div class="container-input">
+        <label class="label-form" for="userName">Pseudo *</label>
+        <input class="input-form" id="userName" type="text" formControlName="userName" placeholder="Votre pseudo" />
+        @if (formGroup.get('userName')?.invalid && formGroup.get('userName')?.touched) {
+          <span class="error">Le pseudo est requis (2-30 caractères)</span>
         }
       </div>
-      <app-file-upload (fileEmitter)="receiveImage($event)"></app-file-upload>
+
+      <div class="container-input">
+        <label class="label-form" for="city">Ville</label>
+        <input class="input-form" id="city" type="text" formControlName="city" placeholder="Votre ville" />
+      </div>
+
+      <div class="container-input">
+        <label class="label-form" for="description">À propos de moi</label>
+        <textarea
+          class="input-form textarea"
+          id="description"
+          formControlName="description"
+          placeholder="Décrivez-vous en quelques mots..."
+          rows="4"></textarea>
+        <span class="char-count">{{ formGroup.get('description')?.value?.length || 0 }}/500</span>
+      </div>
     </div>
 
-    <!-- Nom d'utilisateur -->
-    <div class="form-group">
-      <label for="userName">Nom d'utilisateur</label>
-      <input type="text" id="userName" formControlName="userName" placeholder="Votre nom d'utilisateur" />
-      @if (formGroup.get('userName')?.invalid && formGroup.get('userName')?.touched) {
-        <span class="error-text">Le nom doit contenir entre 2 et 30 caractères</span>
-      }
-    </div>
-
-    <!-- Ville -->
-    <div class="form-group">
-      <label for="city">Ville</label>
-      <input type="text" id="city" formControlName="city" placeholder="Votre ville" />
-    </div>
-
-    <!-- Description -->
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea id="description" formControlName="description" placeholder="Parlez de vous..." rows="4"></textarea>
-      @if (formGroup.get('description')?.invalid && formGroup.get('description')?.touched) {
-        <span class="error-text">La description ne doit pas dépasser 500 caractères</span>
-      }
-    </div>
-
-    <!-- Bouton de soumission -->
-    <div class="actions">
-      <button type="submit" class="submit-btn" [disabled]="formGroup.invalid || isLoading">
+    <!-- Boutons d'action -->
+    <div class="btn-actions">
+      <button type="button" class="btn-cancel" (click)="goBack()">Annuler</button>
+      <button type="submit" class="btn-save" [disabled]="formGroup.invalid || isLoading">
         @if (isLoading) {
-          <span class="spinner"></span>
-          Enregistrement...
+          <span>Enregistrement...</span>
         } @else {
-          Enregistrer les modifications
+          <span>Enregistrer</span>
         }
       </button>
     </div>
