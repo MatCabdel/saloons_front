@@ -22,6 +22,6 @@ export class VisitorCardComponent {
 
   /** Retourne la ville de l'utilisateur, ou une chaîne vide si non disponible */
   get userCity(): string {
-    return 'city' in this.user ? this.user.city : '';
+    return 'city' in this.user && this.user.city ? this.user.city : '';
   }
 }

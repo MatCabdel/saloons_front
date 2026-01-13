@@ -10,7 +10,13 @@
     <p>
       <img class="icon-visitors" src="assets/icons/visitors.svg" alt="icons visitors" />
       @if (usersInSaloon$ | async; as users) {
-        {{ users.length }} visiteurs
+        @if (users.length === 0) {
+          Aucun visiteur
+        } @else {
+          {{ users.length }} visiteur{{ users.length > 1 ? 's' : '' }}
+        }
+      } @else {
+        Aucun visiteur
       }
     </p>
   </div>

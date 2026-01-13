@@ -9,6 +9,7 @@ export type UserPresence = {
   userName: string;
   imgUrl: string;
   age: number | null;
+  city: string | null;
 };
 
 export type PresenceInfo = {
