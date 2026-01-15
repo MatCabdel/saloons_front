@@ -1,0 +1,71 @@
+<div class="city-stats-page">
+  <header class="page-header">
+    <h1>Statistiques par ville</h1>
+    <p class="subtitle">Utilisateurs connectés par localisation</p>
+  </header>
+
+  @if (isLoading) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Chargement des statistiques...</p>
+    </div>
+  } @else if (error) {
+    <div class="error-message">
+      <p>{{ error }}</p>
+      <button type="button" (click)="loadStats()">Réessayer</button>
+    </div>
+  } @else {
+    <div class="summary-card">
+      <div class="summary-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+      </div>
+      <div class="summary-content">
+        <span class="summary-value">{{ getTotalConnected() }}</span>
+        <span class="summary-label">Utilisateurs connectés au total</span>
+      </div>
+    </div>
+
+    @if (getCityEntries().length === 0) {
+      <div class="empty-state">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+          <circle cx="12" cy="10" r="3" />
+        </svg>
+        <h3>Aucune donnée</h3>
+        <p>Aucun utilisateur connecté pour le moment</p>
+      </div>
+    } @else {
+      <div class="cities-grid">
+        @for (entry of getCityEntries(); track entry.city) {
+          <div class="city-card" [class.has-connected]="entry.connectedUsers > 0">
+            <div class="city-header">
+              <h3 class="city-name">{{ entry.city }}</h3>
+              @if (entry.connectedUsers > 0) {
+                <span class="live-badge">
+                  <span class="pulse"></span>
+                  Live
+                </span>
+              }
+            </div>
+            <div class="city-stats">
+              <div class="stat">
+                <span class="stat-value connected">{{ entry.connectedUsers }}</span>
+                <span class="stat-label">connectés</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value total">{{ entry.totalUsers }}</span>
+                <span class="stat-label">inscrits</span>
+              </div>
+            </div>
+            <div class="city-bar">
+              <div class="bar-fill" [style.width.%]="entry.totalUsers > 0 ? (entry.connectedUsers / entry.totalUsers) * 100 : 0"></div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

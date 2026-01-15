@@ -1,0 +1,249 @@
+.city-stats-page {
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.page-header {
+  margin-bottom: 2rem;
+
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+  }
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  color: rgba(255, 255, 255, 0.5);
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #ffc122;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: 12px;
+  color: #ff6b6b;
+
+  button {
+    margin-top: 1rem;
+    padding: 0.5rem 1.5rem;
+    background: #ff5252;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+
+    &:hover {
+      background: #ff6b6b;
+    }
+  }
+}
+
+.summary-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, rgba(240, 147, 251, 0.15), rgba(245, 87, 108, 0.15));
+  border: 1px solid rgba(240, 147, 251, 0.3);
+  border-radius: 16px;
+  margin-bottom: 2rem;
+
+  .summary-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: white;
+  }
+
+  .summary-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .summary-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1;
+  }
+
+  .summary-label {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.25rem;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  color: rgba(255, 255, 255, 0.5);
+
+  svg {
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 0.5rem 0;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.cities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.city-card {
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 193, 34, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  }
+
+  &.has-connected {
+    border-color: rgba(56, 239, 125, 0.3);
+    background: rgba(56, 239, 125, 0.05);
+  }
+}
+
+.city-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+
+  .city-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+  }
+}
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.75rem;
+  background: rgba(56, 239, 125, 0.2);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #38ef7d;
+  text-transform: uppercase;
+
+  .pulse {
+    width: 6px;
+    height: 6px;
+    background: #38ef7d;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(56, 239, 125, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(56, 239, 125, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(56, 239, 125, 0);
+  }
+}
+
+.city-stats {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+
+    &.connected {
+      color: #38ef7d;
+    }
+
+    &.total {
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 0.25rem;
+  }
+}
+
+.city-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+
+  .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #38ef7d, #11998e);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+}

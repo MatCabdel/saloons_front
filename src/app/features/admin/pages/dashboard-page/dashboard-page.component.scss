@@ -1,10 +1,13 @@
 .dashboard-container {
   display: flex;
   height: 100vh;
+  background: #0f0f1a;
 }
+
 .dashboard-content {
   flex: 1;
-  background: #f8f6ff;
-  padding: 2rem;
+  background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+  padding: 2rem 3rem;
   overflow-y: auto;
+  color: white;
 }

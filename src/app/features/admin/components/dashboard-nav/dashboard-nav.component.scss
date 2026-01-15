@@ -1,53 +1,169 @@
 .dashboard-nav {
-  width: 20vw;
-  min-width: 220px;
-  background: linear-gradient(to bottom, #413443, #a483a9);
+  width: 280px;
+  min-width: 250px;
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
   height: 100vh;
-  padding: 2rem 1rem;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
 }
-h1 {
-  text-align: center;
-  color: white;
-  font-family: 'Koulen', sans-serif;
-  font-size: 3em;
-  font-weight: 500;
-  margin: 0;
-  width: 100%;
 
-  .yellow {
-    color: #ffc122;
+.nav-header {
+  padding: 2rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+
+  h1 {
+    color: white;
+    font-family: 'Koulen', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 500;
+    margin: 0;
+    letter-spacing: 2px;
+
+    .yellow {
+      color: #ffc122;
+    }
+  }
+
+  .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #ffc122, #ff9800);
+    color: #1a1a2e;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    margin-top: 0.5rem;
+    letter-spacing: 1px;
   }
 }
-h2 {
-  text-align: center;
-  color: white;
-  font-size: 1.2em;
-  font-weight: lighter;
-  margin: 0;
-  margin-bottom: 2.5rem; // <-- espace sous le h2
-  width: 100%;
+
+.nav-menu {
+  flex: 1;
+  padding: 1rem 0;
+  overflow-y: auto;
 }
 
-.dashboard-btn {
-  background: none;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0.7rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  cursor: pointer;
+.menu-section {
+  margin-bottom: 0.5rem;
+}
+
+.menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
-  text-align: left;
-  transition:
-    background 0.2s,
-    color 0.2s;
+  padding: 1rem 1.5rem;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
   &:hover {
-    background: #2d0140;
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffc122;
+  }
+
+  .chevron {
+    transition: transform 0.3s ease;
+
+    &.expanded {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.submenu {
+  padding: 0.25rem 0;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.submenu-item {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1.5rem 0.75rem 2.5rem;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
     color: white;
+
+    &::before {
+      background: #ffc122;
+    }
+  }
+
+  &.active {
+    color: #ffc122;
+    background: rgba(255, 193, 34, 0.1);
+
+    &::before {
+      background: #ffc122;
+      box-shadow: 0 0 8px rgba(255, 193, 34, 0.5);
+    }
+  }
+}
+
+.nav-footer {
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.2);
   }
 }

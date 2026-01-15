@@ -9,4 +9,6 @@ export type Saloon = {
   longitude?: number;
   city?: string;
   radiusMeters?: number;
+  isActive?: boolean;
+  connectedCount?: number; // Nombre d'utilisateurs actuellement connectés
 };

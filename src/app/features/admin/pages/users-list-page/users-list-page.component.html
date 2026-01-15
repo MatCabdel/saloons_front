@@ -1,2 +1,64 @@
-<h3>Liste des utilisateurs</h3>
-<p>Contenu liste utilisateurs ici...</p>
+<div class="users-list-page">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Liste des utilisateurs</h1>
+      <p class="subtitle">Gérez tous les utilisateurs de la plateforme</p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Chargement des utilisateurs...</p>
+    </div>
+  } @else if (error()) {
+    <div class="error-message">
+      <p>{{ error() }}</p>
+      <button type="button" (click)="loadUsers()">Réessayer</button>
+    </div>
+  } @else if (users().length === 0) {
+    <div class="empty-state">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+      <h3>Aucun utilisateur</h3>
+      <p>Il n'y a pas encore d'utilisateurs inscrits</p>
+    </div>
+  } @else {
+    <div class="users-table-wrapper">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>Photo</th>
+            <th>Nom d'utilisateur</th>
+            <th>Email</th>
+            <th>Ville</th>
+            <th>Âge</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track user.id) {
+            <tr>
+              <td class="cell-image">
+                @if (user.imgUrl) {
+                  <img [src]="user.imgUrl" [alt]="user.userName" />
+                } @else {
+                  <div class="avatar-placeholder">
+                    {{ user.userName ? user.userName.charAt(0).toUpperCase() : '?' }}
+                  </div>
+                }
+              </td>
+              <td class="cell-name">{{ user.userName }}</td>
+              <td class="cell-email">{{ user.email }}</td>
+              <td class="cell-city">{{ user.city || '-' }}</td>
+              <td class="cell-age">{{ user.age || '-' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
