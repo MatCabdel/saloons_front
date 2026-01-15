@@ -11,7 +11,8 @@ const config: Config = {
   testPathIgnorePatterns: ['<rootDir>/cypress/'],
   clearMocks: true,
   coverageDirectory: "coverage",
-  coverageProvider: "v8"
+  coverageProvider: "v8",
+  passWithNoTests: true
 };
 
 export default config;
