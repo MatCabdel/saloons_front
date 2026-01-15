@@ -1,0 +1,124 @@
+<div class="saloons-stats-page">
+  <header class="page-header">
+    <h1>Statistiques des saloons</h1>
+    <p class="subtitle">Saloons par ville avec participants en temps réel</p>
+  </header>
+
+  @if (isLoading) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Chargement des statistiques...</p>
+    </div>
+  } @else if (error) {
+    <div class="error-message">
+      <p>{{ error }}</p>
+      <button type="button" (click)="loadStats()">Réessayer</button>
+    </div>
+  } @else {
+    <div class="summary-cards">
+      <div class="summary-card">
+        <div class="summary-icon saloons">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+        </div>
+        <div class="summary-content">
+          <span class="summary-value">{{ getTotalSaloons() }}</span>
+          <span class="summary-label">Saloons au total</span>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-icon connected">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+        </div>
+        <div class="summary-content">
+          <span class="summary-value">{{ getTotalConnected() }}</span>
+          <span class="summary-label">Participants en ligne</span>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-icon cities">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+        </div>
+        <div class="summary-content">
+          <span class="summary-value">{{ getCities().length }}</span>
+          <span class="summary-label">Villes couvertes</span>
+        </div>
+      </div>
+    </div>
+
+    @if (getCities().length === 0) {
+      <div class="empty-state">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        <h3>Aucun saloon</h3>
+        <p>Aucun saloon n'a encore été créé</p>
+      </div>
+    } @else {
+      <div class="cities-list">
+        @for (city of getCities(); track city) {
+          <div class="city-section" [class.expanded]="isCityExpanded(city)">
+            <button type="button" class="city-header" (click)="toggleCity(city)">
+              <div class="city-info">
+                <h3 class="city-name">{{ city }}</h3>
+                <div class="city-meta">
+                  <span class="badge saloons-count">{{ getSaloonCount(city) }} saloons</span>
+                  @if (getTotalConnectedInCity(city) > 0) {
+                    <span class="badge connected-count">
+                      <span class="pulse"></span>
+                      {{ getTotalConnectedInCity(city) }} en ligne
+                    </span>
+                  }
+                </div>
+              </div>
+              <svg
+                class="chevron"
+                [class.rotated]="isCityExpanded(city)"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+
+            @if (isCityExpanded(city)) {
+              <div class="saloons-list">
+                @for (saloon of getSaloonsForCity(city); track saloon.id) {
+                  <div class="saloon-item" [class.has-users]="saloon.connectedCount > 0">
+                    <img [src]="saloon.imgUrl" [alt]="saloon.name" class="saloon-img" />
+                    <div class="saloon-info">
+                      <span class="saloon-name">{{ saloon.name }}</span>
+                    </div>
+                    <div class="saloon-connected">
+                      <span class="connected-value" [class.active]="saloon.connectedCount > 0">
+                        {{ saloon.connectedCount }}
+                      </span>
+                      <span class="connected-label">participants</span>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
