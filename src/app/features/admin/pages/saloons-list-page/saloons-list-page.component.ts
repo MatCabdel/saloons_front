@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
@@ -24,6 +24,11 @@ export class SaloonsListPageComponent implements OnInit {
   selectedSaloon: Saloon | null = null;
   saloonUsers: User[] = [];
   loadingUsers = false;
+
+  // Delete modal state
+  showDeleteModal = signal(false);
+  saloonToDelete = signal<Saloon | null>(null);
+  deleting = signal(false);
 
   ngOnInit(): void {
     this.loadSaloons();
@@ -58,17 +63,31 @@ export class SaloonsListPageComponent implements OnInit {
     });
   }
 
-  deleteSaloon(saloon: Saloon): void {
-    if (!confirm(`Êtes-vous sûr de vouloir supprimer "${saloon.name}" ?`)) {
-      return;
-    }
+  confirmDeleteSaloon(saloon: Saloon): void {
+    this.saloonToDelete.set(saloon);
+    this.showDeleteModal.set(true);
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal.set(false);
+    this.saloonToDelete.set(null);
+  }
+
+  deleteSaloon(): void {
+    const saloon = this.saloonToDelete();
+    if (!saloon) return;
+
+    this.deleting.set(true);
 
     this._adminService.deleteSaloon(saloon.id).subscribe({
       next: () => {
         this.saloons = this.saloons.filter(s => s.id !== saloon.id);
+        this.closeDeleteModal();
+        this.deleting.set(false);
       },
-      error: err => {
+      error: (err: unknown) => {
         console.error('Erreur suppression:', err);
+        this.deleting.set(false);
       },
     });
   }
