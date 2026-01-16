@@ -104,4 +104,8 @@ export class AdminService {
   deleteSaloon(id: number): Observable<void> {
     return this._http.delete<void>(`${this._BASE_URL}/admin/saloon/${id}`);
   }
+
+  deleteUser(id: number): Observable<void> {
+    return this._http.delete<void>(`${this._BASE_URL}/admin/user/${id}`);
+  }
 }

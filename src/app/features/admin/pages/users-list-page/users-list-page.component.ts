@@ -17,6 +17,15 @@ export class UsersListPageComponent implements OnInit {
   loading = signal(true);
   error = signal<string | null>(null);
 
+  // Profile modal state
+  showProfileModal = signal(false);
+  selectedUser = signal<User | null>(null);
+
+  // Delete modal state
+  showDeleteModal = signal(false);
+  userToDelete = signal<User | null>(null);
+  deleting = signal(false);
+
   ngOnInit(): void {
     this.loadUsers();
   }
@@ -34,6 +43,45 @@ export class UsersListPageComponent implements OnInit {
         this.error.set('Erreur lors du chargement des utilisateurs');
         this.loading.set(false);
         console.error(err);
+      },
+    });
+  }
+
+  viewProfile(user: User): void {
+    this.selectedUser.set(user);
+    this.showProfileModal.set(true);
+  }
+
+  closeProfileModal(): void {
+    this.showProfileModal.set(false);
+    this.selectedUser.set(null);
+  }
+
+  confirmDelete(user: User): void {
+    this.userToDelete.set(user);
+    this.showDeleteModal.set(true);
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal.set(false);
+    this.userToDelete.set(null);
+  }
+
+  deleteUser(): void {
+    const user = this.userToDelete();
+    if (!user) return;
+
+    this.deleting.set(true);
+
+    this._adminService.deleteUser(user.id).subscribe({
+      next: () => {
+        this.users.update(users => users.filter(u => u.id !== user.id));
+        this.closeDeleteModal();
+        this.deleting.set(false);
+      },
+      error: (err: unknown) => {
+        console.error('Erreur lors de la suppression:', err);
+        this.deleting.set(false);
       },
     });
   }

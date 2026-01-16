@@ -13,4 +13,5 @@ export type User = {
   birthdate: Date;
   city: string;
   age: number;
+  isPremium?: boolean;
 };

@@ -101,7 +101,7 @@
                     <circle cx="12" cy="12" r="3" />
                   </svg>
                 </button>
-                <button type="button" class="btn-action delete" (click)="deleteSaloon(saloon)" title="Supprimer">
+                <button type="button" class="btn-action delete" (click)="confirmDeleteSaloon(saloon)" title="Supprimer">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="18"
@@ -165,6 +165,47 @@
                 }
               </div>
             }
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Modal de confirmation de suppression -->
+    @if (showDeleteModal() && saloonToDelete()) {
+      <div class="modal-overlay" role="dialog" aria-modal="true" (click)="closeDeleteModal()" (keyup.escape)="closeDeleteModal()">
+        <div class="modal-content delete-modal" role="document" (click)="$event.stopPropagation()" (keyup.escape)="closeDeleteModal()">
+          <div class="modal-header danger">
+            <h3>Confirmer la suppression</h3>
+            <button type="button" class="close-btn" (click)="closeDeleteModal()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="warning-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </div>
+            <p class="warning-text">
+              Êtes-vous sûr de vouloir supprimer le saloon <strong>{{ saloonToDelete()!.name }}</strong> ?
+            </p>
+            <p class="warning-subtext">Cette action est irréversible.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-cancel" (click)="closeDeleteModal()">Annuler</button>
+            <button type="button" class="btn-delete" (click)="deleteSaloon()" [disabled]="deleting()">
+              @if (deleting()) {
+                <span class="spinner-small"></span>
+                Suppression...
+              } @else {
+                Supprimer
+              }
+            </button>
           </div>
         </div>
       </div>

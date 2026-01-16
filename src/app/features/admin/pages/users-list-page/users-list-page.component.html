@@ -37,6 +37,7 @@
             <th>Email</th>
             <th>Ville</th>
             <th>Âge</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -55,10 +56,142 @@
               <td class="cell-email">{{ user.email }}</td>
               <td class="cell-city">{{ user.city || '-' }}</td>
               <td class="cell-age">{{ user.age || '-' }}</td>
+              <td class="cell-actions">
+                <button type="button" class="btn-action view" (click)="viewProfile(user)" title="Voir le profil">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                </button>
+                <button type="button" class="btn-action delete" (click)="confirmDelete(user)" title="Supprimer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  </svg>
+                </button>
+              </td>
             </tr>
           }
         </tbody>
       </table>
     </div>
+
+    <!-- Modal pour afficher le profil -->
+    @if (showProfileModal() && selectedUser()) {
+      <div class="modal-overlay" role="dialog" aria-modal="true" (click)="closeProfileModal()" (keyup.escape)="closeProfileModal()">
+        <div class="modal-content profile-modal" role="document" (click)="$event.stopPropagation()" (keyup.escape)="closeProfileModal()">
+          <div class="modal-header">
+            <h3>Profil utilisateur</h3>
+            <button type="button" class="close-btn" (click)="closeProfileModal()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="profile-header">
+              @if (selectedUser()!.imgUrl) {
+                <img [src]="selectedUser()!.imgUrl" [alt]="selectedUser()!.userName" class="profile-avatar" />
+              } @else {
+                <div class="avatar-placeholder large">
+                  {{ selectedUser()!.userName ? selectedUser()!.userName!.charAt(0).toUpperCase() : '?' }}
+                </div>
+              }
+              <h4>{{ selectedUser()!.userName }}</h4>
+            </div>
+            <div class="profile-details">
+              <div class="detail-row">
+                <span class="label">Email</span>
+                <span class="value">{{ selectedUser()!.email }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Ville</span>
+                <span class="value">{{ selectedUser()!.city || 'Non renseignée' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Âge</span>
+                <span class="value">{{ selectedUser()!.age ? selectedUser()!.age + ' ans' : 'Non renseigné' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Prénom</span>
+                <span class="value">{{ selectedUser()!.firstname || 'Non renseigné' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Nom</span>
+                <span class="value">{{ selectedUser()!.lastname || 'Non renseigné' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Description</span>
+                <span class="value">{{ selectedUser()!.description || 'Non renseignée' }}</span>
+              </div>
+              @if (selectedUser()!.isPremium) {
+                <div class="premium-badge">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                  </svg>
+                  Premium
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Modal de confirmation de suppression -->
+    @if (showDeleteModal() && userToDelete()) {
+      <div class="modal-overlay" role="dialog" aria-modal="true" (click)="closeDeleteModal()" (keyup.escape)="closeDeleteModal()">
+        <div class="modal-content delete-modal" role="document" (click)="$event.stopPropagation()" (keyup.escape)="closeDeleteModal()">
+          <div class="modal-header danger">
+            <h3>Confirmer la suppression</h3>
+            <button type="button" class="close-btn" (click)="closeDeleteModal()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="warning-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </div>
+            <p class="warning-text">
+              Êtes-vous sûr de vouloir supprimer l'utilisateur <strong>{{ userToDelete()!.userName }}</strong> ?
+            </p>
+            <p class="warning-subtext">Cette action est irréversible.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-cancel" (click)="closeDeleteModal()">Annuler</button>
+            <button type="button" class="btn-delete" (click)="deleteUser()" [disabled]="deleting()">
+              @if (deleting()) {
+                <span class="spinner-small"></span>
+                Suppression...
+              } @else {
+                Supprimer
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+    }
   }
 </div>
