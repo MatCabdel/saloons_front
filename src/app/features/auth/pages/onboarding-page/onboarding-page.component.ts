@@ -91,21 +91,24 @@ export class OnboardingPageComponent {
   }
 
   private _setupCityAutocomplete(): void {
-    this.cityForm.get('citySearch')?.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      filter((value: string) => {
-        // Ne pas rechercher si une ville est déjà sélectionnée
-        if (this.selectedCity()) {
-          return false;
-        }
-        return !!value && value.length >= 2;
-      }),
-      switchMap((value: string) => this._searchCities(value))
-    ).subscribe(cities => {
-      this.citySuggestions.set(cities);
-      this.showCitySuggestions.set(cities.length > 0);
-    });
+    this.cityForm
+      .get('citySearch')
+      ?.valueChanges.pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        filter((value: string) => {
+          // Ne pas rechercher si une ville est déjà sélectionnée
+          if (this.selectedCity()) {
+            return false;
+          }
+          return !!value && value.length >= 2;
+        }),
+        switchMap((value: string) => this._searchCities(value))
+      )
+      .subscribe(cities => {
+        this.citySuggestions.set(cities);
+        this.showCitySuggestions.set(cities.length > 0);
+      });
   }
 
   private _searchCities(query: string): Observable<GeoCity[]> {
@@ -233,7 +236,7 @@ export class OnboardingPageComponent {
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        this.errorMessage.set('L\'image ne doit pas dépasser 5MB');
+        this.errorMessage.set("L'image ne doit pas dépasser 5MB");
         return;
       }
 

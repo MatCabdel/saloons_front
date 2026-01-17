@@ -7,9 +7,7 @@
   <!-- Header -->
   <div class="onboarding-header">
     <h1 class="brand">SAL<span class="yellow">OO</span>NS</h1>
-    <div class="step-indicator">
-      Étape {{ currentStepIndex + 1 }} / {{ steps.length }}
-    </div>
+    <div class="step-indicator">Étape {{ currentStepIndex + 1 }} / {{ steps.length }}</div>
   </div>
 
   <!-- Content -->
@@ -31,7 +29,8 @@
       <div class="step-container warning-step">
         <div class="warning-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
         </div>
         <h2 class="step-title">Bienvenue dans la communauté 💜</h2>
@@ -44,12 +43,12 @@
             <li>✨ Le consentement avant tout</li>
             <li>🛡️ Un espace safe pour tous</li>
           </ul>
-          <p class="reassurance-text">Notre équipe de modération veille au grain pour que chacun puisse profiter de l'expérience en toute sérénité.</p>
+          <p class="reassurance-text">
+            Notre équipe de modération veille au grain pour que chacun puisse profiter de l'expérience en toute sérénité.
+          </p>
         </div>
         <div class="step-actions">
-          <button type="button" class="secondary-btn" (click)="prevStep()">
-            Retour
-          </button>
+          <button type="button" class="secondary-btn" (click)="prevStep()">Retour</button>
           <button type="button" class="primary-btn" (click)="acceptWarningAndSubmit()" [disabled]="isLoading()">
             @if (isLoading()) {
               <div class="spinner"></div>
@@ -66,17 +65,17 @@
       <div class="step-container">
         <h2 class="step-title">{{ stepTitles['username'] }}</h2>
         <p class="step-description">Ce pseudo sera visible par les autres utilisateurs</p>
-        
+
         <form [formGroup]="usernameForm" class="step-form">
           <div class="form-group">
             <label for="userName">Pseudo</label>
-            <input 
-              type="text" 
-              id="userName" 
+            <input
+              type="text"
+              id="userName"
               formControlName="userName"
               placeholder="Votre pseudo"
               [class.invalid]="isFieldInvalid(usernameForm, 'userName')"
-              maxlength="20">
+              maxlength="20" />
             <div class="char-count">{{ usernameForm.value.userName?.length || 0 }}/20</div>
             @if (isFieldInvalid(usernameForm, 'userName')) {
               <span class="error-text">{{ getFieldError(usernameForm, 'userName') }}</span>
@@ -85,9 +84,7 @@
         </form>
 
         <div class="step-actions">
-          <button type="button" class="primary-btn" (click)="nextStep()">
-            Continuer
-          </button>
+          <button type="button" class="primary-btn" (click)="nextStep()">Continuer</button>
         </div>
       </div>
     }
@@ -97,17 +94,17 @@
       <div class="step-container">
         <h2 class="step-title">{{ stepTitles['birthdate'] }}</h2>
         <p class="step-description">Vous devez avoir au moins 18 ans</p>
-        
+
         <form [formGroup]="birthdateForm" class="step-form">
           <div class="form-group">
             <label for="birthDate">Date de naissance</label>
-            <input 
-              type="date" 
-              id="birthDate" 
+            <input
+              type="date"
+              id="birthDate"
               formControlName="birthDate"
               [min]="minBirthDate"
               [max]="maxBirthDate"
-              [class.invalid]="isFieldInvalid(birthdateForm, 'birthDate')">
+              [class.invalid]="isFieldInvalid(birthdateForm, 'birthDate')" />
             @if (isFieldInvalid(birthdateForm, 'birthDate')) {
               <span class="error-text">{{ getFieldError(birthdateForm, 'birthDate') }}</span>
             }
@@ -115,12 +112,8 @@
         </form>
 
         <div class="step-actions">
-          <button type="button" class="secondary-btn" (click)="prevStep()">
-            Retour
-          </button>
-          <button type="button" class="primary-btn" (click)="nextStep()">
-            Continuer
-          </button>
+          <button type="button" class="secondary-btn" (click)="prevStep()">Retour</button>
+          <button type="button" class="primary-btn" (click)="nextStep()">Continuer</button>
         </div>
       </div>
     }
@@ -130,30 +123,30 @@
       <div class="step-container">
         <h2 class="step-title">{{ stepTitles['city'] }}</h2>
         <p class="step-description">Dans quelle ville habitez-vous ?</p>
-        
+
         <form [formGroup]="cityForm" class="step-form">
           <div class="form-group city-autocomplete">
             <label for="citySearch">Ville</label>
             <div class="autocomplete-wrapper">
-              <input 
-                type="text" 
-                id="citySearch" 
+              <input
+                type="text"
+                id="citySearch"
                 formControlName="citySearch"
                 placeholder="Commencez à taper le nom de votre ville..."
                 [class.invalid]="isFieldInvalid(cityForm, 'city')"
                 (focus)="onCityInputFocus()"
                 (blur)="onCityInputBlur()"
-                autocomplete="off">
-              
+                autocomplete="off" />
+
               @if (showCitySuggestions() && citySuggestions().length > 0) {
                 <ul class="suggestions-list" role="listbox">
                   @for (city of citySuggestions(); track city.code) {
-                    <li 
+                    <li
                       role="option"
                       tabindex="0"
                       [attr.aria-selected]="selectedCity()?.code === city.code"
-                      (mousedown)="$event.preventDefault()" 
-                      (click)="selectCity(city)" 
+                      (mousedown)="$event.preventDefault()"
+                      (click)="selectCity(city)"
                       (keyup.enter)="selectCity(city)"
                       class="suggestion-item">
                       <span class="city-name">{{ city.nom }}</span>
@@ -181,12 +174,8 @@
         </form>
 
         <div class="step-actions">
-          <button type="button" class="secondary-btn" (click)="prevStep()">
-            Retour
-          </button>
-          <button type="button" class="primary-btn" (click)="nextStep()" [disabled]="!selectedCity()">
-            Continuer
-          </button>
+          <button type="button" class="secondary-btn" (click)="prevStep()">Retour</button>
+          <button type="button" class="primary-btn" (click)="nextStep()" [disabled]="!selectedCity()">Continuer</button>
         </div>
       </div>
     }
@@ -196,11 +185,11 @@
       <div class="step-container">
         <h2 class="step-title">{{ stepTitles['photo'] }}</h2>
         <p class="step-description">Ajoutez une photo pour que les autres puissent vous reconnaître</p>
-        
+
         <div class="photo-upload">
           @if (photoPreview()) {
             <div class="photo-preview">
-              <img [src]="photoPreview()" alt="Aperçu photo">
+              <img [src]="photoPreview()" alt="Aperçu photo" />
               <button type="button" class="remove-photo" (click)="removePhoto()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -218,24 +207,13 @@
               <span>Cliquez pour ajouter une photo</span>
             </label>
           }
-          <input 
-            type="file" 
-            id="photo-input" 
-            accept="image/*"
-            (change)="onPhotoSelect($event)"
-            hidden>
+          <input type="file" id="photo-input" accept="image/*" (change)="onPhotoSelect($event)" hidden />
         </div>
 
         <div class="step-actions">
-          <button type="button" class="secondary-btn" (click)="prevStep()">
-            Retour
-          </button>
-          <button type="button" class="text-btn" (click)="skipPhoto()">
-            Passer
-          </button>
-          <button type="button" class="primary-btn" (click)="nextStep()" [disabled]="!photoPreview()">
-            Continuer
-          </button>
+          <button type="button" class="secondary-btn" (click)="prevStep()">Retour</button>
+          <button type="button" class="text-btn" (click)="skipPhoto()">Passer</button>
+          <button type="button" class="primary-btn" (click)="nextStep()" [disabled]="!photoPreview()">Continuer</button>
         </div>
       </div>
     }
@@ -245,12 +223,12 @@
       <div class="step-container">
         <h2 class="step-title">{{ stepTitles['bio'] }}</h2>
         <p class="step-description">Présentez-vous en quelques mots (optionnel)</p>
-        
+
         <form [formGroup]="bioForm" class="step-form">
           <div class="form-group">
             <label for="description">Description</label>
-            <textarea 
-              id="description" 
+            <textarea
+              id="description"
               formControlName="description"
               placeholder="Parlez de vous, de vos centres d'intérêt..."
               rows="4"
@@ -264,12 +242,8 @@
         </form>
 
         <div class="step-actions">
-          <button type="button" class="secondary-btn" (click)="prevStep()">
-            Retour
-          </button>
-          <button type="button" class="primary-btn" (click)="nextStep()">
-            Continuer
-          </button>
+          <button type="button" class="secondary-btn" (click)="prevStep()">Retour</button>
+          <button type="button" class="primary-btn" (click)="nextStep()">Continuer</button>
         </div>
       </div>
     }

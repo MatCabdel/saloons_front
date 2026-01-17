@@ -51,7 +51,7 @@
                   <img [src]="user.imgUrl" [alt]="user.userName" />
                 } @else {
                   <div class="avatar-placeholder">
-                    {{ user.userName ? user.userName.charAt(0).toUpperCase() : (user.firstname ? user.firstname.charAt(0).toUpperCase() : '?') }}
+                    {{ user.userName ? user.userName.charAt(0).toUpperCase() : user.firstname ? user.firstname.charAt(0).toUpperCase() : '?' }}
                   </div>
                 }
               </td>
