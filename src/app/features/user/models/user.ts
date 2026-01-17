@@ -14,4 +14,6 @@ export type User = {
   city: string;
   age: number;
   isPremium?: boolean;
+  profileStatus?: string;
+  authProvider?: string;
 };
