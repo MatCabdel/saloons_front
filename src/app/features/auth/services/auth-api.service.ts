@@ -82,4 +82,10 @@ export class AuthApiService {
     const roles = this.getUserRoles();
     return roles.length > 0 ? roles[0] : null;
   }
+
+  public logout(): void {
+    localStorage.removeItem('saloon_auth_token');
+    localStorage.removeItem('user');
+    this._router.navigate(['/']);
+  }
 }
