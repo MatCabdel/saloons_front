@@ -82,7 +82,7 @@ export class AuthPageComponent implements OnInit {
   onGoogleAuth(): void {
     // Vérifier si Firebase est configuré
     if (environment.firebase.apiKey === 'YOUR_FIREBASE_API_KEY') {
-      this.errorMessage.set('Firebase n\'est pas encore configuré. Utilisez la connexion par email.');
+      this.errorMessage.set("Firebase n'est pas encore configuré. Utilisez la connexion par email.");
       return;
     }
 
@@ -104,7 +104,7 @@ export class AuthPageComponent implements OnInit {
   onFacebookAuth(): void {
     // Vérifier si Firebase est configuré
     if (environment.firebase.apiKey === 'YOUR_FIREBASE_API_KEY') {
-      this.errorMessage.set('Firebase n\'est pas encore configuré. Utilisez la connexion par email.');
+      this.errorMessage.set("Firebase n'est pas encore configuré. Utilisez la connexion par email.");
       return;
     }
 
@@ -138,21 +138,23 @@ export class AuthPageComponent implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    this._firebaseAuth.registerWithEmail({
-      firstName: this.registerForm.value.firstName,
-      lastName: this.registerForm.value.lastName,
-      email: this.registerForm.value.email,
-      password: this.registerForm.value.password,
-    }).subscribe({
-      next: () => {
-        this.isLoading.set(false);
-        this._router.navigate(['/onboarding']);
-      },
-      error: err => {
-        this.isLoading.set(false);
-        this.errorMessage.set(this._getErrorMessage(err));
-      },
-    });
+    this._firebaseAuth
+      .registerWithEmail({
+        firstName: this.registerForm.value.firstName,
+        lastName: this.registerForm.value.lastName,
+        email: this.registerForm.value.email,
+        password: this.registerForm.value.password,
+      })
+      .subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this._router.navigate(['/onboarding']);
+        },
+        error: err => {
+          this.isLoading.set(false);
+          this.errorMessage.set(this._getErrorMessage(err));
+        },
+      });
   }
 
   onEmailLogin(): void {

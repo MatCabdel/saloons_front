@@ -166,9 +166,7 @@ export class FirebaseAuthService {
    */
   private _authenticateWithBackend(firebaseUser: FirebaseUser): Observable<AuthResponse> {
     return from(firebaseUser.getIdToken()).pipe(
-      switchMap(firebaseToken =>
-        this._http.post<AuthResponse>(`${this._BASE_URL}/auth/firebase`, { firebaseToken })
-      )
+      switchMap(firebaseToken => this._http.post<AuthResponse>(`${this._BASE_URL}/auth/firebase`, { firebaseToken }))
     );
   }
 
