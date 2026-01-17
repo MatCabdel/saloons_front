@@ -234,9 +234,9 @@ export class OnboardingPageComponent {
         return;
       }
 
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        this.errorMessage.set("L'image ne doit pas dépasser 5MB");
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        this.errorMessage.set("L'image ne doit pas dépasser 10MB");
         return;
       }
 

@@ -37,9 +37,9 @@ export class CreateSaloonPageComponent {
     if (input.files && input.files[0]) {
       const file = input.files[0];
 
-      // Vérifier la taille (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        this.error = "L'image ne doit pas dépasser 5MB";
+      // Vérifier la taille (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        this.error = "L'image ne doit pas dépasser 10MB";
         return;
       }
 

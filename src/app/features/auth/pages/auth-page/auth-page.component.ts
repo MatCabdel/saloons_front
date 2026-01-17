@@ -200,6 +200,10 @@ export class AuthPageComponent implements OnInit {
     const err = error as any;
 
     console.error('Auth error:', err);
+    console.error('Error code:', err?.code);
+    console.error('Error message:', err?.message);
+    console.error('Error status:', err?.status);
+    console.error('Error body:', err?.error);
 
     // Firebase error codes
     if (err?.code) {
@@ -214,8 +218,12 @@ export class AuthPageComponent implements OnInit {
           return 'Mot de passe incorrect';
         case 'auth/email-already-in-use':
           return 'Cet email est déjà utilisé';
+        case 'auth/unauthorized-domain':
+          return 'Domaine non autorisé. Ajoutez ce domaine dans Firebase Console.';
+        case 'auth/operation-not-allowed':
+          return 'Cette méthode de connexion n\'est pas activée dans Firebase.';
         default:
-          return 'Une erreur est survenue. Veuillez réessayer.';
+          return `Erreur Firebase: ${err.code}`;
       }
     }
 
