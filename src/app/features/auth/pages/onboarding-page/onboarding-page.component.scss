@@ -1,0 +1,540 @@
+// Variables
+$gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$primary-color: #6b4c7a;
+$primary-dark: #5a3d68;
+$yellow: #ffc122;
+$text-color: #333;
+$text-light: #666;
+$border-color: #e0e0e0;
+$error-color: #e74c3c;
+$warning-color: #f39c12;
+$white: #fff;
+$background: #f8f9fa;
+
+.onboarding-container {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+
+  // Mobile: Purple gradient background
+  background: linear-gradient(180deg, $gradient-top 0%, $gradient-bottom 100%);
+
+  @media (min-width: 768px) {
+    // Desktop: Keep white/light background
+    background: linear-gradient(180deg, $background 0%, $white 100%);
+  }
+}
+
+// Progress Bar
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: rgba($white, 0.3);
+  z-index: 100;
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, $yellow, lighten($yellow, 10%));
+    transition: width 0.3s ease;
+  }
+
+  @media (min-width: 768px) {
+    background-color: rgba($primary-color, 0.2);
+
+    .progress-fill {
+      background: linear-gradient(90deg, $primary-color, $gradient-bottom);
+    }
+  }
+}
+
+// Header
+.onboarding-header {
+  padding: 2rem 1.5rem 1.5rem;
+  text-align: center;
+  background: transparent;
+  border-bottom: none;
+
+  .brand {
+    font-family: 'Koulen', sans-serif;
+    font-size: 2rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    margin: 0;
+    color: $white;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: unset;
+    background-clip: unset;
+    background: none;
+
+    .yellow {
+      color: $yellow;
+    }
+  }
+
+  .step-indicator {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.9rem;
+    color: rgba($white, 0.8);
+    margin-top: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    padding: 1.5rem;
+    background-color: $white;
+    border-bottom: 1px solid rgba($border-color, 0.5);
+
+    .brand {
+      font-family: inherit;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      background: linear-gradient(135deg, $gradient-top, $gradient-bottom);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: unset;
+
+      .yellow {
+        color: unset;
+      }
+    }
+
+    .step-indicator {
+      color: $text-light;
+    }
+  }
+}
+
+// Content
+.onboarding-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.5rem;
+  max-width: 100%;
+  margin: 0;
+  width: 100%;
+
+  // Mobile: Glass effect card
+  background: rgba($white, 0.95);
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.15);
+
+  @media (min-width: 768px) {
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 3rem;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+}
+
+// Error Banner
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: $error-color;
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+// Step Container
+.step-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.step-title {
+  font-family: 'Urbanist', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $primary-dark;
+  margin: 0 0 0.5rem;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    font-size: 1.75rem;
+    color: $text-color;
+  }
+}
+
+.step-description {
+  color: $text-light;
+  margin: 0 0 2rem;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+// Warning Step (now Welcome Step)
+.warning-step {
+  .warning-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+
+    svg {
+      color: $primary-color;
+    }
+  }
+
+  .welcome-message {
+    background: linear-gradient(135deg, rgba($primary-color, 0.08) 0%, rgba($gradient-bottom, 0.12) 100%);
+    border: 1px solid rgba($primary-color, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+
+    p {
+      margin: 0 0 1rem;
+      color: $text-color;
+      line-height: 1.7;
+      font-size: 0.95rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    ul {
+      margin: 1rem 0 1.5rem;
+      padding-left: 0;
+      list-style: none;
+
+      li {
+        margin-bottom: 0.75rem;
+        color: $text-color;
+        font-size: 0.95rem;
+        padding-left: 0.5rem;
+      }
+    }
+
+    .reassurance-text {
+      font-size: 0.85rem;
+      color: $primary-dark;
+      background-color: rgba($white, 0.7);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+  }
+}
+
+// Step Form
+.step-form {
+  flex: 1;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+
+  label {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $primary-dark;
+
+    @media (min-width: 768px) {
+      font-weight: 500;
+      color: $text-color;
+    }
+  }
+
+  input,
+  textarea {
+    padding: 0.875rem 1rem;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background-color: $white;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+
+    &::placeholder {
+      color: #aaa;
+    }
+
+    &.invalid {
+      border-color: $error-color;
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba($error-color, 0.1);
+      }
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .char-count {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 0.75rem;
+    color: $text-light;
+  }
+
+  .error-text {
+    color: $error-color;
+    font-size: 0.8rem;
+  }
+}
+
+// Photo Upload
+.photo-upload {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.photo-placeholder {
+  width: 200px;
+  height: 200px;
+  border: 2px dashed $border-color;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: rgba($primary-color, 0.02);
+
+  &:hover {
+    border-color: $primary-color;
+    background-color: rgba($primary-color, 0.05);
+  }
+
+  svg {
+    color: $text-light;
+  }
+
+  span {
+    font-size: 0.85rem;
+    color: $text-light;
+    text-align: center;
+    padding: 0 1rem;
+  }
+}
+
+.photo-preview {
+  position: relative;
+  width: 200px;
+  height: 200px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid $primary-color;
+  }
+
+  .remove-photo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: $error-color;
+    color: $white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+// Step Actions
+.step-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 2rem;
+}
+
+.primary-btn,
+.secondary-btn,
+.text-btn {
+  flex: 1;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  color: $white;
+  border: none;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+  }
+}
+
+.secondary-btn {
+  background-color: $white;
+  color: $text-color;
+  border: 1px solid $border-color;
+
+  &:hover:not(:disabled) {
+    background-color: #f8f8f8;
+    border-color: #ccc;
+  }
+}
+
+.text-btn {
+  background: none;
+  border: none;
+  color: $text-light;
+  text-decoration: underline;
+
+  &:hover:not(:disabled) {
+    color: $text-color;
+  }
+}
+
+// Spinner
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba($white, 0.3);
+  border-top-color: $white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+// City Autocomplete
+.city-autocomplete {
+  .autocomplete-wrapper {
+    position: relative;
+  }
+
+  .suggestions-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: $white;
+    border: 1px solid $border-color;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .suggestion-item {
+    padding: 0.875rem 1rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    border-bottom: 1px solid rgba($border-color, 0.5);
+    transition: background-color 0.15s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: rgba($primary-color, 0.08);
+    }
+
+    .city-name {
+      font-weight: 500;
+      color: $text-color;
+    }
+
+    .city-details {
+      font-size: 0.85rem;
+      color: $text-light;
+    }
+  }
+
+  .selected-city-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: rgba($primary-color, 0.1);
+    color: $primary-color;
+    padding: 0.5rem 0.875rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    margin-top: 0.75rem;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

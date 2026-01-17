@@ -34,9 +34,12 @@
           <tr>
             <th>Photo</th>
             <th>Nom d'utilisateur</th>
+            <th>Prénom</th>
+            <th>Nom</th>
             <th>Email</th>
             <th>Ville</th>
             <th>Âge</th>
+            <th>Statut</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -48,14 +51,23 @@
                   <img [src]="user.imgUrl" [alt]="user.userName" />
                 } @else {
                   <div class="avatar-placeholder">
-                    {{ user.userName ? user.userName.charAt(0).toUpperCase() : '?' }}
+                    {{ user.userName ? user.userName.charAt(0).toUpperCase() : (user.firstname ? user.firstname.charAt(0).toUpperCase() : '?') }}
                   </div>
                 }
               </td>
-              <td class="cell-name">{{ user.userName }}</td>
+              <td class="cell-name">{{ user.userName || '-' }}</td>
+              <td class="cell-firstname">{{ user.firstname || '-' }}</td>
+              <td class="cell-lastname">{{ user.lastname || '-' }}</td>
               <td class="cell-email">{{ user.email }}</td>
               <td class="cell-city">{{ user.city || '-' }}</td>
               <td class="cell-age">{{ user.age || '-' }}</td>
+              <td class="cell-status">
+                @if (user.profileStatus === 'ACTIVE') {
+                  <span class="badge badge-success">Actif</span>
+                } @else {
+                  <span class="badge badge-warning">Incomplet</span>
+                }
+              </td>
               <td class="cell-actions">
                 <button type="button" class="btn-action view" (click)="viewProfile(user)" title="Voir le profil">
                   <svg

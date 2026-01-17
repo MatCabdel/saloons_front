@@ -1,0 +1,277 @@
+<div class="onboarding-container">
+  <!-- Progress Bar -->
+  <div class="progress-bar">
+    <div class="progress-fill" [style.width.%]="progressPercent"></div>
+  </div>
+
+  <!-- Header -->
+  <div class="onboarding-header">
+    <h1 class="brand">SAL<span class="yellow">OO</span>NS</h1>
+    <div class="step-indicator">
+      Étape {{ currentStepIndex + 1 }} / {{ steps.length }}
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="onboarding-content">
+    <!-- Error Message -->
+    @if (errorMessage()) {
+      <div class="error-banner">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <!-- Step: Warning (dernière étape) -->
+    @if (currentStep() === 'warning') {
+      <div class="step-container warning-step">
+        <div class="warning-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </div>
+        <h2 class="step-title">Bienvenue dans la communauté 💜</h2>
+        <div class="welcome-message">
+          <p>Chez Saloons, on croit aux rencontres authentiques entre adultes qui se respectent.</p>
+          <p>Notre communauté repose sur quelques valeurs simples :</p>
+          <ul>
+            <li>🤝 Le respect mutuel, toujours</li>
+            <li>💬 Des échanges bienveillants</li>
+            <li>✨ Le consentement avant tout</li>
+            <li>🛡️ Un espace safe pour tous</li>
+          </ul>
+          <p class="reassurance-text">Notre équipe de modération veille au grain pour que chacun puisse profiter de l'expérience en toute sérénité.</p>
+        </div>
+        <div class="step-actions">
+          <button type="button" class="secondary-btn" (click)="prevStep()">
+            Retour
+          </button>
+          <button type="button" class="primary-btn" (click)="acceptWarningAndSubmit()" [disabled]="isLoading()">
+            @if (isLoading()) {
+              <div class="spinner"></div>
+            } @else {
+              C'est parti !
+            }
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Step: Username -->
+    @if (currentStep() === 'username') {
+      <div class="step-container">
+        <h2 class="step-title">{{ stepTitles['username'] }}</h2>
+        <p class="step-description">Ce pseudo sera visible par les autres utilisateurs</p>
+        
+        <form [formGroup]="usernameForm" class="step-form">
+          <div class="form-group">
+            <label for="userName">Pseudo</label>
+            <input 
+              type="text" 
+              id="userName" 
+              formControlName="userName"
+              placeholder="Votre pseudo"
+              [class.invalid]="isFieldInvalid(usernameForm, 'userName')"
+              maxlength="20">
+            <div class="char-count">{{ usernameForm.value.userName?.length || 0 }}/20</div>
+            @if (isFieldInvalid(usernameForm, 'userName')) {
+              <span class="error-text">{{ getFieldError(usernameForm, 'userName') }}</span>
+            }
+          </div>
+        </form>
+
+        <div class="step-actions">
+          <button type="button" class="primary-btn" (click)="nextStep()">
+            Continuer
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Step: Birthdate -->
+    @if (currentStep() === 'birthdate') {
+      <div class="step-container">
+        <h2 class="step-title">{{ stepTitles['birthdate'] }}</h2>
+        <p class="step-description">Vous devez avoir au moins 18 ans</p>
+        
+        <form [formGroup]="birthdateForm" class="step-form">
+          <div class="form-group">
+            <label for="birthDate">Date de naissance</label>
+            <input 
+              type="date" 
+              id="birthDate" 
+              formControlName="birthDate"
+              [min]="minBirthDate"
+              [max]="maxBirthDate"
+              [class.invalid]="isFieldInvalid(birthdateForm, 'birthDate')">
+            @if (isFieldInvalid(birthdateForm, 'birthDate')) {
+              <span class="error-text">{{ getFieldError(birthdateForm, 'birthDate') }}</span>
+            }
+          </div>
+        </form>
+
+        <div class="step-actions">
+          <button type="button" class="secondary-btn" (click)="prevStep()">
+            Retour
+          </button>
+          <button type="button" class="primary-btn" (click)="nextStep()">
+            Continuer
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Step: City -->
+    @if (currentStep() === 'city') {
+      <div class="step-container">
+        <h2 class="step-title">{{ stepTitles['city'] }}</h2>
+        <p class="step-description">Dans quelle ville habitez-vous ?</p>
+        
+        <form [formGroup]="cityForm" class="step-form">
+          <div class="form-group city-autocomplete">
+            <label for="citySearch">Ville</label>
+            <div class="autocomplete-wrapper">
+              <input 
+                type="text" 
+                id="citySearch" 
+                formControlName="citySearch"
+                placeholder="Commencez à taper le nom de votre ville..."
+                [class.invalid]="isFieldInvalid(cityForm, 'city')"
+                (focus)="onCityInputFocus()"
+                (blur)="onCityInputBlur()"
+                autocomplete="off">
+              
+              @if (showCitySuggestions() && citySuggestions().length > 0) {
+                <ul class="suggestions-list" role="listbox">
+                  @for (city of citySuggestions(); track city.code) {
+                    <li 
+                      role="option"
+                      tabindex="0"
+                      [attr.aria-selected]="selectedCity()?.code === city.code"
+                      (mousedown)="$event.preventDefault()" 
+                      (click)="selectCity(city)" 
+                      (keyup.enter)="selectCity(city)"
+                      class="suggestion-item">
+                      <span class="city-name">{{ city.nom }}</span>
+                      <span class="city-details">{{ city.codesPostaux[0] }} - {{ city.departement.nom }}</span>
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+
+            @if (selectedCity()) {
+              <div class="selected-city-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <span>{{ selectedCity()?.nom }} ({{ selectedCity()?.codesPostaux?.[0] }})</span>
+              </div>
+            }
+
+            @if (isFieldInvalid(cityForm, 'city') && !selectedCity()) {
+              <span class="error-text">Veuillez sélectionner une ville</span>
+            }
+          </div>
+        </form>
+
+        <div class="step-actions">
+          <button type="button" class="secondary-btn" (click)="prevStep()">
+            Retour
+          </button>
+          <button type="button" class="primary-btn" (click)="nextStep()" [disabled]="!selectedCity()">
+            Continuer
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Step: Photo -->
+    @if (currentStep() === 'photo') {
+      <div class="step-container">
+        <h2 class="step-title">{{ stepTitles['photo'] }}</h2>
+        <p class="step-description">Ajoutez une photo pour que les autres puissent vous reconnaître</p>
+        
+        <div class="photo-upload">
+          @if (photoPreview()) {
+            <div class="photo-preview">
+              <img [src]="photoPreview()" alt="Aperçu photo">
+              <button type="button" class="remove-photo" (click)="removePhoto()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          } @else {
+            <label class="photo-placeholder" for="photo-input">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              <span>Cliquez pour ajouter une photo</span>
+            </label>
+          }
+          <input 
+            type="file" 
+            id="photo-input" 
+            accept="image/*"
+            (change)="onPhotoSelect($event)"
+            hidden>
+        </div>
+
+        <div class="step-actions">
+          <button type="button" class="secondary-btn" (click)="prevStep()">
+            Retour
+          </button>
+          <button type="button" class="text-btn" (click)="skipPhoto()">
+            Passer
+          </button>
+          <button type="button" class="primary-btn" (click)="nextStep()" [disabled]="!photoPreview()">
+            Continuer
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Step: Bio -->
+    @if (currentStep() === 'bio') {
+      <div class="step-container">
+        <h2 class="step-title">{{ stepTitles['bio'] }}</h2>
+        <p class="step-description">Présentez-vous en quelques mots (optionnel)</p>
+        
+        <form [formGroup]="bioForm" class="step-form">
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea 
+              id="description" 
+              formControlName="description"
+              placeholder="Parlez de vous, de vos centres d'intérêt..."
+              rows="4"
+              maxlength="500"
+              [class.invalid]="isFieldInvalid(bioForm, 'description')"></textarea>
+            <div class="char-count">{{ bioForm.value.description?.length || 0 }}/500</div>
+            @if (isFieldInvalid(bioForm, 'description')) {
+              <span class="error-text">{{ getFieldError(bioForm, 'description') }}</span>
+            }
+          </div>
+        </form>
+
+        <div class="step-actions">
+          <button type="button" class="secondary-btn" (click)="prevStep()">
+            Retour
+          </button>
+          <button type="button" class="primary-btn" (click)="nextStep()">
+            Continuer
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { WelcomePageComponent } from './features/home/pages/welcome-page/welcome-page.component';
 import { ListSaloonPageComponent } from './features/saloon/pages/list-saloon-page/list-saloon-page.component';
-import { RegisterPageComponent } from './features/auth/register/pages/register-page/register-page.component';
-import { LoginPageComponent } from './features/auth/login/pages/login-page/login-page.component';
+import { AuthPageComponent } from './features/auth/pages/auth-page/auth-page.component';
+import { OnboardingPageComponent } from './features/auth/pages/onboarding-page/onboarding-page.component';
 import { isLoggedInGuard } from './common/guards/is-logged-in.guard';
+import { authGuard, onboardingGuard, profileCompleteGuard } from './core/guards/profile-complete.guard';
 import { DashboardPageComponent } from './features/admin/pages/dashboard-page/dashboard-page.component';
 import { QrcodePageComponent } from './features/qrcode/pages/qrcode-page/qrcode-page.component';
 import { ProfilPageComponent } from './features/profil/pages/profil-page/profil-page.component';
@@ -23,19 +23,25 @@ import { CityStatsPageComponent } from './features/admin/pages/city-stats-page/c
 import { SaloonsStatsPageComponent } from './features/admin/pages/saloons-stats-page/saloons-stats-page.component';
 
 export const routes: Routes = [
-  { path: '', component: WelcomePageComponent },
+  // Page d'accueil = inscription
+  { path: '', component: AuthPageComponent, canActivate: [authGuard] },
+  // Page de connexion
+  { path: 'login', component: AuthPageComponent, canActivate: [authGuard] },
+  // Onboarding après inscription
+  { path: 'onboarding', component: OnboardingPageComponent, canActivate: [onboardingGuard] },
   {
     path: 'saloons',
     component: SaloonSwitcherPageComponent,
-    canActivate: [isLoggedInGuard],
+    canActivate: [isLoggedInGuard, profileCompleteGuard],
     children: [
       { path: '', component: ListSaloonPageComponent },
       { path: 'map', component: MapSaloonPageComponent },
     ],
   },
   { path: 'map', redirectTo: 'saloons/map', pathMatch: 'full' },
-  { path: 'register', component: RegisterPageComponent },
-  { path: 'login', component: LoginPageComponent },
+  // Legacy routes
+  { path: 'register', redirectTo: '', pathMatch: 'full' },
+  { path: 'auth', redirectTo: '', pathMatch: 'full' },
   { path: 'scan', component: QrcodePageComponent, canActivate: [isLoggedInGuard] },
   { path: 'profil', component: ProfilPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'profil/edit', component: EditProfilPageComponent, canActivate: [isLoggedInGuard] },

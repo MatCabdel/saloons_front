@@ -6,6 +6,9 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors, withInterceptor
 import { HttpErrorInterceptor } from './common/interceptors/http-error.interceptor';
 import { jwtInterceptor } from './common/interceptors/jwt.interceptor';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,5 +21,7 @@ export const appConfig: ApplicationConfig = {
       multi: true,
     },
     provideAnimationsAsync(),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
   ],
 };
