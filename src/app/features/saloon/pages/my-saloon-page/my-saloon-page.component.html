@@ -4,19 +4,24 @@
       <div class="modal-content" tabindex="0" (click)="$event.stopPropagation()" (keydown)="stopPropagation($event)">
         <h2>Bienvenue !</h2>
         @if (saloon$ | async; as saloon) {
-          <h3>
-            Vous venez de rentrez dans notre saloon: <strong>{{ saloon.name }}</strong>
-          </h3>
-          <p>Vous serez connecté pour une durée maximale de 3 heures</p>
+          <p class="saloon-name">{{ saloon.name }}</p>
+          <p class="info-text">Vous serez connecté pour une durée maximale de <strong>3 heures</strong></p>
         }
+        <button class="modal-btn" type="button" (click)="closeModal()">C'est parti !</button>
       </div>
     </div>
   }
-  <app-header-reverse></app-header-reverse>
+  <app-header></app-header>
   <div class="profils-container">
     @if (saloon$ | async; as saloon) {
       @if (users$ | async; as users) {
-        <h1>{{ users.length }} visiteurs sont actuellement connecté dans le saloon</h1>
+        @if (users.length === 0) {
+          <h1>Vous êtes le premier connecté dans le saloon !</h1>
+        } @else if (users.length === 1) {
+          <h1>1 visiteur est actuellement connecté dans le saloon</h1>
+        } @else {
+          <h1>{{ users.length }} visiteurs sont actuellement connectés dans le saloon</h1>
+        }
       }
       <div class="list-visitor">
         @for (user of users$ | async; track user.id) {
@@ -26,7 +31,7 @@
         }
       </div>
     }
-    <!-- Utilise le composant countdown-timer qui gère le timer et la déconnexion -->
+    <!-- Bouton quitter en bas du container blanc -->
     <app-countdown-timer></app-countdown-timer>
   </div>
 </div>

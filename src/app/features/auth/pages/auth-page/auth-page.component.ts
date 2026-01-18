@@ -221,7 +221,7 @@ export class AuthPageComponent implements OnInit {
         case 'auth/unauthorized-domain':
           return 'Domaine non autorisé. Ajoutez ce domaine dans Firebase Console.';
         case 'auth/operation-not-allowed':
-          return 'Cette méthode de connexion n\'est pas activée dans Firebase.';
+          return "Cette méthode de connexion n'est pas activée dans Firebase.";
         default:
           return `Erreur Firebase: ${err.code}`;
       }

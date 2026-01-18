@@ -1,12 +1,32 @@
-.edit-profil-wrapper {
-  width: 100%;
+$gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$white: #fff;
+$text-dark: #2d2d2d;
+$text-light: #888;
+$yellow: #ffc122;
+$about-bg: #f5f0f6;
+
+:host {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.edit-profil-wrapper {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  min-height: 0;
+  overflow-y: auto;
 
   .edit-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    flex: 1;
   }
 
   .photo-section {
@@ -18,7 +38,8 @@
   .form-fields {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 16px;
+    flex: 1;
   }
 
   .container-input {
@@ -28,31 +49,32 @@
 
     .label-form {
       font-weight: 600;
-      font-size: 16px;
-      color: white;
-      margin-bottom: 6px;
+      font-size: 0.85rem;
+      color: $gradient-top;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .input-form {
-      padding: 12px 14px;
-      border: 1px solid rgba(255, 193, 34, 0.35);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.06);
-      color: #fff;
-      font-size: 14px;
+      padding: 14px 16px;
+      border: 2px solid rgba($gradient-top, 0.15);
+      border-radius: 12px;
+      background: $about-bg;
+      color: $text-dark;
+      font-size: 0.95rem;
       transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease;
 
       &::placeholder {
-        color: rgba(255, 255, 255, 0.5);
-        font-style: italic;
+        color: $text-light;
       }
 
       &:focus {
         outline: none;
-        border-color: #ffc122;
-        box-shadow: 0 0 0 3px rgba(255, 193, 34, 0.2);
+        border-color: $gradient-top;
+        box-shadow: 0 0 0 3px rgba($gradient-top, 0.1);
       }
     }
 
@@ -64,33 +86,33 @@
 
     .error {
       font-size: 12px;
-      color: #ff6b6b;
-      margin-top: 5px;
+      color: #e74c3c;
+      margin-top: 6px;
       font-style: italic;
     }
 
     .char-count {
       font-size: 12px;
-      color: rgba(255, 255, 255, 0.5);
+      color: $text-light;
       text-align: right;
-      margin-top: 4px;
+      margin-top: 6px;
     }
   }
 
   .btn-actions {
     display: flex;
-    gap: 10px;
-    margin-top: 20px;
-    padding-bottom: 30px;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 20px;
 
     button {
       flex: 1;
-      height: 48px;
-      border-radius: 44px;
-      font-size: 16px;
+      padding: 16px 24px;
+      border-radius: 14px;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
 
       &:disabled {
         opacity: 0.6;
@@ -99,24 +121,29 @@
     }
 
     .btn-cancel {
-      background: rgba(255, 255, 255, 0.06);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: transparent;
+      color: $gradient-top;
+      border: 2px solid rgba($gradient-top, 0.3);
 
       &:hover:not(:disabled) {
-        border-color: #ffc122;
-        color: #ffc122;
+        border-color: $gradient-top;
+        background: rgba($gradient-top, 0.05);
       }
     }
 
     .btn-save {
-      background: #ffc122;
-      color: #413443;
-      border: 1px solid #ffc122;
+      background: $gradient-top;
+      color: $white;
+      border: none;
+      box-shadow: 0 4px 15px rgba($gradient-top, 0.3);
 
       &:hover:not(:disabled) {
-        background: #e6ad1e;
-        border-color: #e6ad1e;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba($gradient-top, 0.4);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
       }
     }
   }

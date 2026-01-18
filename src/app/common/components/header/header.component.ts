@@ -12,10 +12,7 @@ import { AuthApiService } from 'src/app/features/auth/services/auth-api.service'
   styleUrl: './header.component.scss',
   animations: [
     trigger('slideIn', [
-      transition(':enter', [
-        style({ transform: 'translateX(100%)' }),
-        animate('300ms ease-out', style({ transform: 'translateX(0)' })),
-      ]),
+      transition(':enter', [style({ transform: 'translateX(100%)' }), animate('300ms ease-out', style({ transform: 'translateX(0)' }))]),
       transition(':leave', [animate('200ms ease-in', style({ transform: 'translateX(100%)' }))]),
     ]),
   ],

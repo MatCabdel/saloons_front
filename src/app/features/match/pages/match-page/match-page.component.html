@@ -12,6 +12,6 @@
     @if (users$ | async; as users) {
       <button class="btn-match" type="button" (click)="openChat(users.user2)">Discuter maintenant</button>
     }
-    <button class="btn-match" type="button">Discuter plus tard</button>
+    <button class="btn-match" type="button" (click)="goBackToSaloon()">Discuter plus tard</button>
   </div>
 </div>
