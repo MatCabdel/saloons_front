@@ -14,6 +14,10 @@ export class MatchService {
     return this._http.post<{ message: string }>(`${this._BASE_URL_API}/match/${userId1}/like/${userId2}`, {});
   }
 
+  hasLiked(userId1: number, userId2: number): Observable<{ hasLiked: boolean }> {
+    return this._http.get<{ hasLiked: boolean }>(`${this._BASE_URL_API}/match/${userId1}/has-liked/${userId2}`);
+  }
+
   getMatches(): Observable<any[]> {
     return this._http.get<any[]>(`${this._BASE_URL_API}/match/matches`);
   }

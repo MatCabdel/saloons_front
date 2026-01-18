@@ -1,86 +1,183 @@
-.my-profil-container {
+$white: #fff;
+$yellow: #ffc122;
+$gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$text-dark: #2d2d2d;
+$text-light: #888;
+$about-bg: #f5f0f6;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   width: 100%;
-  height: 100%;
-  padding: 0 auto;
-  border-radius: 0 0 200px 0;
+  min-height: 0;
+}
 
-  .img-container {
-    height: 400px;
-    width: 100%;
-    border-radius: 0 0 200px 0;
-    position: relative;
+.visitor-profil-container {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  padding-bottom: 16px;
+  min-height: 0;
 
-    img {
-      height: 100%;
+  .profile-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: $white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    min-height: 0;
+
+    .img-section {
       width: 100%;
-      border-radius: 0 0 200px 0;
-      object-fit: cover;
-    }
-    .top-right-button {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      padding: 8px;
-      cursor: pointer;
-      z-index: 1;
-      background-color: rgba(0, 0, 0, 0.091);
-    }
+      flex: 5;
+      min-height: 0;
+      overflow: hidden;
+      position: relative;
 
-    .wink-button {
-      position: absolute;
-      width: 70px;
-      height: 70px;
-      bottom: 30px;
-      right: 30px;
-      color: white;
-      border: none;
-      border-radius: 100%;
-      background-color: #ffc022cd;
-      padding: 8px;
-      cursor: pointer;
-      z-index: 1;
-      font-size: 3em;
-      align-self: center;
-    }
-  }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
 
-  .description-container {
-    padding: 5px;
-    position: relative;
-    background-color: white;
-    height: 50%;
+      .back-button {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba($white, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba($white, 0.3);
+        color: $white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
 
-    .top-right-button {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background-color: rgba(0, 0, 0, 0.6);
-      color: white;
-      border: none;
-      border-radius: 8%;
-      padding: 8px;
-      cursor: pointer;
-      z-index: 1;
+        &:hover {
+          background: rgba($white, 0.3);
+          transform: scale(1.05);
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+      }
     }
 
-    h1 {
-      font-size: 1.2em;
-      margin: 10px;
-    }
+    .info-section {
+      flex: 4;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      min-height: 0;
 
-    h2 {
-      font-size: 1em;
-      margin: 15px 10px;
-      color: black;
-    }
+      .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+        flex-shrink: 0;
 
-    p {
-      margin: 10px;
-      font-size: 0.8em;
-      color: #747474;
+        h1 {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: $text-dark;
+          margin: 0;
+          flex: 1;
+        }
+
+        .city-tag {
+          flex-shrink: 0;
+          font-size: 0.8rem;
+          font-weight: 600;
+          color: $white;
+          background: $gradient-top;
+          padding: 6px 12px;
+          border-radius: 8px;
+          letter-spacing: 0.02em;
+        }
+      }
+
+      .about-section {
+        background: $about-bg;
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 16px;
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+
+        h2 {
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: $gradient-top;
+          margin: 0 0 10px 0;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        p {
+          font-size: 0.9rem;
+          color: $text-light;
+          line-height: 1.5;
+          margin: 0;
+        }
+      }
+
+      .action-button {
+        width: 100%;
+        padding: 16px 24px;
+        border-radius: 14px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        border: none;
+        flex-shrink: 0;
+
+        &.wink {
+          background: linear-gradient(135deg, $yellow 0%, #ffdb70 100%);
+          color: $gradient-top;
+          box-shadow: 0 4px 20px rgba($yellow, 0.4);
+
+          &:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba($yellow, 0.5);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+        }
+
+        &.wink-sent {
+          background: rgba(87, 53, 93, 0.635);
+          color: white;
+          cursor: default;
+          box-shadow: none;
+          border: 1px dashed $gradient-bottom;
+
+          &:hover {
+            transform: none;
+          }
+        }
+
+        &:focus-visible {
+          outline: 2px solid $gradient-top;
+          outline-offset: 2px;
+        }
+      }
     }
   }
 }

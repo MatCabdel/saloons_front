@@ -20,8 +20,15 @@ export class MatchPageComponent implements OnInit {
   private _conversationService = inject(ConversationService);
 
   users$!: Observable<{ user1: User; user2: User }>;
+  saloonId: number | null = null;
 
   ngOnInit(): void {
+    // Récupère le saloonId depuis les queryParams
+    this._route.queryParamMap.subscribe(params => {
+      const id = params.get('saloonId');
+      this.saloonId = id ? Number(id) : null;
+    });
+
     this.users$ = this._route.paramMap.pipe(
       switchMap(params => {
         const userId1 = Number(params.get('userId1'));
@@ -41,5 +48,13 @@ export class MatchPageComponent implements OnInit {
     this._conversationService.createConversation(user2.id).subscribe(conversation => {
       this._router.navigate(['/messages', conversation.id]);
     });
+  }
+
+  goBackToSaloon(): void {
+    if (this.saloonId) {
+      this._router.navigate(['/mysaloon', this.saloonId]);
+    } else {
+      this._router.navigate(['/saloons']);
+    }
   }
 }

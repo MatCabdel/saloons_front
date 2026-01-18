@@ -1,33 +1,44 @@
-.edit-profil-container {
-  background-color: #413443;
-  min-height: 100svh;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  position: relative;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
+$gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$white: #fff;
+$text-dark: #2d2d2d;
+
+.edit-profil-page {
   display: flex;
   flex-direction: column;
+  height: 100dvh;
+  background: linear-gradient(180deg, $gradient-top 0%, $gradient-bottom 100%);
 
-  .header {
-    padding: 20px;
-    text-align: center;
-
-    h1 {
-      color: white;
-      font-family: Urbanist, sans-serif;
-      font-size: 1.5em;
-      font-weight: 600;
-    }
-  }
-
-  .content {
-    width: 85%;
-    margin: 0 auto;
-    padding: 20px 0;
+  .edit-content {
     flex: 1;
     display: flex;
     flex-direction: column;
+    padding: 16px;
+    margin-bottom: 70px;
+    min-height: 0;
+    overflow-y: auto;
+
+    .edit-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: $white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+
+      .card-header {
+        padding: 20px;
+        text-align: center;
+        border-bottom: 1px solid rgba($gradient-top, 0.1);
+
+        h1 {
+          color: $text-dark;
+          font-size: 1.3rem;
+          font-weight: 700;
+          margin: 0;
+        }
+      }
+    }
   }
 }

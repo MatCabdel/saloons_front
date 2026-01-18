@@ -25,12 +25,25 @@ export class VisitorProfilComponent implements OnInit {
 
   data$!: Observable<{ user: User; saloonId: number }>;
   myId = this._userStore.getUserId();
+  winkSent = false;
 
   ngOnInit(): void {
     this.data$ = combineLatest([this._route.paramMap, this._route.queryParamMap]).pipe(
       switchMap(([params, queryParams]) => {
         const id = Number(params.get('id'));
         const saloonId = Number(queryParams.get('saloonId'));
+
+        // Vérifie via l'API si un wink a déjà été envoyé
+        if (this.myId) {
+          this._matchService.hasLiked(Number(this.myId), id).subscribe({
+            next: res => {
+              this.winkSent = res.hasLiked;
+            },
+            error: () => {
+              this.winkSent = false;
+            },
+          });
+        }
 
         return this._userService.getUserById(id).pipe(map(user => ({ user, saloonId })));
       })
@@ -50,9 +63,11 @@ export class VisitorProfilComponent implements OnInit {
   }
 
   wink(): void {
+    if (this.winkSent) return;
+
     const myId = this._userStore.getUserId();
 
-    this.data$.pipe(take(1)).subscribe(({ user }) => {
+    this.data$.pipe(take(1)).subscribe(({ user, saloonId }) => {
       const otherId = user?.id;
       if (!myId || !otherId || myId === otherId) {
         return;
@@ -60,15 +75,16 @@ export class VisitorProfilComponent implements OnInit {
 
       this._matchService.createLike(myId, otherId).subscribe({
         next: res => {
+          this.winkSent = true;
+
           if (res.message === "It's a match!") {
             this._conversationService.createConversation(otherId).subscribe();
-            this._router.navigate(['/match', myId, otherId]);
-          } else {
-            alert(res.message);
+            this._router.navigate(['/match', myId, otherId], { queryParams: { saloonId } });
           }
         },
-        error: err => {
-          alert(err.error?.message || err.error || 'Erreur');
+        error: () => {
+          // En cas d'erreur, on considère que le like existe peut-être déjà
+          this.winkSent = true;
         },
       });
     });

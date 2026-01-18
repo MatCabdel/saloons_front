@@ -1,9 +1,9 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { NavbarComponent } from '../../../../common/components/navbar/navbar.component';
 import { VisitorCardComponent } from '../../components/visitor-card/visitor-card.component';
-import { filter, map, Observable, shareReplay, switchMap, timer } from 'rxjs';
+import { filter, map, Observable, shareReplay, switchMap, take, timer } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { HeaderReverseComponent } from 'src/app/common/components/header-reverse/header-reverse.component';
+import { HeaderComponent } from 'src/app/common/components/header/header.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SaloonApiService } from '../../services/saloon-api.service';
 import { PresenceService, UserPresence } from '../../services/presence.service';
@@ -15,11 +15,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-my-saloon-page',
   standalone: true,
-  imports: [NavbarComponent, HeaderReverseComponent, VisitorCardComponent, CommonModule, CountdownTimerComponent],
+  imports: [NavbarComponent, HeaderComponent, VisitorCardComponent, CommonModule, CountdownTimerComponent],
   templateUrl: './my-saloon-page.component.html',
   styleUrl: './my-saloon-page.component.scss',
 })
-export class MySaloonPageComponent {
+export class MySaloonPageComponent implements OnInit {
   private _route = inject(ActivatedRoute);
   private _saloonApi = inject(SaloonApiService);
   private _presenceService = inject(PresenceService);
@@ -44,10 +44,32 @@ export class MySaloonPageComponent {
 
   saloon$: Observable<Saloon> = this._route.paramMap.pipe(switchMap(params => this._saloonApi.getSaloonById(params.get('id')!)));
 
-  showModal = true;
+  showModal = false;
+
+  ngOnInit(): void {
+    // Vérifie si c'est la première connexion à ce saloon dans cette session
+    this._route.paramMap.pipe(take(1)).subscribe(params => {
+      const saloonId = params.get('id');
+      if (saloonId) {
+        const storageKey = `saloon_welcomed_${saloonId}`;
+        const hasSeenModal = sessionStorage.getItem(storageKey);
+
+        if (!hasSeenModal) {
+          this.showModal = true;
+        }
+      }
+    });
+  }
 
   closeModal(): void {
     this.showModal = false;
+    // Marque que l'utilisateur a vu la modal pour ce saloon
+    this._route.paramMap.pipe(take(1)).subscribe(params => {
+      const saloonId = params.get('id');
+      if (saloonId) {
+        sessionStorage.setItem(`saloon_welcomed_${saloonId}`, 'true');
+      }
+    });
   }
 
   stopPropagation(event: KeyboardEvent): void {
