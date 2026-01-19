@@ -15,9 +15,9 @@ export class NavbarComponent {
     { route: '/chat', icon: 'assets/icons/chat3.svg', alt: 'tchat' },
   ];
 
-  constructor(private router: Router) {}
+  constructor(private _router: Router) {}
 
   isActive(route: string): boolean {
-    return this.router.url.startsWith(route);
+    return this._router.url.startsWith(route);
   }
 }
