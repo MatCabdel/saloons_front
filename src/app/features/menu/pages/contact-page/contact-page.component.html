@@ -1,8 +1,117 @@
 <div class="contact-page">
-  <app-header [title]="'Contact'"></app-header>
+  <app-header [title]="'Contact'" [showBackButton]="true"></app-header>
 
   <div class="page-content">
-    <h2>Contactez-nous</h2>
-    <p>Contenu à venir...</p>
+    <!-- Message de confirmation -->
+    @if (isSubmitted()) {
+      <div class="confirmation-container">
+        <div class="confirmation-icon">📬</div>
+        <h2>Message envoyé !</h2>
+        <p class="confirmation-message">
+          Ton message a bien été envoyé.<br />
+          Nous te répondrons dans les plus brefs délais.
+        </p>
+        <button type="button" class="btn-new-message" (click)="resetForm()">Envoyer un autre message</button>
+        <button type="button" class="btn-back-saloons" routerLink="/saloons">Retour aux Saloons</button>
+      </div>
+    } @else {
+      <!-- Introduction -->
+      <div class="intro-section">
+        <h2>Contacte-nous</h2>
+        <p class="intro-text">
+          Une question, une suggestion ou un problème ? On est là pour t'aider !
+        </p>
+      </div>
+
+      <!-- Formulaire -->
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="contact-form">
+        <!-- Nom -->
+        <div class="form-group">
+          <label for="lastName">Nom *</label>
+          <input
+            type="text"
+            id="lastName"
+            formControlName="lastName"
+            placeholder="Ex : Dupont"
+            [class.invalid]="isFieldInvalid('lastName')" />
+          @if (isFieldInvalid('lastName')) {
+            <span class="error-text">Le nom est requis (min. 2 caractères)</span>
+          }
+        </div>
+
+        <!-- Prénom -->
+        <div class="form-group">
+          <label for="firstName">Prénom *</label>
+          <input
+            type="text"
+            id="firstName"
+            formControlName="firstName"
+            placeholder="Ex : Jean"
+            [class.invalid]="isFieldInvalid('firstName')" />
+          @if (isFieldInvalid('firstName')) {
+            <span class="error-text">Le prénom est requis (min. 2 caractères)</span>
+          }
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            placeholder="Ex : jean.dupont@email.com"
+            [class.invalid]="isFieldInvalid('email')" />
+          @if (isFieldInvalid('email')) {
+            <span class="error-text">Un email valide est requis</span>
+          }
+        </div>
+
+        <!-- Sujet -->
+        <div class="form-group">
+          <label for="subject">Sujet *</label>
+          <select id="subject" formControlName="subject" [class.invalid]="isFieldInvalid('subject')">
+            <option value="" disabled>Sélectionne un sujet</option>
+            @for (subject of subjects; track subject.value) {
+              <option [value]="subject.value">{{ subject.label }}</option>
+            }
+          </select>
+          @if (isFieldInvalid('subject')) {
+            <span class="error-text">Sélectionne un sujet</span>
+          }
+        </div>
+
+        <!-- Message -->
+        <div class="form-group">
+          <label for="message">Message *</label>
+          <textarea
+            id="message"
+            formControlName="message"
+            placeholder="Décris-nous ton problème, ta question ou ta suggestion..."
+            rows="5"
+            [class.invalid]="isFieldInvalid('message')"></textarea>
+          @if (isFieldInvalid('message')) {
+            <span class="error-text">Le message est requis (min. 10 caractères)</span>
+          }
+        </div>
+
+        <!-- Erreur serveur -->
+        @if (errorMessage()) {
+          <div class="error-banner">
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <!-- Bouton submit -->
+        <button type="submit" class="btn-submit" [disabled]="isSubmitting()">
+          @if (isSubmitting()) {
+            <span class="spinner"></span>
+            Envoi en cours...
+          } @else {
+            Envoyer le message
+          }
+        </button>
+      </form>
+    }
   </div>
 </div>

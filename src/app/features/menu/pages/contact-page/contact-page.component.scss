@@ -1,6 +1,7 @@
 $gradient-top: #413443;
 $gradient-bottom: #a483a9;
 $white: #fff;
+$yellow: #ffc122;
 
 .contact-page {
   min-height: 100vh;
@@ -10,6 +11,156 @@ $white: #fff;
 .page-content {
   padding: 1.5rem;
   color: $white;
+}
+
+// Introduction
+.intro-section {
+  margin-bottom: 2rem;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .intro-text {
+    font-size: 1rem;
+    opacity: 0.9;
+    line-height: 1.5;
+  }
+}
+
+// Formulaire
+.contact-form {
+  .form-group {
+    margin-bottom: 1.25rem;
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      font-size: 1rem;
+      border: 2px solid rgba($white, 0.2);
+      border-radius: 12px;
+      background: rgba($white, 0.1);
+      color: $white;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+
+      &::placeholder {
+        color: rgba($white, 0.5);
+      }
+
+      &:focus {
+        outline: none;
+        border-color: $yellow;
+        background: rgba($white, 0.15);
+      }
+
+      &.invalid {
+        border-color: #ff6b6b;
+      }
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+      cursor: pointer;
+
+      option {
+        background: $gradient-top;
+        color: $white;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .error-text {
+      display: block;
+      font-size: 0.8rem;
+      color: #ff6b6b;
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+// Erreur serveur
+.error-banner {
+  background: rgba(#ff6b6b, 0.2);
+  border: 1px solid #ff6b6b;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #ff6b6b;
+}
+
+// Bouton submit
+.btn-submit {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: $gradient-top;
+  background: $yellow;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba($yellow, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid transparent;
+    border-top-color: $gradient-top;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Confirmation
+.confirmation-container {
+  text-align: center;
+  padding: 2rem 1rem;
+
+  .confirmation-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
 
   h2 {
     font-size: 1.5rem;
@@ -17,8 +168,46 @@ $white: #fff;
     margin-bottom: 1rem;
   }
 
-  p {
+  .confirmation-message {
     font-size: 1rem;
+    line-height: 1.6;
     opacity: 0.9;
+    margin-bottom: 2rem;
+  }
+
+  .btn-new-message {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $white;
+    background: transparent;
+    border: 2px solid $white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 1rem;
+
+    &:hover {
+      background: rgba($white, 0.1);
+    }
+  }
+
+  .btn-back-saloons {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $gradient-top;
+    background: $yellow;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba($yellow, 0.3);
+    }
   }
 }
