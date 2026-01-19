@@ -23,6 +23,10 @@ import { CityStatsPageComponent } from './features/admin/pages/city-stats-page/c
 import { SaloonsStatsPageComponent } from './features/admin/pages/saloons-stats-page/saloons-stats-page.component';
 import { SaloonChatPageComponent } from './features/saloon/pages/saloon-chat-page/saloon-chat-page.component';
 import { UnauthorizedPageComponent } from './features/auth/pages/unauthorized-page/unauthorized-page.component';
+import { MonComptePageComponent } from './features/menu/pages/mon-compte-page/mon-compte-page.component';
+import { SaloonDemandePageComponent } from './features/menu/pages/saloon-demande-page/saloon-demande-page.component';
+import { FaqPageComponent } from './features/menu/pages/faq-page/faq-page.component';
+import { ContactPageComponent } from './features/menu/pages/contact-page/contact-page.component';
 
 export const routes: Routes = [
   // Page d'accueil = inscription
@@ -53,6 +57,11 @@ export const routes: Routes = [
   { path: 'profil-visitor/:id', component: ProfilVisitorPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'match/:userId1/:userId2', component: MatchPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'messages/:conversationId', component: MessagesPageComponent, canActivate: [isLoggedInGuard] },
+  // Menu pages
+  { path: 'mon-compte', component: MonComptePageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'saloon-demande', component: SaloonDemandePageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'faq', component: FaqPageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'contact', component: ContactPageComponent, canActivate: [isLoggedInGuard] },
   {
     path: 'dashboard',
     component: DashboardPageComponent,

@@ -27,9 +27,10 @@ export class HeaderComponent {
   isMenuOpen = signal(false);
 
   menuItems = [
-    { route: '/saloons', icon: 'assets/icons/home.svg', label: 'Accueil' },
-    { route: '/profil', icon: 'assets/icons/user.svg', label: 'Mon profil' },
-    { route: '/chat', icon: 'assets/icons/chat3.svg', label: 'Messages' },
+    { route: '/mon-compte', icon: 'assets/icons/user.svg', label: 'Mon compte' },
+    { route: '/saloon-demande', icon: 'assets/icons/saloon.svg', label: 'Saloon à la demande' },
+    { route: '/faq', icon: 'assets/icons/faq.svg', label: 'FAQ' },
+    { route: '/contact', icon: 'assets/icons/contact.svg', label: 'Contact' },
   ];
 
   public navigateToWelcome(): void {
