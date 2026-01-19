@@ -1,5 +1,6 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable, switchMap, Subject, takeUntil } from 'rxjs';
 import { Saloon } from '../../models/saloonModel';
 import { SaloonCardComponent } from '../../components/saloon-card/saloon-card.component';
@@ -7,6 +8,9 @@ import { SaloonApiService } from '../../services/saloon-api.service';
 import { SaloonModalComponent } from '../../components/saloon-modal/saloon-modal.component';
 import { SaloonMapItem, PresenceService } from '../../services/presence.service';
 import { SaloonPresenceRealtimeService } from '../../services/saloon-presence-realtime.service';
+
+// Distance maximale pour afficher les saloons (en mètres)
+const MAX_DISTANCE_METERS = 50000; // 50km
 
 @Component({
   selector: 'app-list-saloon-page',
@@ -19,6 +23,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   private _saloonApiService = inject(SaloonApiService);
   private _presenceRealtimeService = inject(SaloonPresenceRealtimeService);
   private _presenceService = inject(PresenceService);
+  private _router = inject(Router);
   private _destroy$ = new Subject<void>();
 
   // Position utilisateur
@@ -27,17 +32,25 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   private _userPosition$ = new BehaviorSubject<{ lat: number; lng: number } | null>(null);
   private _refreshTrigger$ = new BehaviorSubject<void>(undefined);
 
+  // État de la géolocalisation
+  geoLocationStatus = signal<'loading' | 'granted' | 'denied' | 'unavailable'>('loading');
+  totalSaloonsCount = signal<number>(0);
+
   // Modal
   showModal = false;
   selectedSaloon: SaloonMapItem | null = null;
 
   // Saloons triés par distance avec mise à jour temps réel de la présence
+  // Filtrés à MAX_DISTANCE_METERS (50km) de l'utilisateur
   saloons$: Observable<(Saloon & { distanceMeters: number | null })[]> = combineLatest([
     this._refreshTrigger$.pipe(switchMap(() => this._saloonApiService.getListSaloon())),
     this._userPosition$,
     this._presenceRealtimeService.presenceCounts$,
   ]).pipe(
     map(([saloons, position, presenceCounts]) => {
+      // Sauvegarder le nombre total de saloons
+      this.totalSaloonsCount.set(saloons.length);
+
       const saloonsWithDistance = saloons.map(saloon => {
         // Utiliser le compteur temps réel s'il existe, sinon celui du backend (déjà depuis Redis)
         const realtimeCount = presenceCounts.get(saloon.id);
@@ -53,8 +66,14 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
         };
       });
 
-      // Trier par distance (les saloons sans distance à la fin)
-      return saloonsWithDistance.sort((a, b) => {
+      // Filtrer les saloons à moins de MAX_DISTANCE_METERS (50km)
+      // Si pas de position utilisateur, ne pas afficher les saloons (ou afficher tous ?)
+      const filteredSaloons = position
+        ? saloonsWithDistance.filter(saloon => saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS)
+        : [];
+
+      // Trier par distance (les plus proches en premier)
+      return filteredSaloons.sort((a, b) => {
         if (a.distanceMeters === null && b.distanceMeters === null) return 0;
         if (a.distanceMeters === null) return 1;
         if (b.distanceMeters === null) return -1;
@@ -94,11 +113,19 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
           this.userLat = position.coords.latitude;
           this.userLng = position.coords.longitude;
           this._userPosition$.next({ lat: this.userLat, lng: this.userLng });
+          this.geoLocationStatus.set('granted');
         },
         error => {
           console.warn('Géolocalisation non disponible:', error.message);
+          if (error.code === error.PERMISSION_DENIED) {
+            this.geoLocationStatus.set('denied');
+          } else {
+            this.geoLocationStatus.set('unavailable');
+          }
         }
       );
+    } else {
+      this.geoLocationStatus.set('unavailable');
     }
   }
 
@@ -136,5 +163,9 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   closeModal(): void {
     this.showModal = false;
     this.selectedSaloon = null;
+  }
+
+  goToRequestSaloon(): void {
+    this._router.navigate(['/saloon-demande']);
   }
 }

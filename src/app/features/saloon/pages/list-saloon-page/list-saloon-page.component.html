@@ -1,9 +1,59 @@
 <div class="list-saloons-container">
-  <div class="list-places">
-    @for (saloon of saloons$ | async; track saloon.id) {
-      <app-saloon-card [saloon]="saloon" [distanceMeters]="saloon.distanceMeters" (click)="openModal(saloon)"> </app-saloon-card>
+  <!-- Message si géolocalisation en cours -->
+  @if (geoLocationStatus() === 'loading') {
+    <div class="location-message loading">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Recherche de votre position...</p>
+    </div>
+  }
+
+  <!-- Message si géolocalisation refusée -->
+  @if (geoLocationStatus() === 'denied') {
+    <div class="location-message denied">
+      <i class="fas fa-location-crosshairs"></i>
+      <h3>Géolocalisation désactivée</h3>
+      <p>Pour voir les saloons près de vous, veuillez autoriser l'accès à votre position dans les paramètres de votre navigateur.</p>
+    </div>
+  }
+
+  <!-- Message si géolocalisation indisponible -->
+  @if (geoLocationStatus() === 'unavailable') {
+    <div class="location-message unavailable">
+      <i class="fas fa-map-marker-alt"></i>
+      <h3>Position indisponible</h3>
+      <p>Impossible de déterminer votre position. Vérifiez que la géolocalisation est activée sur votre appareil.</p>
+    </div>
+  }
+
+  <!-- Liste des saloons si position disponible -->
+  @if (geoLocationStatus() === 'granted') {
+    @if ((saloons$ | async); as saloons) {
+      @if (saloons.length > 0) {
+        <p class="saloons-count"><span class="count">{{ saloons.length }}</span> saloon{{ saloons.length > 1 ? 's' : '' }} à proximité</p>
+        <div class="list-places">
+          @for (saloon of saloons; track saloon.id) {
+            <app-saloon-card [saloon]="saloon" [distanceMeters]="saloon.distanceMeters" (click)="openModal(saloon)"> </app-saloon-card>
+          }
+        </div>
+      } @else {
+        <div class="location-message no-saloons">
+          <i class="fas fa-store-slash"></i>
+          <h3>Aucun saloon à proximité</h3>
+          <p>Il n'y a pas de saloon dans un rayon de 50 km autour de vous.</p>
+          @if (totalSaloonsCount() > 0) {
+            <span class="hint">{{ totalSaloonsCount() }} saloon(s) disponible(s) dans d'autres zones</span>
+          }
+          
+          <div class="request-section">
+            <p class="request-text">Vous souhaitez voir un saloon près de chez vous ?</p>
+            <button type="button" class="request-btn" (click)="goToRequestSaloon()">
+              Faites la demande
+            </button>
+          </div>
+        </div>
+      }
     }
-  </div>
+  }
 </div>
 
 <!-- Modal -->

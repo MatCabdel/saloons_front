@@ -1,11 +1,122 @@
-// Variables
+// Variables (charte graphique de l'app)
 $gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$yellow: #ffc122;
 $white: #fff;
+$text-muted: #8a7a8e;
 
 .list-saloons-container {
   min-height: calc(100vh - 60px);
   min-height: calc(100dvh - 60px);
   padding-bottom: 80px; // Space for navbar
+}
+
+// Messages d'état de géolocalisation
+.location-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2.5rem 2rem;
+  margin: 2rem 1rem;
+  border-radius: 24px;
+  background: $white;
+  box-shadow: 0 15px 50px rgba($gradient-top, 0.25);
+
+  i {
+    font-size: 3.5rem;
+    margin-bottom: 1.25rem;
+    color: $gradient-bottom;
+  }
+
+  h3 {
+    color: $gradient-top;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    color: $text-muted;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 280px;
+    margin: 0;
+  }
+
+  .hint {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: $gradient-bottom;
+    font-weight: 600;
+  }
+
+  &.loading {
+    i {
+      color: $yellow;
+    }
+  }
+
+  &.denied {
+    i {
+      color: $yellow;
+    }
+  }
+
+  &.unavailable {
+    i {
+      color: $gradient-bottom;
+    }
+  }
+
+  &.no-saloons {
+    i {
+      color: $gradient-bottom;
+    }
+  }
+}
+
+// Section demande de saloon
+.request-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba($gradient-top, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+
+  .request-text {
+    color: $gradient-top;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .request-btn {
+    background: $gradient-top;
+    color: $white;
+    border: none;
+    border-radius: 50px;
+    padding: 0.9rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba($gradient-top, 0.3);
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba($gradient-top, 0.4);
+      background: lighten($gradient-top, 5%);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 15px rgba($gradient-top, 0.3);
+    }
+  }
 }
 
 .list-places {
@@ -15,6 +126,20 @@ $white: #fff;
   align-items: center;
   gap: 16px;
   padding: 1rem;
+}
+
+.saloons-count {
+  color: $white;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: left;
+  margin: 1rem 1rem 0.5rem;
+  width: 100%;
+  padding-left: 1rem;
+
+  .count {
+    color: $yellow;
+  }
 }
 
 .list-places {
