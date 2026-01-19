@@ -15,7 +15,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
         if (!req.url.includes('/auth/')) {
           console.log('🔒 Utilisateur non autorisé, déconnexion forcée...');
           isLoggingOut = true;
-          
+
           // Nettoyer le stockage local
           localStorage.removeItem('saloon_auth_token');
           localStorage.removeItem('user');

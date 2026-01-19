@@ -1,16 +1,59 @@
 <div class="messagerie-container">
-  <app-switch-message-type></app-switch-message-type>
   <div class="conversation-list">
     @if (conversations$ | async; as conversations) {
-      @for (conv of conversations; track conv.id) {
-        @if (conv.lastMessage && conv.participants) {
-          <div class="conversation-card" (click)="openConversation(conv.id)" (keydown.enter)="openConversation(conv.id)" tabindex="0">
-            <img [src]="otherParticipant(conv)?.imgUrl" alt="avatar" />
-            <div class="card-content">
-              <span class="name">{{ otherParticipant(conv)?.userName }}</span>
-              <span class="last-message">{{ conv.lastMessage.content }}</span>
+      @if (conversations.length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">💬</div>
+          <h3>Aucune conversation pour l'instant</h3>
+          <p>Vos discussions apparaîtront ici une fois que vous aurez échangé avec quelqu'un !</p>
+        </div>
+      } @else {
+        @for (conv of conversations; track conv.id) {
+          @if (conv.participants) {
+            <div 
+              class="conversation-card" 
+              [class.ended]="conv.otherParticipantLeft"
+              (click)="openConversation(conv.id)" 
+              (keydown.enter)="openConversation(conv.id)" 
+              tabindex="0">
+              @if (conv.otherParticipantLeft) {
+                <div class="avatar-placeholder">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                  </svg>
+                </div>
+              } @else {
+                <img [src]="otherParticipant(conv)?.imgUrl" alt="avatar" />
+              }
+              <div class="card-content">
+                <span class="name">{{ otherParticipant(conv)?.userName }}</span>
+                @if (conv.otherParticipantLeft) {
+                  <span class="last-message ended-message">Cette conversation est terminée</span>
+                } @else {
+                  <span class="last-message">{{ conv.lastMessage?.content }}</span>
+                }
+              </div>
+              @if (conv.otherParticipantLeft) {
+                <div class="actions-menu">
+                  <button 
+                    type="button"
+                    class="menu-trigger" 
+                    (click)="toggleMenu($event, conv.id)"
+                    aria-label="Options">
+                    <span class="dots">•••</span>
+                  </button>
+                  @if (openMenuId === conv.id) {
+                    <div class="menu-dropdown">
+                      <button type="button" class="menu-item delete" (click)="confirmDeleteConversation($event, conv.id)">
+                        <span class="icon">🗑️</span>
+                        Supprimer la conversation
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
             </div>
-          </div>
+          }
         }
       }
     }

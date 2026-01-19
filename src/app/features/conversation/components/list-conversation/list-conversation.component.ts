@@ -1,18 +1,16 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
-import { SwitchMessageTypeComponent } from '../switch-message-type/switch-message-type.component';
+import { Component, EventEmitter, HostListener, inject, OnInit, Output } from '@angular/core';
 import { ConversationService } from '../../services/conversation.service';
 import { Router } from '@angular/router';
 import { User } from 'src/app/features/user/models/user';
 import { Conversation } from '../../models/Conversation';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from '../../../../common/components/navbar/navbar.component';
-import { map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-list-conversation',
   standalone: true,
-  imports: [SwitchMessageTypeComponent, CommonModule, NavbarComponent],
+  imports: [CommonModule],
   templateUrl: './list-conversation.component.html',
   styleUrl: './list-conversation.component.scss',
 })
@@ -20,14 +18,26 @@ export class ListConversationComponent implements OnInit {
   conversations$!: Observable<Conversation[]>;
   @Output() conversationUserIdsChange = new EventEmitter<number[]>();
 
+  openMenuId: number | null = null;
+  private _refresh$ = new BehaviorSubject<void>(undefined);
+
   private _conversationService = inject(ConversationService);
   private _router = inject(Router);
   private _userStore = inject(UserStoreService);
 
   myId = this._userStore.getUserId();
 
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    // Ferme le menu si on clique en dehors
+    if (this.openMenuId !== null) {
+      this.openMenuId = null;
+    }
+  }
+
   ngOnInit(): void {
-    this.conversations$ = this._conversationService.getUserConversations().pipe(
+    this.conversations$ = this._refresh$.pipe(
+      switchMap(() => this._conversationService.getUserConversations()),
       map(data => (Array.isArray(data.payload) ? data.payload.filter(conv => conv && conv.id !== undefined) : [])),
       map(conversations =>
         conversations.sort((a, b) => {
@@ -48,6 +58,27 @@ export class ListConversationComponent implements OnInit {
         this.conversationUserIdsChange.emit(ids);
       })
     );
+  }
+
+  toggleMenu(event: Event, conversationId: number): void {
+    event.stopPropagation();
+    this.openMenuId = this.openMenuId === conversationId ? null : conversationId;
+  }
+
+  confirmDeleteConversation(event: Event, conversationId: number): void {
+    event.stopPropagation();
+    this.openMenuId = null;
+
+    if (confirm('Voulez-vous vraiment supprimer cette conversation ?')) {
+      this._conversationService.deleteConversation(conversationId).subscribe({
+        next: () => {
+          this._refresh$.next();
+        },
+        error: err => {
+          console.error('Erreur lors de la suppression:', err);
+        },
+      });
+    }
   }
 
   openConversation(conversationId: number): void {

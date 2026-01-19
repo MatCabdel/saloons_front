@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, DestroyRef, ElementRef, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { ConversationService } from 'src/app/features/conversation/services/conversation.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -19,6 +19,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './messagerie.component.scss',
 })
 export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChecked {
+  @Input() isConversationEnded = false;
+
   conversationId!: number;
   messages: Message[] = [];
   newMessage = '';
