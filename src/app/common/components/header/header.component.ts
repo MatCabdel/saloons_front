@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { APP_ROUTES } from '../../constants/routes.constant';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -21,6 +21,9 @@ export class HeaderComponent {
   private _router = inject(Router);
   private _authService = inject(AuthApiService);
 
+  showBackButton = input(false);
+  backRoute = input<string>('');
+
   isMenuOpen = signal(false);
 
   menuItems = [
@@ -32,6 +35,14 @@ export class HeaderComponent {
   public navigateToWelcome(): void {
     this._router.navigate([APP_ROUTES.SALOONS]);
     this.closeMenu();
+  }
+
+  goBack(): void {
+    if (this.backRoute()) {
+      this._router.navigate([this.backRoute()]);
+    } else {
+      window.history.back();
+    }
   }
 
   toggleMenu(): void {

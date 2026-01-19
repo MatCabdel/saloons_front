@@ -1,0 +1,101 @@
+<div class="saloon-chat-container">
+  <div class="chat-header">
+    <app-header [showBackButton]="true" [backRoute]="'/mysaloon/' + saloonId"></app-header>
+    <div class="chat-info">
+      @if (saloon$ | async; as saloon) {
+        <h1>💬 Tchat du Saloon</h1>
+        <span class="saloon-name">{{ saloon.name }}</span>
+      }
+      <div class="presence-badge" [class.active]="isChatEnabled">
+        <span class="presence-dot"></span>
+        @if (othersConnectedCount === 0) {
+          <span>Personne d'autre ici</span>
+        } @else {
+          <span>{{ othersConnectedCount }} autre{{ othersConnectedCount > 1 ? 's' : '' }} connecté{{ othersConnectedCount > 1 ? 's' : '' }}</span>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="messages-area">
+    <!-- Message anti-relou discret -->
+    <div class="respect-banner">
+      <span class="heart-icon">💜</span>
+      <span>Respect et consentement : une présence ici ne vaut pas invitation.</span>
+    </div>
+
+    <!-- Info sur l'heure d'arrivée (UX clarté) -->
+    @if (joinedAt) {
+      <div class="joined-at-info">
+        <span class="clock-icon">🕐</span>
+        <span>Tu vois les messages depuis ton arrivée à {{ joinedAtFormatted }}</span>
+      </div>
+    }
+
+    <!-- Message de blocage si < 3 participants (mais l'historique reste visible) -->
+    @if (!isChatEnabled) {
+      <div class="chat-disabled-banner">
+        <span class="lock-icon">🔒</span>
+        <span>Le chat s'active à partir de 3 personnes ({{ connectedCount }}/3)</span>
+      </div>
+    }
+
+    <!-- Zone des messages (toujours visible pour l'historique) -->
+    <div class="message-list" #messagesList>
+      @if (isLoading) {
+        <div class="empty-chat">
+          <div class="empty-icon">⏳</div>
+          <p>Chargement des messages...</p>
+        </div>
+      } @else if (messages.length === 0) {
+        <div class="empty-chat">
+          <div class="empty-icon">💬</div>
+          @if (isChatEnabled) {
+            <p>Soyez le premier à lancer la conversation !</p>
+            <span>Les messages sont visibles par tous les membres du saloon</span>
+          } @else {
+            <p>Aucun message pour le moment</p>
+            <span>Le chat s'activera dès qu'il y aura 3 personnes</span>
+          }
+        </div>
+      } @else {
+        @for (msg of messages; track msg.id) {
+          <div class="message-row" [class.me]="msg.senderId === myId" [class.other]="msg.senderId !== myId">
+            @if (msg.senderId !== myId && msg.senderImg) {
+              <img 
+                [src]="msg.senderImg" 
+                alt="avatar" 
+                class="avatar clickable" 
+                (click)="goToUserProfile(msg.senderId)"
+                (keyup.enter)="goToUserProfile(msg.senderId)"
+                tabindex="0"
+                role="button" />
+            }
+            <div class="message-wrapper">
+              <span class="name">{{ msg.senderId === myId ? 'Moi' : msg.senderName }}</span>
+              <div class="bubble">
+                <span class="content">{{ msg.content }}</span>
+              </div>
+              <span class="time">{{ msg.createdAt | date: 'HH:mm' }}</span>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </div>
+
+  <div class="send-box" [class.disabled]="!isChatEnabled">
+    <textarea
+      [(ngModel)]="newMessage"
+      placeholder="{{ isChatEnabled ? 'Écrire un message...' : 'Chat désactivé (3 participants min.)' }}"
+      (keydown)="onEnterPress($event)"
+      rows="1"
+      maxlength="500"
+      [disabled]="!isChatEnabled"></textarea>
+    <button type="button" (click)="sendMessage()" [disabled]="!isChatEnabled || !newMessage.trim()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path>
+      </svg>
+    </button>
+  </div>
+</div>

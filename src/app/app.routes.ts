@@ -21,6 +21,8 @@ import { CreateSaloonPageComponent } from './features/admin/pages/create-saloon-
 import { SaloonsListPageComponent } from './features/admin/pages/saloons-list-page/saloons-list-page.component';
 import { CityStatsPageComponent } from './features/admin/pages/city-stats-page/city-stats-page.component';
 import { SaloonsStatsPageComponent } from './features/admin/pages/saloons-stats-page/saloons-stats-page.component';
+import { SaloonChatPageComponent } from './features/saloon/pages/saloon-chat-page/saloon-chat-page.component';
+import { UnauthorizedPageComponent } from './features/auth/pages/unauthorized-page/unauthorized-page.component';
 
 export const routes: Routes = [
   // Page d'accueil = inscription
@@ -47,6 +49,7 @@ export const routes: Routes = [
   { path: 'profil/edit', component: EditProfilPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'chat', component: ConversationsPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'mysaloon/:id', component: MySaloonPageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'saloon-chat/:saloonId', component: SaloonChatPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'profil-visitor/:id', component: ProfilVisitorPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'match/:userId1/:userId2', component: MatchPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'messages/:conversationId', component: MessagesPageComponent, canActivate: [isLoggedInGuard] },
@@ -64,5 +67,7 @@ export const routes: Routes = [
     ],
     canActivate: [isLoggedInGuard],
   },
+  // Page d'erreur pour les utilisateurs non autorisés / compte supprimé
+  { path: 'unauthorized', component: UnauthorizedPageComponent },
   { path: '**', redirectTo: '' },
 ];
