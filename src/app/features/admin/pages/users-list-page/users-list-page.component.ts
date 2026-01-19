@@ -26,6 +26,9 @@ export class UsersListPageComponent implements OnInit {
   userToDelete = signal<User | null>(null);
   deleting = signal(false);
 
+  // Mobile expanded cards
+  expandedUserIds = signal<Set<number>>(new Set());
+
   ngOnInit(): void {
     this.loadUsers();
   }
@@ -84,5 +87,21 @@ export class UsersListPageComponent implements OnInit {
         this.deleting.set(false);
       },
     });
+  }
+
+  toggleUserExpand(userId: number): void {
+    this.expandedUserIds.update(ids => {
+      const newSet = new Set(ids);
+      if (newSet.has(userId)) {
+        newSet.delete(userId);
+      } else {
+        newSet.add(userId);
+      }
+      return newSet;
+    });
+  }
+
+  isUserExpanded(userId: number): boolean {
+    return this.expandedUserIds().has(userId);
   }
 }

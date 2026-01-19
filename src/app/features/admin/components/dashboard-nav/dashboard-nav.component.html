@@ -1,4 +1,19 @@
-<nav class="dashboard-nav">
+<!-- Mobile Header -->
+<header class="mobile-header">
+  <h1 class="mobile-logo">SAL<span class="yellow">OO</span>NS</h1>
+  <button type="button" class="hamburger-btn" [class.open]="isOpen()" (click)="toggleNav()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</header>
+
+<!-- Overlay for mobile -->
+@if (isOpen()) {
+  <div class="nav-overlay" (click)="closeNav()"></div>
+}
+
+<nav class="dashboard-nav" [class.open]="isOpen()">
   <div class="nav-header">
     <h1>SAL<span class="yellow">OO</span>NS</h1>
     <span class="badge">PRO</span>

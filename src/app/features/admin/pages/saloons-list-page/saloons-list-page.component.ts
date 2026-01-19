@@ -30,6 +30,9 @@ export class SaloonsListPageComponent implements OnInit {
   saloonToDelete = signal<Saloon | null>(null);
   deleting = signal(false);
 
+  // Mobile expanded cards
+  expandedSaloonIds = signal<Set<number>>(new Set());
+
   ngOnInit(): void {
     this.loadSaloons();
   }
@@ -114,5 +117,21 @@ export class SaloonsListPageComponent implements OnInit {
     this.showUsersModal = false;
     this.selectedSaloon = null;
     this.saloonUsers = [];
+  }
+
+  toggleSaloonExpand(saloonId: number): void {
+    this.expandedSaloonIds.update(ids => {
+      const newSet = new Set(ids);
+      if (newSet.has(saloonId)) {
+        newSet.delete(saloonId);
+      } else {
+        newSet.add(saloonId);
+      }
+      return newSet;
+    });
+  }
+
+  isSaloonExpanded(saloonId: number): boolean {
+    return this.expandedSaloonIds().has(saloonId);
   }
 }

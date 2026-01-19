@@ -33,6 +33,7 @@
       <p>Commencez par créer votre premier établissement</p>
     </div>
   } @else {
+    <!-- Desktop Table View -->
     <div class="saloons-table-wrapper">
       <table class="saloons-table">
         <thead>
@@ -119,6 +120,64 @@
           }
         </tbody>
       </table>
+    </div>
+
+    <!-- Mobile Cards View -->
+    <div class="saloons-mobile-cards">
+      @for (saloon of saloons; track saloon.id) {
+        <div class="saloon-card" [class.expanded]="isSaloonExpanded(saloon.id)">
+          <button type="button" class="saloon-card-header" (click)="toggleSaloonExpand(saloon.id)">
+            <img [src]="saloon.imgUrl" [alt]="saloon.name" class="saloon-image" />
+            <div class="saloon-main-info">
+              <span class="saloon-name">{{ saloon.name }}</span>
+              <span class="saloon-city">{{ saloon.city || 'Ville non renseignée' }}</span>
+            </div>
+            <div class="expand-indicator">
+              <span class="connected-count" [class.has-users]="saloon.connectedCount && saloon.connectedCount > 0">
+                {{ saloon.connectedCount || 0 }}
+              </span>
+              <svg class="chevron-icon" [class.rotated]="isSaloonExpanded(saloon.id)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </button>
+          @if (isSaloonExpanded(saloon.id)) {
+            <div class="saloon-card-body">
+              @if (saloon.address) {
+                <p class="saloon-address">📍 {{ saloon.address }}</p>
+              }
+              <div class="saloon-badges">
+                <span class="connected-badge" [class.has-users]="saloon.connectedCount && saloon.connectedCount > 0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                  </svg>
+                  {{ saloon.connectedCount || 0 }} en ligne
+                </span>
+                <button type="button" class="status-badge" [class.active]="saloon.isActive !== false" [class.inactive]="saloon.isActive === false" (click)="toggleActive(saloon); $event.stopPropagation()">
+                  {{ saloon.isActive !== false ? 'Actif' : 'Inactif' }}
+                </button>
+              </div>
+            </div>
+            <div class="saloon-card-actions">
+              <button type="button" class="btn-action-mobile view" (click)="viewUsers(saloon)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+                Participants
+              </button>
+              <button type="button" class="btn-action-mobile delete" (click)="confirmDeleteSaloon(saloon)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+                Supprimer
+              </button>
+            </div>
+          }
+        </div>
+      }
     </div>
 
     <!-- Modal pour afficher les utilisateurs -->

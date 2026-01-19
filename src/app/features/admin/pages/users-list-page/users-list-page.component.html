@@ -28,6 +28,7 @@
       <p>Il n'y a pas encore d'utilisateurs inscrits</p>
     </div>
   } @else {
+    <!-- Desktop Table View -->
     <div class="users-table-wrapper">
       <table class="users-table">
         <thead>
@@ -100,6 +101,73 @@
           }
         </tbody>
       </table>
+    </div>
+
+    <!-- Mobile Cards View -->
+    <div class="users-mobile-cards">
+      @for (user of users(); track user.id) {
+        <div class="user-card" [class.expanded]="isUserExpanded(user.id)">
+          <button type="button" class="user-card-header" (click)="toggleUserExpand(user.id)">
+            @if (user.imgUrl) {
+              <img [src]="user.imgUrl" [alt]="user.userName" class="user-avatar" />
+            } @else {
+              <div class="avatar-placeholder">
+                {{ user.userName ? user.userName.charAt(0).toUpperCase() : user.firstname ? user.firstname.charAt(0).toUpperCase() : '?' }}
+              </div>
+            }
+            <div class="user-main-info">
+              <span class="user-name">{{ user.userName || user.firstname || 'Utilisateur' }}</span>
+              <span class="user-email">{{ user.email }}</span>
+            </div>
+            <div class="expand-indicator">
+              @if (user.profileStatus === 'ACTIVE') {
+                <span class="status-dot active"></span>
+              } @else {
+                <span class="status-dot incomplete"></span>
+              }
+              <svg class="chevron-icon" [class.rotated]="isUserExpanded(user.id)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </button>
+          @if (isUserExpanded(user.id)) {
+            <div class="user-card-body">
+              <div class="user-info-item">
+                <span class="info-label">Prénom</span>
+                <span class="info-value">{{ user.firstname || '-' }}</span>
+              </div>
+              <div class="user-info-item">
+                <span class="info-label">Nom</span>
+                <span class="info-value">{{ user.lastname || '-' }}</span>
+              </div>
+              <div class="user-info-item">
+                <span class="info-label">Ville</span>
+                <span class="info-value">{{ user.city || '-' }}</span>
+              </div>
+              <div class="user-info-item">
+                <span class="info-label">Âge</span>
+                <span class="info-value">{{ user.age ? user.age + ' ans' : '-' }}</span>
+              </div>
+            </div>
+            <div class="user-card-actions">
+              <button type="button" class="btn-action-mobile view" (click)="viewProfile(user)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+                Profil
+              </button>
+              <button type="button" class="btn-action-mobile delete" (click)="confirmDelete(user)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+                Supprimer
+              </button>
+            </div>
+          }
+        </div>
+      }
     </div>
 
     <!-- Modal pour afficher le profil -->

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, HostListener } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -17,6 +17,8 @@ type MenuItem = {
   styleUrl: './dashboard-nav.component.scss',
 })
 export class DashboardNavComponent {
+  isOpen = signal(false);
+  
   menuItems: MenuItem[] = [
     {
       label: 'Général',
@@ -51,8 +53,24 @@ export class DashboardNavComponent {
     item.expanded = !item.expanded;
   }
 
+  toggleNav(): void {
+    this.isOpen.update(v => !v);
+  }
+
+  closeNav(): void {
+    this.isOpen.set(false);
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(): void {
+    if (window.innerWidth > 768) {
+      this.isOpen.set(false);
+    }
+  }
+
   navigate(route: string): void {
     this._router.navigate(['dashboard', route]);
+    this.closeNav();
   }
 
   isActive(route: string): boolean {

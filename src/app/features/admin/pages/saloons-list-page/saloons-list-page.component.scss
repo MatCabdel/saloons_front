@@ -536,3 +536,254 @@
     animation: spin 1s linear infinite;
   }
 }
+
+// ======= MOBILE RESPONSIVE =======
+// Mobile cards (hidden on desktop)
+.saloons-mobile-cards {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .saloons-list-page {
+    max-width: 100%;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .header-content {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .subtitle {
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  .btn-add {
+    width: 100%;
+    justify-content: center;
+  }
+
+  // Hide desktop table, show mobile cards
+  .saloons-table-wrapper {
+    display: none;
+  }
+
+  .saloons-mobile-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .saloon-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    &.expanded {
+      border-color: rgba(255, 193, 34, 0.3);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .saloon-card-header {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    width: 100%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    align-items: center;
+    text-align: left;
+
+    .saloon-image {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .saloon-main-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+
+      .saloon-name {
+        font-weight: 600;
+        color: white;
+        font-size: 1rem;
+        margin-bottom: 0.15rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .saloon-city {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.8rem;
+      }
+    }
+
+    .expand-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .connected-count {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &.has-users {
+          background: linear-gradient(135deg, rgba(240, 147, 251, 0.3), rgba(245, 87, 108, 0.3));
+          color: #f093fb;
+        }
+      }
+
+      .chevron-icon {
+        color: rgba(255, 255, 255, 0.4);
+        transition: transform 0.3s ease;
+
+        &.rotated {
+          transform: rotate(180deg);
+          color: #ffc122;
+        }
+      }
+    }
+  }
+
+  .saloon-card-body {
+    padding: 0 1rem 1rem;
+    animation: slideDown 0.2s ease;
+
+    .saloon-address {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .saloon-badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .connected-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.5);
+
+      &.has-users {
+        background: linear-gradient(135deg, rgba(240, 147, 251, 0.2), rgba(245, 87, 108, 0.2));
+        color: #f093fb;
+      }
+    }
+
+    .status-badge {
+      padding: 0.35rem 0.75rem;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+
+      &.active {
+        background: rgba(56, 239, 125, 0.2);
+        color: #38ef7d;
+      }
+
+      &.inactive {
+        background: rgba(255, 59, 48, 0.2);
+        color: #ff6b6b;
+      }
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .saloon-card-actions {
+    display: flex;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    animation: slideDown 0.2s ease;
+
+    .btn-action-mobile {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.875rem;
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:first-child {
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      &.view:active {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+      }
+
+      &.delete:active {
+        background: rgba(255, 59, 48, 0.1);
+        color: #ff6b6b;
+      }
+    }
+  }
+
+  // Modal adjustments for mobile
+  .modal-overlay {
+    padding: 0.5rem;
+    align-items: flex-end;
+  }
+
+  .modal-content {
+    max-width: 100%;
+    max-height: 85vh;
+    border-radius: 16px 16px 0 0;
+  }
+}

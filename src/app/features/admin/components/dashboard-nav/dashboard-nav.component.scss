@@ -167,3 +167,120 @@
     border-color: rgba(255, 255, 255, 0.2);
   }
 }
+
+// ======= MOBILE STYLES =======
+.mobile-header {
+  display: none;
+}
+
+.nav-overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  // Mobile header bar with hamburger
+  .mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    padding: 0 1rem;
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+
+    .mobile-logo {
+      font-family: 'Koulen', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: white;
+      margin: 0;
+      letter-spacing: 1px;
+
+      .yellow {
+        color: #ffc122;
+      }
+    }
+  }
+
+  // Hamburger button
+  .hamburger-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    &.open {
+      background: rgba(255, 193, 34, 0.1);
+      border-color: rgba(255, 193, 34, 0.3);
+
+      span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+      }
+      span:nth-child(2) {
+        opacity: 0;
+      }
+      span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+      }
+    }
+  }
+
+  // Dark overlay when menu is open
+  .nav-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  // Slide-in navigation panel
+  .dashboard-nav {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 280px;
+    height: 100vh;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+
+    &.open {
+      transform: translateX(300px);
+    }
+
+    .nav-header {
+      padding-top: 4.5rem; // Extra space because mobile header overlays
+    }
+  }
+}
