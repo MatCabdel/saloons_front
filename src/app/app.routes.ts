@@ -24,6 +24,8 @@ import { SaloonsStatsPageComponent } from './features/admin/pages/saloons-stats-
 import { SaloonChatPageComponent } from './features/saloon/pages/saloon-chat-page/saloon-chat-page.component';
 import { UnauthorizedPageComponent } from './features/auth/pages/unauthorized-page/unauthorized-page.component';
 import { MonComptePageComponent } from './features/menu/pages/mon-compte-page/mon-compte-page.component';
+import { ChangePasswordPageComponent } from './features/menu/pages/change-password-page/change-password-page.component';
+import { DeleteAccountPageComponent } from './features/menu/pages/delete-account-page/delete-account-page.component';
 import { SaloonDemandePageComponent } from './features/menu/pages/saloon-demande-page/saloon-demande-page.component';
 import { FaqPageComponent } from './features/menu/pages/faq-page/faq-page.component';
 import { ContactPageComponent } from './features/menu/pages/contact-page/contact-page.component';
@@ -59,6 +61,8 @@ export const routes: Routes = [
   { path: 'messages/:conversationId', component: MessagesPageComponent, canActivate: [isLoggedInGuard] },
   // Menu pages
   { path: 'mon-compte', component: MonComptePageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'mon-compte/changer-mot-de-passe', component: ChangePasswordPageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'mon-compte/supprimer-compte', component: DeleteAccountPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'saloon-demande', component: SaloonDemandePageComponent, canActivate: [isLoggedInGuard] },
   { path: 'faq', component: FaqPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'contact', component: ContactPageComponent, canActivate: [isLoggedInGuard] },
