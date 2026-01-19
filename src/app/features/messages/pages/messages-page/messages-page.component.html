@@ -3,9 +3,9 @@
     <app-header [showBackButton]="true" backRoute="/chat"></app-header>
     <div class="onglets">
       <div class="spacer"></div>
-      <div 
-        class="user-header" 
-        (click)="goToUserProfil()" 
+      <div
+        class="user-header"
+        (click)="goToUserProfil()"
         (keyup.enter)="goToUserProfil()"
         [class.clickable]="!otherParticipantLeft"
         [attr.tabindex]="otherParticipantLeft ? null : 0"
@@ -13,7 +13,7 @@
         @if (otherParticipantLeft) {
           <div class="avatar-placeholder">
             <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
             </svg>
           </div>
           <span class="username">{{ userTarget?.userName ?? 'Utilisateur' }}</span>
@@ -23,11 +23,7 @@
         }
       </div>
       <div class="menu-container">
-        <button
-          type="button"
-          class="dots-menu-btn"
-          (click)="toggleMenu()"
-          [attr.aria-expanded]="isMenuOpen">
+        <button type="button" class="dots-menu-btn" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen">
           <span class="dot"></span>
           <span class="dot"></span>
           <span class="dot"></span>
@@ -35,17 +31,11 @@
         @if (isMenuOpen) {
           <div class="dropdown-menu">
             @if (!otherParticipantLeft) {
-              <button type="button" class="menu-item delete" (click)="confirmDeleteMatch()">
-                Supprimer le match
-              </button>
+              <button type="button" class="menu-item delete" (click)="confirmDeleteMatch()">Supprimer le match</button>
             }
-            <button type="button" class="menu-item delete-conv" (click)="confirmDeleteConversation()">
-              Supprimer la conversation
-            </button>
+            <button type="button" class="menu-item delete-conv" (click)="confirmDeleteConversation()">Supprimer la conversation</button>
             @if (!otherParticipantLeft) {
-              <button type="button" class="menu-item report" (click)="reportUser()">
-                Signaler
-              </button>
+              <button type="button" class="menu-item report" (click)="reportUser()">Signaler</button>
             }
           </div>
         }

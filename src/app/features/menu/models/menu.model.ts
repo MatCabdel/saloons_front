@@ -28,19 +28,34 @@ export type ContactResponse = {
 
 export type SaloonDemande = {
   id?: number;
-  name: string;
-  description: string;
+  placeName: string;
+  placeType: PlaceType;
   address: string;
-  city: string;
-  postalCode: string;
-  phone?: string;
-  email?: string;
+  comment?: string;
+  userId?: number;
+  userEmail?: string;
   status?: SaloonDemandeStatus;
   createdAt?: Date;
+};
+
+export enum PlaceType {
+  BAR_RESTAURANT = 'BAR_RESTAURANT',
+  NIGHTCLUB = 'NIGHTCLUB',
+  PUBLIC_PLACE = 'PUBLIC_PLACE',
+  LEISURE = 'LEISURE',
+  WORK = 'WORK',
+}
+
+export const PLACE_TYPE_LABELS: Record<PlaceType, string> = {
+  [PlaceType.BAR_RESTAURANT]: 'Bar / Restaurant',
+  [PlaceType.NIGHTCLUB]: 'Discothèque',
+  [PlaceType.PUBLIC_PLACE]: 'Lieu public (parc, quai, place...)',
+  [PlaceType.LEISURE]: 'Loisirs (salle de sport, cinéma, bowling...)',
+  [PlaceType.WORK]: 'Travail (coworking, entreprise, campus...)',
 };
 
 export enum SaloonDemandeStatus {
   PENDING = 'PENDING',
   APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED'
+  REJECTED = 'REJECTED',
 }

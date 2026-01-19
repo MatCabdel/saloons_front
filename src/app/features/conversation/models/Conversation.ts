@@ -12,7 +12,7 @@ export type Message = {
 export type Conversation = {
   id: number;
   participants: User[];
-  lastMessage: Message;
+  lastMessage: Message | null;
   lastMessageDate: string;
   otherParticipantLeft: boolean;
 };

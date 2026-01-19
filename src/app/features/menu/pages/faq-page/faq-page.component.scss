@@ -91,7 +91,9 @@ $yellow: #ffc122;
     border-radius: 50%;
     background: rgba($white, 0.1);
     color: $white;
-    transition: transform 0.3s ease, background 0.2s ease;
+    transition:
+      transform 0.3s ease,
+      background 0.2s ease;
 
     &.rotated {
       transform: rotate(180deg);
@@ -165,7 +167,9 @@ $yellow: #ffc122;
   border-radius: 50%;
   background: rgba($white, 0.1);
   color: $white;
-  transition: transform 0.3s ease, background 0.2s ease;
+  transition:
+    transform 0.3s ease,
+    background 0.2s ease;
 
   &.rotated {
     transform: rotate(180deg);

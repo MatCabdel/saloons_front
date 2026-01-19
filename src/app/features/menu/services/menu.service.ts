@@ -2,12 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import {
-  ContactForm,
-  ContactResponse,
-  FaqItem,
-  SaloonDemande,
-} from '../models/menu.model';
+import { ContactForm, ContactResponse, FaqItem, SaloonDemande } from '../models/menu.model';
 
 @Injectable({
   providedIn: 'root',
@@ -33,10 +28,7 @@ export class MenuService {
 
   // Saloon à la demande
   submitSaloonDemande(demande: SaloonDemande): Observable<SaloonDemande> {
-    return this._http.post<SaloonDemande>(
-      `${this._apiUrl}/saloon-demande`,
-      demande
-    );
+    return this._http.post<SaloonDemande>(`${this._apiUrl}/saloon-demande`, demande);
   }
 
   getMySaloonDemandes(): Observable<SaloonDemande[]> {
