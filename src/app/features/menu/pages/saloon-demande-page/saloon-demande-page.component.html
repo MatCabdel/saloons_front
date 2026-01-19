@@ -1,0 +1,120 @@
+<div class="saloon-demande-page">
+  <app-header [title]="'Saloon à la demande'" [showBackButton]="true"></app-header>
+
+  <div class="page-content">
+    <!-- Message de confirmation -->
+    @if (isSubmitted()) {
+      <div class="confirmation-container">
+        <div class="confirmation-icon">✨</div>
+        <h2>Merci pour ta suggestion !</h2>
+        <p class="confirmation-message">
+          Ta demande a bien été enregistrée.<br />
+          Nous allons étudier ce lieu et voir comment l'intégrer à Saloons.
+        </p>
+        <p class="community-message">
+          <strong>Saloons évolue grâce à sa communauté.</strong><br />
+          Chaque suggestion compte !
+        </p>
+        <button type="button" class="btn-new-demande" (click)="resetForm()">Proposer un autre lieu</button>
+        <button type="button" class="btn-back-saloons" routerLink="/saloons">Retour aux Saloons</button>
+      </div>
+    } @else {
+      <!-- Introduction -->
+      <div class="intro-section">
+        <h2>Propose un lieu à ajouter</h2>
+        <p class="intro-text">
+          Tu connais un endroit sympa où les gens aiment se retrouver, mais il n'est pas encore sur Saloons ? C'est le moment de nous en parler !
+        </p>
+        <div class="examples">
+          <div class="example-item">
+            <span class="example-icon">🍺</span>
+            <span>Un bar ou resto cool près de chez toi</span>
+          </div>
+          <div class="example-item">
+            <span class="example-icon">🌳</span>
+            <span>Un parc, une place ou un quai où tu croises du monde</span>
+          </div>
+          <div class="example-item">
+            <span class="example-icon">🎳</span>
+            <span>Une salle de sport, un bowling ou une salle de jeux</span>
+          </div>
+          <div class="example-item">
+            <span class="example-icon">💼</span>
+            <span>Un espace de coworking ou ton campus</span>
+          </div>
+        </div>
+        <p class="reassurance">
+          <em>Ta demande n'engage à rien. On étudie chaque suggestion avec attention !</em>
+        </p>
+      </div>
+
+      <!-- Formulaire -->
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="demande-form">
+        <!-- Nom du lieu -->
+        <div class="form-group">
+          <label for="placeName">Nom du lieu *</label>
+          <input
+            type="text"
+            id="placeName"
+            formControlName="placeName"
+            placeholder="Ex : Le Café des Amis"
+            [class.invalid]="isFieldInvalid('placeName')" />
+          @if (isFieldInvalid('placeName')) {
+            <span class="error-text">Le nom du lieu est requis (min. 2 caractères)</span>
+          }
+        </div>
+
+        <!-- Type de lieu -->
+        <div class="form-group">
+          <label for="placeType">Type de lieu *</label>
+          <select id="placeType" formControlName="placeType" [class.invalid]="isFieldInvalid('placeType')">
+            <option value="" disabled>Sélectionne un type</option>
+            @for (type of placeTypes; track type) {
+              <option [value]="type">{{ placeTypeLabels[type] }}</option>
+            }
+          </select>
+          @if (isFieldInvalid('placeType')) {
+            <span class="error-text">Sélectionne un type de lieu</span>
+          }
+        </div>
+
+        <!-- Adresse -->
+        <div class="form-group">
+          <label for="address">Adresse du lieu *</label>
+          <input
+            type="text"
+            id="address"
+            formControlName="address"
+            placeholder="Ex : 12 rue de la Paix, 75002 Paris"
+            [class.invalid]="isFieldInvalid('address')" />
+          @if (isFieldInvalid('address')) {
+            <span class="error-text">L'adresse est requise (min. 5 caractères)</span>
+          }
+        </div>
+
+        <!-- Commentaire -->
+        <div class="form-group">
+          <label for="comment">Commentaire <span class="optional">(optionnel)</span></label>
+          <textarea id="comment" formControlName="comment" placeholder="Pourquoi aimerais-tu voir ce lieu sur Saloons ?" rows="4"></textarea>
+        </div>
+
+        <!-- Erreur générale -->
+        @if (errorMessage()) {
+          <div class="error-banner">
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <!-- Bouton submit -->
+        <button type="submit" class="btn-submit" [disabled]="isSubmitting()">
+          @if (isSubmitting()) {
+            <span class="loader"></span>
+            Envoi en cours...
+          } @else {
+            Envoyer la demande
+          }
+        </button>
+      </form>
+    }
+  </div>
+</div>

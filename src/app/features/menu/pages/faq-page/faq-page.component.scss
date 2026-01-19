@@ -1,0 +1,247 @@
+$gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$white: #fff;
+$yellow: #ffc122;
+
+.faq-page {
+  min-height: 100vh;
+  background: linear-gradient(to right, $gradient-top 0%, lighten($gradient-top, 10%) 100%);
+}
+
+.page-content {
+  padding: 1.5rem;
+  padding-bottom: 100px;
+}
+
+.faq-intro {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: $white;
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+    opacity: 0.85;
+  }
+}
+
+.faq-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.faq-section {
+  background: rgba($white, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+
+  &.open {
+    .section-header {
+      background: rgba($white, 0.1);
+    }
+  }
+}
+
+.section-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 1rem 1.25rem;
+  background: rgba($white, 0.05);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba($white, 0.1);
+  }
+
+  &:focus {
+    outline: none;
+    background: rgba($white, 0.1);
+  }
+
+  .section-icon {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    flex: 1;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $white;
+    margin: 0;
+    text-align: left;
+  }
+
+  .section-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba($white, 0.1);
+    color: $white;
+    transition:
+      transform 0.3s ease,
+      background 0.2s ease;
+
+    &.rotated {
+      transform: rotate(180deg);
+      background: rgba($yellow, 0.3);
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+.questions-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba($white, 0.1);
+  animation: slideDown 0.3s ease;
+}
+
+.question-item {
+  border-bottom: 1px solid rgba($white, 0.08);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &.open {
+    background: rgba($white, 0.03);
+  }
+}
+
+.question-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 1rem 1.25rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba($white, 0.05);
+  }
+
+  &:focus {
+    outline: none;
+    background: rgba($white, 0.05);
+  }
+}
+
+.question-text {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: $white;
+  line-height: 1.4;
+}
+
+.toggle-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba($white, 0.1);
+  color: $white;
+  transition:
+    transform 0.3s ease,
+    background 0.2s ease;
+
+  &.rotated {
+    transform: rotate(180deg);
+    background: rgba($yellow, 0.3);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.answer-content {
+  padding: 0 1.25rem 1.25rem;
+  animation: slideDown 0.3s ease;
+
+  p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: rgba($white, 0.85);
+    margin: 0;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.faq-footer {
+  margin-top: 2.5rem;
+  text-align: center;
+  padding: 1.5rem;
+  background: rgba($white, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+
+  .footer-message {
+    font-size: 0.95rem;
+    color: rgba($white, 0.9);
+    font-style: italic;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba($white, 0.15);
+  }
+
+  .footer-question {
+    font-size: 0.95rem;
+    color: rgba($white, 0.85);
+    margin-bottom: 1rem;
+  }
+
+  .contact-link {
+    display: inline-block;
+    padding: 12px 28px;
+    background: $yellow;
+    color: $gradient-top;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba($yellow, 0.4);
+    }
+  }
+}

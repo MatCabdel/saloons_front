@@ -1,0 +1,58 @@
+<div class="faq-page">
+  <app-header [title]="'FAQ'" [showBackButton]="true"></app-header>
+
+  <div class="page-content">
+    <div class="faq-intro">
+      <h1>Questions fréquentes</h1>
+      <p>Tout ce que tu dois savoir sur Saloons</p>
+    </div>
+
+    <div class="faq-sections">
+      @for (section of faqSections(); track section.title; let sectionIndex = $index) {
+        <div class="faq-section" [class.open]="section.isOpen">
+          <button type="button" class="section-header" (click)="toggleSection(sectionIndex)" [attr.aria-expanded]="section.isOpen">
+            <span class="section-icon">{{ section.icon }}</span>
+            <h2>{{ section.title }}</h2>
+            <span class="section-toggle" [class.rotated]="section.isOpen">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </span>
+          </button>
+
+          @if (section.isOpen) {
+            <div class="questions-list">
+              @for (question of section.questions; track question.question; let questionIndex = $index) {
+                <div class="question-item" [class.open]="question.isOpen">
+                  <button
+                    type="button"
+                    class="question-header"
+                    (click)="toggleQuestion(sectionIndex, questionIndex)"
+                    [attr.aria-expanded]="question.isOpen">
+                    <span class="question-text">{{ question.question }}</span>
+                    <span class="toggle-icon" [class.rotated]="question.isOpen">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </span>
+                  </button>
+                  @if (question.isOpen) {
+                    <div class="answer-content">
+                      <p>{{ question.answer }}</p>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="faq-footer">
+      <p class="footer-message">{{ footerMessage }}</p>
+      <p class="footer-question">Tu n'as pas trouvé ta réponse ?</p>
+      <a routerLink="/contact" class="contact-link">Contacte-nous</a>
+    </div>
+  </div>
+</div>
