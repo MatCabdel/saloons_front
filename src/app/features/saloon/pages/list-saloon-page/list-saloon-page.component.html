@@ -1,9 +1,4 @@
 <div class="list-saloons-container">
-  <div class="saloons-header">
-    <h2>Saloons à proximité</h2>
-    <p class="subtitle">Découvrez les lieux où faire des rencontres</p>
-  </div>
-
   <div class="list-places">
     @for (saloon of saloons$ | async; track saloon.id) {
       <app-saloon-card [saloon]="saloon" [distanceMeters]="saloon.distanceMeters" (click)="openModal(saloon)"> </app-saloon-card>
