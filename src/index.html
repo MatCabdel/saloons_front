@@ -13,7 +13,11 @@
       var global = window;
       window.global = window;
       if (typeof window.Buffer === 'undefined') {
-        window.Buffer = { isBuffer: function() { return false; } };
+        window.Buffer = {
+          isBuffer: function () {
+            return false;
+          },
+        };
       }
     </script>
   </head>

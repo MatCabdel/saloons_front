@@ -1,34 +1,49 @@
 <div class="message-list" #messagesList>
-  @for (msg of messages; track $index) {
-    <div class="message-row" [ngClass]="{ me: msg.sender === myId, other: msg.sender !== myId }">
-      @if (msg.sender !== myId) {
-        <img [src]="getParticipantById(msg.sender)?.imgUrl || 'assets/img/default-avatar.png'" alt="avatar" />
-      }
-      <div class="message-wrapper">
-        <span class="name">
-          @if (msg.sender === myId) {
-            Moi
-          } @else {
-            {{ getParticipantById(msg.sender)?.userName || 'Inconnu' }}
-          }
-        </span>
-        <div class="bubble">
-          <span class="content">{{ msg.content }}</span>
-        </div>
-        <span class="time">{{ msg.sentAt | date: 'HH:mm' }}</span>
-      </div>
+  @if (isConversationEnded) {
+    <div class="conversation-ended">
+      <div class="ended-icon">👋</div>
+      <h3>Conversation terminée</h3>
+      <p>L'autre utilisateur est parti.<br/>Cette conversation n'est plus active.</p>
     </div>
+  } @else if (messages.length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">👋</div>
+      <h3>Aucun message pour l'instant</h3>
+      <p>Soyez le premier à briser la glace !</p>
+    </div>
+  } @else {
+    @for (msg of messages; track $index) {
+      <div class="message-row" [ngClass]="{ me: msg.sender === myId, other: msg.sender !== myId }">
+        @if (msg.sender !== myId) {
+          <img [src]="getParticipantById(msg.sender)?.imgUrl || 'assets/img/default-avatar.png'" alt="avatar" />
+        }
+        <div class="message-wrapper">
+          <span class="name">
+            @if (msg.sender === myId) {
+              Moi
+            } @else {
+              {{ getParticipantById(msg.sender)?.userName || 'Inconnu' }}
+            }
+          </span>
+          <div class="bubble">
+            <span class="content">{{ msg.content }}</span>
+          </div>
+          <span class="time">{{ msg.sentAt | date: 'HH:mm' }}</span>
+        </div>
+      </div>
+    }
   }
 </div>
-<div class="send-box">
+<div class="send-box" [class.disabled]="isConversationEnded">
   <textarea
     [(ngModel)]="newMessage"
-    placeholder="Écrire un message..."
+    placeholder="{{ isConversationEnded ? 'Conversation terminée' : 'Écrire un message...' }}"
     (keydown)="onEnterPress($event)"
     #messageInput
     rows="1"
-    maxlength="1000"></textarea>
-  <button type="button" (click)="sendMessage()" [disabled]="!newMessage.trim()">
+    maxlength="1000"
+    [disabled]="isConversationEnded"></textarea>
+  <button type="button" (click)="sendMessage()" [disabled]="isConversationEnded || !newMessage.trim()">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path>
     </svg>

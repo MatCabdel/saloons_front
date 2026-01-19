@@ -69,15 +69,16 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
     // Connecter au WebSocket pour les mises à jour temps réel
     this._presenceRealtimeService.connect();
     // Charger la session active de l'utilisateur (pour savoir s'il est dans un saloon)
-    this._presenceService.getMySession()
+    this._presenceService
+      .getMySession()
       .pipe(takeUntil(this._destroy$))
       .subscribe({
-        next: (session) => {
+        next: session => {
           console.log('📋 Session active chargée:', session);
         },
-        error: (err) => {
+        error: err => {
           console.log('📋 Pas de session active ou erreur:', err);
-        }
+        },
       });
   }
 

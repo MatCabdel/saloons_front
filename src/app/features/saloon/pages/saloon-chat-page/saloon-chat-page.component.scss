@@ -110,11 +110,11 @@ $text-light: #888;
     justify-content: center;
     gap: 6px;
     padding: 8px 16px;
-    background: rgba(#2196F3, 0.1);
-    color: #1976D2;
+    background: rgba(#2196f3, 0.1);
+    color: #1976d2;
     font-size: 0.75rem;
     text-align: center;
-    border-bottom: 1px solid rgba(#2196F3, 0.1);
+    border-bottom: 1px solid rgba(#2196f3, 0.1);
     flex-shrink: 0;
 
     .clock-icon {
@@ -262,7 +262,7 @@ $text-light: #888;
         align-items: flex-start;
 
         .name {
-          color: #2196F3;
+          color: #2196f3;
         }
 
         .time {
@@ -289,7 +289,9 @@ $text-light: #888;
 
       &.clickable {
         cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
         border: 2px solid transparent;
 
         &:hover {

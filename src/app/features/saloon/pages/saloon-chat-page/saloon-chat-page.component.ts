@@ -67,10 +67,10 @@ export class SaloonChatPageComponent implements OnInit, OnDestroy, AfterViewChec
         this.sessionEndsAt = new Date(history.sessionEndsAt);
         this.connectedCount = history.connectedCount;
         this.isChatEnabled = history.chatEnabled;
-        
+
         // Mettre à jour le service avec les infos de session
         this._chatService.setJoinedAt(history.joinedAt, history.sessionEndsAt);
-        
+
         this.isLoading = false;
         this._shouldScroll = true;
       },

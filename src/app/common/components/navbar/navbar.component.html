@@ -2,7 +2,10 @@
   <div class="buttons-container">
     @for (item of navItems; track item.route) {
       <div>
-        <button type="button" [routerLink]="[item.route]">
+        <button 
+          type="button" 
+          [routerLink]="[item.route]"
+          [class.active]="isActive(item.route)">
           <img [src]="item.icon" [alt]="item.alt" />
         </button>
       </div>

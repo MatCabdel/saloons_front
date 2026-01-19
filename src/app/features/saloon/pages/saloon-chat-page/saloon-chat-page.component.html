@@ -62,10 +62,10 @@
         @for (msg of messages; track msg.id) {
           <div class="message-row" [class.me]="msg.senderId === myId" [class.other]="msg.senderId !== myId">
             @if (msg.senderId !== myId && msg.senderImg) {
-              <img 
-                [src]="msg.senderImg" 
-                alt="avatar" 
-                class="avatar clickable" 
+              <img
+                [src]="msg.senderImg"
+                alt="avatar"
+                class="avatar clickable"
                 (click)="goToUserProfile(msg.senderId)"
                 (keyup.enter)="goToUserProfile(msg.senderId)"
                 tabindex="0"

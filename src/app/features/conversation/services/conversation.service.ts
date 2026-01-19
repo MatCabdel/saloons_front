@@ -28,4 +28,8 @@ export class ConversationService {
   createConversation(participantId: number): Observable<Conversation> {
     return this._http.post<Conversation>(`${this._apiUrl}`, participantId);
   }
+
+  deleteConversation(conversationId: number): Observable<void> {
+    return this._http.delete<void>(`${this._apiUrl}/${conversationId}`);
+  }
 }

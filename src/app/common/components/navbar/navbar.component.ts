@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -14,4 +14,10 @@ export class NavbarComponent {
     { route: '/saloons', icon: 'assets/icons/home.svg', alt: 'home' },
     { route: '/chat', icon: 'assets/icons/chat3.svg', alt: 'tchat' },
   ];
+
+  constructor(private router: Router) {}
+
+  isActive(route: string): boolean {
+    return this.router.url.startsWith(route);
+  }
 }

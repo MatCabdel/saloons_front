@@ -21,7 +21,7 @@
 
 .icon-wrapper {
   margin-bottom: 24px;
-  
+
   svg {
     color: #ff6b6b;
   }
@@ -62,8 +62,10 @@ h1 {
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
@@ -79,8 +81,10 @@ h1 {
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  
+  transition:
+    background 0.2s,
+    color 0.2s;
+
   &:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #fff;

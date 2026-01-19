@@ -1,13 +1,19 @@
+// Variables
+$gradient-top: #413443;
+
 .messages-container {
-  background-color: #ffffff;
+  background-color: #faf9f6;
   min-width: 100vw;
   margin: 0 auto;
-  height: 70vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 
   .header-messages {
     position: relative;
-    height: 20vh;
-    background-color: #413443;
+    flex-shrink: 0;
+    height: 140px;
+    background: linear-gradient(to right, $gradient-top 0%, lighten($gradient-top, 10%) 100%);
 
     .nav-header {
       width: 100%;
@@ -24,6 +30,7 @@
       padding-top: 12px;
       padding-left: 20px;
       font-size: 1.2em;
+      margin: 0;
     }
   }
 }

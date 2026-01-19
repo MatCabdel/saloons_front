@@ -26,13 +26,13 @@ export class UnauthorizedPageComponent implements OnInit {
   private _setMessage(): void {
     switch (this.reason) {
       case 'session_expired':
-        this.message = 'Votre session a expiré ou votre compte n\'existe plus.';
+        this.message = "Votre session a expiré ou votre compte n'existe plus.";
         break;
       case 'account_deleted':
         this.message = 'Votre compte a été supprimé.';
         break;
       default:
-        this.message = 'Vous n\'êtes pas autorisé à accéder à cette ressource.';
+        this.message = "Vous n'êtes pas autorisé à accéder à cette ressource.";
     }
   }
 

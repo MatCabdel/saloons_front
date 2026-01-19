@@ -14,4 +14,5 @@ export type Conversation = {
   participants: User[];
   lastMessage: Message;
   lastMessageDate: string;
+  otherParticipantLeft: boolean;
 };

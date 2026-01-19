@@ -40,7 +40,16 @@ export class SaloonCardComponent implements OnInit, OnDestroy {
     const count = this.saloon.connectedCount ?? this.saloon.visitorNumber ?? 0;
     // Si je suis dans ce saloon, ne pas me compter
     const isInThisSaloon = this._myActiveSaloonId === this.saloon.id;
-    console.log('🔢 visitorCount for', this.saloon.name, '- count:', count, 'isInThisSaloon:', isInThisSaloon, 'myActiveSaloonId:', this._myActiveSaloonId);
+    console.log(
+      '🔢 visitorCount for',
+      this.saloon.name,
+      '- count:',
+      count,
+      'isInThisSaloon:',
+      isInThisSaloon,
+      'myActiveSaloonId:',
+      this._myActiveSaloonId
+    );
     if (isInThisSaloon && count > 0) {
       return count - 1;
     }
