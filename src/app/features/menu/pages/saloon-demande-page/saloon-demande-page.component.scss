@@ -247,9 +247,29 @@ $error: #ff6b6b;
   color: $white;
   cursor: pointer;
   transition: all 0.2s ease;
+  margin-bottom: 1rem;
 
   &:hover {
     background: rgba($white, 0.1);
+  }
+}
+
+.btn-back-saloons {
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  background: $yellow;
+  color: $gradient-top;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba($yellow, 0.3);
   }
 }
 
@@ -265,7 +285,8 @@ $error: #ff6b6b;
 }
 
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {

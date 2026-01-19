@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { HeaderComponent } from 'src/app/common/components/header/header.component';
 import { MenuService } from '../../services/menu.service';
 import { PlaceType, PLACE_TYPE_LABELS, SaloonDemande } from '../../models/menu.model';
@@ -9,7 +10,7 @@ import { UserStoreService } from 'src/app/features/user/store/user-store.service
 @Component({
   selector: 'app-saloon-demande-page',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, ReactiveFormsModule],
+  imports: [CommonModule, HeaderComponent, ReactiveFormsModule, RouterModule],
   templateUrl: './saloon-demande-page.component.html',
   styleUrls: ['./saloon-demande-page.component.scss'],
 })

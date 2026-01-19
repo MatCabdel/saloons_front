@@ -1,5 +1,5 @@
 <div class="saloon-demande-page">
-  <app-header [title]="'Saloon à la demande'"></app-header>
+  <app-header [title]="'Saloon à la demande'" [showBackButton]="true"></app-header>
 
   <div class="page-content">
     <!-- Message de confirmation -->
@@ -15,17 +15,15 @@
           <strong>Saloons évolue grâce à sa communauté.</strong><br />
           Chaque suggestion compte !
         </p>
-        <button type="button" class="btn-new-demande" (click)="resetForm()">
-          Proposer un autre lieu
-        </button>
+        <button type="button" class="btn-new-demande" (click)="resetForm()">Proposer un autre lieu</button>
+        <button type="button" class="btn-back-saloons" routerLink="/saloons">Retour aux Saloons</button>
       </div>
     } @else {
       <!-- Introduction -->
       <div class="intro-section">
         <h2>Propose un lieu à ajouter</h2>
         <p class="intro-text">
-          Tu connais un endroit sympa où les gens aiment se retrouver, mais il n'est pas encore sur Saloons ?
-          C'est le moment de nous en parler !
+          Tu connais un endroit sympa où les gens aiment se retrouver, mais il n'est pas encore sur Saloons ? C'est le moment de nous en parler !
         </p>
         <div class="examples">
           <div class="example-item">
@@ -60,8 +58,7 @@
             id="placeName"
             formControlName="placeName"
             placeholder="Ex : Le Café des Amis"
-            [class.invalid]="isFieldInvalid('placeName')"
-          />
+            [class.invalid]="isFieldInvalid('placeName')" />
           @if (isFieldInvalid('placeName')) {
             <span class="error-text">Le nom du lieu est requis (min. 2 caractères)</span>
           }
@@ -70,11 +67,7 @@
         <!-- Type de lieu -->
         <div class="form-group">
           <label for="placeType">Type de lieu *</label>
-          <select
-            id="placeType"
-            formControlName="placeType"
-            [class.invalid]="isFieldInvalid('placeType')"
-          >
+          <select id="placeType" formControlName="placeType" [class.invalid]="isFieldInvalid('placeType')">
             <option value="" disabled>Sélectionne un type</option>
             @for (type of placeTypes; track type) {
               <option [value]="type">{{ placeTypeLabels[type] }}</option>
@@ -93,8 +86,7 @@
             id="address"
             formControlName="address"
             placeholder="Ex : 12 rue de la Paix, 75002 Paris"
-            [class.invalid]="isFieldInvalid('address')"
-          />
+            [class.invalid]="isFieldInvalid('address')" />
           @if (isFieldInvalid('address')) {
             <span class="error-text">L'adresse est requise (min. 5 caractères)</span>
           }
@@ -103,12 +95,7 @@
         <!-- Commentaire -->
         <div class="form-group">
           <label for="comment">Commentaire <span class="optional">(optionnel)</span></label>
-          <textarea
-            id="comment"
-            formControlName="comment"
-            placeholder="Pourquoi aimerais-tu voir ce lieu sur Saloons ?"
-            rows="4"
-          ></textarea>
+          <textarea id="comment" formControlName="comment" placeholder="Pourquoi aimerais-tu voir ce lieu sur Saloons ?" rows="4"></textarea>
         </div>
 
         <!-- Erreur générale -->
@@ -119,11 +106,7 @@
         }
 
         <!-- Bouton submit -->
-        <button
-          type="submit"
-          class="btn-submit"
-          [disabled]="isSubmitting()"
-        >
+        <button type="submit" class="btn-submit" [disabled]="isSubmitting()">
           @if (isSubmitting()) {
             <span class="loader"></span>
             Envoi en cours...
