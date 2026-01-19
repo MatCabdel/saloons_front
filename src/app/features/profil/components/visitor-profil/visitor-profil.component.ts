@@ -51,9 +51,7 @@ export class VisitorProfilComponent implements OnInit {
   }
 
   goBack(): void {
-    this.data$.pipe(take(1)).subscribe(({ saloonId }) => {
-      this._router.navigate(['/mysaloon', saloonId]);
-    });
+    window.history.back();
   }
 
   private _computeAge(birthDateISO: string): number {

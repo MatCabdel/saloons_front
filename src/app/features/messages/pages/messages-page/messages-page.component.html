@@ -1,20 +1,11 @@
 <div class="messages-container">
   <div class="header-messages">
-    <div class="nav-header">
-      <button type="button" class="btn-return" (click)="goBack()"><</button>
-      <app-header></app-header>
-      <button type="button" class="btn-burger">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
+    <app-header [showBackButton]="true" backRoute="/chat"></app-header>
     <div class="onglets">
       <h1>Messages</h1>
       @if (userTarget) {
         <div class="user-header">
           <img [src]="userTarget.imgUrl" alt="avatar" class="avatar-header" />
-          <!--<span class="user-name">{{ userTarget.userName }}</span>-->
         </div>
       }
       <h1
@@ -24,7 +15,7 @@
         (click)="goToUserProfil()"
         (keyup.enter)="goToUserProfil()"
         (keyup.space)="goToUserProfil()">
-        voir profil
+        Voir profil
       </h1>
     </div>
   </div>

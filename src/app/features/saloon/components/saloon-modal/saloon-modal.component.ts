@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { PresenceService, SaloonMapItem, ActiveSession } from '../../services/presence.service';
 import { PresenceWebSocketService } from '../../services/presence-websocket.service';
+import { SaloonPresenceRealtimeService } from '../../services/saloon-presence-realtime.service';
 
 @Component({
   selector: 'app-saloon-modal',
@@ -27,6 +28,7 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
   private _destroy$ = new Subject<void>();
   private _presenceService = inject(PresenceService);
   private _presenceWsService = inject(PresenceWebSocketService);
+  private _presenceRealtimeService = inject(SaloonPresenceRealtimeService);
   private _router = inject(Router);
 
   ngOnInit(): void {
@@ -34,6 +36,16 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
     this._presenceService.activeSession$.pipe(takeUntil(this._destroy$)).subscribe(session => {
       this.activeSession = session;
       this.isInThisSaloon = session?.saloonId === this.saloon?.id;
+    });
+
+    // S'abonner aux mises à jour temps réel de la présence
+    this._presenceRealtimeService.presenceCounts$.pipe(takeUntil(this._destroy$)).subscribe(counts => {
+      if (this.saloon) {
+        const realtimeCount = counts.get(this.saloon.id);
+        if (realtimeCount !== undefined) {
+          this.realConnectedCount = realtimeCount;
+        }
+      }
     });
 
     // Charger la session active au démarrage
@@ -77,10 +89,15 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   /**
-   * Retourne le nombre de connectés à afficher
+   * Retourne le nombre de connectés à afficher (sans se compter) (sans se compter)
    */
   get connectedCount(): number {
-    return this.realConnectedCount ?? this.saloon?.connectedCount ?? 0;
+    const count = this.realConnectedCount ?? this.saloon?.connectedCount ?? 0;
+    // Si je suis dans ce saloon, ne pas me compter
+    if (this.isInThisSaloon && count > 0) {
+      return count - 1;
+    }
+    return count;
   }
 
   /**

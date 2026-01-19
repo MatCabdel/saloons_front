@@ -4,7 +4,7 @@
       @if (msg.sender !== myId) {
         <img [src]="getParticipantById(msg.sender)?.imgUrl || 'assets/img/default-avatar.png'" alt="avatar" />
       }
-      <div class="bubble">
+      <div class="message-wrapper">
         <span class="name">
           @if (msg.sender === myId) {
             Moi
@@ -12,7 +12,10 @@
             {{ getParticipantById(msg.sender)?.userName || 'Inconnu' }}
           }
         </span>
-        <span class="content">{{ msg.content }}</span>
+        <div class="bubble">
+          <span class="content">{{ msg.content }}</span>
+        </div>
+        <span class="time">{{ msg.sentAt | date: 'HH:mm' }}</span>
       </div>
     </div>
   }
@@ -20,10 +23,14 @@
 <div class="send-box">
   <textarea
     [(ngModel)]="newMessage"
-    placeholder="Ecrire un message..."
+    placeholder="Écrire un message..."
     (keydown)="onEnterPress($event)"
     #messageInput
     rows="1"
     maxlength="1000"></textarea>
-  <button type="button" (click)="sendMessage()" [disabled]="!newMessage.trim()">Envoyer</button>
+  <button type="button" (click)="sendMessage()" [disabled]="!newMessage.trim()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path>
+    </svg>
+  </button>
 </div>

@@ -79,4 +79,13 @@ export class MySaloonPageComponent implements OnInit {
   goToVisitorProfil(userId: number, saloonId: number): void {
     this._router.navigate(['/profil-visitor', userId], { queryParams: { saloonId } });
   }
+
+  openSaloonChat(): void {
+    this._route.paramMap.pipe(take(1)).subscribe(params => {
+      const saloonId = params.get('id');
+      if (saloonId) {
+        this._router.navigate(['/saloon-chat', saloonId]);
+      }
+    });
+  }
 }

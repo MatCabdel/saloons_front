@@ -163,3 +163,52 @@ $text-light: #888;
     transform: translateY(0) scale(1);
   }
 }
+
+// Bouton tchat du saloon (intégré)
+.chat-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, rgba($gradient-top, 0.08) 0%, rgba($gradient-bottom, 0.12) 100%);
+  border: 1px solid rgba($gradient-bottom, 0.2);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  svg {
+    stroke: $gradient-top;
+    flex-shrink: 0;
+  }
+
+  span {
+    flex: 1;
+    text-align: left;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: $gradient-top;
+  }
+
+  .arrow {
+    opacity: 0.5;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, rgba($gradient-top, 0.12) 0%, rgba($gradient-bottom, 0.18) 100%);
+    border-color: rgba($gradient-bottom, 0.35);
+    transform: translateX(2px);
+
+    .arrow {
+      opacity: 1;
+      transform: translateX(3px);
+    }
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}

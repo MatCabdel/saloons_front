@@ -9,14 +9,10 @@
     <h1>{{ saloon.name }}</h1>
     <p>
       <img class="icon-visitors" src="assets/icons/visitors.svg" alt="icons visitors" />
-      @if (usersInSaloon$ | async; as users) {
-        @if (users.length === 0) {
-          Aucun visiteur
-        } @else {
-          {{ users.length }} visiteur{{ users.length > 1 ? 's' : '' }}
-        }
-      } @else {
+      @if (visitorCount === 0) {
         Aucun visiteur
+      } @else {
+        {{ visitorCount }} visiteur{{ visitorCount > 1 ? 's' : '' }}
       }
     </p>
   </div>

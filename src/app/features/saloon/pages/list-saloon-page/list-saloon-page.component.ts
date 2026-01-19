@@ -1,11 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, switchMap, Subject, takeUntil } from 'rxjs';
 import { Saloon } from '../../models/saloonModel';
 import { SaloonCardComponent } from '../../components/saloon-card/saloon-card.component';
 import { SaloonApiService } from '../../services/saloon-api.service';
 import { SaloonModalComponent } from '../../components/saloon-modal/saloon-modal.component';
-import { SaloonMapItem } from '../../services/presence.service';
+import { SaloonMapItem, PresenceService } from '../../services/presence.service';
+import { SaloonPresenceRealtimeService } from '../../services/saloon-presence-realtime.service';
 
 @Component({
   selector: 'app-list-saloon-page',
@@ -14,31 +15,43 @@ import { SaloonMapItem } from '../../services/presence.service';
   templateUrl: './list-saloon-page.component.html',
   styleUrl: './list-saloon-page.component.scss',
 })
-export class ListSaloonPageComponent implements OnInit {
+export class ListSaloonPageComponent implements OnInit, OnDestroy {
   private _saloonApiService = inject(SaloonApiService);
+  private _presenceRealtimeService = inject(SaloonPresenceRealtimeService);
+  private _presenceService = inject(PresenceService);
+  private _destroy$ = new Subject<void>();
 
   // Position utilisateur
   userLat: number | null = null;
   userLng: number | null = null;
   private _userPosition$ = new BehaviorSubject<{ lat: number; lng: number } | null>(null);
+  private _refreshTrigger$ = new BehaviorSubject<void>(undefined);
 
   // Modal
   showModal = false;
   selectedSaloon: SaloonMapItem | null = null;
 
-  // Saloons triés par distance
+  // Saloons triés par distance avec mise à jour temps réel de la présence
   saloons$: Observable<(Saloon & { distanceMeters: number | null })[]> = combineLatest([
-    this._saloonApiService.getListSaloon(),
+    this._refreshTrigger$.pipe(switchMap(() => this._saloonApiService.getListSaloon())),
     this._userPosition$,
+    this._presenceRealtimeService.presenceCounts$,
   ]).pipe(
-    map(([saloons, position]) => {
-      const saloonsWithDistance = saloons.map(saloon => ({
-        ...saloon,
-        distanceMeters:
-          position && saloon.latitude && saloon.longitude
-            ? Math.round(this._calculateDistance(position.lat, position.lng, saloon.latitude, saloon.longitude))
-            : null,
-      }));
+    map(([saloons, position, presenceCounts]) => {
+      const saloonsWithDistance = saloons.map(saloon => {
+        // Utiliser le compteur temps réel s'il existe, sinon celui du backend (déjà depuis Redis)
+        const realtimeCount = presenceCounts.get(saloon.id);
+        const finalCount = realtimeCount !== undefined ? realtimeCount : saloon.connectedCount;
+        console.log(`🏠 Saloon ${saloon.name}: realtimeCount=${realtimeCount}, backend.connectedCount=${saloon.connectedCount}, final=${finalCount}`);
+        return {
+          ...saloon,
+          connectedCount: finalCount ?? 0,
+          distanceMeters:
+            position && saloon.latitude && saloon.longitude
+              ? Math.round(this._calculateDistance(position.lat, position.lng, saloon.latitude, saloon.longitude))
+              : null,
+        };
+      });
 
       // Trier par distance (les saloons sans distance à la fin)
       return saloonsWithDistance.sort((a, b) => {
@@ -51,7 +64,26 @@ export class ListSaloonPageComponent implements OnInit {
   );
 
   ngOnInit(): void {
+    console.log('📋 ListSaloonPage - ngOnInit, connexion WebSocket...');
     this._getUserLocation();
+    // Connecter au WebSocket pour les mises à jour temps réel
+    this._presenceRealtimeService.connect();
+    // Charger la session active de l'utilisateur (pour savoir s'il est dans un saloon)
+    this._presenceService.getMySession()
+      .pipe(takeUntil(this._destroy$))
+      .subscribe({
+        next: (session) => {
+          console.log('📋 Session active chargée:', session);
+        },
+        error: (err) => {
+          console.log('📋 Pas de session active ou erreur:', err);
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 
   private _getUserLocation(): void {
@@ -95,7 +127,7 @@ export class ListSaloonPageComponent implements OnInit {
       longitude: saloon.longitude || 0,
       radiusMeters: saloon.radiusMeters || 50000, // Pour les tests
       distanceMeters: saloon.distanceMeters,
-      connectedCount: saloon.visitorNumber || saloon.visitors || 0,
+      connectedCount: saloon.connectedCount || saloon.visitorNumber || 0,
     };
     this.showModal = true;
   }

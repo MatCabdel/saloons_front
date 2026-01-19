@@ -1,6 +1,12 @@
 <header class="header-container">
-  <!-- Spacer pour équilibrer le burger -->
-  <div class="header-spacer"></div>
+  <!-- Bouton retour ou spacer -->
+  @if (showBackButton()) {
+    <button type="button" class="back-btn" (click)="goBack()" aria-label="Retour">
+      <span>‹</span>
+    </button>
+  } @else {
+    <div class="header-spacer"></div>
+  }
 
   <!-- Logo centré -->
   <h1 (click)="navigateToWelcome()" class="clickable" (keydown.enter)="navigateToWelcome()" (keydown.space)="navigateToWelcome()" tabindex="0">

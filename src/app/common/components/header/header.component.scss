@@ -20,6 +20,31 @@ $white: #fff;
     width: 44px; // Même taille que le burger pour équilibrer
   }
 
+  .back-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba($white, 0.15);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    span {
+      color: $white;
+      font-size: 1.5rem;
+      font-weight: 300;
+      line-height: 1;
+    }
+
+    &:hover {
+      background: rgba($white, 0.25);
+      transform: scale(1.05);
+    }
+  }
+
   h1 {
     color: $white;
     font-family: 'Koulen', sans-serif;
