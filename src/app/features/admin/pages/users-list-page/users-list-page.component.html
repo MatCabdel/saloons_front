@@ -28,6 +28,21 @@
       <p>Il n'y a pas encore d'utilisateurs inscrits</p>
     </div>
   } @else {
+    <!-- Filters -->
+    <div class="list-filters">
+      <div class="filter-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4" />
+        </svg>
+        <select [ngModel]="sortOption()" (ngModelChange)="onSortChange($event)">
+          <option value="name-asc">Alphabétique</option>
+          <option value="name-desc">Alphabétique inversé</option>
+          <option value="last-login-desc">Connexion récente</option>
+          <option value="last-login-asc">Connexion ancienne</option>
+        </select>
+      </div>
+    </div>
+
     <!-- Desktop Table View -->
     <div class="users-table-wrapper">
       <table class="users-table">
@@ -40,12 +55,13 @@
             <th>Email</th>
             <th>Ville</th>
             <th>Âge</th>
+            <th>Dernière connexion</th>
             <th>Statut</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          @for (user of users(); track user.id) {
+          @for (user of paginatedUsers(); track user.id) {
             <tr>
               <td class="cell-image">
                 @if (user.imgUrl) {
@@ -62,6 +78,7 @@
               <td class="cell-email">{{ user.email }}</td>
               <td class="cell-city">{{ user.city || '-' }}</td>
               <td class="cell-age">{{ user.age || '-' }}</td>
+              <td class="cell-last-login">{{ formatLastLogin(user.lastLoginAt) }}</td>
               <td class="cell-status">
                 @if (user.profileStatus === 'ACTIVE') {
                   <span class="badge badge-success">Actif</span>
@@ -103,9 +120,49 @@
       </table>
     </div>
 
+    <!-- Pagination Controls -->
+    <div class="pagination-wrapper">
+      <div class="pagination-left">
+        <span class="pagination-info">
+          {{ (currentPage() - 1) * itemsPerPage() + 1 }}-{{ currentPage() * itemsPerPage() > users().length ? users().length : currentPage() * itemsPerPage() }} sur {{ users().length }}
+        </span>
+      </div>
+      <div class="pagination-center">
+        <button type="button" class="pagination-btn" [disabled]="currentPage() === 1" (click)="previousPage()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <div class="pagination-pages">
+          @for (page of [].constructor(totalPages()); track $index) {
+            <button
+              type="button"
+              class="page-number"
+              [class.active]="currentPage() === $index + 1"
+              (click)="goToPage($index + 1)">
+              {{ $index + 1 }}
+            </button>
+          }
+        </div>
+        <button type="button" class="pagination-btn" [disabled]="currentPage() === totalPages()" (click)="nextPage()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+      <div class="pagination-right">
+        <select [ngModel]="itemsPerPage()" (ngModelChange)="onItemsPerPageChange($event)">
+          <option [ngValue]="10">10 / page</option>
+          <option [ngValue]="25">25 / page</option>
+          <option [ngValue]="50">50 / page</option>
+          <option [ngValue]="100">100 / page</option>
+        </select>
+      </div>
+    </div>
+
     <!-- Mobile Cards View -->
     <div class="users-mobile-cards">
-      @for (user of users(); track user.id) {
+      @for (user of paginatedUsers(); track user.id) {
         <div class="user-card" [class.expanded]="isUserExpanded(user.id)">
           <button type="button" class="user-card-header" (click)="toggleUserExpand(user.id)">
             @if (user.imgUrl) {
@@ -147,6 +204,10 @@
               <div class="user-info-item">
                 <span class="info-label">Âge</span>
                 <span class="info-value">{{ user.age ? user.age + ' ans' : '-' }}</span>
+              </div>
+              <div class="user-info-item">
+                <span class="info-label">Dernière connexion</span>
+                <span class="info-value">{{ formatLastLogin(user.lastLoginAt) }}</span>
               </div>
             </div>
             <div class="user-card-actions">

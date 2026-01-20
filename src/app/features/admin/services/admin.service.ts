@@ -82,7 +82,8 @@ export class AdminService {
   }
 
   getAllSaloons(): Observable<Saloon[]> {
-    return this._http.get<Saloon[]>(`${this._BASE_URL}/saloon`);
+    // Utiliser l'endpoint admin pour récupérer TOUS les saloons (actifs et inactifs)
+    return this._http.get<Saloon[]>(`${this._BASE_URL}/admin/saloons`);
   }
 
   createSaloon(saloon: CreateSaloonRequest): Observable<Saloon> {
