@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { SaloonType } from '../models/saloonModel';
 
 // Types
 export type UserPresence = {
@@ -60,6 +61,7 @@ export type SaloonMapItem = {
   radiusMeters: number;
   distanceMeters: number | null;
   connectedCount: number;
+  type?: SaloonType;
 };
 
 export type PresenceEvent = {

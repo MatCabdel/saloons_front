@@ -21,6 +21,11 @@
         <!-- Nom -->
         <h2 class="saloon-name">{{ saloon.name }}</h2>
 
+        <!-- Type -->
+        @if (typeLabel) {
+          <span class="saloon-type-badge">{{ typeLabel }}</span>
+        }
+
         <!-- Adresse -->
         @if (saloon.address) {
           <p class="saloon-address">{{ saloon.address }}</p>

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
-import { Saloon } from '../../../saloon/models/saloonModel';
+import { Saloon, SALOON_TYPE_LABELS, SaloonType } from '../../../saloon/models/saloonModel';
 
 @Component({
   selector: 'app-edit-saloon-page',
@@ -28,6 +28,11 @@ export class EditSaloonPageComponent implements OnInit {
   imagePreview: string | null = null;
   originalImageUrl: string | null = null;
 
+  saloonTypes: { value: SaloonType; label: string }[] = Object.entries(SALOON_TYPE_LABELS).map(([value, label]) => ({
+    value: value as SaloonType,
+    label,
+  }));
+
   saloonForm: FormGroup = this._fb.group({
     name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
     address: [''],
@@ -36,6 +41,7 @@ export class EditSaloonPageComponent implements OnInit {
     latitude: [null, [Validators.required, Validators.min(-90), Validators.max(90)]],
     longitude: [null, [Validators.required, Validators.min(-180), Validators.max(180)]],
     radiusMeters: [100, [Validators.min(10), Validators.max(100000)]],
+    type: ['BAR', Validators.required],
   });
 
   ngOnInit(): void {
@@ -66,6 +72,7 @@ export class EditSaloonPageComponent implements OnInit {
           latitude: saloon.latitude,
           longitude: saloon.longitude,
           radiusMeters: saloon.radiusMeters || 100,
+          type: saloon.type || 'BAR',
         });
 
         this.isLoading = false;
@@ -120,6 +127,7 @@ export class EditSaloonPageComponent implements OnInit {
       formData.append('latitude', this.saloonForm.get('latitude')?.value);
       formData.append('longitude', this.saloonForm.get('longitude')?.value);
       formData.append('radiusMeters', this.saloonForm.get('radiusMeters')?.value || '100');
+      formData.append('type', this.saloonForm.get('type')?.value || 'BAR');
 
       this._adminService.updateSaloonWithImage(this.saloonId, formData).subscribe({
         next: () => {
@@ -135,7 +143,6 @@ export class EditSaloonPageComponent implements OnInit {
         },
       });
     } else {
-      // Sinon, utiliser l'endpoint sans image (garder l'image existante)
       const saloonData = {
         name: this.saloonForm.get('name')?.value,
         imgUrl: this.originalImageUrl || '',
@@ -145,6 +152,7 @@ export class EditSaloonPageComponent implements OnInit {
         latitude: this.saloonForm.get('latitude')?.value,
         longitude: this.saloonForm.get('longitude')?.value,
         radiusMeters: this.saloonForm.get('radiusMeters')?.value || 100,
+        type: this.saloonForm.get('type')?.value || 'BAR',
       };
 
       this._adminService.updateSaloon(this.saloonId, saloonData).subscribe({
@@ -173,6 +181,7 @@ export class EditSaloonPageComponent implements OnInit {
         latitude: this.saloon.latitude,
         longitude: this.saloon.longitude,
         radiusMeters: this.saloon.radiusMeters || 100,
+        type: this.saloon.type || 'BAR',
       });
       this.selectedFile = null;
       this.imagePreview = this.originalImageUrl;

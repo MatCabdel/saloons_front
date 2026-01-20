@@ -93,6 +93,7 @@ export class MapComponent implements OnInit, OnDestroy {
       radiusMeters: saloon.radiusMeters || 50000, // 50km pour les tests
       distanceMeters: null,
       connectedCount: saloon.visitorNumber || saloon.visitors || 0,
+      type: saloon.type,
     };
   }
 

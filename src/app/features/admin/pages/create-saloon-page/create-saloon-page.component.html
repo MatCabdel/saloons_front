@@ -29,12 +29,23 @@
       <div class="form-section">
         <h2>Informations générales</h2>
 
-        <div class="form-group">
-          <label for="name">Nom du saloon *</label>
-          <input type="text" id="name" formControlName="name" placeholder="Ex: Le Bar du Coin" />
-          @if (saloonForm.get('name')?.invalid && saloonForm.get('name')?.touched) {
-            <span class="field-error">Le nom est requis (2-100 caractères)</span>
-          }
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Nom du saloon *</label>
+            <input type="text" id="name" formControlName="name" placeholder="Ex: Le Bar du Coin" />
+            @if (saloonForm.get('name')?.invalid && saloonForm.get('name')?.touched) {
+              <span class="field-error">Le nom est requis (2-100 caractères)</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="type">Type de lieu *</label>
+            <select id="type" formControlName="type">
+              @for (saloonType of saloonTypes; track saloonType.value) {
+                <option [value]="saloonType.value">{{ saloonType.label }}</option>
+              }
+            </select>
+          </div>
         </div>
 
         <div class="image-upload-section">

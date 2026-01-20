@@ -85,6 +85,18 @@
           </button>
           <p class="help-text">💡 Laissez vide pour conserver l'image actuelle</p>
         </div>
+
+        <div class="form-group">
+          <label for="type">Type d'établissement *</label>
+          <select id="type" formControlName="type">
+            @for (option of saloonTypes; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+          @if (saloonForm.get('type')?.invalid && saloonForm.get('type')?.touched) {
+            <span class="field-error">Le type est requis</span>
+          }
+        </div>
       </div>
 
       <div class="form-section">

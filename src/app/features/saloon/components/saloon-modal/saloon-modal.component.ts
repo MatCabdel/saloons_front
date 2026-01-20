@@ -5,6 +5,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { PresenceService, SaloonMapItem, ActiveSession } from '../../services/presence.service';
 import { PresenceWebSocketService } from '../../services/presence-websocket.service';
 import { SaloonPresenceRealtimeService } from '../../services/saloon-presence-realtime.service';
+import { SALOON_TYPE_LABELS } from '../../models/saloonModel';
 
 @Component({
   selector: 'app-saloon-modal',
@@ -195,5 +196,13 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
    */
   get hasSessionElsewhere(): boolean {
     return this.activeSession !== null && !this.isInThisSaloon;
+  }
+
+  /**
+   * Retourne le label du type de saloon.
+   */
+  get typeLabel(): string {
+    if (!this.saloon?.type) return '';
+    return SALOON_TYPE_LABELS[this.saloon.type] || '';
   }
 }

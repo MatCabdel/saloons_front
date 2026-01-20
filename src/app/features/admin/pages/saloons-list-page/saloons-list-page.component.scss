@@ -397,6 +397,30 @@
   color: white !important;
 }
 
+.cell-type {
+  .type-badge {
+    display: inline-block;
+    padding: 0.3rem 0.75rem;
+    background: linear-gradient(135deg, rgba(100, 100, 100, 0.3), rgba(150, 150, 150, 0.2));
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    text-transform: capitalize;
+  }
+}
+
+.saloon-type-badge-small {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  background: linear-gradient(135deg, rgba(100, 100, 100, 0.3), rgba(150, 150, 150, 0.2));
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-left: 0.25rem;
+}
+
 .cell-address {
   max-width: 200px;
   white-space: nowrap;

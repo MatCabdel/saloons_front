@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AdminService, PagedResponse } from '../../services/admin.service';
-import { Saloon } from '../../../saloon/models/saloonModel';
+import { Saloon, SALOON_TYPE_LABELS, SaloonType } from '../../../saloon/models/saloonModel';
 import { User } from '../../../user/models/user';
 
 type SortOption = 'name-asc' | 'name-desc' | 'connected-desc' | 'connected-asc';
@@ -228,5 +228,10 @@ export class SaloonsListPageComponent implements OnInit {
 
   isSaloonExpanded(saloonId: number): boolean {
     return this.expandedSaloonIds().has(saloonId);
+  }
+
+  getTypeLabel(type: SaloonType | undefined): string {
+    if (!type) return '-';
+    return SALOON_TYPE_LABELS[type] || type;
   }
 }

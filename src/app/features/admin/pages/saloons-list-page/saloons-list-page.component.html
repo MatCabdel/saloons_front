@@ -31,12 +31,7 @@
         <circle cx="11" cy="11" r="8" />
         <path d="M21 21l-4.35-4.35" />
       </svg>
-      <input
-        type="text"
-        placeholder="Rechercher par nom de saloon..."
-        [value]="searchQuery()"
-        (input)="onSearchChange($any($event.target).value)"
-      />
+      <input type="text" placeholder="Rechercher par nom de saloon..." [value]="searchQuery()" (input)="onSearchChange($any($event.target).value)" />
       @if (searchQuery()) {
         <button type="button" class="clear-search" (click)="clearSearch()">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -79,6 +74,7 @@
           <tr>
             <th>Image</th>
             <th>Nom</th>
+            <th>Type</th>
             <th>Ville</th>
             <th>Adresse</th>
             <th>Coordonnées</th>
@@ -94,6 +90,9 @@
                 <img [src]="saloon.imgUrl" [alt]="saloon.name" />
               </td>
               <td class="cell-name">{{ saloon.name }}</td>
+              <td class="cell-type">
+                <span class="type-badge">{{ getTypeLabel(saloon.type) }}</span>
+              </td>
               <td>{{ saloon.city || '-' }}</td>
               <td class="cell-address">{{ saloon.address || '-' }}</td>
               <td class="cell-coords">
@@ -253,6 +252,7 @@
             <img [src]="saloon.imgUrl" [alt]="saloon.name" class="saloon-image" />
             <div class="saloon-main-info">
               <span class="saloon-name">{{ saloon.name }}</span>
+              <span class="saloon-type-badge-small">{{ getTypeLabel(saloon.type) }}</span>
               <span class="saloon-city">{{ saloon.city || 'Ville non renseignée' }}</span>
             </div>
             <div class="expand-indicator">
