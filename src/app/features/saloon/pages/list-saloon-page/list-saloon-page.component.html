@@ -27,9 +27,11 @@
 
   <!-- Liste des saloons si position disponible -->
   @if (geoLocationStatus() === 'granted') {
-    @if ((saloons$ | async); as saloons) {
+    @if (saloons$ | async; as saloons) {
       @if (saloons.length > 0) {
-        <p class="saloons-count"><span class="count">{{ saloons.length }}</span> saloon{{ saloons.length > 1 ? 's' : '' }} à proximité</p>
+        <p class="saloons-count">
+          <span class="count">{{ saloons.length }}</span> saloon{{ saloons.length > 1 ? 's' : '' }} à proximité
+        </p>
         <div class="list-places">
           @for (saloon of saloons; track saloon.id) {
             <app-saloon-card [saloon]="saloon" [distanceMeters]="saloon.distanceMeters" (click)="openModal(saloon)"> </app-saloon-card>
@@ -43,12 +45,10 @@
           @if (totalSaloonsCount() > 0) {
             <span class="hint">{{ totalSaloonsCount() }} saloon(s) disponible(s) dans d'autres zones</span>
           }
-          
+
           <div class="request-section">
             <p class="request-text">Vous souhaitez voir un saloon près de chez vous ?</p>
-            <button type="button" class="request-btn" (click)="goToRequestSaloon()">
-              Faites la demande
-            </button>
+            <button type="button" class="request-btn" (click)="goToRequestSaloon()">Faites la demande</button>
           </div>
         </div>
       }

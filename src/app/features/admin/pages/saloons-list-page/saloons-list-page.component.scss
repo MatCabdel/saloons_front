@@ -158,6 +158,66 @@
       }
     }
   }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    flex: 1;
+    max-width: 400px;
+    transition: all 0.2s ease;
+
+    &:hover,
+    &:focus-within {
+      border-color: rgba(255, 193, 34, 0.5);
+    }
+
+    svg {
+      color: rgba(255, 255, 255, 0.5);
+      flex-shrink: 0;
+    }
+
+    input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 0.85rem;
+      min-width: 0;
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .clear-search {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.6);
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+      }
+    }
+  }
 }
 
 // Pagination Wrapper
@@ -456,6 +516,12 @@
       background: rgba(102, 126, 234, 0.1);
       border-color: rgba(102, 126, 234, 0.3);
       color: #667eea;
+    }
+
+    &.edit:hover {
+      background: rgba(255, 193, 34, 0.1);
+      border-color: rgba(255, 193, 34, 0.3);
+      color: #ffc122;
     }
 
     &.delete:hover {
@@ -964,6 +1030,15 @@
       &.view:active {
         background: rgba(102, 126, 234, 0.1);
         color: #667eea;
+      }
+
+      &.edit {
+        color: #667eea;
+        text-decoration: none;
+
+        &:active {
+          background: rgba(102, 126, 234, 0.1);
+        }
       }
 
       &.delete:active {

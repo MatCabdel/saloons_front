@@ -1,16 +1,29 @@
-<div class="create-saloon-page">
+<div class="edit-saloon-page">
   <header class="page-header">
-    <h1>Créer un saloon</h1>
-    <p class="subtitle">Ajoutez un nouveau lieu sur la carte</p>
+    <button type="button" class="btn-back" (click)="goBack()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+      </svg>
+      Retour
+    </button>
+    <div class="header-content">
+      <h1>Modifier le saloon</h1>
+      <p class="subtitle">Mettez à jour les informations de l'établissement</p>
+    </div>
   </header>
 
-  @if (success) {
+  @if (isLoading) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Chargement du saloon...</p>
+    </div>
+  } @else if (success) {
     <div class="success-message">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
         <polyline points="22 4 12 14.01 9 11.01" />
       </svg>
-      <h3>Saloon créé avec succès !</h3>
+      <h3>Saloon modifié avec succès !</h3>
       <p>Redirection en cours...</p>
     </div>
   } @else {
@@ -38,13 +51,13 @@
         </div>
 
         <div class="image-upload-section">
-          <label for="saloon-image-input">Image du saloon *</label>
+          <label for="saloon-image-input">Image du saloon</label>
           <button
             type="button"
             class="upload-area"
             [class.has-image]="imagePreview"
             (click)="fileInput.click()"
-            aria-label="Sélectionner une image pour le saloon">
+            aria-label="Sélectionner une nouvelle image pour le saloon">
             <input #fileInput id="saloon-image-input" type="file" accept="image/*" (change)="onFileSelected($event)" />
             @if (!imagePreview) {
               <div class="upload-placeholder">
@@ -61,7 +74,7 @@
                   <polyline points="21 15 16 10 5 21" />
                 </svg>
                 <p>Cliquez pour sélectionner une image</p>
-                <p class="hint">PNG, JPG, JPEG - Max 5MB</p>
+                <p class="hint">PNG, JPG, JPEG - Max 10MB</p>
               </div>
             } @else {
               <div class="image-preview">
@@ -70,9 +83,7 @@
               </div>
             }
           </button>
-          @if (!selectedFile && saloonForm.get('name')?.touched) {
-            <span class="field-error">Une image est requise</span>
-          }
+          <p class="help-text">💡 Laissez vide pour conserver l'image actuelle</p>
         </div>
       </div>
 
@@ -126,12 +137,12 @@
 
       <div class="form-actions">
         <button type="button" class="btn-secondary" (click)="resetForm()">Réinitialiser</button>
-        <button type="submit" class="btn-primary" [disabled]="isLoading || !selectedFile">
-          @if (isLoading) {
+        <button type="submit" class="btn-primary" [disabled]="isSaving">
+          @if (isSaving) {
             <span class="spinner"></span>
-            Création...
+            Enregistrement...
           } @else {
-            Créer le saloon
+            Enregistrer les modifications
           }
         </button>
       </div>

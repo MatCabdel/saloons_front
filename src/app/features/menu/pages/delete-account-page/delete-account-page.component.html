@@ -7,9 +7,7 @@
       <div class="warning-section">
         <div class="warning-icon">⚠️</div>
         <h2>Attention</h2>
-        <p class="warning-text">
-          Tu es sur le point de supprimer définitivement ton compte Saloons.
-        </p>
+        <p class="warning-text">Tu es sur le point de supprimer définitivement ton compte Saloons.</p>
       </div>
 
       <!-- Consequences List -->
@@ -37,30 +35,19 @@
 
       <!-- Action Buttons -->
       <div class="action-buttons">
-        <button type="button" class="btn-danger" (click)="proceedToConfirmation()">
-          Je comprends, supprimer mon compte
-        </button>
-        <button type="button" class="btn-cancel" (click)="goBack()">
-          Annuler
-        </button>
+        <button type="button" class="btn-danger" (click)="proceedToConfirmation()">Je comprends, supprimer mon compte</button>
+        <button type="button" class="btn-cancel" (click)="goBack()">Annuler</button>
       </div>
     } @else {
       <!-- Confirmation Section -->
       <div class="confirmation-section">
         <div class="confirm-icon">🗑️</div>
         <h2>Confirme la suppression</h2>
-        <p class="confirm-text">
-          Pour confirmer la suppression de ton compte, tape <strong>SUPPRIMER</strong> dans le champ ci-dessous.
-        </p>
+        <p class="confirm-text">Pour confirmer la suppression de ton compte, tape <strong>SUPPRIMER</strong> dans le champ ci-dessous.</p>
 
         <form [formGroup]="form" class="confirm-form">
           <div class="form-group">
-            <input
-              type="text"
-              id="confirmText"
-              formControlName="confirmText"
-              placeholder="Tape SUPPRIMER"
-              autocomplete="off" />
+            <input type="text" id="confirmText" formControlName="confirmText" placeholder="Tape SUPPRIMER" autocomplete="off" />
           </div>
 
           @if (errorMessage()) {
@@ -70,11 +57,7 @@
           }
 
           <div class="action-buttons">
-            <button
-              type="button"
-              class="btn-danger"
-              [disabled]="!isConfirmValid() || isDeleting()"
-              (click)="deleteAccount()">
+            <button type="button" class="btn-danger" [disabled]="!isConfirmValid() || isDeleting()" (click)="deleteAccount()">
               @if (isDeleting()) {
                 <span class="spinner"></span>
                 Suppression en cours...
@@ -82,9 +65,7 @@
                 Supprimer définitivement
               }
             </button>
-            <button type="button" class="btn-cancel" (click)="cancelDeletion()">
-              J'ai changé d'avis
-            </button>
+            <button type="button" class="btn-cancel" (click)="cancelDeletion()">J'ai changé d'avis</button>
           </div>
         </form>
       </div>

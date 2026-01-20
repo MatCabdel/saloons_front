@@ -10,14 +10,7 @@
 
 <!-- Overlay for mobile -->
 @if (isOpen()) {
-  <div 
-    class="nav-overlay" 
-    (click)="closeNav()" 
-    (keydown.escape)="closeNav()"
-    tabindex="0"
-    role="button"
-    aria-label="Fermer le menu"
-  ></div>
+  <div class="nav-overlay" (click)="closeNav()" (keydown.escape)="closeNav()" tabindex="0" role="button" aria-label="Fermer le menu"></div>
 }
 
 <nav class="dashboard-nav" [class.open]="isOpen()">

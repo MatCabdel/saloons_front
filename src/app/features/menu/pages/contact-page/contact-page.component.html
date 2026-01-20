@@ -18,9 +18,7 @@
       <!-- Introduction -->
       <div class="intro-section">
         <h2>Contacte-nous</h2>
-        <p class="intro-text">
-          Une question, une suggestion ou un problème ? On est là pour t'aider !
-        </p>
+        <p class="intro-text">Une question, une suggestion ou un problème ? On est là pour t'aider !</p>
       </div>
 
       <!-- Formulaire -->
@@ -28,12 +26,7 @@
         <!-- Nom -->
         <div class="form-group">
           <label for="lastName">Nom *</label>
-          <input
-            type="text"
-            id="lastName"
-            formControlName="lastName"
-            placeholder="Ex : Dupont"
-            [class.invalid]="isFieldInvalid('lastName')" />
+          <input type="text" id="lastName" formControlName="lastName" placeholder="Ex : Dupont" [class.invalid]="isFieldInvalid('lastName')" />
           @if (isFieldInvalid('lastName')) {
             <span class="error-text">Le nom est requis (min. 2 caractères)</span>
           }
@@ -42,12 +35,7 @@
         <!-- Prénom -->
         <div class="form-group">
           <label for="firstName">Prénom *</label>
-          <input
-            type="text"
-            id="firstName"
-            formControlName="firstName"
-            placeholder="Ex : Jean"
-            [class.invalid]="isFieldInvalid('firstName')" />
+          <input type="text" id="firstName" formControlName="firstName" placeholder="Ex : Jean" [class.invalid]="isFieldInvalid('firstName')" />
           @if (isFieldInvalid('firstName')) {
             <span class="error-text">Le prénom est requis (min. 2 caractères)</span>
           }
@@ -56,12 +44,7 @@
         <!-- Email -->
         <div class="form-group">
           <label for="email">Email *</label>
-          <input
-            type="email"
-            id="email"
-            formControlName="email"
-            placeholder="Ex : jean.dupont@email.com"
-            [class.invalid]="isFieldInvalid('email')" />
+          <input type="email" id="email" formControlName="email" placeholder="Ex : jean.dupont@email.com" [class.invalid]="isFieldInvalid('email')" />
           @if (isFieldInvalid('email')) {
             <span class="error-text">Un email valide est requis</span>
           }

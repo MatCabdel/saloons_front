@@ -18,7 +18,7 @@ type MenuItem = {
 })
 export class DashboardNavComponent {
   isOpen = signal(false);
-  
+
   menuItems: MenuItem[] = [
     {
       label: 'Général',

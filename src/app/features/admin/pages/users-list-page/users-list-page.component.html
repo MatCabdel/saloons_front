@@ -6,6 +6,40 @@
     </div>
   </div>
 
+  <!-- Filters - Always visible -->
+  <div class="list-filters">
+    <div class="filter-item">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4" />
+      </svg>
+      <select [ngModel]="sortOption()" (ngModelChange)="onSortChange($event)">
+        <option value="name-asc">Alphabétique</option>
+        <option value="name-desc">Alphabétique inversé</option>
+        <option value="last-login-desc">Connexion récente</option>
+        <option value="last-login-asc">Connexion ancienne</option>
+      </select>
+    </div>
+    <div class="search-box">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8" />
+        <path d="M21 21l-4.35-4.35" />
+      </svg>
+      <input
+        type="text"
+        placeholder="Rechercher par nom, pseudo, prénom ou email..."
+        [value]="searchQuery()"
+        (input)="onSearchChange($any($event.target).value)"
+      />
+      @if (searchQuery()) {
+        <button type="button" class="clear-search" (click)="clearSearch()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+      }
+    </div>
+  </div>
+
   @if (loading()) {
     <div class="loading">
       <div class="spinner"></div>
@@ -24,25 +58,15 @@
         <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
         <path d="M16 3.13a4 4 0 0 1 0 7.75" />
       </svg>
-      <h3>Aucun utilisateur</h3>
-      <p>Il n'y a pas encore d'utilisateurs inscrits</p>
+      @if (searchQuery()) {
+        <h3>Aucun résultat</h3>
+        <p>Aucun utilisateur ne correspond à "{{ searchQuery() }}"</p>
+      } @else {
+        <h3>Aucun utilisateur</h3>
+        <p>Il n'y a pas encore d'utilisateurs inscrits</p>
+      }
     </div>
   } @else {
-    <!-- Filters -->
-    <div class="list-filters">
-      <div class="filter-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4" />
-        </svg>
-        <select [ngModel]="sortOption()" (ngModelChange)="onSortChange($event)">
-          <option value="name-asc">Alphabétique</option>
-          <option value="name-desc">Alphabétique inversé</option>
-          <option value="last-login-desc">Connexion récente</option>
-          <option value="last-login-asc">Connexion ancienne</option>
-        </select>
-      </div>
-    </div>
-
     <!-- Desktop Table View -->
     <div class="users-table-wrapper">
       <table class="users-table">
@@ -61,7 +85,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (user of paginatedUsers(); track user.id) {
+          @for (user of users(); track user.id) {
             <tr>
               <td class="cell-image">
                 @if (user.imgUrl) {
@@ -124,7 +148,10 @@
     <div class="pagination-wrapper">
       <div class="pagination-left">
         <span class="pagination-info">
-          {{ (currentPage() - 1) * itemsPerPage() + 1 }}-{{ currentPage() * itemsPerPage() > users().length ? users().length : currentPage() * itemsPerPage() }} sur {{ users().length }}
+          {{ (currentPage() - 1) * itemsPerPage() + 1 }}-{{
+            currentPage() * itemsPerPage() > totalElements() ? totalElements() : currentPage() * itemsPerPage()
+          }}
+          sur {{ totalElements() }}
         </span>
       </div>
       <div class="pagination-center">
@@ -135,11 +162,7 @@
         </button>
         <div class="pagination-pages">
           @for (page of [].constructor(totalPages()); track $index) {
-            <button
-              type="button"
-              class="page-number"
-              [class.active]="currentPage() === $index + 1"
-              (click)="goToPage($index + 1)">
+            <button type="button" class="page-number" [class.active]="currentPage() === $index + 1" (click)="goToPage($index + 1)">
               {{ $index + 1 }}
             </button>
           }
@@ -162,7 +185,7 @@
 
     <!-- Mobile Cards View -->
     <div class="users-mobile-cards">
-      @for (user of paginatedUsers(); track user.id) {
+      @for (user of users(); track user.id) {
         <div class="user-card" [class.expanded]="isUserExpanded(user.id)">
           <button type="button" class="user-card-header" (click)="toggleUserExpand(user.id)">
             @if (user.imgUrl) {
@@ -182,7 +205,16 @@
               } @else {
                 <span class="status-dot incomplete"></span>
               }
-              <svg class="chevron-icon" [class.rotated]="isUserExpanded(user.id)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                class="chevron-icon"
+                [class.rotated]="isUserExpanded(user.id)"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </div>

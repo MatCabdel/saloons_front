@@ -29,7 +29,7 @@ export class CreateSaloonPageComponent {
     country: ['France'],
     latitude: [null, [Validators.required, Validators.min(-90), Validators.max(90)]],
     longitude: [null, [Validators.required, Validators.min(-180), Validators.max(180)]],
-    radiusMeters: [100, [Validators.min(10), Validators.max(10000)]],
+    radiusMeters: [100, [Validators.min(10), Validators.max(100000)]],
   });
 
   onFileSelected(event: Event): void {

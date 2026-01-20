@@ -18,6 +18,7 @@ import { StatisticsPageComponent } from './features/admin/pages/statistics-page/
 import { UsersListPageComponent } from './features/admin/pages/users-list-page/users-list-page.component';
 import { SaloonSwitcherPageComponent } from './features/saloon/pages/saloon-switcher-page/saloon-switcher-page.component';
 import { CreateSaloonPageComponent } from './features/admin/pages/create-saloon-page/create-saloon-page.component';
+import { EditSaloonPageComponent } from './features/admin/pages/edit-saloon-page/edit-saloon-page.component';
 import { SaloonsListPageComponent } from './features/admin/pages/saloons-list-page/saloons-list-page.component';
 import { CityStatsPageComponent } from './features/admin/pages/city-stats-page/city-stats-page.component';
 import { SaloonsStatsPageComponent } from './features/admin/pages/saloons-stats-page/saloons-stats-page.component';
@@ -76,6 +77,7 @@ export const routes: Routes = [
       { path: 'users-list', component: UsersListPageComponent },
       { path: 'saloons-list', component: SaloonsListPageComponent },
       { path: 'create-saloon', component: CreateSaloonPageComponent },
+      { path: 'edit-saloon/:id', component: EditSaloonPageComponent },
       { path: '', redirectTo: 'statistics', pathMatch: 'full' },
     ],
     canActivate: [isLoggedInGuard],

@@ -23,7 +23,7 @@ export class ContactPageComponent {
 
   subjects = [
     { value: 'QUESTION', label: '❓ Question générale' },
-    { value: 'SUGGESTION', label: '💡 Suggestion d\'amélioration' },
+    { value: 'SUGGESTION', label: "💡 Suggestion d'amélioration" },
     { value: 'BUG', label: '🐛 Signaler un bug' },
     { value: 'PARTNERSHIP', label: '🤝 Proposition de partenariat' },
     { value: 'REPORT', label: '🚨 Signalement' },

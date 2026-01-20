@@ -1,8 +1,8 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { AdminService } from '../../services/admin.service';
+import { AdminService, PagedResponse } from '../../services/admin.service';
 import { Saloon } from '../../../saloon/models/saloonModel';
 import { User } from '../../../user/models/user';
 
@@ -18,46 +18,23 @@ type SortOption = 'name-asc' | 'name-desc' | 'connected-desc' | 'connected-asc';
 export class SaloonsListPageComponent implements OnInit {
   private _adminService = inject(AdminService);
 
+  // Saloons from server (already paginated and sorted)
   saloons = signal<Saloon[]>([]);
   isLoading = true;
   error: string | null = null;
 
-  // Pagination
+  // Pagination (server-side)
   currentPage = signal(1);
   itemsPerPage = signal(10);
+  totalPages = signal(1);
+  totalElements = signal(0);
+
+  // Sorting
   sortOption = signal<SortOption>('name-asc');
 
-  // Computed for sorted saloons
-  sortedSaloons = computed(() => {
-    const saloonsList = [...this.saloons()];
-    const sort = this.sortOption();
-
-    return saloonsList.sort((a, b) => {
-      if (sort === 'name-asc') {
-        return (a.name || '').toLowerCase().localeCompare((b.name || '').toLowerCase());
-      }
-      if (sort === 'name-desc') {
-        return (b.name || '').toLowerCase().localeCompare((a.name || '').toLowerCase());
-      }
-      if (sort === 'connected-desc') {
-        return (b.connectedCount || 0) - (a.connectedCount || 0);
-      }
-      return (a.connectedCount || 0) - (b.connectedCount || 0);
-    });
-  });
-
-  // Computed for paginated saloons
-  paginatedSaloons = computed(() => {
-    const sorted = this.sortedSaloons();
-    const start = (this.currentPage() - 1) * this.itemsPerPage();
-    const end = start + this.itemsPerPage();
-    return sorted.slice(start, end);
-  });
-
-  // Total pages
-  totalPages = computed(() => {
-    return Math.ceil(this.saloons().length / this.itemsPerPage()) || 1;
-  });
+  // Search
+  searchQuery = signal('');
+  private _searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
   // Modal state
   showUsersModal = false;
@@ -77,47 +54,91 @@ export class SaloonsListPageComponent implements OnInit {
     this.loadSaloons();
   }
 
-  loadSaloons(): void {
-    this.isLoading = true;
-    this._adminService.getAllSaloons().subscribe({
-      next: data => {
-        this.saloons.set(data || []);
-        this.isLoading = false;
-      },
-      error: err => {
-        this.error = 'Erreur lors du chargement des saloons';
-        this.isLoading = false;
-        console.error(err);
-      },
-    });
+  loadSaloons(showLoading = true): void {
+    if (showLoading) {
+      this.isLoading = true;
+    }
+    this.error = null;
+
+    const sort = this.sortOption();
+    const sortBy = sort.startsWith('connected') ? 'connectedCount' : 'name';
+    const sortDir = sort.endsWith('-desc') ? 'desc' : 'asc';
+    const search = this.searchQuery().trim();
+
+    this._adminService
+      .getSaloonsPaginated({
+        page: this.currentPage() - 1, // Backend uses 0-based pages
+        size: this.itemsPerPage(),
+        sortBy,
+        sortDir,
+        ...(search && { search }),
+      })
+      .subscribe({
+        next: (response: PagedResponse<Saloon>) => {
+          this.saloons.set(response.content || []);
+          this.totalPages.set(response.totalPages);
+          this.totalElements.set(response.totalElements);
+          this.isLoading = false;
+        },
+        error: (err: unknown) => {
+          this.error = 'Erreur lors du chargement des saloons';
+          this.isLoading = false;
+          console.error(err);
+        },
+      });
+  }
+
+  onSearchChange(value: string): void {
+    this.searchQuery.set(value);
+
+    // Debounce search to avoid too many API calls
+    if (this._searchTimeout) {
+      clearTimeout(this._searchTimeout);
+    }
+    this._searchTimeout = setTimeout(() => {
+      this.currentPage.set(1);
+      // Don't show loading spinner during search to avoid disrupting input
+      this.loadSaloons(false);
+    }, 500);
+  }
+
+  clearSearch(): void {
+    this.searchQuery.set('');
+    this.currentPage.set(1);
+    this.loadSaloons();
   }
 
   // Pagination methods
   onSortChange(sort: string): void {
     this.sortOption.set(sort as SortOption);
     this.currentPage.set(1);
+    this.loadSaloons();
   }
 
   onItemsPerPageChange(value: number): void {
     this.itemsPerPage.set(value);
     this.currentPage.set(1);
+    this.loadSaloons();
   }
 
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages()) {
       this.currentPage.set(page);
+      this.loadSaloons();
     }
   }
 
   previousPage(): void {
     if (this.currentPage() > 1) {
       this.currentPage.update(p => p - 1);
+      this.loadSaloons();
     }
   }
 
   nextPage(): void {
     if (this.currentPage() < this.totalPages()) {
       this.currentPage.update(p => p + 1);
+      this.loadSaloons();
     }
   }
 
