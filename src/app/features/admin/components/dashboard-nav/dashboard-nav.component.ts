@@ -45,6 +45,12 @@ export class DashboardNavComponent {
         { label: 'Liste des saloons', route: 'saloons-list' },
       ],
     },
+    {
+      label: 'Notifications',
+      icon: 'bell',
+      expanded: false,
+      children: [{ label: 'Signalements', route: 'reports-list' }],
+    },
   ];
 
   constructor(private _router: Router) {}

@@ -1,0 +1,150 @@
+<div class="modal-overlay" (click)="close()" (keyup.escape)="close()" tabindex="0" role="dialog" aria-modal="true">
+  <div class="modal-content" (click)="stopPropagation($event)" (keyup.escape)="stopPropagation($event)" role="document">
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="icon-container">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+          <line x1="12" y1="9" x2="12" y2="13" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+      </div>
+      <h2>Signaler {{ data.reportedUserName }}</h2>
+      <button type="button" class="close-btn" (click)="close()" aria-label="Fermer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Success State -->
+    @if (successMessage()) {
+      <div class="success-state">
+        <div class="success-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+        </div>
+        <p>{{ successMessage() }}</p>
+      </div>
+    } @else {
+      <!-- Body -->
+      <div class="modal-body">
+        @if (data.saloonName) {
+          <div class="saloon-info">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <span>Rencontre dans : {{ data.saloonName }}</span>
+          </div>
+        }
+
+        <p class="instruction">Pourquoi souhaitez-vous signaler cette personne ?</p>
+
+        <div class="reason-list">
+          @for (reason of reasons; track reason.value) {
+            <button
+              type="button"
+              class="reason-item"
+              [class.selected]="selectedReason() === reason.value"
+              (click)="selectReason(reason.value)">
+              <span class="reason-icon">
+                @switch (reason.value) {
+                  @case ('INAPPROPRIATE_BEHAVIOR') {
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M16 16s-1.5-2-4-2-4 2-4 2" />
+                      <line x1="9" y1="9" x2="9.01" y2="9" />
+                      <line x1="15" y1="9" x2="15.01" y2="9" />
+                    </svg>
+                  }
+                  @case ('UNWANTED_PHYSICAL_CONTACT') {
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+                      <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+                      <line x1="6" y1="1" x2="6" y2="4" />
+                      <line x1="10" y1="1" x2="10" y2="4" />
+                      <line x1="14" y1="1" x2="14" y2="4" />
+                    </svg>
+                  }
+                  @case ('HARASSMENT') {
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                      <line x1="12" y1="9" x2="12" y2="13" />
+                      <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                  }
+                  @case ('FAKE_PROFILE') {
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                  }
+                  @default {
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="16" x2="12" y2="12" />
+                      <line x1="12" y1="8" x2="12.01" y2="8" />
+                    </svg>
+                  }
+                }
+              </span>
+              <span class="reason-label">{{ reason.label }}</span>
+              @if (selectedReason() === reason.value) {
+                <span class="check-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+              }
+            </button>
+          }
+        </div>
+
+        <div class="description-section">
+          <label for="description">Description (optionnel)</label>
+          <textarea
+            id="description"
+            placeholder="Décrivez la situation si vous le souhaitez..."
+            [value]="description()"
+            (input)="onDescriptionChange($event)"
+            rows="3"
+            maxlength="500"></textarea>
+          <span class="char-count">{{ description().length }} / 500</span>
+        </div>
+
+        @if (errorMessage()) {
+          <div class="error-message">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="15" y1="9" x2="9" y2="15" />
+              <line x1="9" y1="9" x2="15" y2="15" />
+            </svg>
+            {{ errorMessage() }}
+          </div>
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="close()">Annuler</button>
+        <button
+          type="button"
+          class="btn-submit"
+          [disabled]="!selectedReason() || isSubmitting()"
+          (click)="submitReport()">
+          @if (isSubmitting()) {
+            <span class="loader"></span>
+            Envoi...
+          } @else {
+            Confirmer le signalement
+          }
+        </button>
+      </div>
+    }
+  </div>
+</div>

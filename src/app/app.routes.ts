@@ -22,6 +22,7 @@ import { EditSaloonPageComponent } from './features/admin/pages/edit-saloon-page
 import { SaloonsListPageComponent } from './features/admin/pages/saloons-list-page/saloons-list-page.component';
 import { CityStatsPageComponent } from './features/admin/pages/city-stats-page/city-stats-page.component';
 import { SaloonsStatsPageComponent } from './features/admin/pages/saloons-stats-page/saloons-stats-page.component';
+import { ReportsListPageComponent } from './features/admin/pages/reports-list-page/reports-list-page.component';
 import { SaloonChatPageComponent } from './features/saloon/pages/saloon-chat-page/saloon-chat-page.component';
 import { UnauthorizedPageComponent } from './features/auth/pages/unauthorized-page/unauthorized-page.component';
 import { MonComptePageComponent } from './features/menu/pages/mon-compte-page/mon-compte-page.component';
@@ -78,6 +79,7 @@ export const routes: Routes = [
       { path: 'saloons-list', component: SaloonsListPageComponent },
       { path: 'create-saloon', component: CreateSaloonPageComponent },
       { path: 'edit-saloon/:id', component: EditSaloonPageComponent },
+      { path: 'reports-list', component: ReportsListPageComponent },
       { path: '', redirectTo: 'statistics', pathMatch: 'full' },
     ],
     canActivate: [isLoggedInGuard],

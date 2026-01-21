@@ -79,3 +79,8 @@
     </div>
   </div>
 }
+
+<!-- Modal de signalement -->
+@if (showReportModal() && reportModalData()) {
+  <app-report-modal [data]="reportModalData()!" (closed)="closeReportModal()" (reported)="onReported()"></app-report-modal>
+}

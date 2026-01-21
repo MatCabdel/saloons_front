@@ -1,15 +1,16 @@
-import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
 import { HeaderComponent } from '../../../../common/components/header/header.component';
 import { MessagerieComponent } from '../../components/messagerie/messagerie.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConversationService } from 'src/app/features/conversation/services/conversation.service';
+import { ReportModalComponent, ReportModalData } from 'src/app/features/report/components/report-modal/report-modal.component';
 import { User } from 'src/app/features/user/models/user';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 
 @Component({
   selector: 'app-messages-page',
   standalone: true,
-  imports: [HeaderComponent, MessagerieComponent],
+  imports: [HeaderComponent, MessagerieComponent, ReportModalComponent],
   templateUrl: './messages-page.component.html',
   styleUrl: './messages-page.component.scss',
 })
@@ -25,6 +26,10 @@ export class MessagesPageComponent implements OnInit {
   isMenuOpen = false;
   showDeleteMatchModal = false;
   showDeleteConvModal = false;
+
+  // Modal de signalement
+  showReportModal = signal(false);
+  reportModalData = signal<ReportModalData | null>(null);
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
@@ -104,7 +109,21 @@ export class MessagesPageComponent implements OnInit {
 
   reportUser(): void {
     this.isMenuOpen = false;
-    // TODO: Implémenter le signalement
-    console.log('Report user:', this.userTarget?.id);
+    if (this.userTarget) {
+      this.reportModalData.set({
+        reportedId: this.userTarget.id,
+        reportedUserName: this.userTarget.userName,
+      });
+      this.showReportModal.set(true);
+    }
+  }
+
+  closeReportModal(): void {
+    this.showReportModal.set(false);
+    this.reportModalData.set(null);
+  }
+
+  onReported(): void {
+    this.closeReportModal();
   }
 }
