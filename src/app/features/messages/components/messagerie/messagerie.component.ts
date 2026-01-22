@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, DestroyRef, ElementRef, inject, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, DestroyRef, ElementRef, EventEmitter, inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ConversationService } from 'src/app/features/conversation/services/conversation.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -7,7 +7,7 @@ import { WebSocketService } from 'src/app/common/services/web-socket.service';
 import { User } from 'src/app/features/user/models/user';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { UserService } from 'src/app/features/user/services/user.service';
-import { Message } from 'src/app/features/conversation/models/Conversation';
+import { Message, HeartRequestStatus } from 'src/app/features/conversation/models/Conversation';
 import { combineLatest, map, mergeMap, Observable, of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -19,7 +19,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './messagerie.component.scss',
 })
 export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChecked {
-  @Input() isConversationEnded = false;
+  @Input() isConversationEnded = false; // Conversation expirée (a quitté le saloon)
+  @Input() isMatchCancelled = false; // Match annulé définitivement
+  @Input() isPermanent = false; // Conversation permanente
+  @Input() heartRequestStatus: HeartRequestStatus | null = null;
+  @Input() heartRequestCountdown = '';
+  @Input() heartRequestSending = false;
+  @Output() sendHeartRequestClicked = new EventEmitter<void>();
 
   conversationId!: number;
   messages: Message[] = [];

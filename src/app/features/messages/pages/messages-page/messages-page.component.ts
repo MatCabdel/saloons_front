@@ -1,11 +1,14 @@
-import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
+import { Component, HostListener, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { HeaderComponent } from '../../../../common/components/header/header.component';
 import { MessagerieComponent } from '../../components/messagerie/messagerie.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConversationService } from 'src/app/features/conversation/services/conversation.service';
+import { HeartRequestService } from 'src/app/features/conversation/services/heart-request.service';
 import { ReportModalComponent, ReportModalData } from 'src/app/features/report/components/report-modal/report-modal.component';
 import { User } from 'src/app/features/user/models/user';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
+import { Conversation, HeartRequestStatus } from 'src/app/features/conversation/models/Conversation';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-messages-page',
@@ -14,14 +17,23 @@ import { UserStoreService } from 'src/app/features/user/store/user-store.service
   templateUrl: './messages-page.component.html',
   styleUrl: './messages-page.component.scss',
 })
-export class MessagesPageComponent implements OnInit {
+export class MessagesPageComponent implements OnInit, OnDestroy {
   private _router = inject(Router);
   private _route = inject(ActivatedRoute);
   private _conversationService = inject(ConversationService);
+  private _heartRequestService = inject(HeartRequestService);
   private _userStore = inject(UserStoreService);
   userTarget?: User;
   conversationId!: number;
   otherParticipantLeft = false;
+  isMatchCancelled = false;
+  conversation?: Conversation;
+
+  // Heart Request state
+  heartRequestStatus: HeartRequestStatus | null = null;
+  heartRequestCountdown = signal<string>('');
+  heartRequestSending = signal(false);
+  private _countdownSubscription?: Subscription;
 
   isMenuOpen = false;
   showDeleteMatchModal = false;
@@ -42,10 +54,17 @@ export class MessagesPageComponent implements OnInit {
   ngOnInit(): void {
     this.conversationId = Number(this._route.snapshot.paramMap.get('conversationId'));
     this._conversationService.getConversation(this.conversationId).subscribe({
-      next: conv => {
+      next: (conv: Conversation) => {
         const myId = this._userStore.getUserId();
         this.userTarget = conv.participants.find((u: User) => u.id !== myId);
         this.otherParticipantLeft = conv.otherParticipantLeft || false;
+        this.isMatchCancelled = conv.isMatchCancelled || false;
+        this.conversation = conv;
+
+        // Charger le statut des coups de cœur seulement si expiré mais pas annulé
+        if (this.otherParticipantLeft && !this.isMatchCancelled) {
+          this._loadHeartRequestStatus();
+        }
       },
       error: err => {
         // Si 403, l'utilisateur a été supprimé de la conversation
@@ -54,6 +73,88 @@ export class MessagesPageComponent implements OnInit {
         }
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this._countdownSubscription?.unsubscribe();
+  }
+
+  private _loadHeartRequestStatus(): void {
+    this._heartRequestService.getHeartRequestStatus(this.conversationId).subscribe({
+      next: (status: HeartRequestStatus) => {
+        this.heartRequestStatus = status;
+        if (status.canSend && status.expiresAt) {
+          this._startCountdown(status.expiresAt);
+        } else if (status.sentByMe && status.expiresAt) {
+          this._startCountdown(status.expiresAt);
+        }
+      },
+      error: err => {
+        console.error('Erreur lors du chargement du statut coup de cœur:', err);
+      },
+    });
+  }
+
+  private _startCountdown(expiresAt: string): void {
+    this._countdownSubscription?.unsubscribe();
+
+    const updateCountdown = (): void => {
+      const now = new Date().getTime();
+      const end = new Date(expiresAt).getTime();
+      const diff = end - now;
+
+      if (diff <= 0) {
+        this.heartRequestCountdown.set('Expiré');
+        this._countdownSubscription?.unsubscribe();
+        if (this.heartRequestStatus) {
+          this.heartRequestStatus = { ...this.heartRequestStatus, canSend: false };
+        }
+        return;
+      }
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      this.heartRequestCountdown.set(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+    };
+
+    updateCountdown();
+    this._countdownSubscription = interval(1000).subscribe(() => updateCountdown());
+  }
+
+  sendHeartRequest(): void {
+    if (!this.userTarget || !this.heartRequestStatus?.canSend || this.heartRequestSending()) {
+      return;
+    }
+
+    this.heartRequestSending.set(true);
+    const myId = this._userStore.getUserId();
+
+    this._heartRequestService
+      .sendHeartRequest({
+        conversationId: this.conversationId,
+        receiverId: this.userTarget.id,
+        saloonId: null,
+      })
+      .subscribe({
+        next: (result) => {
+          this.heartRequestSending.set(false);
+          
+          // Si le coup de cœur est mutuel, rediriger vers la page de confirmation
+          if (result.isMutual) {
+            this._router.navigate(['/heart-confirmed', myId, this.userTarget!.id], {
+              queryParams: { conversationId: this.conversationId }
+            });
+          } else {
+            this._loadHeartRequestStatus();
+          }
+        },
+        error: err => {
+          console.error('Erreur lors de l\'envoi du coup de cœur:', err);
+          this.heartRequestSending.set(false);
+        },
+      });
   }
 
   goToUserProfil(): void {

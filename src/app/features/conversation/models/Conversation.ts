@@ -15,4 +15,35 @@ export type Conversation = {
   lastMessage: Message | null;
   lastMessageDate: string;
   otherParticipantLeft: boolean;
+  isPermanent: boolean;
+  expiredAt: string | null;
+  isMatchCancelled: boolean; // true si match annulé, false si juste quitté le saloon
+};
+
+export type HeartRequestStatus = {
+  sentByMe: boolean;
+  receivedFromOther: boolean;
+  isPermanent: boolean;
+  canSend: boolean;
+  expiresAt: string | null;
+  conversationExpiredAt: string | null;
+};
+
+export type SendHeartRequest = {
+  conversationId: number;
+  receiverId: number;
+  saloonId: number | null;
+};
+
+export type HeartRequest = {
+  id: number;
+  senderId: number;
+  senderUserName: string;
+  receiverId: number;
+  receiverUserName: string;
+  conversationId: number;
+  saloonId: number | null;
+  saloonName: string | null;
+  createdAt: string;
+  isMutual: boolean;
 };

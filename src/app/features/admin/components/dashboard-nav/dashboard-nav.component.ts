@@ -1,6 +1,7 @@
-import { Component, signal, HostListener } from '@angular/core';
+import { Component, signal, HostListener, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthApiService } from 'src/app/features/auth/services/auth-api.service';
 
 type MenuItem = {
   label: string;
@@ -53,6 +54,8 @@ export class DashboardNavComponent {
     },
   ];
 
+  private _authService = inject(AuthApiService);
+
   constructor(private _router: Router) {}
 
   toggleMenu(item: MenuItem): void {
@@ -67,7 +70,7 @@ export class DashboardNavComponent {
     this.isOpen.set(false);
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     if (window.innerWidth > 768) {
       this.isOpen.set(false);
@@ -81,5 +84,9 @@ export class DashboardNavComponent {
 
   isActive(route: string): boolean {
     return this._router.url.includes(route);
+  }
+
+  logout(): void {
+    this._authService.logout();
   }
 }

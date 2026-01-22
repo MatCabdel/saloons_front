@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 export class ListMatchComponent implements OnInit, OnChanges {
   matches: any[] = [];
   allMatches: any[] = [];
+  userIdsWithConversations: number[] = [];
   @Input() excludeUserIds: number[] = [];
 
   private _matchService = inject(MatchService);
@@ -21,19 +22,20 @@ export class ListMatchComponent implements OnInit, OnChanges {
   private _userStore = inject(UserStoreService);
   private _router = inject(Router);
 
-  myId = this._userStore.getUserId();
+  myId = 0;
 
   ngOnInit(): void {
+    this.myId = this._userStore.getUserId();
     this._matchService.getMatches().subscribe(users => {
       this._conversationService.getUserConversations().subscribe(conversations => {
-        const userIdsWithMessages = conversations.payload
-          .filter(conv => conv.lastMessage && conv.lastMessage.content && conv.lastMessage.content.length > 0)
+        // Exclure les utilisateurs qui ont déjà une conversation (active ou expirée)
+        this.userIdsWithConversations = conversations.payload
           .flatMap(conv => conv.participants)
           .filter(p => p.id !== this.myId)
           .map(p => p.id);
 
         this.allMatches = users;
-        this.matches = this.allMatches.filter(u => !userIdsWithMessages.includes(u.id));
+        this.filterMatches();
       });
     });
   }
@@ -45,7 +47,9 @@ export class ListMatchComponent implements OnInit, OnChanges {
   }
 
   filterMatches(): void {
-    this.matches = this.allMatches.filter(u => !this.excludeUserIds.includes(u.id));
+    // Exclure les utilisateurs avec conversation ET ceux passés en input
+    const allExcluded = [...new Set([...this.userIdsWithConversations, ...this.excludeUserIds])];
+    this.matches = this.allMatches.filter(u => !allExcluded.includes(u.id));
   }
 
   openConversationWith(user: any): void {

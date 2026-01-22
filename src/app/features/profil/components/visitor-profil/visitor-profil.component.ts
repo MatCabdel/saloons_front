@@ -136,7 +136,7 @@ export class VisitorProfilComponent implements OnInit {
           this.winkSent = true;
 
           if (res.message === "It's a match!") {
-            this._conversationService.createConversation(otherId).subscribe();
+            this._conversationService.createConversation(otherId, saloonId).subscribe();
             this._router.navigate(['/match', myId, otherId], { queryParams: { saloonId } });
           }
         },

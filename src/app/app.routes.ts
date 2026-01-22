@@ -13,6 +13,7 @@ import { MySaloonPageComponent } from './features/saloon/pages/my-saloon-page/my
 import { MapSaloonPageComponent } from './features/saloon/pages/map-saloon-page/map-saloon-page.component';
 import { ProfilVisitorPageComponent } from './features/profil/pages/profil-visitor-page/profil-visitor-page.component';
 import { MatchPageComponent } from './features/match/pages/match-page/match-page.component';
+import { HeartConfirmedPageComponent } from './features/match/pages/heart-confirmed-page/heart-confirmed-page.component';
 import { ConversationsPageComponent } from './features/conversation/pages/conversations-page/conversations-page.component';
 import { StatisticsPageComponent } from './features/admin/pages/statistics-page/statistics-page.component';
 import { UsersListPageComponent } from './features/admin/pages/users-list-page/users-list-page.component';
@@ -60,6 +61,7 @@ export const routes: Routes = [
   { path: 'saloon-chat/:saloonId', component: SaloonChatPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'profil-visitor/:id', component: ProfilVisitorPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'match/:userId1/:userId2', component: MatchPageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'heart-confirmed/:userId1/:userId2', component: HeartConfirmedPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'messages/:conversationId', component: MessagesPageComponent, canActivate: [isLoggedInGuard] },
   // Menu pages
   { path: 'mon-compte', component: MonComptePageComponent, canActivate: [isLoggedInGuard] },
