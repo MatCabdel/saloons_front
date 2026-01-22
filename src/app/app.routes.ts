@@ -5,7 +5,6 @@ import { OnboardingPageComponent } from './features/auth/pages/onboarding-page/o
 import { isLoggedInGuard } from './common/guards/is-logged-in.guard';
 import { authGuard, onboardingGuard, profileCompleteGuard } from './core/guards/profile-complete.guard';
 import { DashboardPageComponent } from './features/admin/pages/dashboard-page/dashboard-page.component';
-import { QrcodePageComponent } from './features/qrcode/pages/qrcode-page/qrcode-page.component';
 import { ProfilPageComponent } from './features/profil/pages/profil-page/profil-page.component';
 import { EditProfilPageComponent } from './features/profil/pages/edit-profil-page/edit-profil-page.component';
 import { MessagesPageComponent } from './features/messages/pages/messages-page/messages-page.component';
@@ -53,7 +52,6 @@ export const routes: Routes = [
   // Legacy routes
   { path: 'register', redirectTo: '', pathMatch: 'full' },
   { path: 'auth', redirectTo: '', pathMatch: 'full' },
-  { path: 'scan', component: QrcodePageComponent, canActivate: [isLoggedInGuard] },
   { path: 'profil', component: ProfilPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'profil/edit', component: EditProfilPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'chat', component: ConversationsPageComponent, canActivate: [isLoggedInGuard] },
