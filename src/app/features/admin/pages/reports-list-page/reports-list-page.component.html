@@ -10,11 +10,7 @@
   <div class="list-filters">
     <div class="filter-tabs">
       @for (option of filterOptions; track option.value) {
-        <button
-          type="button"
-          class="filter-tab"
-          [class.active]="filterOption() === option.value"
-          (click)="onFilterChange(option.value)">
+        <button type="button" class="filter-tab" [class.active]="filterOption() === option.value" (click)="onFilterChange(option.value)">
           {{ option.label }}
           @if (option.value === 'PENDING' && pendingCount() > 0) {
             <span class="badge">{{ pendingCount() }}</span>

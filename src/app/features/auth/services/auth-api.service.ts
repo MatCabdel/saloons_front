@@ -26,6 +26,8 @@ export class AuthApiService {
       tap((user: UserDTO) => {
         this.saveToken(user.token);
         localStorage.setItem('user', JSON.stringify(user));
+        // Synchroniser avec UserStoreService
+        this._userStore.setUserConnected(user);
       })
     );
   }
@@ -86,6 +88,17 @@ export class AuthApiService {
   public logout(): void {
     localStorage.removeItem('saloon_auth_token');
     localStorage.removeItem('user');
+    // Réinitialiser UserStoreService
+    this._userStore.setUserConnected({
+      id: 0,
+      email: '',
+      password: '',
+      role: '',
+      token: '',
+      imgUrl: '',
+      description: '',
+      age: 0,
+    } as UserDTO);
     this._router.navigate(['/']);
   }
 }

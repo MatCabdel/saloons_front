@@ -37,7 +37,7 @@ export class ListConversationComponent implements OnInit {
 
   ngOnInit(): void {
     this.myId = this._userStore.getUserId();
-    
+
     this.conversations$ = this._refresh$.pipe(
       switchMap(() => this._conversationService.getUserConversations()),
       map(data => (Array.isArray(data.payload) ? data.payload.filter(conv => conv && conv.id !== undefined) : [])),
@@ -93,10 +93,10 @@ export class ListConversationComponent implements OnInit {
 
   formatMessageTime(dateString: string | undefined): string {
     if (!dateString) return '';
-    
+
     const date = new Date(dateString);
     const now = new Date();
-    
+
     // Réinitialiser à minuit pour comparer les jours
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const yesterday = new Date(today);
@@ -107,12 +107,12 @@ export class ListConversationComponent implements OnInit {
     if (messageDate.getTime() === today.getTime()) {
       return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     }
-    
+
     // Hier
     if (messageDate.getTime() === yesterday.getTime()) {
       return 'Hier';
     }
-    
+
     // Avant hier - afficher la date (ex: 13 sept. 2025)
     const months = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
     return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;

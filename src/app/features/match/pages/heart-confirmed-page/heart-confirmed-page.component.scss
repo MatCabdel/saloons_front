@@ -21,7 +21,8 @@
 }
 
 @keyframes heartPulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -29,8 +30,19 @@
   }
 }
 
+@keyframes btnSlideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 .heart-confirmed-container {
-  background: linear-gradient(135deg, #6c47b6 0%, #8b5cf6 50%, #a78bfa 100%);
+  background-color: #413443;
   min-height: 100vh;
   min-width: 100vw;
   margin: 0 auto;
@@ -43,15 +55,12 @@
     text-align: center;
     color: white;
     padding-top: 30px;
-    font-size: 1.8rem;
-    letter-spacing: 2px;
   }
 
   h2 {
     text-align: center;
-    color: #ffc122;
+    color: #ffc022;
     margin-bottom: 40px;
-    font-size: 2rem;
     animation: heartPulse 1.5s ease-in-out infinite;
   }
 
@@ -78,7 +87,7 @@
       left: 0;
       z-index: 2;
       transform: rotate(15deg) translateX(0);
-      border: 3px solid #ffc122;
+      border: 2px solid #ffc022;
       background: white;
       animation: slideFromRight 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
     }
@@ -87,7 +96,7 @@
       right: 0;
       z-index: 1;
       transform: rotate(-12deg) translateX(0);
-      border: 3px solid #fff;
+      border: 2px solid #fff;
       background: white;
       animation: slideFromLeft 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
     }
@@ -96,7 +105,7 @@
   p {
     color: white;
     text-align: center;
-    font-size: 1em;
+    font-size: 0.8em;
     margin-top: 20px;
     padding: 0 40px;
   }
@@ -106,37 +115,55 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    gap: 18px;
+    gap: 14px;
     margin-top: 30px;
 
-    .btn-heart {
-      width: 70%;
-      padding: 14px 0;
-      font-size: 1.1em;
-      border-radius: 37px;
+    .btn-match {
+      width: 75%;
+      padding: 14px 24px;
+      font-size: 1rem;
+      border-radius: 50px;
       border: none;
-      font-weight: 600;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
       margin: 0 auto;
       display: block;
       font-family: 'Nunito', sans-serif;
-      background: #ffc122;
-      color: #6c47b6;
+      animation: btnSlideUp 0.6s ease-out backwards;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
 
       &:hover {
-        transform: scale(1.02);
-        box-shadow: 0 4px 15px rgba(255, 193, 34, 0.4);
+        transform: translateY(-2px);
       }
 
-      &.secondary {
-        background: transparent;
-        color: #fff;
-        border: 2px solid #ffc122;
+      &:active {
+        transform: translateY(0) scale(0.98);
+      }
+    }
 
-        &:hover {
-          background: rgba(255, 193, 34, 0.1);
-        }
+    // Bouton principal - Jaune SALOONS
+    .btn-match:first-child {
+      background: #ffc122;
+      color: #413443;
+      box-shadow: 0 4px 15px rgba(255, 193, 34, 0.4);
+      animation-delay: 0.8s;
+
+      &:hover {
+        box-shadow: 0 6px 20px rgba(255, 193, 34, 0.5);
+      }
+    }
+
+    // Bouton secondaire - Violet très clair
+    .btn-match:last-child {
+      background: rgba(255, 255, 255, 0.15);
+      color: #e0d4f0;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      animation-delay: 1s;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.35);
       }
     }
   }

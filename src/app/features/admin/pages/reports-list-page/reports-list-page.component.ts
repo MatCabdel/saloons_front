@@ -52,8 +52,7 @@ export class ReportsListPageComponent implements OnInit {
 
     const filter = this.filterOption();
 
-    const request$ =
-      filter === 'ALL' ? this._reportService.getAllReports() : this._reportService.getReportsByStatus(filter);
+    const request$ = filter === 'ALL' ? this._reportService.getAllReports() : this._reportService.getReportsByStatus(filter);
 
     request$.subscribe({
       next: reports => {

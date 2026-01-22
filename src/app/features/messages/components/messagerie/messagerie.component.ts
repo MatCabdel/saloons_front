@@ -1,4 +1,16 @@
-import { AfterViewChecked, AfterViewInit, Component, DestroyRef, ElementRef, EventEmitter, inject, Input, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  ElementRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { ConversationService } from 'src/app/features/conversation/services/conversation.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';

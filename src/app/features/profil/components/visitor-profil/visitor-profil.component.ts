@@ -77,24 +77,24 @@ export class VisitorProfilComponent implements OnInit {
         .getSaloonById(saloonId.toString())
         .pipe(take(1))
         .subscribe({
-        next: saloon => {
-          this.reportModalData.set({
-            reportedId: user.id,
-            reportedUserName: user.userName,
-            saloonId,
-            saloonName: saloon.name,
-          });
-          this.showReportModal.set(true);
-        },
-        error: () => {
-          this.reportModalData.set({
-            reportedId: user.id,
-            reportedUserName: user.userName,
-            saloonId,
-          });
-          this.showReportModal.set(true);
-        },
-      });
+          next: saloon => {
+            this.reportModalData.set({
+              reportedId: user.id,
+              reportedUserName: user.userName,
+              saloonId,
+              saloonName: saloon.name,
+            });
+            this.showReportModal.set(true);
+          },
+          error: () => {
+            this.reportModalData.set({
+              reportedId: user.id,
+              reportedUserName: user.userName,
+              saloonId,
+            });
+            this.showReportModal.set(true);
+          },
+        });
     } else {
       this.reportModalData.set({
         reportedId: user.id,

@@ -4,6 +4,7 @@ import { Auth, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, signOu
 import { Router } from '@angular/router';
 import { Observable, from, tap, switchMap, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { UserStoreService } from '../../user/store/user-store.service';
 
 export type ProfileStatus = 'PROFILE_INCOMPLETE' | 'ACTIVE';
 export type AuthProvider = 'EMAIL' | 'GOOGLE' | 'FACEBOOK';
@@ -45,6 +46,7 @@ export class FirebaseAuthService {
   private _auth = inject(Auth);
   private _http = inject(HttpClient);
   private _router = inject(Router);
+  private _userStore = inject(UserStoreService);
   private readonly _BASE_URL = environment.apiUrl;
 
   currentUser = signal<UserDTO | null>(null);
@@ -58,7 +60,10 @@ export class FirebaseAuthService {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       try {
-        this.currentUser.set(JSON.parse(storedUser));
+        const user = JSON.parse(storedUser);
+        this.currentUser.set(user);
+        // Synchroniser avec UserStoreService
+        this._userStore.setUserConnected(user);
       } catch {
         localStorage.removeItem('user');
       }
@@ -175,6 +180,8 @@ export class FirebaseAuthService {
    */
   private _handleAuthResponse(response: AuthResponse): void {
     this.currentUser.set(response.user);
+    // Synchroniser avec UserStoreService
+    this._userStore.setUserConnected(response.user as any);
     localStorage.setItem('saloon_auth_token', response.token);
     localStorage.setItem('user', JSON.stringify(response.user));
   }
@@ -186,6 +193,17 @@ export class FirebaseAuthService {
     return from(signOut(this._auth)).pipe(
       tap(() => {
         this.currentUser.set(null);
+        // Réinitialiser UserStoreService avec un utilisateur vide
+        this._userStore.setUserConnected({
+          id: 0,
+          email: '',
+          password: '',
+          role: '',
+          token: '',
+          imgUrl: '',
+          description: '',
+          age: 0,
+        } as any);
         localStorage.removeItem('saloon_auth_token');
         localStorage.removeItem('user');
         this._router.navigate(['/']);
@@ -220,6 +238,8 @@ export class FirebaseAuthService {
    */
   updateCurrentUser(user: UserDTO): void {
     this.currentUser.set(user);
+    // Synchroniser avec UserStoreService
+    this._userStore.setUserConnected(user as any);
     localStorage.setItem('user', JSON.stringify(user));
   }
 }

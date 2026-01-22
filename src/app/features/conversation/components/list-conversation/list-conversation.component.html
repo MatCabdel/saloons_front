@@ -35,7 +35,6 @@
               <div class="card-content">
                 <div class="content-header">
                   <span class="name">{{ otherParticipant(conv)?.userName }}</span>
-                  <span class="timestamp">{{ formatMessageTime(conv.lastMessage?.sentAt) }}</span>
                 </div>
                 <div class="content-body">
                   @if (conv.isMatchCancelled) {
@@ -45,6 +44,7 @@
                   } @else {
                     <span class="last-message">{{ conv.lastMessage?.content || 'Aucun message' }}</span>
                   }
+                  <span class="timestamp">{{ formatMessageTime(conv.lastMessage?.sentAt) }}</span>
                 </div>
               </div>
 
@@ -53,16 +53,30 @@
                 <div class="conversation-type-indicator" [class.permanent]="conv.isPermanent" [class.ephemeral]="!conv.isPermanent">
                   @if (conv.isPermanent) {
                     <!-- Icône infini pour permanent -->
-                    <svg class="type-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-7.133-8-12.739-8-4.585 0-4.585 8 0 8 5.606 0 7.644-8 12.739-8z"/>
+                    <svg
+                      class="type-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-7.133-8-12.739-8-4.585 0-4.585 8 0 8 5.606 0 7.644-8 12.739-8z" />
                     </svg>
                   } @else {
                     <!-- Icône sablier pour éphémère -->
-                    <svg class="type-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M5 22h14"/>
-                      <path d="M5 2h14"/>
-                      <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/>
-                      <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/>
+                    <svg
+                      class="type-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="M5 22h14" />
+                      <path d="M5 2h14" />
+                      <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22" />
+                      <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2" />
                     </svg>
                   }
                 </div>

@@ -23,7 +23,7 @@ $filter-active-text: $white;
   overflow-x: auto;
   scrollbar-width: none; // Firefox
   -ms-overflow-style: none; // IE/Edge
-  
+
   &::-webkit-scrollbar {
     display: none; // Chrome/Safari
   }
@@ -58,13 +58,17 @@ $filter-active-text: $white;
   &.active {
     background: $filter-active-bg;
     color: $filter-active-text;
-    box-shadow: 0 0 0 1.5px $white, 0 0 0 2.5px rgba($gradient-top, 0.3);
+    box-shadow:
+      0 0 0 1.5px $white,
+      0 0 0 2.5px rgba($gradient-top, 0.3);
   }
 
   // Style spécial pour le filtre "Chaud"
   &.hot.active {
     background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-    box-shadow: 0 0 0 1.5px $white, 0 0 0 2.5px rgba(#ff6b35, 0.3);
+    box-shadow:
+      0 0 0 1.5px $white,
+      0 0 0 2.5px rgba(#ff6b35, 0.3);
   }
 }
 

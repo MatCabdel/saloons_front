@@ -97,7 +97,6 @@
       .content-header {
         display: flex;
         align-items: center;
-        justify-content: space-between;
         gap: 8px;
 
         .name {
@@ -108,18 +107,12 @@
           overflow: hidden;
           text-overflow: ellipsis;
         }
-
-        .timestamp {
-          font-size: 0.8rem;
-          color: #a0a0a0;
-          white-space: nowrap;
-          flex-shrink: 0;
-        }
       }
 
       .content-body {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 8px;
 
         .last-message {
@@ -139,6 +132,13 @@
             color: #e91e63;
             font-weight: 500;
           }
+        }
+
+        .timestamp {
+          font-size: 0.75rem;
+          color: #a0a0a0;
+          white-space: nowrap;
+          flex-shrink: 0;
         }
       }
     }
@@ -204,7 +204,7 @@
 
       &.permanent {
         background: rgba(108, 71, 182, 0.1);
-        
+
         .type-icon {
           stroke: #6c47b6;
         }
@@ -212,7 +212,7 @@
 
       &.ephemeral {
         background: rgba(255, 193, 34, 0.15);
-        
+
         .type-icon {
           stroke: #d9a000;
         }

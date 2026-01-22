@@ -116,7 +116,9 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-      this.heartRequestCountdown.set(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+      this.heartRequestCountdown.set(
+        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+      );
     };
 
     updateCountdown();
@@ -138,20 +140,20 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
         saloonId: null,
       })
       .subscribe({
-        next: (result) => {
+        next: result => {
           this.heartRequestSending.set(false);
-          
+
           // Si le coup de cœur est mutuel, rediriger vers la page de confirmation
           if (result.isMutual) {
             this._router.navigate(['/heart-confirmed', myId, this.userTarget!.id], {
-              queryParams: { conversationId: this.conversationId }
+              queryParams: { conversationId: this.conversationId },
             });
           } else {
             this._loadHeartRequestStatus();
           }
         },
         error: err => {
-          console.error('Erreur lors de l\'envoi du coup de cœur:', err);
+          console.error("Erreur lors de l'envoi du coup de cœur:", err);
           this.heartRequestSending.set(false);
         },
       });

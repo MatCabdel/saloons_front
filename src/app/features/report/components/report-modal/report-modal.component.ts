@@ -32,12 +32,10 @@ export class ReportModalComponent {
   successMessage = signal<string | null>(null);
 
   // Liste des raisons disponibles
-  readonly reasons: { value: ReportReason; label: string }[] = Object.entries(REPORT_REASON_LABELS).map(
-    ([value, label]) => ({
-      value: value as ReportReason,
-      label,
-    })
-  );
+  readonly reasons: { value: ReportReason; label: string }[] = Object.entries(REPORT_REASON_LABELS).map(([value, label]) => ({
+    value: value as ReportReason,
+    label,
+  }));
 
   close(): void {
     this.closed.emit();

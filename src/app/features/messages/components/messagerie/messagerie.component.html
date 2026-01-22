@@ -56,16 +56,14 @@
         <span>Coup de cœur envoyé !</span>
       </div>
     } @else if (heartRequestStatus?.canSend) {
-      <button
-        type="button"
-        class="heart-request-btn"
-        (click)="sendHeartRequestClicked.emit()"
-        [disabled]="heartRequestSending">
+      <button type="button" class="heart-request-btn vertical" (click)="sendHeartRequestClicked.emit()" [disabled]="heartRequestSending">
         @if (heartRequestSending) {
           <span class="loading">Envoi...</span>
         } @else {
-          <span class="heart-icon">💜</span>
-          <span>Envoyer un coup de cœur</span>
+          <div class="heart-title">
+            <span>Envoyer un coup de cœur !</span>
+            <span class="heart-icon">💜</span>
+          </div>
           <span class="countdown">{{ heartRequestCountdown }}</span>
         }
       </button>

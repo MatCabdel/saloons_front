@@ -46,11 +46,7 @@
 
         <div class="reason-list">
           @for (reason of reasons; track reason.value) {
-            <button
-              type="button"
-              class="reason-item"
-              [class.selected]="selectedReason() === reason.value"
-              (click)="selectReason(reason.value)">
+            <button type="button" class="reason-item" [class.selected]="selectedReason() === reason.value" (click)="selectReason(reason.value)">
               <span class="reason-icon">
                 @switch (reason.value) {
                   @case ('INAPPROPRIATE_BEHAVIOR') {
@@ -132,11 +128,7 @@
       <!-- Footer -->
       <div class="modal-footer">
         <button type="button" class="btn-cancel" (click)="close()">Annuler</button>
-        <button
-          type="button"
-          class="btn-submit"
-          [disabled]="!selectedReason() || isSubmitting()"
-          (click)="submitReport()">
+        <button type="button" class="btn-submit" [disabled]="!selectedReason() || isSubmitting()" (click)="submitReport()">
           @if (isSubmitting()) {
             <span class="loader"></span>
             Envoi...

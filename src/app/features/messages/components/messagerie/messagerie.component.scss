@@ -227,19 +227,38 @@
     align-items: center;
     gap: 10px;
     padding: 14px 28px;
-    background: linear-gradient(135deg, #9b7ed9, #b8a4e3);
-    color: #fff;
+    background: linear-gradient(135deg, #c4b3e8, #d9cff2);
+    color: #6c47b6;
     border: none;
     border-radius: 30px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(155, 126, 217, 0.35);
+    box-shadow: 0 4px 15px rgba(155, 126, 217, 0.25);
+
+    &.vertical {
+      flex-direction: column;
+      gap: 4px;
+      padding: 10px 28px;
+
+      .heart-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .countdown {
+        font-size: 0.8rem;
+        opacity: 0.85;
+        font-family: monospace;
+        margin-top: 0;
+      }
+    }
 
     &:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(155, 126, 217, 0.45);
+      box-shadow: 0 6px 20px rgba(155, 126, 217, 0.35);
     }
 
     &:disabled {
@@ -306,11 +325,21 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @keyframes heartPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.02); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
 }

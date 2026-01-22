@@ -62,21 +62,9 @@
         <!-- Pagination -->
         @if (totalPages() > 1) {
           <div class="pagination">
-            <button 
-              type="button" 
-              class="pagination-btn" 
-              [disabled]="currentPage() === 1"
-              (click)="previousPage()">
-              ‹
-            </button>
+            <button type="button" class="pagination-btn" [disabled]="currentPage() === 1" (click)="previousPage()">‹</button>
             <span class="pagination-info">{{ currentPage() }} / {{ totalPages() }}</span>
-            <button 
-              type="button" 
-              class="pagination-btn" 
-              [disabled]="currentPage() === totalPages()"
-              (click)="nextPage()">
-              ›
-            </button>
+            <button type="button" class="pagination-btn" [disabled]="currentPage() === totalPages()" (click)="nextPage()">›</button>
           </div>
         }
       } @else {
