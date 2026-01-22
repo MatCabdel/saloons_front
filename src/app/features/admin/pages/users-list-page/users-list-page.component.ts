@@ -4,7 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { AdminService, PagedResponse } from '../../services/admin.service';
 import { User } from '../../../user/models/user';
 
-type SortOption = 'name-asc' | 'name-desc' | 'last-login-asc' | 'last-login-desc';
+type SortOption =
+  | 'name-asc'
+  | 'name-desc'
+  | 'last-login-asc'
+  | 'last-login-desc'
+  | 'created-at-asc'
+  | 'created-at-desc';
 
 @Component({
   selector: 'app-users-list-page',
@@ -57,7 +63,12 @@ export class UsersListPageComponent implements OnInit {
     this.error.set(null);
 
     const sort = this.sortOption();
-    const sortBy = sort.startsWith('last-login') ? 'lastLoginAt' : 'userName';
+    let sortBy = 'userName';
+    if (sort.startsWith('last-login')) {
+      sortBy = 'lastLoginAt';
+    } else if (sort.startsWith('created-at')) {
+      sortBy = 'createdAt';
+    }
     const sortDir = sort.endsWith('-desc') ? 'desc' : 'asc';
     const search = this.searchQuery().trim();
 
@@ -205,6 +216,19 @@ export class UsersListPageComponent implements OnInit {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
+    });
+  }
+
+  togglePremium(user: User): void {
+    this._adminService.toggleUserPremium(user.id).subscribe({
+      next: response => {
+        this.users.update(users =>
+          users.map(u => (u.id === user.id ? { ...u, isPremium: response.isPremium } : u))
+        );
+      },
+      error: (err: unknown) => {
+        console.error('Erreur lors du toggle premium:', err);
+      },
     });
   }
 }

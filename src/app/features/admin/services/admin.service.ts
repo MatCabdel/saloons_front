@@ -168,4 +168,11 @@ export class AdminService {
   deleteUser(id: number): Observable<void> {
     return this._http.delete<void>(`${this._BASE_URL}/admin/user/${id}`);
   }
+
+  toggleUserPremium(id: number): Observable<{ id: number; isPremium: boolean }> {
+    return this._http.patch<{ id: number; isPremium: boolean }>(
+      `${this._BASE_URL}/admin/user/${id}/toggle-premium`,
+      {}
+    );
+  }
 }
