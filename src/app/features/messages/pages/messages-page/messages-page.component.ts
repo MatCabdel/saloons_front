@@ -6,6 +6,7 @@ import { ConversationService } from 'src/app/features/conversation/services/conv
 import { HeartRequestService } from 'src/app/features/conversation/services/heart-request.service';
 import { ReportModalComponent, ReportModalData } from 'src/app/features/report/components/report-modal/report-modal.component';
 import { User } from 'src/app/features/user/models/user';
+import { UserService } from 'src/app/features/user/services/user.service';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { Conversation, HeartRequestStatus } from 'src/app/features/conversation/models/Conversation';
 import { interval, Subscription } from 'rxjs';
@@ -23,8 +24,11 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   private _conversationService = inject(ConversationService);
   private _heartRequestService = inject(HeartRequestService);
   private _userStore = inject(UserStoreService);
+  private _userService = inject(UserService);
+  
   userTarget?: User;
-  conversationId!: number;
+  conversationId: number | null = null;
+  matchUserId: number | null = null; // Mode match sans conversation
   otherParticipantLeft = false;
   isMatchCancelled = false;
   conversation?: Conversation;
@@ -52,7 +56,23 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.conversationId = Number(this._route.snapshot.paramMap.get('conversationId'));
+    const conversationIdParam = this._route.snapshot.paramMap.get('conversationId');
+    const matchUserIdParam = this._route.snapshot.paramMap.get('matchUserId');
+
+    if (conversationIdParam) {
+      // Mode conversation existante
+      this.conversationId = Number(conversationIdParam);
+      this._loadConversation();
+    } else if (matchUserIdParam) {
+      // Mode match sans conversation (conversation sera créée au premier message)
+      this.matchUserId = Number(matchUserIdParam);
+      this._loadMatchUser();
+    }
+  }
+
+  private _loadConversation(): void {
+    if (!this.conversationId) return;
+    
     this._conversationService.getConversation(this.conversationId).subscribe({
       next: (conv: Conversation) => {
         const myId = this._userStore.getUserId();
@@ -75,11 +95,34 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  private _loadMatchUser(): void {
+    if (!this.matchUserId) return;
+    
+    this._userService.getUserById(this.matchUserId).subscribe({
+      next: (user: User) => {
+        this.userTarget = user;
+      },
+      error: () => {
+        this._router.navigate(['/chat']);
+      },
+    });
+  }
+
+  // Appelé par messagerie quand une conversation est créée
+  onConversationCreated(conversationId: number): void {
+    this.conversationId = conversationId;
+    this.matchUserId = null;
+    // Ne pas changer l'URL pour éviter le rechargement
+    // L'URL reste /messages/match/:userId mais en interne on a maintenant conversationId
+  }
+
   ngOnDestroy(): void {
     this._countdownSubscription?.unsubscribe();
   }
 
   private _loadHeartRequestStatus(): void {
+    if (!this.conversationId) return;
+    
     this._heartRequestService.getHeartRequestStatus(this.conversationId).subscribe({
       next: (status: HeartRequestStatus) => {
         this.heartRequestStatus = status;
@@ -126,7 +169,7 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   }
 
   sendHeartRequest(): void {
-    if (!this.userTarget || !this.heartRequestStatus?.canSend || this.heartRequestSending()) {
+    if (!this.userTarget || !this.heartRequestStatus?.canSend || this.heartRequestSending() || !this.conversationId) {
       return;
     }
 
@@ -185,6 +228,12 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   }
 
   deleteMatch(): void {
+    if (!this.conversationId) {
+      // En mode match sans conversation, retourner simplement à la liste
+      this._router.navigate(['/chat']);
+      return;
+    }
+    
     this._conversationService.deleteConversation(this.conversationId).subscribe({
       next: () => {
         this.showDeleteMatchModal = false;
@@ -198,6 +247,11 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   }
 
   deleteConversation(): void {
+    if (!this.conversationId) {
+      this._router.navigate(['/chat']);
+      return;
+    }
+    
     this._conversationService.deleteConversation(this.conversationId).subscribe({
       next: () => {
         this.showDeleteConvModal = false;

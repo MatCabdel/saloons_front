@@ -299,10 +299,7 @@ export class PresenceService {
    */
   leaveRequest(saloonId: number): Observable<{ message: string; pendingUntil: number; canUndo: boolean }> {
     return this._http
-      .post<{ message: string; pendingUntil: number; canUndo: boolean }>(
-        `${this._BASE_URL_API}/api/saloons/${saloonId}/leave-request`,
-        {}
-      )
+      .post<{ message: string; pendingUntil: number; canUndo: boolean }>(`${this._BASE_URL_API}/api/saloons/${saloonId}/leave-request`, {})
       .pipe(
         tap(() => {
           // On garde la session en mémoire pour permettre le retour
@@ -316,24 +313,19 @@ export class PresenceService {
    * Annule une sortie en attente (undo).
    */
   leaveCancel(saloonId: number): Observable<{ message: string; canRejoin: boolean }> {
-    return this._http.post<{ message: string; canRejoin: boolean }>(
-      `${this._BASE_URL_API}/api/saloons/${saloonId}/leave-cancel`,
-      {}
-    );
+    return this._http.post<{ message: string; canRejoin: boolean }>(`${this._BASE_URL_API}/api/saloons/${saloonId}/leave-cancel`, {});
   }
 
   /**
    * Confirme définitivement une sortie.
    */
   leaveConfirm(saloonId: number): Observable<{ message: string }> {
-    return this._http
-      .post<{ message: string }>(`${this._BASE_URL_API}/api/saloons/${saloonId}/leave-confirm`, {})
-      .pipe(
-        tap(() => {
-          this._activeSession$.next(null);
-          this._currentPresence$.next(null);
-        })
-      );
+    return this._http.post<{ message: string }>(`${this._BASE_URL_API}/api/saloons/${saloonId}/leave-confirm`, {}).pipe(
+      tap(() => {
+        this._activeSession$.next(null);
+        this._currentPresence$.next(null);
+      })
+    );
   }
 
   /**

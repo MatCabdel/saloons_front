@@ -53,14 +53,19 @@ export class ListMatchComponent implements OnInit, OnChanges {
   }
 
   openConversationWith(user: any): void {
+    if (!user?.id) {
+      return;
+    }
+
+    // Vérifier si une conversation existe déjà
     this._conversationService.getUserConversations().subscribe(conversations => {
-      const conv = conversations.payload.find(conv => conv.participants.some((p: any) => p.id === user.id));
+      const conv = conversations.payload.find(c => c.participants.some((p: any) => p.id === user.id));
       if (conv) {
+        // Conversation existe → naviguer vers elle
         this._router.navigate(['/messages', conv.id]);
       } else {
-        this._conversationService.createConversation(user.id).subscribe(newConv => {
-          this._router.navigate(['/messages', newConv.id]);
-        });
+        // Pas de conversation → ouvrir en mode "match" (conversation sera créée au premier message)
+        this._router.navigate(['/messages/match', user.id]);
       }
     });
   }

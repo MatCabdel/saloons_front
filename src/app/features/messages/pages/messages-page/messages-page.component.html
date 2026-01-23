@@ -52,7 +52,9 @@
       [heartRequestStatus]="heartRequestStatus"
       [heartRequestCountdown]="heartRequestCountdown()"
       [heartRequestSending]="heartRequestSending()"
-      (sendHeartRequestClicked)="sendHeartRequest()">
+      [matchUserId]="matchUserId"
+      (sendHeartRequestClicked)="sendHeartRequest()"
+      (conversationCreated)="onConversationCreated($event)">
     </app-messagerie>
   </div>
 

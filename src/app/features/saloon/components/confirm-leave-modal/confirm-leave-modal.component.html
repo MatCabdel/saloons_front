@@ -7,11 +7,11 @@
 
       <div class="modal-body">
         @if (!isPremium) {
-          <p class="warning-text">
-            ⚠️ Si tu quittes maintenant, tu ne pourras pas revenir dans un saloon <strong>avant demain</strong>.
-          </p>
+          <p class="warning-text">⚠️ Si tu quittes maintenant, tu ne pourras pas revenir dans un saloon <strong>avant demain</strong>.</p>
         } @else {
-          <p class="neutral-text">Es-tu sûr de vouloir quitter <strong>{{ saloonName }}</strong> ?</p>
+          <p class="neutral-text">
+            Es-tu sûr de vouloir quitter <strong>{{ saloonName }}</strong> ?
+          </p>
         }
       </div>
 

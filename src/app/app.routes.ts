@@ -60,6 +60,7 @@ export const routes: Routes = [
   { path: 'profil-visitor/:id', component: ProfilVisitorPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'match/:userId1/:userId2', component: MatchPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'heart-confirmed/:userId1/:userId2', component: HeartConfirmedPageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'messages/match/:matchUserId', component: MessagesPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'messages/:conversationId', component: MessagesPageComponent, canActivate: [isLoggedInGuard] },
   // Menu pages
   { path: 'mon-compte', component: MonComptePageComponent, canActivate: [isLoggedInGuard] },

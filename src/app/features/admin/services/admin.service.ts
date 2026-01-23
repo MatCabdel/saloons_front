@@ -170,9 +170,6 @@ export class AdminService {
   }
 
   toggleUserPremium(id: number): Observable<{ id: number; isPremium: boolean }> {
-    return this._http.patch<{ id: number; isPremium: boolean }>(
-      `${this._BASE_URL}/admin/user/${id}/toggle-premium`,
-      {}
-    );
+    return this._http.patch<{ id: number; isPremium: boolean }>(`${this._BASE_URL}/admin/user/${id}/toggle-premium`, {});
   }
 }

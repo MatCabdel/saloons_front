@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, map, Observable, switchMap, take } from 'rxjs';
-import { ConversationService } from 'src/app/features/conversation/services/conversation.service';
 import { MatchService } from 'src/app/features/match/services/match.service';
 import { ReportModalComponent, ReportModalData } from 'src/app/features/report/components/report-modal/report-modal.component';
 import { User } from 'src/app/features/user/models/user';
@@ -23,7 +22,6 @@ export class VisitorProfilComponent implements OnInit {
   private _router = inject(Router);
   private _matchService = inject(MatchService);
   private _userStore = inject(UserStoreService);
-  private _conversationService = inject(ConversationService);
   private _saloonApi = inject(SaloonApiService);
 
   data$!: Observable<{ user: User; saloonId: number }>;
@@ -136,7 +134,7 @@ export class VisitorProfilComponent implements OnInit {
           this.winkSent = true;
 
           if (res.message === "It's a match!") {
-            this._conversationService.createConversation(otherId, saloonId).subscribe();
+            // Ne pas créer de conversation ici - elle sera créée au premier message
             this._router.navigate(['/match', myId, otherId], { queryParams: { saloonId } });
           }
         },
