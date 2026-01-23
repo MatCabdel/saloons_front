@@ -41,7 +41,6 @@ export class MonComptePageComponent implements OnInit {
 
   goToPremium(): void {
     // TODO: Navigation vers la page premium
-    console.log('Navigation vers Premium - à implémenter');
   }
 
   logout(): void {

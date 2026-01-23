@@ -120,8 +120,6 @@ export class SaloonChatService {
     });
 
     this._stompClient.onConnect = (): void => {
-      console.log('Connected to saloon chat WebSocket');
-
       // S'abonner à la présence EN PREMIER (déclenche l'incrémentation du compteur backend)
       this._stompClient?.subscribe(`/topic/saloon-presence/${saloonId}`, message => {
         const presence: SaloonPresenceDTO = JSON.parse(message.body);
@@ -147,8 +145,8 @@ export class SaloonChatService {
       }, 500);
     };
 
-    this._stompClient.onStompError = (frame): void => {
-      console.error('WebSocket error:', frame);
+    this._stompClient.onStompError = (): void => {
+      // Erreur WebSocket silencieuse
     };
 
     this._stompClient.activate();

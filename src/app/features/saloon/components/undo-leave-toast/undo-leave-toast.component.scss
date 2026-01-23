@@ -1,0 +1,79 @@
+// Variables - Couleurs de l'app
+$gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$yellow: #ffc122;
+$white: #fff;
+
+.undo-toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: $white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba($gradient-top, 0.3);
+  overflow: hidden;
+  z-index: 9998;
+  animation: slideUp 0.3s ease-out;
+  min-width: 280px;
+  max-width: 90%;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateX(-50%) translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  gap: 12px;
+}
+
+.toast-message {
+  color: $gradient-top;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.btn-undo {
+  background: $yellow;
+  color: $gradient-top;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba($yellow, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.progress-bar {
+  height: 4px;
+  background: rgba($gradient-top, 0.1);
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background: $yellow;
+  transition: width 1s linear;
+}

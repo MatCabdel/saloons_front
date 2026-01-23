@@ -213,7 +213,6 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
       const textarea = document.querySelector('textarea');
       if (textarea) {
         textarea.style.height = 'auto';
-        console.log('🔧 Textarea reset');
       }
     }, 0);
   }

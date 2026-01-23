@@ -7,8 +7,5 @@
     <app-list-match [excludeUserIds]="conversationUserIds"></app-list-match>
   </div>
   <app-list-conversation (conversationUserIdsChange)="updateConversationUserIds($event)"></app-list-conversation>
-  @if (monSaloonId !== undefined) {
-    <app-enter-saloon [saloonId]="monSaloonId"></app-enter-saloon>
-  }
   <app-navbar></app-navbar>
 </div>

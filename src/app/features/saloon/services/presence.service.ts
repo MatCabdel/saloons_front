@@ -246,10 +246,7 @@ export class PresenceService {
 
         // Notifier le backend que la session a expiré (pour créer le cooldown)
         if (expiredSession) {
-          this._http.post(`${this._BASE_URL_API}/api/saloons/${expiredSession.saloonId}/leave`, {}).subscribe({
-            next: () => console.log('Session expirée, cooldown créé'),
-            error: err => console.warn("Erreur lors de la notification d'expiration:", err),
-          });
+          this._http.post(`${this._BASE_URL_API}/api/saloons/${expiredSession.saloonId}/leave`, {}).subscribe();
         }
 
         // Émettre l'événement d'expiration
@@ -292,5 +289,59 @@ export class PresenceService {
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
     return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  }
+
+  // ==================== LEAVE REQUEST / CANCEL ====================
+
+  /**
+   * Demande de sortie avec délai d'annulation.
+   * Retourne le timestamp d'expiration (pendingUntil).
+   */
+  leaveRequest(saloonId: number): Observable<{ message: string; pendingUntil: number; canUndo: boolean }> {
+    return this._http
+      .post<{ message: string; pendingUntil: number; canUndo: boolean }>(
+        `${this._BASE_URL_API}/api/saloons/${saloonId}/leave-request`,
+        {}
+      )
+      .pipe(
+        tap(() => {
+          // On garde la session en mémoire pour permettre le retour
+          // mais on arrête le timer car l'utilisateur n'est plus dans le saloon
+          this._stopTimer();
+        })
+      );
+  }
+
+  /**
+   * Annule une sortie en attente (undo).
+   */
+  leaveCancel(saloonId: number): Observable<{ message: string; canRejoin: boolean }> {
+    return this._http.post<{ message: string; canRejoin: boolean }>(
+      `${this._BASE_URL_API}/api/saloons/${saloonId}/leave-cancel`,
+      {}
+    );
+  }
+
+  /**
+   * Confirme définitivement une sortie.
+   */
+  leaveConfirm(saloonId: number): Observable<{ message: string }> {
+    return this._http
+      .post<{ message: string }>(`${this._BASE_URL_API}/api/saloons/${saloonId}/leave-confirm`, {})
+      .pipe(
+        tap(() => {
+          this._activeSession$.next(null);
+          this._currentPresence$.next(null);
+        })
+      );
+  }
+
+  /**
+   * Nettoie l'état local après sortie confirmée (appelé après expiration du délai).
+   */
+  clearSessionState(): void {
+    this._activeSession$.next(null);
+    this._currentPresence$.next(null);
+    this._stopTimer();
   }
 }

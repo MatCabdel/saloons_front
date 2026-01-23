@@ -106,3 +106,12 @@
     }
   </div>
 </div>
+
+<!-- Modal de confirmation de sortie -->
+<app-confirm-leave-modal
+  [isOpen]="showConfirmLeaveModal"
+  [isPremium]="isPremium"
+  [saloonName]="activeSession?.saloonName || ''"
+  (confirmed)="onLeaveConfirmed()"
+  (cancelled)="closeConfirmLeaveModal()"
+/>

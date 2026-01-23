@@ -73,7 +73,6 @@
           <h3>Aucun saloon trouvé</h3>
           @if (activeFilter() !== 'ALL') {
             <p>Aucun saloon de ce type n'a été trouvé à proximité.</p>
-            <button type="button" class="filter-tab active" (click)="setFilter('ALL')">Voir tous les saloons</button>
           } @else {
             <p>Il n'y a pas de saloon dans un rayon de 50 km autour de vous.</p>
             @if (totalSaloonsCount() > 0) {
@@ -94,4 +93,16 @@
 <!-- Modal -->
 @if (showModal && selectedSaloon) {
   <app-saloon-modal [saloon]="selectedSaloon" [userLat]="userLat" [userLng]="userLng" (closed)="closeModal()"> </app-saloon-modal>
+}
+
+<!-- Toast d'annulation (affiché globalement) -->
+@if (undoLeaveService.state$ | async; as undoState) {
+  @if (undoState.isVisible) {
+    <app-undo-leave-toast
+      [isVisible]="undoState.isVisible"
+      [pendingUntil]="undoState.pendingUntil"
+      (undoClicked)="onUndoLeave()"
+      (expired)="onUndoExpired()"
+    />
+  }
 }

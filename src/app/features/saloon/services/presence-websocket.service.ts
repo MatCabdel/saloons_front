@@ -39,7 +39,6 @@ export class PresenceWebSocketService {
 
     this._stompClient.onConnect = (): void => {
       this._isConnected = true;
-      console.log('Présence WebSocket connecté');
 
       // S'abonner aux événements de présence du saloon
       this._stompClient.subscribe(`/topic/saloon/${saloonId}/presence`, (message: IMessage) => {
@@ -55,13 +54,12 @@ export class PresenceWebSocketService {
       });
     };
 
-    this._stompClient.onStompError = (frame): void => {
-      console.error('STOMP erreur présence:', frame);
+    this._stompClient.onStompError = (): void => {
+      // Erreur WebSocket silencieuse
     };
 
     this._stompClient.onWebSocketClose = (): void => {
       this._isConnected = false;
-      console.log('Présence WebSocket déconnecté');
     };
 
     this._stompClient.activate();

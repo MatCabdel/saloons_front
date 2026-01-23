@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, Input, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { Saloon } from '../../models/saloonModel';
 import { CommonModule } from '@angular/common';
 import { PresenceService } from '../../services/presence.service';
@@ -11,9 +11,12 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './saloon-card.component.html',
   styleUrl: './saloon-card.component.scss',
 })
-export class SaloonCardComponent implements OnInit, OnDestroy {
+export class SaloonCardComponent implements OnInit, OnDestroy, OnChanges {
   @Input() saloon!: Saloon;
   @Input() distanceMeters: number | null = null;
+
+  // Propriété calculée (mise à jour uniquement quand nécessaire)
+  visitorCount = 0;
 
   private _presenceService = inject(PresenceService);
   private _destroy$ = new Subject<void>();
@@ -23,8 +26,14 @@ export class SaloonCardComponent implements OnInit, OnDestroy {
     // S'abonner à la session active pour savoir si on est dans ce saloon
     this._presenceService.activeSession$.pipe(takeUntil(this._destroy$)).subscribe(session => {
       this._myActiveSaloonId = session?.saloonId ?? null;
-      console.log('🎴 Card', this.saloon.name, '- myActiveSaloonId:', this._myActiveSaloonId, 'saloon.id:', this.saloon.id);
+      this._updateVisitorCount();
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['saloon']) {
+      this._updateVisitorCount();
+    }
   }
 
   ngOnDestroy(): void {
@@ -33,27 +42,15 @@ export class SaloonCardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Retourne le nombre de visiteurs à afficher (sans se compter)
+   * Met à jour le nombre de visiteurs (appelé uniquement quand les données changent)
    */
-  get visitorCount(): number {
+  private _updateVisitorCount(): void {
+    if (!this.saloon) return;
     // Priorité à connectedCount (Redis temps réel) puis visitorNumber (BDD)
     const count = this.saloon.connectedCount ?? this.saloon.visitorNumber ?? 0;
     // Si je suis dans ce saloon, ne pas me compter
     const isInThisSaloon = this._myActiveSaloonId === this.saloon.id;
-    console.log(
-      '🔢 visitorCount for',
-      this.saloon.name,
-      '- count:',
-      count,
-      'isInThisSaloon:',
-      isInThisSaloon,
-      'myActiveSaloonId:',
-      this._myActiveSaloonId
-    );
-    if (isInThisSaloon && count > 0) {
-      return count - 1;
-    }
-    return count;
+    this.visitorCount = isInThisSaloon && count > 0 ? count - 1 : count;
   }
 
   get formattedDistance(): string {

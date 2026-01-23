@@ -6,11 +6,14 @@ import { PresenceService, SaloonMapItem, ActiveSession } from '../../services/pr
 import { PresenceWebSocketService } from '../../services/presence-websocket.service';
 import { SaloonPresenceRealtimeService } from '../../services/saloon-presence-realtime.service';
 import { SALOON_TYPE_LABELS } from '../../models/saloonModel';
+import { ConfirmLeaveModalComponent } from '../confirm-leave-modal/confirm-leave-modal.component';
+import { UndoLeaveService } from '../../services/undo-leave.service';
+import { FirebaseAuthService } from 'src/app/features/auth/services/firebase-auth.service';
 
 @Component({
   selector: 'app-saloon-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ConfirmLeaveModalComponent],
   templateUrl: './saloon-modal.component.html',
   styleUrl: './saloon-modal.component.scss',
 })
@@ -26,11 +29,20 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
   isInThisSaloon = false;
   realConnectedCount: number | null = null;
 
+  // Modal de confirmation de sortie
+  showConfirmLeaveModal = false;
+
   private _destroy$ = new Subject<void>();
   private _presenceService = inject(PresenceService);
   private _presenceWsService = inject(PresenceWebSocketService);
   private _presenceRealtimeService = inject(SaloonPresenceRealtimeService);
+  private _undoLeaveService = inject(UndoLeaveService);
+  private _authService = inject(FirebaseAuthService);
   private _router = inject(Router);
+
+  get isPremium(): boolean {
+    return this._authService.currentUser()?.isPremium ?? false;
+  }
 
   ngOnInit(): void {
     // Vérifier si l'utilisateur a déjà une session
@@ -146,25 +158,66 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   /**
-   * Quitter le saloon actuel.
+   * Ouvre la modale de confirmation pour quitter le saloon.
    */
-  leaveSaloon(): void {
+  openLeaveConfirmation(): void {
+    this.showConfirmLeaveModal = true;
+  }
+
+  /**
+   * Ferme la modale de confirmation.
+   */
+  closeConfirmLeaveModal(): void {
+    this.showConfirmLeaveModal = false;
+  }
+
+  /**
+   * L'utilisateur confirme vouloir quitter.
+   */
+  onLeaveConfirmed(): void {
+    this.showConfirmLeaveModal = false;
     if (!this.activeSession) return;
 
+    const saloonId = this.activeSession.saloonId;
     this.isLoading = true;
     this._presenceService
-      .leaveSaloon(this.activeSession.saloonId)
+      .leaveRequest(saloonId)
       .pipe(takeUntil(this._destroy$))
       .subscribe({
-        next: () => {
+        next: response => {
           this.isLoading = false;
           this._presenceWsService.disconnect();
+          // Afficher le toast via le service global
+          this._undoLeaveService.show(saloonId, response.pendingUntil);
+          this.close();
         },
         error: err => {
           this.isLoading = false;
           this.errorMessage = err.error?.error || 'Une erreur est survenue';
         },
       });
+  }
+
+  /**
+   * L'utilisateur annule la sortie (undo) - appelé depuis list-saloon-page maintenant.
+   */
+  onUndoLeave(): void {
+    // Cette méthode n'est plus utilisée ici, le toast est géré par list-saloon-page
+  }
+
+  /**
+   * Le délai d'annulation a expiré - appelé depuis list-saloon-page maintenant.
+   */
+  onUndoExpired(): void {
+    // Cette méthode n'est plus utilisée ici, le toast est géré par list-saloon-page
+  }
+
+  /**
+   * Quitter le saloon actuel (ancienne méthode, garde pour compatibilité si besoin).
+   * @deprecated Utiliser openLeaveConfirmation() à la place
+   */
+  leaveSaloon(): void {
+    this.openLeaveConfirmation();
   }
 
   /**
