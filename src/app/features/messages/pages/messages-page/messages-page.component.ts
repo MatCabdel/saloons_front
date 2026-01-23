@@ -25,7 +25,7 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   private _heartRequestService = inject(HeartRequestService);
   private _userStore = inject(UserStoreService);
   private _userService = inject(UserService);
-  
+
   userTarget?: User;
   conversationId: number | null = null;
   matchUserId: number | null = null; // Mode match sans conversation
@@ -72,7 +72,7 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
 
   private _loadConversation(): void {
     if (!this.conversationId) return;
-    
+
     this._conversationService.getConversation(this.conversationId).subscribe({
       next: (conv: Conversation) => {
         const myId = this._userStore.getUserId();
@@ -97,7 +97,7 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
 
   private _loadMatchUser(): void {
     if (!this.matchUserId) return;
-    
+
     this._userService.getUserById(this.matchUserId).subscribe({
       next: (user: User) => {
         this.userTarget = user;
@@ -122,7 +122,7 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
 
   private _loadHeartRequestStatus(): void {
     if (!this.conversationId) return;
-    
+
     this._heartRequestService.getHeartRequestStatus(this.conversationId).subscribe({
       next: (status: HeartRequestStatus) => {
         this.heartRequestStatus = status;
@@ -233,7 +233,7 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
       this._router.navigate(['/chat']);
       return;
     }
-    
+
     this._conversationService.deleteConversation(this.conversationId).subscribe({
       next: () => {
         this.showDeleteMatchModal = false;
@@ -251,7 +251,7 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
       this._router.navigate(['/chat']);
       return;
     }
-    
+
     this._conversationService.deleteConversation(this.conversationId).subscribe({
       next: () => {
         this.showDeleteConvModal = false;

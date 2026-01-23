@@ -62,7 +62,7 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
 
   ngOnInit(): void {
     this.myId = Number(this._userStore.getUserId());
-    
+
     const conversationIdParam = this._route.snapshot.paramMap.get('conversationId');
     const matchUserIdParam = this._route.snapshot.paramMap.get('matchUserId');
 
@@ -116,16 +116,13 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
 
   private _initMatchMode(matchUserId: number): void {
     // Charger l'utilisateur courant et l'utilisateur matché
-    combineLatest([
-      this._userService.getUserById(this.myId),
-      this._userService.getUserById(matchUserId)
-    ])
+    combineLatest([this._userService.getUserById(this.myId), this._userService.getUserById(matchUserId)])
       .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe(([me, matchedUser]) => {
         this.participants = [me, matchedUser];
         this.setupMyImage();
       });
-    
+
     // Pas de messages en mode match
     this.messages = [];
   }
@@ -204,7 +201,7 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
 
   loadMessages(): void {
     if (!this.conversationId) return;
-    
+
     this._conversationService
       .getMessages(this.conversationId)
       .pipe(takeUntilDestroyed(this._destroyRef))
@@ -242,12 +239,13 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
           this.conversationId = conv.id;
           this.isMatchMode = false;
           this.conversationCreated.emit(conv.id);
-          
+
           // Connecter au WebSocket
           this._webSocketService.connect(conv.id);
-          
+
           // S'abonner aux messages WebSocket
-          this._webSocketService.getMessages()
+          this._webSocketService
+            .getMessages()
             .pipe(
               takeUntilDestroyed(this._destroyRef),
               mergeMap(msg => this.ensureParticipantExists(msg).pipe(map(() => msg)))
@@ -256,7 +254,7 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
               this.handleNewMessage(msg);
               setTimeout(() => this.jumpToBottom(), 50);
             });
-          
+
           // Attendre un court délai que le WebSocket soit connecté
           setTimeout(() => {
             this._sendChatMessage();
