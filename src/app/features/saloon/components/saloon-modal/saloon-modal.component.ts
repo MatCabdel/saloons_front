@@ -7,7 +7,6 @@ import { PresenceWebSocketService } from '../../services/presence-websocket.serv
 import { SaloonPresenceRealtimeService } from '../../services/saloon-presence-realtime.service';
 import { SALOON_TYPE_LABELS } from '../../models/saloonModel';
 import { ConfirmLeaveModalComponent } from '../confirm-leave-modal/confirm-leave-modal.component';
-import { UndoLeaveService } from '../../services/undo-leave.service';
 import { FirebaseAuthService } from 'src/app/features/auth/services/firebase-auth.service';
 
 @Component({
@@ -36,7 +35,6 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
   private _presenceService = inject(PresenceService);
   private _presenceWsService = inject(PresenceWebSocketService);
   private _presenceRealtimeService = inject(SaloonPresenceRealtimeService);
-  private _undoLeaveService = inject(UndoLeaveService);
   private _authService = inject(FirebaseAuthService);
   private _router = inject(Router);
 
@@ -181,14 +179,12 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
     const saloonId = this.activeSession.saloonId;
     this.isLoading = true;
     this._presenceService
-      .leaveRequest(saloonId)
+      .leaveSaloon(saloonId)
       .pipe(takeUntil(this._destroy$))
       .subscribe({
-        next: response => {
+        next: () => {
           this.isLoading = false;
           this._presenceWsService.disconnect();
-          // Afficher le toast via le service global
-          this._undoLeaveService.show(saloonId, response.pendingUntil);
           this.close();
         },
         error: err => {
@@ -196,20 +192,6 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
           this.errorMessage = err.error?.error || 'Une erreur est survenue';
         },
       });
-  }
-
-  /**
-   * L'utilisateur annule la sortie (undo) - appelé depuis list-saloon-page maintenant.
-   */
-  onUndoLeave(): void {
-    // Cette méthode n'est plus utilisée ici, le toast est géré par list-saloon-page
-  }
-
-  /**
-   * Le délai d'annulation a expiré - appelé depuis list-saloon-page maintenant.
-   */
-  onUndoExpired(): void {
-    // Cette méthode n'est plus utilisée ici, le toast est géré par list-saloon-page
   }
 
   /**

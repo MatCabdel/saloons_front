@@ -95,13 +95,4 @@
   <app-saloon-modal [saloon]="selectedSaloon" [userLat]="userLat" [userLng]="userLng" (closed)="closeModal()"> </app-saloon-modal>
 }
 
-<!-- Toast d'annulation (affiché globalement) -->
-@if (undoLeaveService.state$ | async; as undoState) {
-  @if (undoState.isVisible) {
-    <app-undo-leave-toast
-      [isVisible]="undoState.isVisible"
-      [pendingUntil]="undoState.pendingUntil"
-      (undoClicked)="onUndoLeave()"
-      (expired)="onUndoExpired()" />
-  }
-}
+<!-- Toast d'annulation supprimé -->

@@ -10,6 +10,7 @@ import { UserService } from 'src/app/features/user/services/user.service';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { Conversation, HeartRequestStatus } from 'src/app/features/conversation/models/Conversation';
 import { interval, Subscription } from 'rxjs';
+import { PresenceService } from 'src/app/features/saloon/services/presence.service';
 
 @Component({
   selector: 'app-messages-page',
@@ -25,6 +26,7 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   private _heartRequestService = inject(HeartRequestService);
   private _userStore = inject(UserStoreService);
   private _userService = inject(UserService);
+  private _presenceService = inject(PresenceService);
 
   userTarget?: User;
   conversationId: number | null = null;
@@ -38,6 +40,7 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   heartRequestCountdown = signal<string>('');
   heartRequestSending = signal(false);
   private _countdownSubscription?: Subscription;
+  private _leaveConfirmedSubscription?: Subscription;
 
   isMenuOpen = false;
   showDeleteMatchModal = false;
@@ -68,6 +71,12 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
       this.matchUserId = Number(matchUserIdParam);
       this._loadMatchUser();
     }
+
+    this._leaveConfirmedSubscription = this._presenceService.leaveConfirmed$.subscribe(() => {
+      if (this.conversationId) {
+        this._loadConversation();
+      }
+    });
   }
 
   private _loadConversation(): void {
@@ -118,6 +127,7 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._countdownSubscription?.unsubscribe();
+    this._leaveConfirmedSubscription?.unsubscribe();
   }
 
   private _loadHeartRequestStatus(): void {

@@ -20,6 +20,7 @@ import { User } from 'src/app/features/user/models/user';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { UserService } from 'src/app/features/user/services/user.service';
 import { Message, HeartRequestStatus } from 'src/app/features/conversation/models/Conversation';
+import { PresenceService } from 'src/app/features/saloon/services/presence.service';
 import { combineLatest, map, mergeMap, Observable, of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -58,6 +59,7 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
   private _webSocketService = inject(WebSocketService);
   private _userStore = inject(UserStoreService);
   private _userService = inject(UserService);
+  private _presenceService = inject(PresenceService);
   private _destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
@@ -234,7 +236,10 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
       const matchUserId = this.matchUserId || Number(this._route.snapshot.paramMap.get('matchUserId'));
       if (!matchUserId) return;
 
-      this._conversationService.createConversation(matchUserId).subscribe({
+      const saloonIdParam = this._route.snapshot.queryParamMap.get('saloonId');
+      const activeSession = this._presenceService.getActiveSessionValue();
+      const saloonId = activeSession?.saloonId ?? (saloonIdParam ? Number(saloonIdParam) : undefined);
+      this._conversationService.createConversation(matchUserId, saloonId).subscribe({
         next: conv => {
           this.conversationId = conv.id;
           this.isMatchMode = false;

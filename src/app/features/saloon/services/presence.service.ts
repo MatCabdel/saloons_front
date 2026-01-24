@@ -103,6 +103,10 @@ export class PresenceService {
   private _sessionExpired$ = new Subject<void>();
   public sessionExpired$ = this._sessionExpired$.asObservable();
 
+  // Event émis quand la sortie est confirmée (après délai d'annulation)
+  private _leaveConfirmed$ = new Subject<void>();
+  public leaveConfirmed$ = this._leaveConfirmed$.asObservable();
+
   private _timerInterval: ReturnType<typeof setInterval> | null = null;
 
   /**
@@ -136,6 +140,7 @@ export class PresenceService {
         this._activeSession$.next(null);
         this._currentPresence$.next(null);
         this._stopTimer();
+        this._leaveConfirmed$.next();
       })
     );
   }
@@ -324,6 +329,7 @@ export class PresenceService {
       tap(() => {
         this._activeSession$.next(null);
         this._currentPresence$.next(null);
+        this._leaveConfirmed$.next();
       })
     );
   }

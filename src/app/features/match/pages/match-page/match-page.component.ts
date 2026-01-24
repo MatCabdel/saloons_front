@@ -44,7 +44,9 @@ export class MatchPageComponent implements OnInit {
 
   openChat(user2: User): void {
     // Naviguer vers la page messages en mode match (conversation sera créée au premier message)
-    this._router.navigate(['/messages/match', user2.id]);
+    this._router.navigate(['/messages/match', user2.id], {
+      queryParams: this.saloonId ? { saloonId: this.saloonId } : {},
+    });
   }
 
   goBackToSaloon(): void {

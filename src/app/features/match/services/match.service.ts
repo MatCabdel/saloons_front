@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { MatchUser } from '../models/match-user';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,7 @@ export class MatchService {
     return this._http.get<{ hasLiked: boolean }>(`${this._BASE_URL_API}/match/${userId1}/has-liked/${userId2}`);
   }
 
-  getMatches(): Observable<any[]> {
-    return this._http.get<any[]>(`${this._BASE_URL_API}/match/matches`);
+  getMatches(): Observable<MatchUser[]> {
+    return this._http.get<MatchUser[]>(`${this._BASE_URL_API}/match/matches`);
   }
 }

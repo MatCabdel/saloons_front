@@ -3,6 +3,7 @@ import { MatchService } from '../../services/match.service';
 import { ConversationService } from 'src/app/features/conversation/services/conversation.service';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { Router } from '@angular/router';
+import { MatchUser } from '../../models/match-user';
 
 @Component({
   selector: 'app-list-match',
@@ -12,8 +13,8 @@ import { Router } from '@angular/router';
   styleUrl: './list-match.component.scss',
 })
 export class ListMatchComponent implements OnInit, OnChanges {
-  matches: any[] = [];
-  allMatches: any[] = [];
+  matches: MatchUser[] = [];
+  allMatches: MatchUser[] = [];
   userIdsWithConversations: number[] = [];
   @Input() excludeUserIds: number[] = [];
 
@@ -49,10 +50,21 @@ export class ListMatchComponent implements OnInit, OnChanges {
   filterMatches(): void {
     // Exclure les utilisateurs avec conversation ET ceux passés en input
     const allExcluded = [...new Set([...this.userIdsWithConversations, ...this.excludeUserIds])];
-    this.matches = this.allMatches.filter(u => !allExcluded.includes(u.id));
+    this.matches = this._sortMatches(this.allMatches.filter(u => !allExcluded.includes(u.id)));
   }
 
-  openConversationWith(user: any): void {
+  private _sortMatches(matches: MatchUser[]): MatchUser[] {
+    return [...matches].sort((a, b) => {
+      if (a.sessionExpired !== b.sessionExpired) {
+        return a.sessionExpired ? 1 : -1;
+      }
+      const timeA = a.matchedAt ? new Date(a.matchedAt).getTime() : 0;
+      const timeB = b.matchedAt ? new Date(b.matchedAt).getTime() : 0;
+      return timeB - timeA;
+    });
+  }
+
+  openConversationWith(user: MatchUser): void {
     if (!user?.id) {
       return;
     }

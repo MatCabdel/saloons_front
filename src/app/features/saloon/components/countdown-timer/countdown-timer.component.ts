@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { PresenceService } from '../../services/presence.service';
 import { ConfirmLeaveModalComponent } from '../confirm-leave-modal/confirm-leave-modal.component';
 import { FirebaseAuthService } from 'src/app/features/auth/services/firebase-auth.service';
-import { UndoLeaveService } from '../../services/undo-leave.service';
 
 @Component({
   selector: 'app-countdown-timer',
@@ -25,7 +24,6 @@ export class CountdownTimerComponent implements OnInit {
 
   private _presenceService = inject(PresenceService);
   private _authService = inject(FirebaseAuthService);
-  private _undoLeaveService = inject(UndoLeaveService);
   private _router = inject(Router);
   private _destroyRef = inject(DestroyRef);
 
@@ -94,13 +92,10 @@ export class CountdownTimerComponent implements OnInit {
     const currentSaloonId = this.saloonId;
 
     this._presenceService
-      .leaveRequest(currentSaloonId)
+      .leaveSaloon(currentSaloonId)
       .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe({
-        next: response => {
-          // Afficher le toast via le service global
-          this._undoLeaveService.show(currentSaloonId, response.pendingUntil);
-          // Naviguer vers la carte
+        next: () => {
           this._router.navigate(['/saloons']);
         },
         error: err => {

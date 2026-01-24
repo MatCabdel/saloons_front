@@ -8,8 +8,6 @@ import { SaloonApiService } from '../../services/saloon-api.service';
 import { SaloonModalComponent } from '../../components/saloon-modal/saloon-modal.component';
 import { SaloonMapItem, PresenceService } from '../../services/presence.service';
 import { SaloonPresenceRealtimeService } from '../../services/saloon-presence-realtime.service';
-import { UndoLeaveToastComponent } from '../../components/undo-leave-toast/undo-leave-toast.component';
-import { UndoLeaveService } from '../../services/undo-leave.service';
 
 // Distance maximale pour afficher les saloons (en mètres)
 const MAX_DISTANCE_METERS = 50000; // 50km
@@ -35,7 +33,7 @@ const FILTER_TABS: { value: FilterType; label: string }[] = [
 @Component({
   selector: 'app-list-saloon-page',
   standalone: true,
-  imports: [CommonModule, SaloonCardComponent, SaloonModalComponent, UndoLeaveToastComponent],
+  imports: [CommonModule, SaloonCardComponent, SaloonModalComponent],
   templateUrl: './list-saloon-page.component.html',
   styleUrl: './list-saloon-page.component.scss',
 })
@@ -45,9 +43,6 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   private _presenceService = inject(PresenceService);
   private _router = inject(Router);
   private _destroy$ = new Subject<void>();
-
-  // Service pour le toast d'annulation
-  undoLeaveService = inject(UndoLeaveService);
 
   // Position utilisateur
   userLat: number | null = null;
@@ -244,46 +239,5 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
     this._router.navigate(['/saloon-demande']);
   }
 
-  // Handlers pour le toast d'annulation
-  onUndoLeave(): void {
-    const state = this.undoLeaveService.getState();
-    if (!state.saloonId) return;
-
-    const saloonId = state.saloonId;
-    this._presenceService.leaveCancel(saloonId).subscribe({
-      next: response => {
-        this.undoLeaveService.hide();
-        if (response.canRejoin) {
-          // Rejoindre à nouveau le saloon et naviguer
-          this._presenceService.joinSaloon(saloonId, null, null).subscribe({
-            next: () => {
-              this._router.navigate(['/mysaloon', saloonId]);
-            },
-            error: err => {
-              console.error('Erreur lors du retour dans le saloon:', err);
-            },
-          });
-        }
-      },
-      error: () => {
-        this.undoLeaveService.hide();
-      },
-    });
-  }
-
-  onUndoExpired(): void {
-    const state = this.undoLeaveService.getState();
-    if (!state.saloonId) return;
-
-    this._presenceService.leaveConfirm(state.saloonId).subscribe({
-      next: () => {
-        this.undoLeaveService.hide();
-        this._presenceService.clearSessionState();
-        this._refreshTrigger$.next();
-      },
-      error: () => {
-        this.undoLeaveService.hide();
-      },
-    });
-  }
+  // Undo supprimé
 }
