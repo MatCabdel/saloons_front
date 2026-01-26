@@ -35,6 +35,7 @@ export class HeaderComponent {
     { route: '/saloon-demande', icon: 'assets/icons/saloon.svg', label: 'Saloon à la demande' },
     { route: '/faq', icon: 'assets/icons/faq.svg', label: 'FAQ' },
     { route: '/contact', icon: 'assets/icons/contact.svg', label: 'Contact' },
+    { route: '/mentions-legales', icon: 'assets/icons/faq.svg', label: 'Mentions légales' },
   ];
 
   public navigateToWelcome(): void {

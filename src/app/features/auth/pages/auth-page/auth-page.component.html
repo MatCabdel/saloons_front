@@ -116,6 +116,18 @@
           <span>S'inscrire avec une adresse email</span>
         </button>
 
+        <p class="legal-consent">
+          En cliquant sur «&nbsp;S’inscrire&nbsp;», vous acceptez nos
+          <button type="button" class="legal-link" (click)="openTerms()">
+            Conditions d’utilisation
+          </button>
+          et notre
+          <button type="button" class="legal-link" (click)="openPrivacyPolicy()">
+            Politique de confidentialité
+          </button>
+          .
+        </p>
+
         <!-- Lien connexion -->
         <p class="switch-text">
           Vous avez déjà un compte ?
@@ -450,3 +462,25 @@
     </div>
   </div>
 </div>
+
+@if (showLegalModal()) {
+<div
+  class="legal-modal-overlay"
+  (click)="closeLegalModal()"
+  (keyup.escape)="closeLegalModal()"
+  tabindex="0"
+>
+  <div class="legal-modal" (click)="$event.stopPropagation()" (keyup.escape)="closeLegalModal()">
+    <div class="legal-modal-header">
+      <h3>{{ legalModalTitle() }}</h3>
+      <button type="button" class="close-btn" (click)="closeLegalModal()">✕</button>
+    </div>
+    <div class="legal-modal-body" [innerHTML]="legalModalContent()"></div>
+    <div class="legal-modal-footer">
+      <button type="button" class="close-btn-action" (click)="closeLegalModal()">
+        Fermer
+      </button>
+    </div>
+  </div>
+</div>
+}

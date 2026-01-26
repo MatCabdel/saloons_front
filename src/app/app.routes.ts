@@ -36,6 +36,7 @@ import { SaloonDemandePageComponent } from './features/menu/pages/saloon-demande
 import { FaqPageComponent } from './features/menu/pages/faq-page/faq-page.component';
 import { ContactPageComponent } from './features/menu/pages/contact-page/contact-page.component';
 import { ForgotPasswordPageComponent } from './features/auth/pages/forgot-password-page/forgot-password-page.component';
+import { LegalNoticesPageComponent } from './features/menu/pages/legal-notices-page/legal-notices-page.component';
 
 export const routes: Routes = [
   // Page d'accueil = inscription
@@ -107,6 +108,7 @@ export const routes: Routes = [
   { path: 'saloon-demande', component: SaloonDemandePageComponent, canActivate: [isLoggedInGuard] },
   { path: 'faq', component: FaqPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'contact', component: ContactPageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'mentions-legales', component: LegalNoticesPageComponent, canActivate: [isLoggedInGuard] },
   {
     path: 'dashboard',
     component: DashboardPageComponent,
