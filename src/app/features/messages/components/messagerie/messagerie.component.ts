@@ -142,7 +142,7 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
   }
 
   ngAfterViewChecked(): void {
-    if (this.messages.length > 0 && this.messagesList?.nativeElement) {
+    if (!this._hasScrolledToBottom && this.messages.length > 0 && this.messagesList?.nativeElement) {
       const element = this.messagesList.nativeElement;
       if (element.scrollTop < element.scrollHeight - element.clientHeight - 10) {
         setTimeout(() => {
@@ -156,8 +156,8 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
     try {
       if (this.messagesList && this.messagesList.nativeElement) {
         const element = this.messagesList.nativeElement;
-
-        element.scrollTop = element.scrollHeight;
+        element.scrollTo({ top: element.scrollHeight, behavior: 'auto' });
+        this._hasScrolledToBottom = true;
       } else {
         console.warn('⚠️ messagesList non disponible');
       }
