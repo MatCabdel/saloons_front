@@ -470,7 +470,14 @@
   (keyup.escape)="closeLegalModal()"
   tabindex="0"
 >
-  <div class="legal-modal" (click)="$event.stopPropagation()" (keyup.escape)="closeLegalModal()">
+  <div
+    class="legal-modal"
+    (click)="$event.stopPropagation()"
+    (keyup.escape)="closeLegalModal()"
+    tabindex="0"
+    role="dialog"
+    aria-modal="true"
+  >
     <div class="legal-modal-header">
       <h3>{{ legalModalTitle() }}</h3>
       <button type="button" class="close-btn" (click)="closeLegalModal()">✕</button>
