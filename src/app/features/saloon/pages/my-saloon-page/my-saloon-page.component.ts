@@ -15,7 +15,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-my-saloon-page',
   standalone: true,
-  imports: [NavbarComponent, HeaderComponent, VisitorCardComponent, CommonModule, CountdownTimerComponent],
+  imports: [
+    NavbarComponent,
+    HeaderComponent,
+    VisitorCardComponent,
+    CommonModule,
+    CountdownTimerComponent,
+  ],
   templateUrl: './my-saloon-page.component.html',
   styleUrl: './my-saloon-page.component.scss',
 })
@@ -35,14 +41,18 @@ export class MySaloonPageComponent implements OnInit {
     switchMap(saloonId =>
       this._refreshTrigger$.pipe(
         switchMap(() => this._presenceService.getPresence(Number(saloonId))),
-        map(presence => presence.connectedUsers.filter(user => user.id !== Number(this._userStore.getUserId())))
+        map(presence =>
+          presence.connectedUsers.filter(user => user.id !== Number(this._userStore.getUserId()))
+        )
       )
     ),
     takeUntilDestroyed(this._destroyRef),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  saloon$: Observable<Saloon> = this._route.paramMap.pipe(switchMap(params => this._saloonApi.getSaloonById(params.get('id')!)));
+  saloon$: Observable<Saloon> = this._route.paramMap.pipe(
+    switchMap(params => this._saloonApi.getSaloonById(params.get('id')!))
+  );
 
   showModal = false;
 

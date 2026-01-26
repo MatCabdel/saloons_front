@@ -12,11 +12,16 @@ export class MatchService {
   private _http = inject(HttpClient);
 
   createLike(userId1: number, userId2: number): Observable<{ message: string }> {
-    return this._http.post<{ message: string }>(`${this._BASE_URL_API}/match/${userId1}/like/${userId2}`, {});
+    return this._http.post<{ message: string }>(
+      `${this._BASE_URL_API}/match/${userId1}/like/${userId2}`,
+      {}
+    );
   }
 
   hasLiked(userId1: number, userId2: number): Observable<{ hasLiked: boolean }> {
-    return this._http.get<{ hasLiked: boolean }>(`${this._BASE_URL_API}/match/${userId1}/has-liked/${userId2}`);
+    return this._http.get<{ hasLiked: boolean }>(
+      `${this._BASE_URL_API}/match/${userId1}/has-liked/${userId2}`
+    );
   }
 
   getMatches(): Observable<MatchUser[]> {

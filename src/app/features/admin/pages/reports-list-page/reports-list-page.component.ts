@@ -2,7 +2,11 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReportService } from 'src/app/features/report/services/report.service';
-import { Report, ReportStatus, REPORT_STATUS_LABELS } from 'src/app/features/report/models/report.model';
+import {
+  Report,
+  ReportStatus,
+  REPORT_STATUS_LABELS,
+} from 'src/app/features/report/models/report.model';
 
 type FilterOption = 'ALL' | ReportStatus;
 
@@ -21,7 +25,9 @@ export class ReportsListPageComponent implements OnInit {
   error = signal<string | null>(null);
 
   // Computed for pending count
-  pendingCount = computed(() => this.reports().filter(r => r.status === ReportStatus.PENDING).length);
+  pendingCount = computed(
+    () => this.reports().filter(r => r.status === ReportStatus.PENDING).length
+  );
 
   // Filter
   filterOption = signal<FilterOption>('ALL');
@@ -52,7 +58,10 @@ export class ReportsListPageComponent implements OnInit {
 
     const filter = this.filterOption();
 
-    const request$ = filter === 'ALL' ? this._reportService.getAllReports() : this._reportService.getReportsByStatus(filter);
+    const request$ =
+      filter === 'ALL'
+        ? this._reportService.getAllReports()
+        : this._reportService.getReportsByStatus(filter);
 
     request$.subscribe({
       next: reports => {

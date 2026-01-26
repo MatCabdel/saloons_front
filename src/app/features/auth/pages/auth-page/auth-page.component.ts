@@ -86,7 +86,9 @@ export class AuthPageComponent implements OnInit {
   onGoogleAuth(): void {
     // Vérifier si Firebase est configuré
     if (environment.firebase.apiKey === 'YOUR_FIREBASE_API_KEY') {
-      this.errorMessage.set("Firebase n'est pas encore configuré. Utilisez la connexion par email.");
+      this.errorMessage.set(
+        "Firebase n'est pas encore configuré. Utilisez la connexion par email."
+      );
       return;
     }
 
@@ -108,7 +110,9 @@ export class AuthPageComponent implements OnInit {
   onFacebookAuth(): void {
     // Vérifier si Firebase est configuré
     if (environment.firebase.apiKey === 'YOUR_FIREBASE_API_KEY') {
-      this.errorMessage.set("Firebase n'est pas encore configuré. Utilisez la connexion par email.");
+      this.errorMessage.set(
+        "Firebase n'est pas encore configuré. Utilisez la connexion par email."
+      );
       return;
     }
 
@@ -189,7 +193,11 @@ export class AuthPageComponent implements OnInit {
     });
   }
 
-  private _handleAuthSuccess(isNewUser: boolean, profileStatus: string, role?: string | null): void {
+  private _handleAuthSuccess(
+    isNewUser: boolean,
+    profileStatus: string,
+    role?: string | null
+  ): void {
     if (isNewUser || profileStatus === 'PROFILE_INCOMPLETE') {
       this._router.navigate(['/onboarding']);
     } else if (role === 'ROLE_ADMIN') {

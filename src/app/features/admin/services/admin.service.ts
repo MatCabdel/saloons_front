@@ -81,7 +81,9 @@ export class AdminService {
   }
 
   getPremiumEvolution(): Observable<PremiumMonthlyStats[]> {
-    return this._http.get<PremiumMonthlyStats[]>(`${this._BASE_URL}/admin/statistics/premium-evolution`);
+    return this._http.get<PremiumMonthlyStats[]>(
+      `${this._BASE_URL}/admin/statistics/premium-evolution`
+    );
   }
 
   getCityStatistics(): Observable<CityStats> {
@@ -113,7 +115,9 @@ export class AdminService {
       httpParams = httpParams.set('search', params.search);
     }
 
-    return this._http.get<PagedResponse<User>>(`${this._BASE_URL}/admin/users`, { params: httpParams });
+    return this._http.get<PagedResponse<User>>(`${this._BASE_URL}/admin/users`, {
+      params: httpParams,
+    });
   }
 
   // Legacy method - kept for compatibility
@@ -134,7 +138,9 @@ export class AdminService {
       httpParams = httpParams.set('search', params.search);
     }
 
-    return this._http.get<PagedResponse<Saloon>>(`${this._BASE_URL}/admin/saloons`, { params: httpParams });
+    return this._http.get<PagedResponse<Saloon>>(`${this._BASE_URL}/admin/saloons`, {
+      params: httpParams,
+    });
   }
 
   createSaloon(saloon: CreateSaloonRequest): Observable<Saloon> {
@@ -170,6 +176,9 @@ export class AdminService {
   }
 
   toggleUserPremium(id: number): Observable<{ id: number; isPremium: boolean }> {
-    return this._http.patch<{ id: number; isPremium: boolean }>(`${this._BASE_URL}/admin/user/${id}/toggle-premium`, {});
+    return this._http.patch<{ id: number; isPremium: boolean }>(
+      `${this._BASE_URL}/admin/user/${id}/toggle-premium`,
+      {}
+    );
   }
 }

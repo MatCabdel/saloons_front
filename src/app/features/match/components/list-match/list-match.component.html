@@ -1,15 +1,21 @@
 <div class="match-list">
   @for (user of matches; track user.id) {
-    <div
-      class="match-item"
+  <div
+    class="match-item"
+    [class.session-expired]="user.sessionExpired"
+    tabindex="0"
+    role="button"
+    (click)="openConversationWith(user)"
+    (keyup.enter)="openConversationWith(user)"
+    (keyup.space)="openConversationWith(user)"
+  >
+    <img
+      [src]="user.imgUrl"
+      alt="avatar"
+      class="avatar"
       [class.session-expired]="user.sessionExpired"
-      tabindex="0"
-      role="button"
-      (click)="openConversationWith(user)"
-      (keyup.enter)="openConversationWith(user)"
-      (keyup.space)="openConversationWith(user)">
-      <img [src]="user.imgUrl" alt="avatar" class="avatar" [class.session-expired]="user.sessionExpired" />
-      <!-- <div class="username">{{ user.userName }}</div> -->
-    </div>
+    />
+    <!-- <div class="username">{{ user.userName }}</div> -->
+  </div>
   }
 </div>

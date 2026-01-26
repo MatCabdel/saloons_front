@@ -59,7 +59,9 @@ export class DeleteAccountPageComponent {
       },
       error: (err: { error?: { message?: string } }) => {
         this.isDeleting.set(false);
-        this.errorMessage.set(err.error?.message || 'Une erreur est survenue lors de la suppression.');
+        this.errorMessage.set(
+          err.error?.message || 'Une erreur est survenue lors de la suppression.'
+        );
       },
     });
   }

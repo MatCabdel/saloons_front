@@ -40,7 +40,11 @@ export class ListConversationComponent implements OnInit {
 
     this.conversations$ = this._refresh$.pipe(
       switchMap(() => this._conversationService.getUserConversations()),
-      map(data => (Array.isArray(data.payload) ? data.payload.filter(conv => conv && conv.id !== undefined) : [])),
+      map(data =>
+        Array.isArray(data.payload)
+          ? data.payload.filter(conv => conv && conv.id !== undefined)
+          : []
+      ),
       map(conversations =>
         conversations.sort((a, b) => {
           if (!a.lastMessage && !b.lastMessage) return 0;
@@ -114,7 +118,20 @@ export class ListConversationComponent implements OnInit {
     }
 
     // Avant hier - afficher la date (ex: 13 sept. 2025)
-    const months = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+    const months = [
+      'janv.',
+      'févr.',
+      'mars',
+      'avr.',
+      'mai',
+      'juin',
+      'juil.',
+      'août',
+      'sept.',
+      'oct.',
+      'nov.',
+      'déc.',
+    ];
     return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
   }
 }

@@ -3,7 +3,10 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, map, Observable, switchMap, take } from 'rxjs';
 import { MatchService } from 'src/app/features/match/services/match.service';
-import { ReportModalComponent, ReportModalData } from 'src/app/features/report/components/report-modal/report-modal.component';
+import {
+  ReportModalComponent,
+  ReportModalData,
+} from 'src/app/features/report/components/report-modal/report-modal.component';
 import { User } from 'src/app/features/user/models/user';
 import { UserService } from 'src/app/features/user/services/user.service';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';

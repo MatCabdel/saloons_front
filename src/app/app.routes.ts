@@ -3,7 +3,11 @@ import { ListSaloonPageComponent } from './features/saloon/pages/list-saloon-pag
 import { AuthPageComponent } from './features/auth/pages/auth-page/auth-page.component';
 import { OnboardingPageComponent } from './features/auth/pages/onboarding-page/onboarding-page.component';
 import { isLoggedInGuard } from './common/guards/is-logged-in.guard';
-import { authGuard, onboardingGuard, profileCompleteGuard } from './core/guards/profile-complete.guard';
+import {
+  authGuard,
+  onboardingGuard,
+  profileCompleteGuard,
+} from './core/guards/profile-complete.guard';
 import { DashboardPageComponent } from './features/admin/pages/dashboard-page/dashboard-page.component';
 import { ProfilPageComponent } from './features/profil/pages/profil-page/profil-page.component';
 import { EditProfilPageComponent } from './features/profil/pages/edit-profil-page/edit-profil-page.component';
@@ -58,16 +62,48 @@ export const routes: Routes = [
   { path: 'profil/edit', component: EditProfilPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'chat', component: ConversationsPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'mysaloon/:id', component: MySaloonPageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'saloon-chat/:saloonId', component: SaloonChatPageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'profil-visitor/:id', component: ProfilVisitorPageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'match/:userId1/:userId2', component: MatchPageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'heart-confirmed/:userId1/:userId2', component: HeartConfirmedPageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'messages/match/:matchUserId', component: MessagesPageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'messages/:conversationId', component: MessagesPageComponent, canActivate: [isLoggedInGuard] },
+  {
+    path: 'saloon-chat/:saloonId',
+    component: SaloonChatPageComponent,
+    canActivate: [isLoggedInGuard],
+  },
+  {
+    path: 'profil-visitor/:id',
+    component: ProfilVisitorPageComponent,
+    canActivate: [isLoggedInGuard],
+  },
+  {
+    path: 'match/:userId1/:userId2',
+    component: MatchPageComponent,
+    canActivate: [isLoggedInGuard],
+  },
+  {
+    path: 'heart-confirmed/:userId1/:userId2',
+    component: HeartConfirmedPageComponent,
+    canActivate: [isLoggedInGuard],
+  },
+  {
+    path: 'messages/match/:matchUserId',
+    component: MessagesPageComponent,
+    canActivate: [isLoggedInGuard],
+  },
+  {
+    path: 'messages/:conversationId',
+    component: MessagesPageComponent,
+    canActivate: [isLoggedInGuard],
+  },
   // Menu pages
   { path: 'mon-compte', component: MonComptePageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'mon-compte/changer-mot-de-passe', component: ChangePasswordPageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'mon-compte/supprimer-compte', component: DeleteAccountPageComponent, canActivate: [isLoggedInGuard] },
+  {
+    path: 'mon-compte/changer-mot-de-passe',
+    component: ChangePasswordPageComponent,
+    canActivate: [isLoggedInGuard],
+  },
+  {
+    path: 'mon-compte/supprimer-compte',
+    component: DeleteAccountPageComponent,
+    canActivate: [isLoggedInGuard],
+  },
   { path: 'saloon-demande', component: SaloonDemandePageComponent, canActivate: [isLoggedInGuard] },
   { path: 'faq', component: FaqPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'contact', component: ContactPageComponent, canActivate: [isLoggedInGuard] },

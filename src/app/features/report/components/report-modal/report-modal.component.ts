@@ -32,7 +32,9 @@ export class ReportModalComponent {
   successMessage = signal<string | null>(null);
 
   // Liste des raisons disponibles
-  readonly reasons: { value: ReportReason; label: string }[] = Object.entries(REPORT_REASON_LABELS).map(([value, label]) => ({
+  readonly reasons: { value: ReportReason; label: string }[] = Object.entries(
+    REPORT_REASON_LABELS
+  ).map(([value, label]) => ({
     value: value as ReportReason,
     label,
   }));
@@ -71,7 +73,9 @@ export class ReportModalComponent {
     this._reportService.createReport(reportData).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        this.successMessage.set('Signalement envoyé avec succès. Notre équipe va examiner votre demande.');
+        this.successMessage.set(
+          'Signalement envoyé avec succès. Notre équipe va examiner votre demande.'
+        );
         setTimeout(() => {
           this.reported.emit();
           this.close();

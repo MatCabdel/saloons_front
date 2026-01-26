@@ -69,12 +69,14 @@ export class FaqPageComponent {
         },
         {
           question: 'Comment rejoindre un saloon ?',
-          answer: "Il suffit d'ouvrir la carte, sélectionner un lieu, et entrer dans le saloon si les conditions sont remplies.",
+          answer:
+            "Il suffit d'ouvrir la carte, sélectionner un lieu, et entrer dans le saloon si les conditions sont remplies.",
           isOpen: false,
         },
         {
           question: 'Combien de temps puis-je rester dans un saloon ?',
-          answer: 'La durée standard est limitée à 3 heures par saloon, afin de garantir des échanges dynamiques et éviter les abus.',
+          answer:
+            'La durée standard est limitée à 3 heures par saloon, afin de garantir des échanges dynamiques et éviter les abus.',
           isOpen: false,
         },
         {
@@ -128,7 +130,8 @@ export class FaqPageComponent {
         },
         {
           question: 'Est-ce que je peux discuter avec une seule personne ?',
-          answer: "Oui, mais uniquement via des interactions volontaires et mutuelles. Le chat public n'est pas destiné aux discussions privées.",
+          answer:
+            "Oui, mais uniquement via des interactions volontaires et mutuelles. Le chat public n'est pas destiné aux discussions privées.",
           isOpen: false,
         },
       ],
@@ -183,7 +186,8 @@ export class FaqPageComponent {
         },
         {
           question: 'Comment signaler un utilisateur ?',
-          answer: 'Depuis un profil ou un échange, tu peux signaler un comportement en quelques clics.',
+          answer:
+            'Depuis un profil ou un échange, tu peux signaler un comportement en quelques clics.',
           isOpen: false,
         },
         {
@@ -194,7 +198,8 @@ export class FaqPageComponent {
         },
         {
           question: 'Les comportements physiques non consentis sont-ils sanctionnés ?',
-          answer: 'Oui. Toute approche physique non consentie est considérée comme un comportement grave et peut entraîner une exclusion immédiate.',
+          answer:
+            'Oui. Toute approche physique non consentie est considérée comme un comportement grave et peut entraîner une exclusion immédiate.',
           isOpen: false,
         },
       ],
@@ -212,7 +217,8 @@ export class FaqPageComponent {
         },
         {
           question: 'Mes données personnelles sont-elles protégées ?',
-          answer: "Oui. Les données sont utilisées uniquement dans le cadre du fonctionnement de l'application et de la sécurité des utilisateurs.",
+          answer:
+            "Oui. Les données sont utilisées uniquement dans le cadre du fonctionnement de l'application et de la sécurité des utilisateurs.",
           isOpen: false,
         },
         {
@@ -222,7 +228,8 @@ export class FaqPageComponent {
         },
         {
           question: 'Que deviennent mes messages de chat ?',
-          answer: 'Les messages de chat sont éphémères et liés à ta présence dans un saloon. Ils ne sont pas conservés indéfiniment.',
+          answer:
+            'Les messages de chat sont éphémères et liés à ta présence dans un saloon. Ils ne sont pas conservés indéfiniment.',
           isOpen: false,
         },
       ],
@@ -245,14 +252,16 @@ export class FaqPageComponent {
         },
         {
           question: 'Le premium est-il obligatoire pour faire des rencontres ?',
-          answer: "Non. Le premium améliore l'expérience, mais n'est pas nécessaire pour rencontrer des gens.",
+          answer:
+            "Non. Le premium améliore l'expérience, mais n'est pas nécessaire pour rencontrer des gens.",
           isOpen: false,
         },
       ],
     },
   ]);
 
-  footerMessage = 'Saloons est un espace de rencontre basé sur le respect, le consentement et la bienveillance.';
+  footerMessage =
+    'Saloons est un espace de rencontre basé sur le respect, le consentement et la bienveillance.';
 
   toggleSection(sectionIndex: number): void {
     this.faqSections.update(sections => {

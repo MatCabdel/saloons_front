@@ -34,7 +34,13 @@ export class ForgotPasswordPageComponent implements OnInit {
 
   resetForm: FormGroup = this._fb.group(
     {
-      newPassword: ['', [Validators.required, Validators.minLength(ForgotPasswordPageComponent._MIN_PASSWORD_LENGTH)]],
+      newPassword: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(ForgotPasswordPageComponent._MIN_PASSWORD_LENGTH),
+        ],
+      ],
       confirmPassword: ['', [Validators.required]],
     },
     { validators: this.passwordMatchValidator }
@@ -88,7 +94,9 @@ export class ForgotPasswordPageComponent implements OnInit {
       },
       error: (err: { error?: { message?: string } }) => {
         this.isSubmitting.set(false);
-        this.errorMessage.set(err.error?.message || "Impossible d'envoyer l'email. Vérifie l'adresse.");
+        this.errorMessage.set(
+          err.error?.message || "Impossible d'envoyer l'email. Vérifie l'adresse."
+        );
       },
     });
   }

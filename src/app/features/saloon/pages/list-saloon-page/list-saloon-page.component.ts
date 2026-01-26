@@ -1,7 +1,15 @@
 import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable, switchMap, Subject, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  switchMap,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { Saloon, SaloonType } from '../../models/saloonModel';
 import { SaloonCardComponent } from '../../components/saloon-card/saloon-card.component';
 import { SaloonApiService } from '../../services/saloon-api.service';
@@ -91,14 +99,23 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
           connectedCount: finalCount ?? 0,
           distanceMeters:
             position && saloon.latitude && saloon.longitude
-              ? Math.round(this._calculateDistance(position.lat, position.lng, saloon.latitude, saloon.longitude))
+              ? Math.round(
+                  this._calculateDistance(
+                    position.lat,
+                    position.lng,
+                    saloon.latitude,
+                    saloon.longitude
+                  )
+                )
               : null,
         };
       });
 
       // Filtrer les saloons à moins de MAX_DISTANCE_METERS (50km)
       let filteredSaloons = position
-        ? saloonsWithDistance.filter(saloon => saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS)
+        ? saloonsWithDistance.filter(
+            saloon => saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
+          )
         : [];
 
       // Appliquer le filtre par type
@@ -109,7 +126,9 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
       // Tri selon le filtre
       if (filter === 'CHAUD') {
         // Tri par popularité (nombre de connectés, décroissant)
-        filteredSaloons = filteredSaloons.sort((a, b) => (b.connectedCount || 0) - (a.connectedCount || 0));
+        filteredSaloons = filteredSaloons.sort(
+          (a, b) => (b.connectedCount || 0) - (a.connectedCount || 0)
+        );
       } else {
         // Tri par distance (les plus proches en premier)
         filteredSaloons = filteredSaloons.sort((a, b) => {
@@ -138,10 +157,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
     // Connecter au WebSocket pour les mises à jour temps réel
     this._presenceRealtimeService.connect();
     // Charger la session active de l'utilisateur (pour savoir s'il est dans un saloon)
-    this._presenceService
-      .getMySession()
-      .pipe(takeUntil(this._destroy$))
-      .subscribe();
+    this._presenceService.getMySession().pipe(takeUntil(this._destroy$)).subscribe();
   }
 
   ngOnDestroy(): void {
@@ -177,7 +193,11 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
     const dLat = this._toRad(lat2 - lat1);
     const dLng = this._toRad(lng2 - lng1);
     const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(this._toRad(lat1)) * Math.cos(this._toRad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this._toRad(lat1)) *
+        Math.cos(this._toRad(lat2)) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }

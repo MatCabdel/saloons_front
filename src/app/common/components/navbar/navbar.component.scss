@@ -49,7 +49,8 @@ $white: #fff;
         width: 26px;
         height: 26px;
         object-fit: contain;
-        filter: brightness(0) saturate(100%) invert(20%) sepia(10%) saturate(1000%) hue-rotate(260deg) brightness(95%) contrast(90%);
+        filter: brightness(0) saturate(100%) invert(20%) sepia(10%) saturate(1000%)
+          hue-rotate(260deg) brightness(95%) contrast(90%);
         transition: filter 0.25s ease;
       }
 

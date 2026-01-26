@@ -35,9 +35,10 @@ export class MatchPageComponent implements OnInit {
         if (!userId1 || !userId2) {
           throw new Error('User IDs manquants');
         }
-        return combineLatest([this._userService.getUserById(userId1), this._userService.getUserById(userId2)]).pipe(
-          map(([user1, user2]) => ({ user1, user2 }))
-        );
+        return combineLatest([
+          this._userService.getUserById(userId1),
+          this._userService.getUserById(userId2),
+        ]).pipe(map(([user1, user2]) => ({ user1, user2 })));
       })
     );
   }

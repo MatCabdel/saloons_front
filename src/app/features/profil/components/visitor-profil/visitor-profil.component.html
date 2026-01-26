@@ -1,55 +1,91 @@
 <div class="visitor-profil-container">
   @if (data$ | async; as data) {
-    <div class="profile-card">
-      <div class="img-section">
-        <img [src]="data.user.imgUrl" alt="profil" />
-        <button class="back-button" type="button" (click)="goBack()" aria-label="Retour">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
+  <div class="profile-card">
+    <div class="img-section">
+      <img [src]="data.user.imgUrl" alt="profil" />
+      <button class="back-button" type="button" (click)="goBack()" aria-label="Retour">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+      </button>
+      @if (data.user.id !== myId) {
+      <button class="options-button" type="button" (click)="toggleMenu()" aria-label="Options">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="1" />
+          <circle cx="19" cy="12" r="1" />
+          <circle cx="5" cy="12" r="1" />
+        </svg>
+      </button>
+      @if (isMenuOpen()) {
+      <div class="dropdown-menu">
+        <button
+          type="button"
+          class="menu-item report"
+          (click)="openReportModal(data.user, data.saloonId)"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+            />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
           </svg>
+          Signaler
         </button>
-        @if (data.user.id !== myId) {
-          <button class="options-button" type="button" (click)="toggleMenu()" aria-label="Options">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="1" />
-              <circle cx="19" cy="12" r="1" />
-              <circle cx="5" cy="12" r="1" />
-            </svg>
-          </button>
-          @if (isMenuOpen()) {
-            <div class="dropdown-menu">
-              <button type="button" class="menu-item report" (click)="openReportModal(data.user, data.saloonId)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                  <line x1="12" y1="9" x2="12" y2="13" />
-                  <line x1="12" y1="17" x2="12.01" y2="17" />
-                </svg>
-                Signaler
-              </button>
-            </div>
-          }
-        }
       </div>
-      <div class="info-section">
-        <div class="header-row">
-          <h1>{{ data.user.userName }}, {{ data.user.age }}</h1>
-          <span class="city-tag">{{ data.user.city }}</span>
-        </div>
-        <div class="about-section">
-          <h2>À propos</h2>
-          <p>{{ data.user.description || 'Aucune description.' }}</p>
-        </div>
-        @if (data.user.id !== myId) {
-          <button class="action-button" [class.wink]="!winkSent" [class.wink-sent]="winkSent" type="button" (click)="wink()" [disabled]="winkSent">
-            {{ winkSent ? "Clin d'œil envoyé !" : "Envoyer un clin d'œil" }}
-          </button>
-        }
-      </div>
+      } }
     </div>
+    <div class="info-section">
+      <div class="header-row">
+        <h1>{{ data.user.userName }}, {{ data.user.age }}</h1>
+        <span class="city-tag">{{ data.user.city }}</span>
+      </div>
+      <div class="about-section">
+        <h2>À propos</h2>
+        <p>{{ data.user.description || 'Aucune description.' }}</p>
+      </div>
+      @if (data.user.id !== myId) {
+      <button
+        class="action-button"
+        [class.wink]="!winkSent"
+        [class.wink-sent]="winkSent"
+        type="button"
+        (click)="wink()"
+        [disabled]="winkSent"
+      >
+        {{ winkSent ? "Clin d'œil envoyé !" : "Envoyer un clin d'œil" }}
+      </button>
+      }
+    </div>
+  </div>
 
-    <!-- Modal de signalement -->
-    @if (showReportModal() && reportModalData()) {
-      <app-report-modal [data]="reportModalData()!" (closed)="closeReportModal()" (reported)="onReported()"></app-report-modal>
-    }
-  }
+  <!-- Modal de signalement -->
+  @if (showReportModal() && reportModalData()) {
+  <app-report-modal
+    [data]="reportModalData()!"
+    (closed)="closeReportModal()"
+    (reported)="onReported()"
+  ></app-report-modal>
+  } }
 </div>

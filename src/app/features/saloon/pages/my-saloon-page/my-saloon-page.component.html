@@ -1,47 +1,69 @@
 <div class="my-saloon-container">
   @if (showModal) {
-    <div class="modal-backdrop" tabindex="0" (click)="closeModal()" (keydown.enter)="closeModal()">
-      <div class="modal-content" tabindex="0" (click)="$event.stopPropagation()" (keydown)="stopPropagation($event)">
-        <h2>Bienvenue !</h2>
-        @if (saloon$ | async; as saloon) {
-          <p class="saloon-name">{{ saloon.name }}</p>
-          <p class="info-text">Vous serez connecté pour une durée maximale de <strong>3 heures</strong></p>
-        }
-        <button class="modal-btn" type="button" (click)="closeModal()">C'est parti !</button>
-      </div>
+  <div class="modal-backdrop" tabindex="0" (click)="closeModal()" (keydown.enter)="closeModal()">
+    <div
+      class="modal-content"
+      tabindex="0"
+      (click)="$event.stopPropagation()"
+      (keydown)="stopPropagation($event)"
+    >
+      <h2>Bienvenue !</h2>
+      @if (saloon$ | async; as saloon) {
+      <p class="saloon-name">{{ saloon.name }}</p>
+      <p class="info-text">
+        Vous serez connecté pour une durée maximale de <strong>3 heures</strong>
+      </p>
+      }
+      <button class="modal-btn" type="button" (click)="closeModal()">C'est parti !</button>
     </div>
+  </div>
   }
   <app-header></app-header>
   <div class="profils-container">
-    @if (saloon$ | async; as saloon) {
-      @if (users$ | async; as users) {
-        @if (users.length === 0) {
-          <h1>Vous êtes le premier connecté dans le saloon !</h1>
-        } @else if (users.length === 1) {
-          <h1>1 visiteur est actuellement connecté dans le saloon</h1>
-        } @else {
-          <h1>{{ users.length }} visiteurs sont actuellement connectés dans le saloon</h1>
-        }
-      }
+    @if (saloon$ | async; as saloon) { @if (users$ | async; as users) { @if (users.length === 0) {
+    <h1>Vous êtes le premier connecté dans le saloon !</h1>
+    } @else if (users.length === 1) {
+    <h1>1 visiteur est actuellement connecté dans le saloon</h1>
+    } @else {
+    <h1>{{ users.length }} visiteurs sont actuellement connectés dans le saloon</h1>
+    } }
 
-      <!-- Bouton tchat du saloon -->
-      <button type="button" class="chat-btn" (click)="openSaloonChat()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-        </svg>
-        <span>Tchat du Saloon</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow">
-          <path d="M9 18l6-6-6-6"></path>
-        </svg>
-      </button>
+    <!-- Bouton tchat du saloon -->
+    <button type="button" class="chat-btn" (click)="openSaloonChat()">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <span>Tchat du Saloon</span>
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        class="arrow"
+      >
+        <path d="M9 18l6-6-6-6"></path>
+      </svg>
+    </button>
 
-      <div class="list-visitor">
-        @for (user of users$ | async; track user.id) {
-          <div class="visitor-card-container">
-            <app-visitor-card [user]="user" (cardClick)="goToVisitorProfil($event, saloon.id)"></app-visitor-card>
-          </div>
-        }
+    <div class="list-visitor">
+      @for (user of users$ | async; track user.id) {
+      <div class="visitor-card-container">
+        <app-visitor-card
+          [user]="user"
+          (cardClick)="goToVisitorProfil($event, saloon.id)"
+        ></app-visitor-card>
       </div>
+      }
+    </div>
     }
     <!-- Bouton quitter en bas du container blanc -->
     <app-countdown-timer></app-countdown-timer>

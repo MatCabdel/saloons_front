@@ -71,7 +71,9 @@ export class ListMatchComponent implements OnInit, OnChanges {
 
     // Vérifier si une conversation existe déjà
     this._conversationService.getUserConversations().subscribe(conversations => {
-      const conv = conversations.payload.find(c => c.participants.some((p: any) => p.id === user.id));
+      const conv = conversations.payload.find(c =>
+        c.participants.some((p: any) => p.id === user.id)
+      );
       if (conv) {
         // Conversation existe → naviguer vers elle
         this._router.navigate(['/messages', conv.id]);

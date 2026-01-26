@@ -103,7 +103,8 @@ export class MapComponent implements OnInit, OnDestroy {
       zoom: 14,
     });
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.map);
   }
 
@@ -116,7 +117,9 @@ export class MapComponent implements OnInit, OnDestroy {
       // Ne pas ajouter si pas de coordonnées
       if (!saloon.latitude || !saloon.longitude) return;
 
-      const marker = L.marker([saloon.latitude, saloon.longitude], { icon: this._customIcon }).addTo(this.map);
+      const marker = L.marker([saloon.latitude, saloon.longitude], {
+        icon: this._customIcon,
+      }).addTo(this.map);
 
       // Au clic sur le marker, ouvrir le modal avec le saloon actualisé
       marker.on('click', () => {
@@ -162,7 +165,9 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
     // Ajouter le nouveau marqueur
-    this._userMarker = L.marker([this.userLat, this.userLng], { icon: this._userIcon }).addTo(this.map);
+    this._userMarker = L.marker([this.userLat, this.userLng], { icon: this._userIcon }).addTo(
+      this.map
+    );
   }
 
   /**
@@ -182,7 +187,9 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this._saloonsData = this._saloonsData.map(saloon => ({
       ...saloon,
-      distanceMeters: Math.round(this._calculateDistance(this.userLat!, this.userLng!, saloon.latitude, saloon.longitude)),
+      distanceMeters: Math.round(
+        this._calculateDistance(this.userLat!, this.userLng!, saloon.latitude, saloon.longitude)
+      ),
     }));
   }
 
@@ -191,7 +198,11 @@ export class MapComponent implements OnInit, OnDestroy {
     const dLat = this._toRad(lat2 - lat1);
     const dLng = this._toRad(lng2 - lng1);
     const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(this._toRad(lat1)) * Math.cos(this._toRad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this._toRad(lat1)) *
+        Math.cos(this._toRad(lat2)) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
@@ -203,7 +214,9 @@ export class MapComponent implements OnInit, OnDestroy {
   private _openModal(saloon: SaloonMapItem): void {
     // Recalculer la distance pour ce saloon spécifique
     if (this.userLat !== null && this.userLng !== null) {
-      saloon.distanceMeters = Math.round(this._calculateDistance(this.userLat, this.userLng, saloon.latitude, saloon.longitude));
+      saloon.distanceMeters = Math.round(
+        this._calculateDistance(this.userLat, this.userLng, saloon.latitude, saloon.longitude)
+      );
     }
     this.selectedSaloon = saloon;
     this.showModal = true;

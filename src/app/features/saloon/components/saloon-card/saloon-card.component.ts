@@ -1,4 +1,12 @@
-import { Component, inject, Input, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  OnInit,
+  OnDestroy,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { Saloon } from '../../models/saloonModel';
 import { CommonModule } from '@angular/common';
 import { PresenceService } from '../../services/presence.service';

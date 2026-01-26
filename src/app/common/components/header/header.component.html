@@ -1,59 +1,91 @@
 <header class="header-container">
   <!-- Bouton retour ou spacer -->
   @if (showBackButton()) {
-    <button type="button" class="back-btn" (click)="goBack()" aria-label="Retour">
-      <span>‹</span>
-    </button>
+  <button type="button" class="back-btn" (click)="goBack()" aria-label="Retour">
+    <span>‹</span>
+  </button>
   } @else {
-    <div class="header-spacer"></div>
+  <div class="header-spacer"></div>
   }
 
   <!-- Logo centré -->
-  <h1 (click)="navigateToWelcome()" class="clickable" (keydown.enter)="navigateToWelcome()" (keydown.space)="navigateToWelcome()" tabindex="0">
+  <h1
+    (click)="navigateToWelcome()"
+    class="clickable"
+    (keydown.enter)="navigateToWelcome()"
+    (keydown.space)="navigateToWelcome()"
+    tabindex="0"
+  >
     SAL<span class="yellow">OO</span>NS
   </h1>
 
   <!-- Menu burger -->
   @if (showMenu()) {
-    <button type="button" class="burger-btn" (click)="toggleMenu()" [class.active]="isMenuOpen()" aria-label="Menu">
-      <span class="burger-line"></span>
-      <span class="burger-line"></span>
-      <span class="burger-line"></span>
-    </button>
+  <button
+    type="button"
+    class="burger-btn"
+    (click)="toggleMenu()"
+    [class.active]="isMenuOpen()"
+    aria-label="Menu"
+  >
+    <span class="burger-line"></span>
+    <span class="burger-line"></span>
+    <span class="burger-line"></span>
+  </button>
   } @else {
-    <div class="header-spacer"></div>
+  <div class="header-spacer"></div>
   }
 </header>
 
 <!-- Menu Panel Overlay -->
 @if (showMenu() && isMenuOpen()) {
-  <div class="menu-overlay" (click)="closeMenu()" (keydown.escape)="closeMenu()" role="button" tabindex="0"></div>
-  <nav class="menu-panel" [@slideIn]>
-    <div class="menu-header">
-      <h2>SAL<span class="yellow">OO</span>NS</h2>
-      <button type="button" class="close-btn" (click)="closeMenu()" aria-label="Fermer">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M18 6L6 18M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
+<div
+  class="menu-overlay"
+  (click)="closeMenu()"
+  (keydown.escape)="closeMenu()"
+  role="button"
+  tabindex="0"
+></div>
+<nav class="menu-panel" [@slideIn]>
+  <div class="menu-header">
+    <h2>SAL<span class="yellow">OO</span>NS</h2>
+    <button type="button" class="close-btn" (click)="closeMenu()" aria-label="Fermer">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M18 6L6 18M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
 
-    <div class="menu-content">
-      @for (item of menuItems; track item.route) {
-        <a class="menu-item" [routerLink]="item.route" (click)="closeMenu()">
-          <img [src]="item.icon" [alt]="item.label" class="menu-icon" />
-          <span>{{ item.label }}</span>
-        </a>
-      }
-    </div>
+  <div class="menu-content">
+    @for (item of menuItems; track item.route) {
+    <a class="menu-item" [routerLink]="item.route" (click)="closeMenu()">
+      <img [src]="item.icon" [alt]="item.label" class="menu-icon" />
+      <span>{{ item.label }}</span>
+    </a>
+    }
+  </div>
 
-    <div class="menu-footer">
-      <button type="button" class="logout-btn" (click)="logout()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
-        </svg>
-        <span>Déconnexion</span>
-      </button>
-    </div>
-  </nav>
+  <div class="menu-footer">
+    <button type="button" class="logout-btn" (click)="logout()">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+      </svg>
+      <span>Déconnexion</span>
+    </button>
+  </div>
+</nav>
 }

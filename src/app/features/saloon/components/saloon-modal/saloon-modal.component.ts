@@ -1,4 +1,14 @@
-import { Component, EventEmitter, inject, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
@@ -50,14 +60,16 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
     });
 
     // S'abonner aux mises à jour temps réel de la présence
-    this._presenceRealtimeService.presenceCounts$.pipe(takeUntil(this._destroy$)).subscribe(counts => {
-      if (this.saloon) {
-        const realtimeCount = counts.get(this.saloon.id);
-        if (realtimeCount !== undefined) {
-          this.realConnectedCount = realtimeCount;
+    this._presenceRealtimeService.presenceCounts$
+      .pipe(takeUntil(this._destroy$))
+      .subscribe(counts => {
+        if (this.saloon) {
+          const realtimeCount = counts.get(this.saloon.id);
+          if (realtimeCount !== undefined) {
+            this.realConnectedCount = realtimeCount;
+          }
         }
-      }
-    });
+      });
 
     // Charger la session active au démarrage
     // prettier-ignore

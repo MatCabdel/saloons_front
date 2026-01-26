@@ -85,7 +85,9 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
     if (!this.conversationId) return;
 
     const conversation$ = this._conversationService.getConversation(this.conversationId);
-    const messages$ = conversation$.pipe(switchMap(() => this._conversationService.getMessages(this.conversationId!)));
+    const messages$ = conversation$.pipe(
+      switchMap(() => this._conversationService.getMessages(this.conversationId!))
+    );
     const webSocketMessages$ = conversation$.pipe(
       tap(() => this._webSocketService.connect(this.conversationId!)),
       switchMap(() => this._webSocketService.getMessages())
@@ -118,7 +120,10 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
 
   private _initMatchMode(matchUserId: number): void {
     // Charger l'utilisateur courant et l'utilisateur matché
-    combineLatest([this._userService.getUserById(this.myId), this._userService.getUserById(matchUserId)])
+    combineLatest([
+      this._userService.getUserById(this.myId),
+      this._userService.getUserById(matchUserId),
+    ])
       .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe(([me, matchedUser]) => {
         this.participants = [me, matchedUser];
@@ -193,7 +198,10 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
     msg.sender = Number(msg.sender);
 
     const messageExists = this.messages.some(
-      m => m.content === msg.content && m.sender === msg.sender && new Date(m.sentAt).getTime() === new Date(msg.sentAt).getTime()
+      m =>
+        m.content === msg.content &&
+        m.sender === msg.sender &&
+        new Date(m.sentAt).getTime() === new Date(msg.sentAt).getTime()
     );
 
     if (!messageExists) {
@@ -233,12 +241,14 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
 
     // En mode match, créer d'abord la conversation
     if (this.isMatchMode && !this.conversationId) {
-      const matchUserId = this.matchUserId || Number(this._route.snapshot.paramMap.get('matchUserId'));
+      const matchUserId =
+        this.matchUserId || Number(this._route.snapshot.paramMap.get('matchUserId'));
       if (!matchUserId) return;
 
       const saloonIdParam = this._route.snapshot.queryParamMap.get('saloonId');
       const activeSession = this._presenceService.getActiveSessionValue();
-      const saloonId = activeSession?.saloonId ?? (saloonIdParam ? Number(saloonIdParam) : undefined);
+      const saloonId =
+        activeSession?.saloonId ?? (saloonIdParam ? Number(saloonIdParam) : undefined);
       this._conversationService.createConversation(matchUserId, saloonId).subscribe({
         next: conv => {
           this.conversationId = conv.id;

@@ -113,7 +113,9 @@ export class OnboardingPageComponent {
 
   private _searchCities(query: string): Observable<GeoCity[]> {
     return this._http.get<GeoCity[]>(
-      `https://geo.api.gouv.fr/communes?nom=${encodeURIComponent(query)}&fields=nom,code,codesPostaux,codeDepartement,departement,region&boost=population&limit=10`
+      `https://geo.api.gouv.fr/communes?nom=${encodeURIComponent(
+        query
+      )}&fields=nom,code,codesPostaux,codeDepartement,departement,region&boost=population&limit=10`
     );
   }
 
@@ -316,10 +318,12 @@ export class OnboardingPageComponent {
       formData.append('image', this._photoFile);
 
       // The upload endpoint returns a UserDTO with the updated imgUrl
-      this._http.post<{ imgUrl: string }>(`${this._BASE_URL}/profile/upload-profile-image`, formData).subscribe({
-        next: response => resolve(response.imgUrl || ''),
-        error: err => reject(err),
-      });
+      this._http
+        .post<{ imgUrl: string }>(`${this._BASE_URL}/profile/upload-profile-image`, formData)
+        .subscribe({
+          next: response => resolve(response.imgUrl || ''),
+          error: err => reject(err),
+        });
     });
   }
 

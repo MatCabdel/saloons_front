@@ -4,11 +4,17 @@ import { MessagerieComponent } from '../../components/messagerie/messagerie.comp
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConversationService } from 'src/app/features/conversation/services/conversation.service';
 import { HeartRequestService } from 'src/app/features/conversation/services/heart-request.service';
-import { ReportModalComponent, ReportModalData } from 'src/app/features/report/components/report-modal/report-modal.component';
+import {
+  ReportModalComponent,
+  ReportModalData,
+} from 'src/app/features/report/components/report-modal/report-modal.component';
 import { User } from 'src/app/features/user/models/user';
 import { UserService } from 'src/app/features/user/services/user.service';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
-import { Conversation, HeartRequestStatus } from 'src/app/features/conversation/models/Conversation';
+import {
+  Conversation,
+  HeartRequestStatus,
+} from 'src/app/features/conversation/models/Conversation';
 import { interval, Subscription } from 'rxjs';
 import { PresenceService } from 'src/app/features/saloon/services/presence.service';
 
@@ -170,7 +176,9 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
       this.heartRequestCountdown.set(
-        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
+          .toString()
+          .padStart(2, '0')}`
       );
     };
 
@@ -179,7 +187,12 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   }
 
   sendHeartRequest(): void {
-    if (!this.userTarget || !this.heartRequestStatus?.canSend || this.heartRequestSending() || !this.conversationId) {
+    if (
+      !this.userTarget ||
+      !this.heartRequestStatus?.canSend ||
+      this.heartRequestSending() ||
+      !this.conversationId
+    ) {
       return;
     }
 

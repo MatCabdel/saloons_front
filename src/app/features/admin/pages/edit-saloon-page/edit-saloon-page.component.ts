@@ -28,10 +28,12 @@ export class EditSaloonPageComponent implements OnInit {
   imagePreview: string | null = null;
   originalImageUrl: string | null = null;
 
-  saloonTypes: { value: SaloonType; label: string }[] = Object.entries(SALOON_TYPE_LABELS).map(([value, label]) => ({
-    value: value as SaloonType,
-    label,
-  }));
+  saloonTypes: { value: SaloonType; label: string }[] = Object.entries(SALOON_TYPE_LABELS).map(
+    ([value, label]) => ({
+      value: value as SaloonType,
+      label,
+    })
+  );
 
   saloonForm: FormGroup = this._fb.group({
     name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],

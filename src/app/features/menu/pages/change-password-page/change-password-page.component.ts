@@ -30,7 +30,13 @@ export class ChangePasswordPageComponent {
   form: FormGroup = this._fb.group(
     {
       currentPassword: ['', [Validators.required]],
-      newPassword: ['', [Validators.required, Validators.minLength(ChangePasswordPageComponent._MIN_PASSWORD_LENGTH)]],
+      newPassword: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(ChangePasswordPageComponent._MIN_PASSWORD_LENGTH),
+        ],
+      ],
       confirmPassword: ['', [Validators.required]],
     },
     { validators: this.passwordMatchValidator }
@@ -87,7 +93,9 @@ export class ChangePasswordPageComponent {
         },
         error: (err: { error?: { message?: string } }) => {
           this.isSubmitting.set(false);
-          this.errorMessage.set(err.error?.message || 'Une erreur est survenue. Vérifie ton mot de passe actuel.');
+          this.errorMessage.set(
+            err.error?.message || 'Une erreur est survenue. Vérifie ton mot de passe actuel.'
+          );
         },
       });
   }

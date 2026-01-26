@@ -1,24 +1,33 @@
 @if (isOpen) {
-  <div class="modal-backdrop" role="button" tabindex="0" (click)="onBackdropClick($event)" (keydown.enter)="onBackdropClick($event)">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Quitter le saloon ?</h2>
-      </div>
+<div
+  class="modal-backdrop"
+  role="button"
+  tabindex="0"
+  (click)="onBackdropClick($event)"
+  (keydown.enter)="onBackdropClick($event)"
+>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Quitter le saloon ?</h2>
+    </div>
 
-      <div class="modal-body">
-        @if (!isPremium) {
-          <p class="warning-text">⚠️ Si tu quittes maintenant, tu ne pourras pas revenir dans un saloon <strong>avant demain</strong>.</p>
-        } @else {
-          <p class="neutral-text">
-            Es-tu sûr de vouloir quitter <strong>{{ saloonName }}</strong> ?
-          </p>
-        }
-      </div>
+    <div class="modal-body">
+      @if (!isPremium) {
+      <p class="warning-text">
+        ⚠️ Si tu quittes maintenant, tu ne pourras pas revenir dans un saloon
+        <strong>avant demain</strong>.
+      </p>
+      } @else {
+      <p class="neutral-text">
+        Es-tu sûr de vouloir quitter <strong>{{ saloonName }}</strong> ?
+      </p>
+      }
+    </div>
 
-      <div class="modal-actions">
-        <button type="button" class="btn-stay" (click)="onCancel()">Rester</button>
-        <button type="button" class="btn-leave" (click)="onConfirm()">Quitter</button>
-      </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-stay" (click)="onCancel()">Rester</button>
+      <button type="button" class="btn-leave" (click)="onConfirm()">Quitter</button>
     </div>
   </div>
+</div>
 }
