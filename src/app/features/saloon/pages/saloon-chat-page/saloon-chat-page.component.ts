@@ -13,9 +13,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent } from 'src/app/common/components/header/header.component';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { SaloonApiService } from '../../services/saloon-api.service';
-import { SaloonChatService, SaloonMessageDTO } from '../../services/saloon-chat.service';
+import { SaloonChatService, SaloonMessageDTO, CHAT_MIN_PARTICIPANTS } from '../../services/saloon-chat.service';
 import { Observable, Subscription } from 'rxjs';
 import { Saloon } from '../../models/saloonModel';
+import { PresenceService } from '../../services/presence.service';
+import { PresenceWebSocketService } from '../../services/presence-websocket.service';
 
 @Component({
   selector: 'app-saloon-chat-page',
@@ -32,6 +34,8 @@ export class SaloonChatPageComponent implements OnInit, OnDestroy, AfterViewChec
   private _userStore = inject(UserStoreService);
   private _saloonApi = inject(SaloonApiService);
   private _chatService = inject(SaloonChatService);
+  private _presenceService = inject(PresenceService);
+  private _presenceWsService = inject(PresenceWebSocketService);
 
   saloonId!: number;
   saloon$!: Observable<Saloon>;
@@ -46,7 +50,7 @@ export class SaloonChatPageComponent implements OnInit, OnDestroy, AfterViewChec
 
   private _shouldScroll = false;
   private _messageSubscription?: Subscription;
-  private _presenceSubscription?: Subscription;
+  private _saloonPresenceSubscription?: Subscription;
 
   /**
    * Nombre d'autres connectés (sans me compter)
@@ -74,7 +78,7 @@ export class SaloonChatPageComponent implements OnInit, OnDestroy, AfterViewChec
         this.joinedAt = new Date(history.joinedAt);
         this.sessionEndsAt = new Date(history.sessionEndsAt);
         this.connectedCount = history.connectedCount;
-        this.isChatEnabled = history.chatEnabled;
+        this.isChatEnabled = this.connectedCount >= CHAT_MIN_PARTICIPANTS;
 
         // Mettre à jour le service avec les infos de session
         this._chatService.setJoinedAt(history.joinedAt, history.sessionEndsAt);
@@ -91,11 +95,13 @@ export class SaloonChatPageComponent implements OnInit, OnDestroy, AfterViewChec
     // Se connecter au WebSocket (pour les messages en temps réel + présence)
     this._chatService.connectToSaloonChat(this.saloonId);
 
-    // S'abonner à la présence (nombre de connectés)
-    this._presenceSubscription = this._chatService.presence$.subscribe(presence => {
+    // Présence du saloon (nombre de connectés dans le saloon, pas seulement dans le chat)
+    this._presenceService.getPresence(this.saloonId).subscribe();
+    this._presenceWsService.connect(this.saloonId);
+    this._saloonPresenceSubscription = this._presenceService.currentPresence$.subscribe(presence => {
       if (presence) {
         this.connectedCount = presence.connectedCount;
-        this.isChatEnabled = presence.chatEnabled;
+        this.isChatEnabled = this.connectedCount >= CHAT_MIN_PARTICIPANTS;
       }
     });
 
@@ -118,8 +124,9 @@ export class SaloonChatPageComponent implements OnInit, OnDestroy, AfterViewChec
 
   ngOnDestroy(): void {
     this._messageSubscription?.unsubscribe();
-    this._presenceSubscription?.unsubscribe();
+    this._saloonPresenceSubscription?.unsubscribe();
     this._chatService.disconnect();
+    this._presenceWsService.disconnect();
   }
 
   sendMessage(): void {
