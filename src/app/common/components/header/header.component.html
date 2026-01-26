@@ -14,15 +14,19 @@
   </h1>
 
   <!-- Menu burger -->
-  <button type="button" class="burger-btn" (click)="toggleMenu()" [class.active]="isMenuOpen()" aria-label="Menu">
-    <span class="burger-line"></span>
-    <span class="burger-line"></span>
-    <span class="burger-line"></span>
-  </button>
+  @if (showMenu()) {
+    <button type="button" class="burger-btn" (click)="toggleMenu()" [class.active]="isMenuOpen()" aria-label="Menu">
+      <span class="burger-line"></span>
+      <span class="burger-line"></span>
+      <span class="burger-line"></span>
+    </button>
+  } @else {
+    <div class="header-spacer"></div>
+  }
 </header>
 
 <!-- Menu Panel Overlay -->
-@if (isMenuOpen()) {
+@if (showMenu() && isMenuOpen()) {
   <div class="menu-overlay" (click)="closeMenu()" (keydown.escape)="closeMenu()" role="button" tabindex="0"></div>
   <nav class="menu-panel" [@slideIn]>
     <div class="menu-header">

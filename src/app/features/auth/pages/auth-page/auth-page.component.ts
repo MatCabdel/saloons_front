@@ -66,6 +66,10 @@ export class AuthPageComponent implements OnInit {
     this.errorMessage.set(null);
   }
 
+  goToForgotPassword(): void {
+    this._router.navigate(['/mot-de-passe-oublie']);
+  }
+
   backToRegister(): void {
     this.mode.set('register');
     this.errorMessage.set(null);

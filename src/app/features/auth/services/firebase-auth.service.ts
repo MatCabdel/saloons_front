@@ -166,6 +166,14 @@ export class FirebaseAuthService {
     );
   }
 
+  requestPasswordReset(email: string): Observable<void> {
+    return this._http.post<void>(`${this._BASE_URL}/auth/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<void> {
+    return this._http.post<void>(`${this._BASE_URL}/auth/reset-password`, { token, newPassword });
+  }
+
   /**
    * Send Firebase token to backend for authentication
    */

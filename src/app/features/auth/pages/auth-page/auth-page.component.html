@@ -182,6 +182,9 @@
                 <span class="error-text">{{ getFieldError(loginForm, 'password') }}</span>
               }
             </div>
+            <div class="forgot-password">
+              <button type="button" class="link-btn" (click)="goToForgotPassword()">Mot de passe oublié ?</button>
+            </div>
 
             <button type="submit" class="submit-btn" [disabled]="isLoading()">
               @if (isLoading()) {

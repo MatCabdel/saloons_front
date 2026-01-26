@@ -23,6 +23,7 @@ export class HeaderComponent {
 
   showBackButton = input(false);
   backRoute = input<string>('');
+  showMenu = input(true);
 
   isMenuOpen = signal(false);
 

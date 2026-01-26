@@ -31,12 +31,14 @@ import { DeleteAccountPageComponent } from './features/menu/pages/delete-account
 import { SaloonDemandePageComponent } from './features/menu/pages/saloon-demande-page/saloon-demande-page.component';
 import { FaqPageComponent } from './features/menu/pages/faq-page/faq-page.component';
 import { ContactPageComponent } from './features/menu/pages/contact-page/contact-page.component';
+import { ForgotPasswordPageComponent } from './features/auth/pages/forgot-password-page/forgot-password-page.component';
 
 export const routes: Routes = [
   // Page d'accueil = inscription
   { path: '', component: AuthPageComponent, canActivate: [authGuard] },
   // Page de connexion
   { path: 'login', component: AuthPageComponent, canActivate: [authGuard] },
+  { path: 'mot-de-passe-oublie', component: ForgotPasswordPageComponent, canActivate: [authGuard] },
   // Onboarding après inscription
   { path: 'onboarding', component: OnboardingPageComponent, canActivate: [onboardingGuard] },
   {

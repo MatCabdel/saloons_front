@@ -397,6 +397,27 @@ $white: #fff;
   }
 }
 
+.forgot-password {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -0.25rem;
+
+  .link-btn {
+    background: none;
+    border: none;
+    color: $primary-color;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 // ==================== SUBMIT BUTTON ====================
 .submit-btn {
   display: flex;
