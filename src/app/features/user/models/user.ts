@@ -16,4 +16,5 @@ export type User = {
   isPremium?: boolean;
   profileStatus?: string;
   authProvider?: string;
+  lastLoginAt?: string;
 };

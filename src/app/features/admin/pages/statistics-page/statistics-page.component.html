@@ -5,129 +5,175 @@
   </header>
 
   @if (isLoading) {
-    <div class="loading">
-      <div class="spinner"></div>
-      <p>Chargement des statistiques...</p>
-    </div>
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Chargement des statistiques...</p>
+  </div>
   } @else if (error) {
-    <div class="error-message">
-      <p>{{ error }}</p>
-      <button type="button" (click)="loadStats()">Réessayer</button>
-    </div>
+  <div class="error-message">
+    <p>{{ error }}</p>
+    <button type="button" (click)="loadStats()">Réessayer</button>
+  </div>
   } @else if (stats) {
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon users">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-          </svg>
-        </div>
-        <div class="stat-content">
-          <span class="stat-value">{{ stats.totalUsers }}</span>
-          <span class="stat-label">Utilisateurs inscrits</span>
-        </div>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon users">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
       </div>
-
-      <div class="stat-card">
-        <div class="stat-icon active">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-          </svg>
-        </div>
-        <div class="stat-content">
-          <span class="stat-value">{{ stats.activeUsers }}</span>
-          <span class="stat-label">Utilisateurs actifs (3 sem.)</span>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon premium">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-          </svg>
-        </div>
-        <div class="stat-content">
-          <span class="stat-value">{{ stats.premiumUsers }}</span>
-          <span class="stat-label">Utilisateurs premium</span>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon saloons">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-            <polyline points="9 22 9 12 15 12 15 22" />
-          </svg>
-        </div>
-        <div class="stat-content">
-          <span class="stat-value">{{ stats.totalSaloons }}</span>
-          <span class="stat-label">Saloons créés</span>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon connected">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10" />
-            <circle cx="12" cy="12" r="3" />
-            <path d="M12 2v4" />
-            <path d="M12 18v4" />
-            <path d="M4.93 4.93l2.83 2.83" />
-            <path d="M16.24 16.24l2.83 2.83" />
-            <path d="M2 12h4" />
-            <path d="M18 12h4" />
-            <path d="M4.93 19.07l2.83-2.83" />
-            <path d="M16.24 7.76l2.83-2.83" />
-          </svg>
-        </div>
-        <div class="stat-content">
-          <span class="stat-value">{{ stats.connectedUsers }}</span>
-          <span class="stat-label">En ligne maintenant</span>
-        </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.totalUsers }}</span>
+        <span class="stat-label">Utilisateurs inscrits</span>
       </div>
     </div>
 
-    <section class="premium-evolution">
-      <h2>Évolution des abonnements Premium</h2>
-      @if (premiumEvolutionLoading) {
-        <div class="chart-loading">
-          <div class="spinner"></div>
-        </div>
-      } @else if (premiumEvolution.length > 0) {
-        <div class="chart-container">
-          <div class="chart">
-            @for (month of premiumEvolution; track month.month + '-' + month.year) {
-              <div class="chart-bar-container">
-                <div class="chart-bar" [style.height.%]="getBarHeight(month.activeSubscriptions)" [class.current]="isCurrentMonth(month)">
-                  <span class="bar-value">{{ month.activeSubscriptions }}</span>
-                </div>
-                <span class="bar-label">{{ month.monthName }}</span>
-              </div>
-            }
-          </div>
-        </div>
-      } @else {
-        <p class="no-data">Aucune donnée disponible</p>
-      }
-    </section>
+    <div class="stat-card">
+      <div class="stat-icon active">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.activeUsers }}</span>
+        <span class="stat-label">Utilisateurs actifs (3 sem.)</span>
+      </div>
+    </div>
 
-    <section class="city-stats">
-      <h2>Saloons par ville</h2>
-      @if (getCityEntries().length === 0) {
-        <p class="no-data">Aucune donnée disponible</p>
-      } @else {
-        <div class="city-grid">
-          @for (entry of getCityEntries(); track entry.city) {
-            <div class="city-card">
-              <span class="city-name">{{ entry.city }}</span>
-              <span class="city-count">{{ entry.count }}</span>
-            </div>
-          }
+    <div class="stat-card">
+      <div class="stat-icon premium">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+          />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.premiumUsers }}</span>
+        <span class="stat-label">Utilisateurs premium</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon saloons">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.totalSaloons }}</span>
+        <span class="stat-label">Saloons créés</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon connected">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <circle cx="12" cy="12" r="3" />
+          <path d="M12 2v4" />
+          <path d="M12 18v4" />
+          <path d="M4.93 4.93l2.83 2.83" />
+          <path d="M16.24 16.24l2.83 2.83" />
+          <path d="M2 12h4" />
+          <path d="M18 12h4" />
+          <path d="M4.93 19.07l2.83-2.83" />
+          <path d="M16.24 7.76l2.83-2.83" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.connectedUsers }}</span>
+        <span class="stat-label">En ligne maintenant</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="premium-evolution">
+    <h2>Évolution des abonnements Premium</h2>
+    @if (premiumEvolutionLoading) {
+    <div class="chart-loading">
+      <div class="spinner"></div>
+    </div>
+    } @else if (premiumEvolution.length > 0) {
+    <div class="chart-container">
+      <div class="chart">
+        @for (month of premiumEvolution; track month.month + '-' + month.year) {
+        <div class="chart-bar-container">
+          <div
+            class="chart-bar"
+            [style.height.%]="getBarHeight(month.activeSubscriptions)"
+            [class.current]="isCurrentMonth(month)"
+          >
+            <span class="bar-value">{{ month.activeSubscriptions }}</span>
+          </div>
+          <span class="bar-label">{{ month.monthName }}</span>
         </div>
+        }
+      </div>
+    </div>
+    } @else {
+    <p class="no-data">Aucune donnée disponible</p>
+    }
+  </section>
+
+  <section class="city-stats">
+    <h2>Saloons par ville</h2>
+    @if (getCityEntries().length === 0) {
+    <p class="no-data">Aucune donnée disponible</p>
+    } @else {
+    <div class="city-grid">
+      @for (entry of getCityEntries(); track entry.city) {
+      <div class="city-card">
+        <span class="city-name">{{ entry.city }}</span>
+        <span class="city-count">{{ entry.count }}</span>
+      </div>
       }
-    </section>
+    </div>
+    }
+  </section>
   }
 </div>

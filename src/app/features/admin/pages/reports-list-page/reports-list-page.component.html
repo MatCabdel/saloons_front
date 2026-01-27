@@ -1,0 +1,315 @@
+<div class="reports-list-page">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Signalements</h1>
+      <p class="subtitle">Gérez les signalements des utilisateurs</p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="list-filters">
+    <div class="filter-tabs">
+      @for (option of filterOptions; track option.value) {
+      <button
+        type="button"
+        class="filter-tab"
+        [class.active]="filterOption() === option.value"
+        (click)="onFilterChange(option.value)"
+      >
+        {{ option.label }}
+        @if (option.value === 'PENDING' && pendingCount() > 0) {
+        <span class="badge">{{ pendingCount() }}</span>
+        }
+      </button>
+      }
+    </div>
+  </div>
+
+  @if (loading()) {
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Chargement des signalements...</p>
+  </div>
+  } @else if (error()) {
+  <div class="error-message">
+    <p>{{ error() }}</p>
+    <button type="button" (click)="loadReports()">Réessayer</button>
+  </div>
+  } @else if (reports().length === 0) {
+  <div class="empty-state">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="64"
+      height="64"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+    >
+      <path
+        d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+      />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+    <h3>Aucun signalement</h3>
+    <p>Il n'y a pas de signalement pour le moment</p>
+  </div>
+  } @else {
+  <!-- Reports List -->
+  <div class="reports-list">
+    @for (report of reports(); track report.id) {
+    <div
+      class="report-card"
+      (click)="viewDetail(report)"
+      (keyup.enter)="viewDetail(report)"
+      tabindex="0"
+      role="button"
+    >
+      <div class="report-header">
+        <div class="users-info">
+          <div class="user-avatar reporter">
+            <img
+              [src]="report.reporter.imgUrl || 'assets/default-avatar.png'"
+              [alt]="report.reporter.userName"
+            />
+          </div>
+          <div class="arrow-icon">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </div>
+          <div class="user-avatar reported">
+            <img
+              [src]="report.reported.imgUrl || 'assets/default-avatar.png'"
+              [alt]="report.reported.userName"
+            />
+          </div>
+        </div>
+        <span class="status-badge" [ngClass]="getStatusClass(report.status)">
+          {{ statusLabels[report.status] }}
+        </span>
+      </div>
+
+      <div class="report-body">
+        <div class="report-users">
+          <span class="reporter-name">{{ report.reporter.userName }}</span>
+          <span class="action-text">a signalé</span>
+          <span class="reported-name">{{ report.reported.userName }}</span>
+        </div>
+        <div class="report-reason">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+            />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+          {{ report.reasonDisplayName }}
+        </div>
+        @if (report.saloon) {
+        <div class="report-saloon">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          {{ report.saloon.name }} - {{ report.saloon.city }}
+        </div>
+        }
+      </div>
+
+      <div class="report-footer">
+        <span class="report-date">{{ formatDate(report.createdAt) }}</span>
+        <button
+          type="button"
+          class="btn-view"
+          (click)="viewDetail(report); $event.stopPropagation()"
+        >
+          Voir détails
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+  }
+</div>
+
+<!-- Detail Modal -->
+@if (showDetailModal() && selectedReport()) {
+<div
+  class="modal-overlay"
+  (click)="closeDetailModal()"
+  (keyup.escape)="closeDetailModal()"
+  tabindex="0"
+  role="dialog"
+>
+  <div
+    class="modal-content"
+    (click)="$event.stopPropagation()"
+    (keyup.enter)="$event.stopPropagation()"
+    role="document"
+  >
+    <div class="modal-header">
+      <h2>Détail du signalement</h2>
+      <button type="button" class="close-btn" (click)="closeDetailModal()">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Users Section -->
+      <div class="detail-section">
+        <h3>Utilisateurs impliqués</h3>
+        <div class="users-comparison">
+          <div class="user-card">
+            <img
+              [src]="selectedReport()!.reporter.imgUrl || 'assets/default-avatar.png'"
+              [alt]="selectedReport()!.reporter.userName"
+            />
+            <span class="user-name">{{ selectedReport()!.reporter.userName }}</span>
+            <span class="user-role reporter">Signaleur</span>
+            <span class="user-city">{{
+              selectedReport()!.reporter.city || 'Ville non renseignée'
+            }}</span>
+          </div>
+          <div class="vs-separator">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </div>
+          <div class="user-card">
+            <img
+              [src]="selectedReport()!.reported.imgUrl || 'assets/default-avatar.png'"
+              [alt]="selectedReport()!.reported.userName"
+            />
+            <span class="user-name">{{ selectedReport()!.reported.userName }}</span>
+            <span class="user-role reported">Signalé</span>
+            <span class="user-city">{{
+              selectedReport()!.reported.city || 'Ville non renseignée'
+            }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Report Info -->
+      <div class="detail-section">
+        <h3>Informations du signalement</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Raison</span>
+            <span class="info-value reason">{{ selectedReport()!.reasonDisplayName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Date</span>
+            <span class="info-value">{{ formatDate(selectedReport()!.createdAt) }}</span>
+          </div>
+          @if (selectedReport()!.saloon) {
+          <div class="info-item">
+            <span class="info-label">Saloon</span>
+            <span class="info-value"
+              >{{ selectedReport()!.saloon!.name }} ({{ selectedReport()!.saloon!.city }})</span
+            >
+          </div>
+          }
+          <div class="info-item">
+            <span class="info-label">Statut</span>
+            <span
+              class="info-value"
+              [ngClass]="['status-badge', getStatusClass(selectedReport()!.status)]"
+            >
+              {{ statusLabels[selectedReport()!.status] }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      @if (selectedReport()!.description) {
+      <div class="detail-section">
+        <h3>Description</h3>
+        <p class="description-text">{{ selectedReport()!.description }}</p>
+      </div>
+      }
+
+      <!-- Status Update -->
+      <div class="detail-section">
+        <h3>Mettre à jour le statut</h3>
+        <div class="status-actions">
+          <button
+            type="button"
+            class="status-btn reviewed"
+            [disabled]="updatingStatus() || selectedReport()!.status === ReportStatus.REVIEWED"
+            (click)="updateStatus(selectedReport()!, ReportStatus.REVIEWED)"
+          >
+            Marquer examiné
+          </button>
+          <button
+            type="button"
+            class="status-btn resolved"
+            [disabled]="updatingStatus() || selectedReport()!.status === ReportStatus.RESOLVED"
+            (click)="updateStatus(selectedReport()!, ReportStatus.RESOLVED)"
+          >
+            Résoudre
+          </button>
+          <button
+            type="button"
+            class="status-btn dismissed"
+            [disabled]="updatingStatus() || selectedReport()!.status === ReportStatus.DISMISSED"
+            (click)="updateStatus(selectedReport()!, ReportStatus.DISMISSED)"
+          >
+            Rejeter
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}

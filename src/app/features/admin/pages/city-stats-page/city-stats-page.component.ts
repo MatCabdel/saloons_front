@@ -40,7 +40,10 @@ export class CityStatsPageComponent implements OnInit {
   getCityEntries(): { city: string; totalUsers: number; connectedUsers: number }[] {
     if (!this.stats) return [];
 
-    const cities = new Set([...Object.keys(this.stats.usersByCity || {}), ...Object.keys(this.stats.connectedUsersByCity || {})]);
+    const cities = new Set([
+      ...Object.keys(this.stats.usersByCity || {}),
+      ...Object.keys(this.stats.connectedUsersByCity || {}),
+    ]);
 
     return Array.from(cities)
       .map(city => ({

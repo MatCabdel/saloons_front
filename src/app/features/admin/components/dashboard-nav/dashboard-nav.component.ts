@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, signal, HostListener, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthApiService } from 'src/app/features/auth/services/auth-api.service';
 
 type MenuItem = {
   label: string;
@@ -17,6 +18,8 @@ type MenuItem = {
   styleUrl: './dashboard-nav.component.scss',
 })
 export class DashboardNavComponent {
+  isOpen = signal(false);
+
   menuItems: MenuItem[] = [
     {
       label: 'Général',
@@ -43,7 +46,15 @@ export class DashboardNavComponent {
         { label: 'Liste des saloons', route: 'saloons-list' },
       ],
     },
+    {
+      label: 'Notifications',
+      icon: 'bell',
+      expanded: false,
+      children: [{ label: 'Signalements', route: 'reports-list' }],
+    },
   ];
+
+  private _authService = inject(AuthApiService);
 
   constructor(private _router: Router) {}
 
@@ -51,11 +62,31 @@ export class DashboardNavComponent {
     item.expanded = !item.expanded;
   }
 
+  toggleNav(): void {
+    this.isOpen.update(v => !v);
+  }
+
+  closeNav(): void {
+    this.isOpen.set(false);
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    if (window.innerWidth > 768) {
+      this.isOpen.set(false);
+    }
+  }
+
   navigate(route: string): void {
     this._router.navigate(['dashboard', route]);
+    this.closeNav();
   }
 
   isActive(route: string): boolean {
     return this._router.url.includes(route);
+  }
+
+  logout(): void {
+    this._authService.logout();
   }
 }

@@ -25,8 +25,8 @@ export class ConversationService {
     return this._http.get<Conversation[]>(`${this._apiUrl}/${conversationId}/messages`);
   }
 
-  createConversation(participantId: number): Observable<Conversation> {
-    return this._http.post<Conversation>(`${this._apiUrl}`, participantId);
+  createConversation(participantId: number, saloonId?: number): Observable<Conversation> {
+    return this._http.post<Conversation>(`${this._apiUrl}`, { participantId, saloonId });
   }
 
   deleteConversation(conversationId: number): Observable<void> {

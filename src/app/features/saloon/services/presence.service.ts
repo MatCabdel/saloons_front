@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { SaloonType } from '../models/saloonModel';
 
 // Types
 export type UserPresence = {
@@ -60,6 +61,7 @@ export type SaloonMapItem = {
   radiusMeters: number;
   distanceMeters: number | null;
   connectedCount: number;
+  type?: SaloonType;
 };
 
 export type PresenceEvent = {
@@ -101,6 +103,10 @@ export class PresenceService {
   private _sessionExpired$ = new Subject<void>();
   public sessionExpired$ = this._sessionExpired$.asObservable();
 
+  // Event émis quand la sortie est confirmée (après délai d'annulation)
+  private _leaveConfirmed$ = new Subject<void>();
+  public leaveConfirmed$ = this._leaveConfirmed$.asObservable();
+
   private _timerInterval: ReturnType<typeof setInterval> | null = null;
 
   /**
@@ -108,45 +114,52 @@ export class PresenceService {
    */
   joinSaloon(saloonId: number, lat: number | null, lng: number | null): Observable<JoinResponse> {
     const body: JoinRequest = { lat, lng };
-    return this._http.post<JoinResponse>(`${this._BASE_URL_API}/api/saloons/${saloonId}/join`, body).pipe(
-      tap(response => {
-        const session: ActiveSession = {
-          userId: 0, // Sera mis à jour
-          saloonId: response.saloonId,
-          saloonName: response.saloonName,
-          joinedAt: response.joinedAt,
-          endsAt: response.endsAt,
-          remainingSeconds: response.remainingSeconds,
-          active: true,
-        };
-        this._activeSession$.next(session);
-        this._startTimer(response.remainingSeconds);
-      })
-    );
+    return this._http
+      .post<JoinResponse>(`${this._BASE_URL_API}/api/saloons/${saloonId}/join`, body)
+      .pipe(
+        tap(response => {
+          const session: ActiveSession = {
+            userId: 0, // Sera mis à jour
+            saloonId: response.saloonId,
+            saloonName: response.saloonName,
+            joinedAt: response.joinedAt,
+            endsAt: response.endsAt,
+            remainingSeconds: response.remainingSeconds,
+            active: true,
+          };
+          this._activeSession$.next(session);
+          this._startTimer(response.remainingSeconds);
+        })
+      );
   }
 
   /**
    * Quitte un saloon.
    */
   leaveSaloon(saloonId: number): Observable<{ message: string }> {
-    return this._http.post<{ message: string }>(`${this._BASE_URL_API}/api/saloons/${saloonId}/leave`, {}).pipe(
-      tap(() => {
-        this._activeSession$.next(null);
-        this._currentPresence$.next(null);
-        this._stopTimer();
-      })
-    );
+    return this._http
+      .post<{ message: string }>(`${this._BASE_URL_API}/api/saloons/${saloonId}/leave`, {})
+      .pipe(
+        tap(() => {
+          this._activeSession$.next(null);
+          this._currentPresence$.next(null);
+          this._stopTimer();
+          this._leaveConfirmed$.next();
+        })
+      );
   }
 
   /**
    * Récupère la présence d'un saloon.
    */
   getPresence(saloonId: number): Observable<PresenceInfo> {
-    return this._http.get<PresenceInfo>(`${this._BASE_URL_API}/api/saloons/${saloonId}/presence`).pipe(
-      tap(presence => {
-        this._currentPresence$.next(presence);
-      })
-    );
+    return this._http
+      .get<PresenceInfo>(`${this._BASE_URL_API}/api/saloons/${saloonId}/presence`)
+      .pipe(
+        tap(presence => {
+          this._currentPresence$.next(presence);
+        })
+      );
   }
 
   /**
@@ -170,13 +183,15 @@ export class PresenceService {
    * Force la déconnexion de la session actuelle.
    */
   leaveCurrentSession(): Observable<{ message: string }> {
-    return this._http.post<{ message: string }>(`${this._BASE_URL_API}/api/users/me/session/leave`, {}).pipe(
-      tap(() => {
-        this._activeSession$.next(null);
-        this._currentPresence$.next(null);
-        this._stopTimer();
-      })
-    );
+    return this._http
+      .post<{ message: string }>(`${this._BASE_URL_API}/api/users/me/session/leave`, {})
+      .pipe(
+        tap(() => {
+          this._activeSession$.next(null);
+          this._currentPresence$.next(null);
+          this._stopTimer();
+        })
+      );
   }
 
   /**
@@ -191,7 +206,12 @@ export class PresenceService {
   /**
    * Récupère les saloons dans une bounding box.
    */
-  getSaloonsInBbox(minLat: number, maxLat: number, minLng: number, maxLng: number): Observable<SaloonMapItem[]> {
+  getSaloonsInBbox(
+    minLat: number,
+    maxLat: number,
+    minLng: number,
+    maxLng: number
+  ): Observable<SaloonMapItem[]> {
     return this._http.get<SaloonMapItem[]>(`${this._BASE_URL_API}/api/saloons/bbox`, {
       params: {
         minLat: minLat.toString(),
@@ -244,10 +264,9 @@ export class PresenceService {
 
         // Notifier le backend que la session a expiré (pour créer le cooldown)
         if (expiredSession) {
-          this._http.post(`${this._BASE_URL_API}/api/saloons/${expiredSession.saloonId}/leave`, {}).subscribe({
-            next: () => console.log('Session expirée, cooldown créé'),
-            error: err => console.warn("Erreur lors de la notification d'expiration:", err),
-          });
+          this._http
+            .post(`${this._BASE_URL_API}/api/saloons/${expiredSession.saloonId}/leave`, {})
+            .subscribe();
         }
 
         // Émettre l'événement d'expiration
@@ -289,6 +308,65 @@ export class PresenceService {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s
+      .toString()
+      .padStart(2, '0')}`;
+  }
+
+  // ==================== LEAVE REQUEST / CANCEL ====================
+
+  /**
+   * Demande de sortie avec délai d'annulation.
+   * Retourne le timestamp d'expiration (pendingUntil).
+   */
+  leaveRequest(
+    saloonId: number
+  ): Observable<{ message: string; pendingUntil: number; canUndo: boolean }> {
+    return this._http
+      .post<{ message: string; pendingUntil: number; canUndo: boolean }>(
+        `${this._BASE_URL_API}/api/saloons/${saloonId}/leave-request`,
+        {}
+      )
+      .pipe(
+        tap(() => {
+          // On garde la session en mémoire pour permettre le retour
+          // mais on arrête le timer car l'utilisateur n'est plus dans le saloon
+          this._stopTimer();
+        })
+      );
+  }
+
+  /**
+   * Annule une sortie en attente (undo).
+   */
+  leaveCancel(saloonId: number): Observable<{ message: string; canRejoin: boolean }> {
+    return this._http.post<{ message: string; canRejoin: boolean }>(
+      `${this._BASE_URL_API}/api/saloons/${saloonId}/leave-cancel`,
+      {}
+    );
+  }
+
+  /**
+   * Confirme définitivement une sortie.
+   */
+  leaveConfirm(saloonId: number): Observable<{ message: string }> {
+    return this._http
+      .post<{ message: string }>(`${this._BASE_URL_API}/api/saloons/${saloonId}/leave-confirm`, {})
+      .pipe(
+        tap(() => {
+          this._activeSession$.next(null);
+          this._currentPresence$.next(null);
+          this._leaveConfirmed$.next();
+        })
+      );
+  }
+
+  /**
+   * Nettoie l'état local après sortie confirmée (appelé après expiration du délai).
+   */
+  clearSessionState(): void {
+    this._activeSession$.next(null);
+    this._currentPresence$.next(null);
+    this._stopTimer();
   }
 }

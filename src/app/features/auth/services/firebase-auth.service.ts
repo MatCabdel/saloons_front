@@ -1,9 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Auth, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, signOut, User as FirebaseUser } from '@angular/fire/auth';
+import {
+  Auth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+  signOut,
+  User as FirebaseUser,
+} from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { Observable, from, tap, switchMap, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { UserStoreService } from '../../user/store/user-store.service';
 
 export type ProfileStatus = 'PROFILE_INCOMPLETE' | 'ACTIVE';
 export type AuthProvider = 'EMAIL' | 'GOOGLE' | 'FACEBOOK';
@@ -45,6 +53,7 @@ export class FirebaseAuthService {
   private _auth = inject(Auth);
   private _http = inject(HttpClient);
   private _router = inject(Router);
+  private _userStore = inject(UserStoreService);
   private readonly _BASE_URL = environment.apiUrl;
 
   currentUser = signal<UserDTO | null>(null);
@@ -58,7 +67,10 @@ export class FirebaseAuthService {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       try {
-        this.currentUser.set(JSON.parse(storedUser));
+        const user = JSON.parse(storedUser);
+        this.currentUser.set(user);
+        // Synchroniser avec UserStoreService
+        this._userStore.setUserConnected(user);
       } catch {
         localStorage.removeItem('user');
       }
@@ -112,10 +124,34 @@ export class FirebaseAuthService {
     this.isLoading.set(true);
 
     // L'ancien endpoint retourne un UserDTO avec le token dedans
-    return this._http.post<UserDTO & { token: string }>(`${this._BASE_URL}/auth/login`, { email, password }).pipe(
-      tap(response => {
-        // Construire un AuthResponse à partir de l'ancien format
-        const authResponse: AuthResponse = {
+    return this._http
+      .post<UserDTO & { token: string }>(`${this._BASE_URL}/auth/login`, { email, password })
+      .pipe(
+        tap(response => {
+          // Construire un AuthResponse à partir de l'ancien format
+          const authResponse: AuthResponse = {
+            user: {
+              id: response.id,
+              email: response.email,
+              userName: response.userName,
+              imgUrl: response.imgUrl,
+              age: response.age,
+              city: response.city,
+              description: response.description,
+              profileStatus: response.profileStatus || 'ACTIVE',
+              authProvider: response.authProvider || 'EMAIL',
+              firstname: response.firstname,
+              lastname: response.lastname,
+              isPremium: response.isPremium,
+              birthDate: response.birthDate,
+              role: response.role,
+            },
+            token: response.token,
+            newUser: false,
+          };
+          this._handleAuthResponse(authResponse);
+        }),
+        map(response => ({
           user: {
             id: response.id,
             email: response.email,
@@ -124,8 +160,8 @@ export class FirebaseAuthService {
             age: response.age,
             city: response.city,
             description: response.description,
-            profileStatus: response.profileStatus || 'ACTIVE',
-            authProvider: response.authProvider || 'EMAIL',
+            profileStatus: (response.profileStatus || 'ACTIVE') as ProfileStatus,
+            authProvider: (response.authProvider || 'EMAIL') as AuthProvider,
             firstname: response.firstname,
             lastname: response.lastname,
             isPremium: response.isPremium,
@@ -134,31 +170,17 @@ export class FirebaseAuthService {
           },
           token: response.token,
           newUser: false,
-        };
-        this._handleAuthResponse(authResponse);
-      }),
-      map(response => ({
-        user: {
-          id: response.id,
-          email: response.email,
-          userName: response.userName,
-          imgUrl: response.imgUrl,
-          age: response.age,
-          city: response.city,
-          description: response.description,
-          profileStatus: (response.profileStatus || 'ACTIVE') as ProfileStatus,
-          authProvider: (response.authProvider || 'EMAIL') as AuthProvider,
-          firstname: response.firstname,
-          lastname: response.lastname,
-          isPremium: response.isPremium,
-          birthDate: response.birthDate,
-          role: response.role,
-        },
-        token: response.token,
-        newUser: false,
-      })),
-      tap(() => this.isLoading.set(false))
-    );
+        })),
+        tap(() => this.isLoading.set(false))
+      );
+  }
+
+  requestPasswordReset(email: string): Observable<void> {
+    return this._http.post<void>(`${this._BASE_URL}/auth/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<void> {
+    return this._http.post<void>(`${this._BASE_URL}/auth/reset-password`, { token, newPassword });
   }
 
   /**
@@ -166,7 +188,9 @@ export class FirebaseAuthService {
    */
   private _authenticateWithBackend(firebaseUser: FirebaseUser): Observable<AuthResponse> {
     return from(firebaseUser.getIdToken()).pipe(
-      switchMap(firebaseToken => this._http.post<AuthResponse>(`${this._BASE_URL}/auth/firebase`, { firebaseToken }))
+      switchMap(firebaseToken =>
+        this._http.post<AuthResponse>(`${this._BASE_URL}/auth/firebase`, { firebaseToken })
+      )
     );
   }
 
@@ -175,6 +199,8 @@ export class FirebaseAuthService {
    */
   private _handleAuthResponse(response: AuthResponse): void {
     this.currentUser.set(response.user);
+    // Synchroniser avec UserStoreService
+    this._userStore.setUserConnected(response.user as any);
     localStorage.setItem('saloon_auth_token', response.token);
     localStorage.setItem('user', JSON.stringify(response.user));
   }
@@ -186,6 +212,17 @@ export class FirebaseAuthService {
     return from(signOut(this._auth)).pipe(
       tap(() => {
         this.currentUser.set(null);
+        // Réinitialiser UserStoreService avec un utilisateur vide
+        this._userStore.setUserConnected({
+          id: 0,
+          email: '',
+          password: '',
+          role: '',
+          token: '',
+          imgUrl: '',
+          description: '',
+          age: 0,
+        } as any);
         localStorage.removeItem('saloon_auth_token');
         localStorage.removeItem('user');
         this._router.navigate(['/']);
@@ -220,6 +257,8 @@ export class FirebaseAuthService {
    */
   updateCurrentUser(user: UserDTO): void {
     this.currentUser.set(user);
+    // Synchroniser avec UserStoreService
+    this._userStore.setUserConnected(user as any);
     localStorage.setItem('user', JSON.stringify(user));
   }
 }

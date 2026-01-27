@@ -1,6 +1,6 @@
 <div class="upload">
   @if (imageUrl) {
-    <img [src]="imageUrl" alt="Aperçu image" width="200" height="200" />
+  <img [src]="imageUrl" alt="Aperçu image" width="200" height="200" />
   }
   <button type="button" class="button-with-icon" (click)="fileUpload.click()">
     <div class="icon">
@@ -16,5 +16,6 @@
     class="file-input"
     hidden
     (change)="onFileSelected($event)"
-    accept="image/png, image/jpeg, image/svg+xml, image/webp" />
+    accept="image/png, image/jpeg, image/svg+xml, image/webp"
+  />
 </div>

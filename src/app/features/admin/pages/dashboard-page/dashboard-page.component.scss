@@ -11,3 +11,15 @@
   overflow-y: auto;
   color: white;
 }
+
+// Mobile responsive
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+
+  .dashboard-content {
+    padding: 1rem;
+    padding-top: 4.5rem; // Space for fixed mobile header
+  }
+}

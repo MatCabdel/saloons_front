@@ -1,0 +1,212 @@
+<div class="edit-saloon-page">
+  <header class="page-header">
+    <button type="button" class="btn-back" (click)="goBack()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+      </svg>
+      Retour
+    </button>
+    <div class="header-content">
+      <h1>Modifier le saloon</h1>
+      <p class="subtitle">Mettez à jour les informations de l'établissement</p>
+    </div>
+  </header>
+
+  @if (isLoading) {
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Chargement du saloon...</p>
+  </div>
+  } @else if (success) {
+  <div class="success-message">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="48"
+      height="48"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+      <polyline points="22 4 12 14.01 9 11.01" />
+    </svg>
+    <h3>Saloon modifié avec succès !</h3>
+    <p>Redirection en cours...</p>
+  </div>
+  } @else {
+  <form [formGroup]="saloonForm" (ngSubmit)="onSubmit()" class="saloon-form">
+    @if (error) {
+    <div class="error-banner">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+      {{ error }}
+    </div>
+    }
+
+    <div class="form-section">
+      <h2>Informations générales</h2>
+
+      <div class="form-group">
+        <label for="name">Nom du saloon *</label>
+        <input type="text" id="name" formControlName="name" placeholder="Ex: Le Bar du Coin" />
+        @if (saloonForm.get('name')?.invalid && saloonForm.get('name')?.touched) {
+        <span class="field-error">Le nom est requis (2-100 caractères)</span>
+        }
+      </div>
+
+      <div class="image-upload-section">
+        <label for="saloon-image-input">Image du saloon</label>
+        <button
+          type="button"
+          class="upload-area"
+          [class.has-image]="imagePreview"
+          (click)="fileInput.click()"
+          aria-label="Sélectionner une nouvelle image pour le saloon"
+        >
+          <input
+            #fileInput
+            id="saloon-image-input"
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+          />
+          @if (!imagePreview) {
+          <div class="upload-placeholder">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
+            </svg>
+            <p>Cliquez pour sélectionner une image</p>
+            <p class="hint">PNG, JPG, JPEG - Max 10MB</p>
+          </div>
+          } @else {
+          <div class="image-preview">
+            <img [src]="imagePreview" alt="Aperçu" />
+            <p class="change-hint">Cliquez pour changer l'image</p>
+          </div>
+          }
+        </button>
+        <p class="help-text">💡 Laissez vide pour conserver l'image actuelle</p>
+      </div>
+
+      <div class="form-group">
+        <label for="type">Type d'établissement *</label>
+        <select id="type" formControlName="type">
+          @for (option of saloonTypes; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+        @if (saloonForm.get('type')?.invalid && saloonForm.get('type')?.touched) {
+        <span class="field-error">Le type est requis</span>
+        }
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h2>Localisation</h2>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="address">Adresse</label>
+          <input
+            type="text"
+            id="address"
+            formControlName="address"
+            placeholder="123 Rue de la Paix"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="city">Ville</label>
+          <input type="text" id="city" formControlName="city" placeholder="Paris" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="country">Pays</label>
+          <input type="text" id="country" formControlName="country" placeholder="France" />
+        </div>
+
+        <div class="form-group">
+          <label for="radiusMeters">Rayon (mètres)</label>
+          <input type="number" id="radiusMeters" formControlName="radiusMeters" placeholder="100" />
+        </div>
+      </div>
+
+      <div class="form-row coordinates">
+        <div class="form-group">
+          <label for="latitude">Latitude *</label>
+          <input
+            type="number"
+            id="latitude"
+            formControlName="latitude"
+            placeholder="48.8566"
+            step="any"
+          />
+          @if (saloonForm.get('latitude')?.invalid && saloonForm.get('latitude')?.touched) {
+          <span class="field-error">Latitude requise (-90 à 90)</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="longitude">Longitude *</label>
+          <input
+            type="number"
+            id="longitude"
+            formControlName="longitude"
+            placeholder="2.3522"
+            step="any"
+          />
+          @if (saloonForm.get('longitude')?.invalid && saloonForm.get('longitude')?.touched) {
+          <span class="field-error">Longitude requise (-180 à 180)</span>
+          }
+        </div>
+      </div>
+
+      <p class="help-text">
+        💡 Astuce : Utilisez Google Maps pour trouver les coordonnées GPS exactes de
+        l'établissement.
+      </p>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="resetForm()">Réinitialiser</button>
+      <button type="submit" class="btn-primary" [disabled]="isSaving">
+        @if (isSaving) {
+        <span class="spinner"></span>
+        Enregistrement... } @else { Enregistrer les modifications }
+      </button>
+    </div>
+  </form>
+  }
+</div>

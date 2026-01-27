@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
+import { SALOON_TYPE_LABELS, SaloonType } from '../../../saloon/models/saloonModel';
 
 @Component({
   selector: 'app-create-saloon-page',
@@ -22,6 +23,13 @@ export class CreateSaloonPageComponent {
   selectedFile: File | null = null;
   imagePreview: string | null = null;
 
+  saloonTypes: { value: SaloonType; label: string }[] = Object.entries(SALOON_TYPE_LABELS).map(
+    ([value, label]) => ({
+      value: value as SaloonType,
+      label,
+    })
+  );
+
   saloonForm: FormGroup = this._fb.group({
     name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
     address: [''],
@@ -29,7 +37,8 @@ export class CreateSaloonPageComponent {
     country: ['France'],
     latitude: [null, [Validators.required, Validators.min(-90), Validators.max(90)]],
     longitude: [null, [Validators.required, Validators.min(-180), Validators.max(180)]],
-    radiusMeters: [100, [Validators.min(10), Validators.max(10000)]],
+    radiusMeters: [100, [Validators.min(10), Validators.max(100000)]],
+    type: ['BAR', Validators.required],
   });
 
   onFileSelected(event: Event): void {
@@ -76,6 +85,7 @@ export class CreateSaloonPageComponent {
     formData.append('latitude', this.saloonForm.get('latitude')?.value);
     formData.append('longitude', this.saloonForm.get('longitude')?.value);
     formData.append('radiusMeters', this.saloonForm.get('radiusMeters')?.value || '100');
+    formData.append('type', this.saloonForm.get('type')?.value || 'BAR');
 
     this._adminService.createSaloonWithImage(formData).subscribe({
       next: () => {
@@ -96,6 +106,7 @@ export class CreateSaloonPageComponent {
     this.saloonForm.reset({
       country: 'France',
       radiusMeters: 100,
+      type: 'BAR',
     });
     this.selectedFile = null;
     this.imagePreview = null;

@@ -12,7 +12,10 @@ import { AuthApiService } from 'src/app/features/auth/services/auth-api.service'
   styleUrl: './header.component.scss',
   animations: [
     trigger('slideIn', [
-      transition(':enter', [style({ transform: 'translateX(100%)' }), animate('300ms ease-out', style({ transform: 'translateX(0)' }))]),
+      transition(':enter', [
+        style({ transform: 'translateX(100%)' }),
+        animate('300ms ease-out', style({ transform: 'translateX(0)' })),
+      ]),
       transition(':leave', [animate('200ms ease-in', style({ transform: 'translateX(100%)' }))]),
     ]),
   ],
@@ -23,6 +26,7 @@ export class HeaderComponent {
 
   showBackButton = input(false);
   backRoute = input<string>('');
+  showMenu = input(true);
 
   isMenuOpen = signal(false);
 
@@ -31,6 +35,7 @@ export class HeaderComponent {
     { route: '/saloon-demande', icon: 'assets/icons/saloon.svg', label: 'Saloon à la demande' },
     { route: '/faq', icon: 'assets/icons/faq.svg', label: 'FAQ' },
     { route: '/contact', icon: 'assets/icons/contact.svg', label: 'Contact' },
+    { route: '/mentions-legales', icon: 'assets/icons/faq.svg', label: 'Mentions légales' },
   ];
 
   public navigateToWelcome(): void {

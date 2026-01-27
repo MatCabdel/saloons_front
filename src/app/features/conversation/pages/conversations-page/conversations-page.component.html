@@ -6,9 +6,8 @@
     <h1>New winks</h1>
     <app-list-match [excludeUserIds]="conversationUserIds"></app-list-match>
   </div>
-  <app-list-conversation (conversationUserIdsChange)="updateConversationUserIds($event)"></app-list-conversation>
-  @if (monSaloonId !== undefined) {
-    <app-enter-saloon [saloonId]="monSaloonId"></app-enter-saloon>
-  }
+  <app-list-conversation
+    (conversationUserIdsChange)="updateConversationUserIds($event)"
+  ></app-list-conversation>
   <app-navbar></app-navbar>
 </div>

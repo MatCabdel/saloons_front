@@ -26,6 +26,22 @@
       color: white;
     }
 
+    .forgot-link {
+      text-align: center;
+      margin-top: 12px;
+
+      .connexion-button {
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+
+        &:hover {
+          border-bottom-color: #ffc122;
+        }
+      }
+    }
+
     .connexion-button {
       color: #ffc122;
       cursor: pointer;

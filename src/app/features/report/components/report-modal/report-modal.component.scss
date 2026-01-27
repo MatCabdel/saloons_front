@@ -1,0 +1,349 @@
+$white: #fff;
+$yellow: #ffc122;
+$gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$error: #e74c3c;
+$success: #27ae60;
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 16px;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-content {
+  background: $white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: scaleIn 0.25s ease;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  position: relative;
+
+  .icon-container {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba($error, 0.1) 0%, rgba($error, 0.2) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    svg {
+      color: $error;
+    }
+  }
+
+  h2 {
+    flex: 1;
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .close-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    color: #666;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.06);
+      color: #333;
+    }
+  }
+}
+
+.modal-body {
+  padding: 20px;
+
+  .saloon-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba($gradient-bottom, 0.1);
+    border-radius: 10px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: $gradient-top;
+
+    svg {
+      color: $gradient-bottom;
+      flex-shrink: 0;
+    }
+  }
+
+  .instruction {
+    font-size: 0.95rem;
+    color: #555;
+    margin: 0 0 16px;
+    font-weight: 500;
+  }
+
+  .reason-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .reason-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    background: $white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+
+    &:hover {
+      border-color: rgba($gradient-bottom, 0.3);
+      background: rgba($gradient-bottom, 0.03);
+    }
+
+    &.selected {
+      border-color: $gradient-top;
+      background: rgba($gradient-top, 0.05);
+
+      .reason-icon {
+        background: $gradient-top;
+        color: $white;
+      }
+
+      .reason-label {
+        color: $gradient-top;
+        font-weight: 600;
+      }
+
+      .check-icon {
+        color: $gradient-top;
+      }
+    }
+
+    .reason-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      color: #666;
+    }
+
+    .reason-label {
+      flex: 1;
+      font-size: 0.9rem;
+      color: #444;
+      transition: all 0.2s ease;
+    }
+
+    .check-icon {
+      flex-shrink: 0;
+    }
+  }
+
+  .description-section {
+    margin-top: 4px;
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid rgba(0, 0, 0, 0.08);
+      border-radius: 12px;
+      font-size: 0.9rem;
+      resize: none;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      box-sizing: border-box;
+
+      &::placeholder {
+        color: #aaa;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: $gradient-bottom;
+      }
+    }
+
+    .char-count {
+      display: block;
+      text-align: right;
+      font-size: 0.75rem;
+      color: #999;
+      margin-top: 4px;
+    }
+  }
+
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    background: rgba($error, 0.1);
+    border-radius: 10px;
+    font-size: 0.85rem;
+    color: $error;
+    margin-top: 16px;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+}
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  padding: 16px 20px 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+
+  button {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-cancel {
+    background: rgba(0, 0, 0, 0.06);
+    color: #666;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+      color: #333;
+    }
+  }
+
+  .btn-submit {
+    background: $error;
+    color: $white;
+
+    &:hover:not(:disabled) {
+      background: darken($error, 8%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba($error, 0.3);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .loader {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba($white, 0.3);
+      border-top-color: $white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+  }
+}
+
+.success-state {
+  padding: 40px 20px;
+  text-align: center;
+
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba($success, 0.1) 0%, rgba($success, 0.2) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: scaleIn 0.3s ease;
+
+    svg {
+      color: $success;
+    }
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

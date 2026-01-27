@@ -169,6 +169,19 @@ $white: #fff;
   color: $gradient-top;
 }
 
+.saloon-type-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, $gradient-top, $gradient-bottom);
+  color: $white;
+  padding: 0.35rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .saloon-address,
 .saloon-city {
   color: #666;

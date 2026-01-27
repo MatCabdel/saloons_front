@@ -25,7 +25,7 @@ export class ListConversationComponent implements OnInit {
   private _router = inject(Router);
   private _userStore = inject(UserStoreService);
 
-  myId = this._userStore.getUserId();
+  myId = 0;
 
   @HostListener('document:click')
   onDocumentClick(): void {
@@ -36,9 +36,15 @@ export class ListConversationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.myId = this._userStore.getUserId();
+
     this.conversations$ = this._refresh$.pipe(
       switchMap(() => this._conversationService.getUserConversations()),
-      map(data => (Array.isArray(data.payload) ? data.payload.filter(conv => conv && conv.id !== undefined) : [])),
+      map(data =>
+        Array.isArray(data.payload)
+          ? data.payload.filter(conv => conv && conv.id !== undefined)
+          : []
+      ),
       map(conversations =>
         conversations.sort((a, b) => {
           if (!a.lastMessage && !b.lastMessage) return 0;
@@ -87,5 +93,45 @@ export class ListConversationComponent implements OnInit {
 
   otherParticipant(conv: Conversation): User | undefined {
     return conv.participants.find(p => p.id !== this.myId);
+  }
+
+  formatMessageTime(dateString: string | undefined): string {
+    if (!dateString) return '';
+
+    const date = new Date(dateString);
+    const now = new Date();
+
+    // Réinitialiser à minuit pour comparer les jours
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    // Aujourd'hui - afficher l'heure
+    if (messageDate.getTime() === today.getTime()) {
+      return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // Hier
+    if (messageDate.getTime() === yesterday.getTime()) {
+      return 'Hier';
+    }
+
+    // Avant hier - afficher la date (ex: 13 sept. 2025)
+    const months = [
+      'janv.',
+      'févr.',
+      'mars',
+      'avr.',
+      'mai',
+      'juin',
+      'juil.',
+      'août',
+      'sept.',
+      'oct.',
+      'nov.',
+      'déc.',
+    ];
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
   }
 }

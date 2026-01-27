@@ -271,3 +271,104 @@
     font-size: 0.9rem;
   }
 }
+
+// ======= MOBILE RESPONSIVE =======
+@media (max-width: 768px) {
+  .statistics-page {
+    max-width: 100%;
+  }
+
+  .page-header {
+    margin-bottom: 1.5rem;
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+    }
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .stat-value {
+    font-size: 2rem;
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+  }
+
+  .premium-evolution {
+    margin-bottom: 2rem;
+
+    h2 {
+      font-size: 1.1rem;
+    }
+  }
+
+  .chart-container {
+    padding: 1rem;
+  }
+
+  .chart {
+    height: 160px;
+    gap: 0.25rem;
+  }
+
+  .chart-bar {
+    max-width: 30px;
+
+    .bar-value {
+      font-size: 0.65rem;
+      top: -20px;
+    }
+  }
+
+  .bar-label {
+    font-size: 0.6rem;
+    margin-top: 0.5rem;
+  }
+
+  .city-stats h2 {
+    font-size: 1.1rem;
+  }
+
+  .city-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .city-card {
+    padding: 0.875rem 1rem;
+
+    .city-name {
+      font-size: 0.9rem;
+    }
+
+    .city-count {
+      font-size: 0.85rem;
+      padding: 0.2rem 0.6rem;
+    }
+  }
+}

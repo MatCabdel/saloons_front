@@ -4,6 +4,11 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { FirebaseAuthService } from '../../services/firebase-auth.service';
 import { environment } from 'src/environments/environment';
+import {
+  LEGAL_NOTICES_TEXT,
+  PRIVACY_POLICY_TEXT,
+  TERMS_TEXT,
+} from '../../legal/legal-texts';
 
 type AuthMode = 'register' | 'login' | 'register-email';
 
@@ -24,6 +29,9 @@ export class AuthPageComponent implements OnInit {
   errorMessage = signal<string | null>(null);
   showPassword = signal(false);
   showConfirmPassword = signal(false);
+  showLegalModal = signal(false);
+  legalModalTitle = signal('');
+  legalModalContent = signal('');
 
   // Formulaire inscription email
   registerForm: FormGroup = this._fb.group({
@@ -66,6 +74,10 @@ export class AuthPageComponent implements OnInit {
     this.errorMessage.set(null);
   }
 
+  goToForgotPassword(): void {
+    this._router.navigate(['/mot-de-passe-oublie']);
+  }
+
   backToRegister(): void {
     this.mode.set('register');
     this.errorMessage.set(null);
@@ -79,10 +91,28 @@ export class AuthPageComponent implements OnInit {
     this.showConfirmPassword.update(v => !v);
   }
 
+  openTerms(): void {
+    this._openLegalModal("Conditions d’utilisation", TERMS_TEXT);
+  }
+
+  openPrivacyPolicy(): void {
+    this._openLegalModal('Politique de confidentialité', PRIVACY_POLICY_TEXT);
+  }
+
+  openLegalNotices(): void {
+    this._openLegalModal('Mentions légales', LEGAL_NOTICES_TEXT);
+  }
+
+  closeLegalModal(): void {
+    this.showLegalModal.set(false);
+  }
+
   onGoogleAuth(): void {
     // Vérifier si Firebase est configuré
     if (environment.firebase.apiKey === 'YOUR_FIREBASE_API_KEY') {
-      this.errorMessage.set("Firebase n'est pas encore configuré. Utilisez la connexion par email.");
+      this.errorMessage.set(
+        "Firebase n'est pas encore configuré. Utilisez la connexion par email."
+      );
       return;
     }
 
@@ -104,7 +134,9 @@ export class AuthPageComponent implements OnInit {
   onFacebookAuth(): void {
     // Vérifier si Firebase est configuré
     if (environment.firebase.apiKey === 'YOUR_FIREBASE_API_KEY') {
-      this.errorMessage.set("Firebase n'est pas encore configuré. Utilisez la connexion par email.");
+      this.errorMessage.set(
+        "Firebase n'est pas encore configuré. Utilisez la connexion par email."
+      );
       return;
     }
 
@@ -185,7 +217,11 @@ export class AuthPageComponent implements OnInit {
     });
   }
 
-  private _handleAuthSuccess(isNewUser: boolean, profileStatus: string, role?: string | null): void {
+  private _handleAuthSuccess(
+    isNewUser: boolean,
+    profileStatus: string,
+    role?: string | null
+  ): void {
     if (isNewUser || profileStatus === 'PROFILE_INCOMPLETE') {
       this._router.navigate(['/onboarding']);
     } else if (role === 'ROLE_ADMIN') {
@@ -193,6 +229,12 @@ export class AuthPageComponent implements OnInit {
     } else {
       this._router.navigate(['/map']);
     }
+  }
+
+  private _openLegalModal(title: string, content: string): void {
+    this.legalModalTitle.set(title);
+    this.legalModalContent.set(content);
+    this.showLegalModal.set(true);
   }
 
   private _getErrorMessage(error: unknown): string {

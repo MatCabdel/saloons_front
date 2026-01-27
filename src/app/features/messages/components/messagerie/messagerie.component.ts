@@ -1,4 +1,16 @@
-import { AfterViewChecked, AfterViewInit, Component, DestroyRef, ElementRef, inject, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  ElementRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { ConversationService } from 'src/app/features/conversation/services/conversation.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -7,7 +19,8 @@ import { WebSocketService } from 'src/app/common/services/web-socket.service';
 import { User } from 'src/app/features/user/models/user';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { UserService } from 'src/app/features/user/services/user.service';
-import { Message } from 'src/app/features/conversation/models/Conversation';
+import { Message, HeartRequestStatus } from 'src/app/features/conversation/models/Conversation';
+import { PresenceService } from 'src/app/features/saloon/services/presence.service';
 import { combineLatest, map, mergeMap, Observable, of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -19,14 +32,23 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './messagerie.component.scss',
 })
 export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChecked {
-  @Input() isConversationEnded = false;
+  @Input() isConversationEnded = false; // Conversation expirée (a quitté le saloon)
+  @Input() isMatchCancelled = false; // Match annulé définitivement
+  @Input() isPermanent = false; // Conversation permanente
+  @Input() heartRequestStatus: HeartRequestStatus | null = null;
+  @Input() heartRequestCountdown = '';
+  @Input() heartRequestSending = false;
+  @Input() matchUserId: number | null = null; // Mode match sans conversation
+  @Output() sendHeartRequestClicked = new EventEmitter<void>();
+  @Output() conversationCreated = new EventEmitter<number>(); // Émis quand conversation créée
 
-  conversationId!: number;
+  conversationId: number | null = null;
   messages: Message[] = [];
   newMessage = '';
   myId!: number;
   myImgUrl?: string;
   participants: User[] = [];
+  isMatchMode = false; // true si on est en mode match (pas de conversation)
 
   private _hasScrolledToBottom = false;
 
@@ -37,16 +59,37 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
   private _webSocketService = inject(WebSocketService);
   private _userStore = inject(UserStoreService);
   private _userService = inject(UserService);
+  private _presenceService = inject(PresenceService);
   private _destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    this.conversationId = +this._route.snapshot.paramMap.get('conversationId')!;
     this.myId = Number(this._userStore.getUserId());
 
+    const conversationIdParam = this._route.snapshot.paramMap.get('conversationId');
+    const matchUserIdParam = this._route.snapshot.paramMap.get('matchUserId');
+
+    if (conversationIdParam) {
+      // Mode conversation existante
+      this.conversationId = Number(conversationIdParam);
+      this.isMatchMode = false;
+      this._initConversationMode();
+    } else if (matchUserIdParam || this.matchUserId) {
+      // Mode match sans conversation
+      const userId = this.matchUserId || Number(matchUserIdParam);
+      this.isMatchMode = true;
+      this._initMatchMode(userId);
+    }
+  }
+
+  private _initConversationMode(): void {
+    if (!this.conversationId) return;
+
     const conversation$ = this._conversationService.getConversation(this.conversationId);
-    const messages$ = conversation$.pipe(switchMap(() => this._conversationService.getMessages(this.conversationId)));
+    const messages$ = conversation$.pipe(
+      switchMap(() => this._conversationService.getMessages(this.conversationId!))
+    );
     const webSocketMessages$ = conversation$.pipe(
-      tap(() => this._webSocketService.connect(this.conversationId)),
+      tap(() => this._webSocketService.connect(this.conversationId!)),
       switchMap(() => this._webSocketService.getMessages())
     );
 
@@ -71,9 +114,24 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
       )
       .subscribe(msg => {
         this.handleNewMessage(msg);
-
         setTimeout(() => this.jumpToBottom(), 50);
       });
+  }
+
+  private _initMatchMode(matchUserId: number): void {
+    // Charger l'utilisateur courant et l'utilisateur matché
+    combineLatest([
+      this._userService.getUserById(this.myId),
+      this._userService.getUserById(matchUserId),
+    ])
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe(([me, matchedUser]) => {
+        this.participants = [me, matchedUser];
+        this.setupMyImage();
+      });
+
+    // Pas de messages en mode match
+    this.messages = [];
   }
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -84,7 +142,7 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
   }
 
   ngAfterViewChecked(): void {
-    if (this.messages.length > 0 && this.messagesList?.nativeElement) {
+    if (!this._hasScrolledToBottom && this.messages.length > 0 && this.messagesList?.nativeElement) {
       const element = this.messagesList.nativeElement;
       if (element.scrollTop < element.scrollHeight - element.clientHeight - 10) {
         setTimeout(() => {
@@ -98,8 +156,8 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
     try {
       if (this.messagesList && this.messagesList.nativeElement) {
         const element = this.messagesList.nativeElement;
-
-        element.scrollTop = element.scrollHeight;
+        element.scrollTo({ top: element.scrollHeight, behavior: 'auto' });
+        this._hasScrolledToBottom = true;
       } else {
         console.warn('⚠️ messagesList non disponible');
       }
@@ -140,7 +198,10 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
     msg.sender = Number(msg.sender);
 
     const messageExists = this.messages.some(
-      m => m.content === msg.content && m.sender === msg.sender && new Date(m.sentAt).getTime() === new Date(msg.sentAt).getTime()
+      m =>
+        m.content === msg.content &&
+        m.sender === msg.sender &&
+        new Date(m.sentAt).getTime() === new Date(msg.sentAt).getTime()
     );
 
     if (!messageExists) {
@@ -149,6 +210,8 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
   }
 
   loadMessages(): void {
+    if (!this.conversationId) return;
+
     this._conversationService
       .getMessages(this.conversationId)
       .pipe(takeUntilDestroyed(this._destroyRef))
@@ -176,6 +239,54 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
       return;
     }
 
+    // En mode match, créer d'abord la conversation
+    if (this.isMatchMode && !this.conversationId) {
+      const matchUserId =
+        this.matchUserId || Number(this._route.snapshot.paramMap.get('matchUserId'));
+      if (!matchUserId) return;
+
+      const saloonIdParam = this._route.snapshot.queryParamMap.get('saloonId');
+      const activeSession = this._presenceService.getActiveSessionValue();
+      const saloonId =
+        activeSession?.saloonId ?? (saloonIdParam ? Number(saloonIdParam) : undefined);
+      this._conversationService.createConversation(matchUserId, saloonId).subscribe({
+        next: conv => {
+          this.conversationId = conv.id;
+          this.isMatchMode = false;
+          this.conversationCreated.emit(conv.id);
+
+          // Connecter au WebSocket
+          this._webSocketService.connect(conv.id);
+
+          // S'abonner aux messages WebSocket
+          this._webSocketService
+            .getMessages()
+            .pipe(
+              takeUntilDestroyed(this._destroyRef),
+              mergeMap(msg => this.ensureParticipantExists(msg).pipe(map(() => msg)))
+            )
+            .subscribe(msg => {
+              this.handleNewMessage(msg);
+              setTimeout(() => this.jumpToBottom(), 50);
+            });
+
+          // Attendre un court délai que le WebSocket soit connecté
+          setTimeout(() => {
+            this._sendChatMessage();
+          }, 300);
+        },
+        error: err => {
+          console.error('Erreur création conversation:', err);
+        },
+      });
+    } else {
+      this._sendChatMessage();
+    }
+  }
+
+  private _sendChatMessage(): void {
+    if (!this.conversationId) return;
+
     const chatMessage = {
       conversation: { id: this.conversationId },
       sender: this.myId,
@@ -195,7 +306,6 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
       const textarea = document.querySelector('textarea');
       if (textarea) {
         textarea.style.height = 'auto';
-        console.log('🔧 Textarea reset');
       }
     }, 0);
   }

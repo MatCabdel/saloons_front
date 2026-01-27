@@ -173,7 +173,11 @@ $text-light: #888;
   width: 100%;
   padding: 14px 16px;
   margin-bottom: 16px;
-  background: linear-gradient(135deg, rgba($gradient-top, 0.08) 0%, rgba($gradient-bottom, 0.12) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba($gradient-top, 0.08) 0%,
+    rgba($gradient-bottom, 0.12) 100%
+  );
   border: 1px solid rgba($gradient-bottom, 0.2);
   border-radius: 14px;
   cursor: pointer;
@@ -198,7 +202,11 @@ $text-light: #888;
   }
 
   &:hover {
-    background: linear-gradient(135deg, rgba($gradient-top, 0.12) 0%, rgba($gradient-bottom, 0.18) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba($gradient-top, 0.12) 0%,
+      rgba($gradient-bottom, 0.18) 100%
+    );
     border-color: rgba($gradient-bottom, 0.35);
     transform: translateX(2px);
 

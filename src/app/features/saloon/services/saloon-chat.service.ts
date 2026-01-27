@@ -74,14 +74,18 @@ export class SaloonChatService {
    * C'est la méthode principale à utiliser pour charger le chat
    */
   getChatHistory(saloonId: number, limit = 50): Observable<SaloonChatHistoryDTO> {
-    return this._http.get<SaloonChatHistoryDTO>(`${this._apiUrl}/${saloonId}/history?limit=${limit}`);
+    return this._http.get<SaloonChatHistoryDTO>(
+      `${this._apiUrl}/${saloonId}/history?limit=${limit}`
+    );
   }
 
   /**
    * @deprecated Utiliser getChatHistory à la place
    */
   getMessages(saloonId: number, limit = 50): Observable<SaloonMessageDTO[]> {
-    return this._http.get<SaloonMessageDTO[]>(`${this._apiUrl}/${saloonId}/messages?limit=${limit}`);
+    return this._http.get<SaloonMessageDTO[]>(
+      `${this._apiUrl}/${saloonId}/messages?limit=${limit}`
+    );
   }
 
   getPresence(saloonId: number): Observable<SaloonPresenceDTO> {
@@ -120,8 +124,6 @@ export class SaloonChatService {
     });
 
     this._stompClient.onConnect = (): void => {
-      console.log('Connected to saloon chat WebSocket');
-
       // S'abonner à la présence EN PREMIER (déclenche l'incrémentation du compteur backend)
       this._stompClient?.subscribe(`/topic/saloon-presence/${saloonId}`, message => {
         const presence: SaloonPresenceDTO = JSON.parse(message.body);
@@ -147,8 +149,8 @@ export class SaloonChatService {
       }, 500);
     };
 
-    this._stompClient.onStompError = (frame): void => {
-      console.error('WebSocket error:', frame);
+    this._stompClient.onStompError = (): void => {
+      // Erreur WebSocket silencieuse
     };
 
     this._stompClient.activate();

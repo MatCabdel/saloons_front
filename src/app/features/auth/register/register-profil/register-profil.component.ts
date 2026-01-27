@@ -1,5 +1,12 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { strongPasswordValidator } from '../components/validator-password/password-strengh';
 import { checkEqualityValidator } from '../components/validator-password/equality-passwords';
 import { UserService } from '../../../user/services/user.service';
@@ -127,7 +134,10 @@ export class RegisterProfilComponent implements OnInit {
       if (!value) return null;
       const birth = new Date(value);
       const today = new Date();
-      const age = today.getFullYear() - birth.getFullYear() - (today < new Date(today.getFullYear(), birth.getMonth(), birth.getDate()) ? 1 : 0);
+      const age =
+        today.getFullYear() -
+        birth.getFullYear() -
+        (today < new Date(today.getFullYear(), birth.getMonth(), birth.getDate()) ? 1 : 0);
       return age >= minYears ? null : { minAge: { requiredAge: minYears, actualAge: age } };
     };
   }

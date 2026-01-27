@@ -1,20 +1,22 @@
 <div class="my-profil-container">
   @if (user$ | async; as user) {
-    <div class="profile-card">
-      <div class="img-section">
-        <img [src]="user.imgUrl" alt="profil" />
-      </div>
-      <div class="info-section">
-        <div class="header-row">
-          <h1>{{ user.userName }}, {{ user.age }}</h1>
-          <span class="city-tag">{{ user.city }}</span>
-        </div>
-        <div class="about-section">
-          <h2>À propos</h2>
-          <p>{{ user.description || 'Aucune description pour le moment.' }}</p>
-        </div>
-        <button class="action-button edit" type="button" (click)="navigateToEdit()">Modifier mon profil</button>
-      </div>
+  <div class="profile-card">
+    <div class="img-section">
+      <img [src]="user.imgUrl" alt="profil" />
     </div>
+    <div class="info-section">
+      <div class="header-row">
+        <h1>{{ user.userName }}, {{ user.age }}</h1>
+        <span class="city-tag">{{ user.city }}</span>
+      </div>
+      <div class="about-section">
+        <h2>À propos</h2>
+        <p>{{ user.description || 'Aucune description pour le moment.' }}</p>
+      </div>
+      <button class="action-button edit" type="button" (click)="navigateToEdit()">
+        Modifier mon profil
+      </button>
+    </div>
+  </div>
   }
 </div>

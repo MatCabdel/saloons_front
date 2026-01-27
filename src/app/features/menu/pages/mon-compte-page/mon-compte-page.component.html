@@ -7,11 +7,11 @@
       <div class="profile-header">
         <div class="avatar-container">
           @if (user()?.imgUrl) {
-            <img [src]="user()?.imgUrl" alt="Photo de profil" class="avatar" />
+          <img [src]="user()?.imgUrl" alt="Photo de profil" class="avatar" />
           } @else {
-            <div class="avatar-placeholder">
-              <span>{{ getInitials() }}</span>
-            </div>
+          <div class="avatar-placeholder">
+            <span>{{ getInitials() }}</span>
+          </div>
           }
         </div>
         <div class="profile-info">
@@ -25,18 +25,15 @@
       <div class="subscription-section">
         <div class="subscription-badge" [class.premium]="isPremium()">
           @if (isPremium()) {
-            <span class="badge-icon">⭐</span>
-            <span class="badge-text">Premium</span>
+          <span class="badge-icon">⭐</span>
+          <span class="badge-text">Premium</span>
           } @else {
-            <span class="badge-text">Freemium</span>
+          <span class="badge-text">Freemium</span>
           }
         </div>
         <p class="subscription-info">
-          @if (isPremium()) {
-            Tu profites de tous les avantages Premium !
-          } @else {
-            Passe en Premium pour débloquer toutes les fonctionnalités
-          }
+          @if (isPremium()) { Tu profites de tous les avantages Premium ! } @else { Passe en Premium
+          pour débloquer toutes les fonctionnalités }
         </p>
       </div>
     </div>
@@ -47,14 +44,14 @@
 
       <!-- Premium Button -->
       @if (!isPremium()) {
-        <button type="button" class="action-btn premium-btn" (click)="goToPremium()">
-          <span class="btn-icon">⭐</span>
-          <div class="btn-content">
-            <span class="btn-title">Passer Premium</span>
-            <span class="btn-subtitle">Découvre les avantages exclusifs</span>
-          </div>
-          <span class="btn-arrow">›</span>
-        </button>
+      <button type="button" class="action-btn premium-btn" (click)="goToPremium()">
+        <span class="btn-icon">⭐</span>
+        <div class="btn-content">
+          <span class="btn-title">Passer Premium</span>
+          <span class="btn-subtitle">Découvre les avantages exclusifs</span>
+        </div>
+        <span class="btn-arrow">›</span>
+      </button>
       }
 
       <!-- Change Password Button -->
@@ -79,8 +76,6 @@
     </div>
 
     <!-- Logout Button -->
-    <button type="button" class="logout-btn" (click)="logout()">
-      Se déconnecter
-    </button>
+    <button type="button" class="logout-btn" (click)="logout()">Se déconnecter</button>
   </div>
 </div>

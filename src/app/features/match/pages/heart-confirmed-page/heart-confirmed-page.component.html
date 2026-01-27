@@ -1,0 +1,17 @@
+<div class="heart-confirmed-container">
+  <h1>COUP DE CŒUR</h1>
+  <h2>CONFIRMÉ !</h2>
+  <div class="match-img">
+    @if (users$ | async; as users) {
+    <img [src]="users.user2.imgUrl" alt="Profil" />
+    <img [src]="users.user1.imgUrl" alt="Mon profil" />
+    }
+  </div>
+  <p>Votre conversation est maintenant permanente !</p>
+  <div class="btn-container">
+    <button class="btn-match primary" type="button" (click)="continueConversation()">
+      Continuer la conversation
+    </button>
+    <button class="btn-match" type="button" (click)="goBack()">Retour</button>
+  </div>
+</div>

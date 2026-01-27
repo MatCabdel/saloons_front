@@ -1,57 +1,123 @@
 <div class="messagerie-container">
   <div class="conversation-list">
-    @if (conversations$ | async; as conversations) {
-      @if (conversations.length === 0) {
-        <div class="empty-state">
-          <div class="empty-icon">💬</div>
-          <h3>Aucune conversation pour l'instant</h3>
-          <p>Vos discussions apparaîtront ici une fois que vous aurez échangé avec quelqu'un !</p>
-        </div>
+    @if (conversations$ | async; as conversations) { @if (conversations.length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">💬</div>
+      <h3>Aucune conversation pour l'instant</h3>
+      <p>Vos discussions apparaîtront ici une fois que vous aurez échangé avec quelqu'un !</p>
+    </div>
+    } @else { @for (conv of conversations; track conv.id) { @if (conv.participants) {
+    <div
+      class="conversation-card"
+      [class.ended]="conv.isMatchCancelled"
+      [class.expired]="conv.otherParticipantLeft && !conv.isMatchCancelled && !conv.isPermanent"
+      [class.permanent]="conv.isPermanent"
+      (click)="openConversation(conv.id)"
+      (keydown.enter)="openConversation(conv.id)"
+      tabindex="0"
+    >
+      <!-- Avatar -->
+      @if (conv.isMatchCancelled) {
+      <div class="avatar-placeholder">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+          />
+        </svg>
+      </div>
       } @else {
-        @for (conv of conversations; track conv.id) {
-          @if (conv.participants) {
-            <div
-              class="conversation-card"
-              [class.ended]="conv.otherParticipantLeft"
-              (click)="openConversation(conv.id)"
-              (keydown.enter)="openConversation(conv.id)"
-              tabindex="0">
-              @if (conv.otherParticipantLeft) {
-                <div class="avatar-placeholder">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                  </svg>
-                </div>
-              } @else {
-                <img [src]="otherParticipant(conv)?.imgUrl" alt="avatar" />
-              }
-              <div class="card-content">
-                <span class="name">{{ otherParticipant(conv)?.userName }}</span>
-                @if (conv.otherParticipantLeft) {
-                  <span class="last-message ended-message">Cette conversation est terminée</span>
-                } @else {
-                  <span class="last-message">{{ conv.lastMessage?.content }}</span>
-                }
-              </div>
-              @if (conv.otherParticipantLeft) {
-                <div class="actions-menu">
-                  <button type="button" class="menu-trigger" (click)="toggleMenu($event, conv.id)" aria-label="Options">
-                    <span class="dots">•••</span>
-                  </button>
-                  @if (openMenuId === conv.id) {
-                    <div class="menu-dropdown">
-                      <button type="button" class="menu-item delete" (click)="confirmDeleteConversation($event, conv.id)">
-                        <span class="icon">🗑️</span>
-                        Supprimer la conversation
-                      </button>
-                    </div>
-                  }
-                </div>
-              }
-            </div>
-          }
-        }
+      <div class="avatar-wrapper">
+        <img [src]="otherParticipant(conv)?.imgUrl" alt="avatar" />
+      </div>
       }
-    }
+
+      <!-- Contenu principal -->
+      <div class="card-content">
+        <div class="content-header">
+          <span class="name">{{ otherParticipant(conv)?.userName }}</span>
+        </div>
+        <div class="content-body">
+          @if (conv.isMatchCancelled) {
+          <span class="last-message ended-message">Conversation terminée</span>
+          } @else if (conv.otherParticipantLeft && !conv.isPermanent) {
+          <span class="last-message expired-message"
+            >A quitté le saloon - Envoyez un coup de cœur !</span
+          >
+          } @else {
+          <span class="last-message">{{ conv.lastMessage?.content || 'Aucun message' }}</span>
+          }
+          <span class="timestamp">{{ formatMessageTime(conv.lastMessage?.sentAt) }}</span>
+        </div>
+      </div>
+
+      <!-- Indicateur de type de conversation -->
+      @if (!conv.isMatchCancelled) {
+      <div
+        class="conversation-type-indicator"
+        [class.permanent]="conv.isPermanent"
+        [class.ephemeral]="!conv.isPermanent"
+      >
+        @if (conv.isPermanent) {
+        <!-- Icône infini pour permanent -->
+        <svg
+          class="type-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-7.133-8-12.739-8-4.585 0-4.585 8 0 8 5.606 0 7.644-8 12.739-8z"
+          />
+        </svg>
+        } @else {
+        <!-- Icône sablier pour éphémère -->
+        <svg
+          class="type-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M5 22h14" />
+          <path d="M5 2h14" />
+          <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22" />
+          <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2" />
+        </svg>
+        }
+      </div>
+      }
+
+      <!-- Menu de suppression uniquement pour les conversations annulées -->
+      @if (conv.isMatchCancelled) {
+      <div class="actions-menu">
+        <button
+          type="button"
+          class="menu-trigger"
+          (click)="toggleMenu($event, conv.id)"
+          aria-label="Options"
+        >
+          <span class="dots">•••</span>
+        </button>
+        @if (openMenuId === conv.id) {
+        <div class="menu-dropdown">
+          <button
+            type="button"
+            class="menu-item delete"
+            (click)="confirmDeleteConversation($event, conv.id)"
+          >
+            <span class="icon">🗑️</span>
+            Supprimer la conversation
+          </button>
+        </div>
+        }
+      </div>
+      }
+    </div>
+    } } } }
   </div>
 </div>

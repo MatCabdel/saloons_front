@@ -92,31 +92,54 @@
       justify-content: center;
       flex: 1;
       min-width: 0;
-    }
+      gap: 4px;
 
-    .card-content .name {
-      font-weight: 600;
-      color: #6c47b6;
-      font-size: 1.1em;
-    }
+      .content-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
 
-    .card-content .last-message {
-      color: #888;
-      font-size: 0.95em;
-      margin-top: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 300px;
-
-      &.ended-message {
-        color: #e74c3c;
-        font-style: italic;
+        .name {
+          font-weight: 600;
+          color: #6c47b6;
+          font-size: 1.05rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
 
-      &.no-message {
-        font-style: italic;
-        color: #aaa;
+      .content-body {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+
+        .last-message {
+          color: #666;
+          font-size: 0.9rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          flex: 1;
+
+          &.ended-message {
+            color: #e74c3c;
+            font-style: italic;
+          }
+
+          &.expired-message {
+            color: #e91e63;
+            font-weight: 500;
+          }
+        }
+
+        .timestamp {
+          font-size: 0.75rem;
+          color: #a0a0a0;
+          white-space: nowrap;
+          flex-shrink: 0;
+        }
       }
     }
 
@@ -125,6 +148,74 @@
 
       img {
         filter: grayscale(50%);
+      }
+    }
+
+    // Conversation expirée - bordure jaune sur la photo
+    .conversation-card.expired .avatar-wrapper img {
+      border: 3px solid #ffc122;
+      box-shadow: 0 0 8px rgba(255, 193, 34, 0.4);
+    }
+
+    // Conversation permanente - bordure violet foncé sur la photo
+    .conversation-card.permanent .avatar-wrapper img {
+      border: 3px solid #6c47b6;
+      box-shadow: 0 0 8px rgba(108, 71, 182, 0.4);
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      flex-shrink: 0;
+
+      img {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #e0d7ff;
+        background: #fff;
+      }
+
+      .heart-badge {
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        font-size: 1.2rem;
+        background: #fff;
+        border-radius: 50%;
+        padding: 2px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      }
+    }
+
+    // Indicateur de type de conversation (permanent/éphémère)
+    .conversation-type-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border-radius: 8px;
+      flex-shrink: 0;
+
+      .type-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      &.permanent {
+        background: rgba(108, 71, 182, 0.1);
+
+        .type-icon {
+          stroke: #6c47b6;
+        }
+      }
+
+      &.ephemeral {
+        background: rgba(255, 193, 34, 0.15);
+
+        .type-icon {
+          stroke: #d9a000;
+        }
       }
     }
 
