@@ -5,8 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Saloons',
   webDir: 'dist/frontend/browser',
   server: {
-    url: 'http://localhost:4200',
-    cleartext: true,
+    androidScheme: 'https',
   },
 };
 

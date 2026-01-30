@@ -1,6 +1,42 @@
 <div class="map-container">
   <div id="map" class="map-element"></div>
 
+  <!-- Écran explicatif avant demande de permission -->
+  @if (geoLocationStatus === 'prompt') {
+  <div class="location-overlay">
+    <div class="location-card">
+      <h3>Localisation requise</h3>
+      <p>
+        Saloons utilise votre position pour afficher les lieux proches et vous permettre d’entrer
+        dans un saloon.
+      </p>
+      <button type="button" class="primary-btn" (click)="requestLocation()">
+        Activer la localisation
+      </button>
+    </div>
+  </div>
+  }
+
+  @if (geoLocationStatus === 'denied' || geoLocationStatus === 'unavailable') {
+  <div class="location-overlay">
+    <div class="location-card">
+      <h3>Localisation indisponible</h3>
+      <p>
+        Impossible d'accéder à votre position. Activez la géolocalisation pour entrer dans un
+        saloon.
+      </p>
+      <div class="location-actions">
+        <button type="button" class="primary-btn" (click)="requestLocation()">
+          Activer la localisation
+        </button>
+        <button type="button" class="secondary-btn" (click)="openLocationSettings()">
+          Ouvrir les réglages
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
   <!-- Bouton recentrer sur ma position -->
   <button type="button" class="center-btn" (click)="centerOnUser()" title="Me localiser">
     <svg
@@ -27,6 +63,8 @@
   [saloon]="selectedSaloon"
   [userLat]="userLat"
   [userLng]="userLng"
+  [geoLocationStatus]="geoLocationStatus"
+  (requestLocation)="requestLocation()"
   (closed)="closeModal()"
 >
 </app-saloon-modal>

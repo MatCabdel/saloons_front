@@ -44,6 +44,7 @@ export class EditSaloonPageComponent implements OnInit {
     longitude: [null, [Validators.required, Validators.min(-180), Validators.max(180)]],
     radiusMeters: [100, [Validators.min(10), Validators.max(100000)]],
     type: ['BAR', Validators.required],
+    isPrivate: [false],
   });
 
   ngOnInit(): void {
@@ -75,6 +76,7 @@ export class EditSaloonPageComponent implements OnInit {
           longitude: saloon.longitude,
           radiusMeters: saloon.radiusMeters || 100,
           type: saloon.type || 'BAR',
+          isPrivate: saloon.isPrivate ?? false,
         });
 
         this.isLoading = false;
@@ -130,6 +132,7 @@ export class EditSaloonPageComponent implements OnInit {
       formData.append('longitude', this.saloonForm.get('longitude')?.value);
       formData.append('radiusMeters', this.saloonForm.get('radiusMeters')?.value || '100');
       formData.append('type', this.saloonForm.get('type')?.value || 'BAR');
+      formData.append('isPrivate', this.saloonForm.get('isPrivate')?.value ? 'true' : 'false');
 
       this._adminService.updateSaloonWithImage(this.saloonId, formData).subscribe({
         next: () => {
@@ -155,6 +158,7 @@ export class EditSaloonPageComponent implements OnInit {
         longitude: this.saloonForm.get('longitude')?.value,
         radiusMeters: this.saloonForm.get('radiusMeters')?.value || 100,
         type: this.saloonForm.get('type')?.value || 'BAR',
+        isPrivate: this.saloonForm.get('isPrivate')?.value || false,
       };
 
       this._adminService.updateSaloon(this.saloonId, saloonData).subscribe({
@@ -184,6 +188,7 @@ export class EditSaloonPageComponent implements OnInit {
         longitude: this.saloon.longitude,
         radiusMeters: this.saloon.radiusMeters || 100,
         type: this.saloon.type || 'BAR',
+        isPrivate: this.saloon.isPrivate ?? false,
       });
       this.selectedFile = null;
       this.imagePreview = this.originalImageUrl;

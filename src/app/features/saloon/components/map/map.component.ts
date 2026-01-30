@@ -26,6 +26,7 @@ export class MapComponent implements OnInit, OnDestroy {
   selectedSaloon: SaloonMapItem | null = null;
   userLat: number | null = null;
   userLng: number | null = null;
+  geoLocationStatus: 'prompt' | 'loading' | 'granted' | 'denied' | 'unavailable' = 'prompt';
 
   private _customIcon = L.icon({
     iconUrl: 'assets/icons/mapmarker.svg',
@@ -48,7 +49,7 @@ export class MapComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.configMap();
     this._loadSaloons();
-    this._getUserLocation();
+    this._maybeAutoFetchLocation();
   }
 
   ngOnDestroy(): void {
@@ -90,10 +91,11 @@ export class MapComponent implements OnInit, OnDestroy {
       city: saloon.city || '',
       latitude: saloon.latitude || 0,
       longitude: saloon.longitude || 0,
-      radiusMeters: saloon.radiusMeters || 50000, // 50km pour les tests
+      radiusMeters: saloon.radiusMeters || 100,
       distanceMeters: null,
       connectedCount: saloon.visitorNumber || saloon.visitors || 0,
       type: saloon.type,
+      isPrivate: saloon.isPrivate,
     };
   }
 
@@ -135,10 +137,12 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private _getUserLocation(): void {
     if ('geolocation' in navigator) {
+      this.geoLocationStatus = 'loading';
       navigator.geolocation.getCurrentPosition(
         position => {
           this.userLat = position.coords.latitude;
           this.userLng = position.coords.longitude;
+          this.geoLocationStatus = 'granted';
 
           // Mettre à jour les distances
           this._updateDistances();
@@ -151,8 +155,15 @@ export class MapComponent implements OnInit, OnDestroy {
         },
         error => {
           console.warn('Géolocalisation non disponible:', error.message);
+          if (error.code === error.PERMISSION_DENIED) {
+            this.geoLocationStatus = 'denied';
+          } else {
+            this.geoLocationStatus = 'unavailable';
+          }
         }
       );
+    } else {
+      this.geoLocationStatus = 'unavailable';
     }
   }
 
@@ -178,7 +189,7 @@ export class MapComponent implements OnInit, OnDestroy {
       this.map.setView([this.userLat, this.userLng], 15);
     } else {
       // Si pas de position, demander à nouveau
-      this._getUserLocation();
+      this.requestLocation();
     }
   }
 
@@ -225,5 +236,30 @@ export class MapComponent implements OnInit, OnDestroy {
   closeModal(): void {
     this.showModal = false;
     this.selectedSaloon = null;
+  }
+
+  requestLocation(): void {
+    localStorage.setItem('saloons_location_prompted', 'true');
+    this._getUserLocation();
+  }
+
+  openLocationSettings(): void {
+    window.location.href = 'app-settings:';
+  }
+
+  private _maybeAutoFetchLocation(): void {
+    if (!('permissions' in navigator) || !navigator.permissions?.query) {
+      return;
+    }
+    navigator.permissions
+      .query({ name: 'geolocation' as PermissionName })
+      .then(result => {
+        if (result.state === 'granted' && localStorage.getItem('saloons_location_prompted')) {
+          this._getUserLocation();
+        }
+      })
+      .catch(() => {
+        // Ignore permissions API errors
+      });
   }
 }

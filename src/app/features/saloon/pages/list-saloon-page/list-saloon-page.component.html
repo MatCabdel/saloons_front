@@ -1,4 +1,19 @@
 <div class="list-saloons-container">
+  <!-- Écran explicatif avant demande de permission -->
+  @if (geoLocationStatus() === 'prompt') {
+  <div class="location-message prompt">
+    <i class="fas fa-location-arrow"></i>
+    <h3>Localisation requise</h3>
+    <p>
+      Saloons utilise votre position pour afficher les lieux proches et vous permettre d’entrer
+      dans un saloon.
+    </p>
+    <button type="button" class="primary-btn" (click)="requestLocation()">
+      Activer la localisation
+    </button>
+  </div>
+  }
+
   <!-- Message si géolocalisation en cours -->
   @if (geoLocationStatus() === 'loading') {
   <div class="location-message loading">
@@ -16,6 +31,14 @@
       Pour voir les saloons près de vous, veuillez autoriser l'accès à votre position dans les
       paramètres de votre navigateur.
     </p>
+    <div class="location-actions">
+      <button type="button" class="primary-btn" (click)="requestLocation()">
+        Activer la localisation
+      </button>
+      <button type="button" class="secondary-btn" (click)="openLocationSettings()">
+        Ouvrir les réglages
+      </button>
+    </div>
   </div>
   }
 
@@ -28,11 +51,19 @@
       Impossible de déterminer votre position. Vérifiez que la géolocalisation est activée sur votre
       appareil.
     </p>
+    <div class="location-actions">
+      <button type="button" class="primary-btn" (click)="requestLocation()">
+        Activer la localisation
+      </button>
+      <button type="button" class="secondary-btn" (click)="openLocationSettings()">
+        Ouvrir les réglages
+      </button>
+    </div>
   </div>
   }
 
-  <!-- Liste des saloons si position disponible -->
-  @if (geoLocationStatus() === 'granted') {
+  <!-- Liste des saloons si position disponible OU reviewer/admin -->
+  @if (geoLocationStatus() === 'granted' || isReviewerOrAdmin) {
   <!-- Filtres par type -->
   <div class="filters-section">
     <div class="filters-grid">
@@ -51,6 +82,17 @@
   </div>
 
   @if (saloons$ | async; as saloons) { @if (saloons.length > 0) {
+  @if (geoLocationStatus() !== 'granted' && isReviewerOrAdmin) {
+  <div class="location-message info">
+    <i class="fas fa-info-circle"></i>
+    <p>
+      Accès reviewer/admin : les saloons privés sont visibles même sans localisation.
+    </p>
+    <button type="button" class="primary-btn" (click)="requestLocation()">
+      Activer la localisation
+    </button>
+  </div>
+  }
   <p class="saloons-count">
     <span class="count">{{ filteredSaloonsCount() }}</span> saloon{{
       filteredSaloonsCount() > 1 ? 's' : ''
@@ -117,6 +159,8 @@
   [saloon]="selectedSaloon"
   [userLat]="userLat"
   [userLng]="userLng"
+  [geoLocationStatus]="geoLocationStatus()"
+  (requestLocation)="requestLocation()"
   (closed)="closeModal()"
 >
 </app-saloon-modal>

@@ -468,6 +468,36 @@
   }
 }
 
+.cell-private {
+  .privacy-badge {
+    padding: 0.35rem 0.75rem;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &.private {
+      background: rgba(120, 124, 255, 0.2);
+      color: #a6a9ff;
+
+      &:hover {
+        background: rgba(120, 124, 255, 0.3);
+      }
+    }
+
+    &.public {
+      background: rgba(46, 213, 115, 0.2);
+      color: #2ed573;
+
+      &:hover {
+        background: rgba(46, 213, 115, 0.3);
+      }
+    }
+  }
+}
+
 .cell-status {
   .status-badge {
     padding: 0.35rem 0.75rem;
@@ -978,6 +1008,26 @@
       &.has-users {
         background: linear-gradient(135deg, rgba(240, 147, 251, 0.2), rgba(245, 87, 108, 0.2));
         color: #f093fb;
+      }
+    }
+
+    .privacy-badge {
+      padding: 0.3rem 0.7rem;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &.private {
+        background: rgba(120, 124, 255, 0.2);
+        color: #a6a9ff;
+      }
+
+      &.public {
+        background: rgba(46, 213, 115, 0.2);
+        color: #2ed573;
       }
     }
 

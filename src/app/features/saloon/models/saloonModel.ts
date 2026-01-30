@@ -21,6 +21,7 @@ export type Saloon = {
   city?: string;
   radiusMeters?: number;
   isActive?: boolean;
+  isPrivate?: boolean;
   connectedCount?: number;
   type?: SaloonType;
   typeDisplayName?: string;

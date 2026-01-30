@@ -54,8 +54,15 @@
       </svg>
     </button>
 
+    @if (users$ | async; as users) {
+    @if (users.length === 0) {
+    <div class="empty-visitors">
+      <p>Vous êtes le premier arrivé 🎉</p>
+      <p class="hint">Invitez vos amis ou revenez plus tard pour rencontrer du monde.</p>
+    </div>
+    } @else {
     <div class="list-visitor">
-      @for (user of users$ | async; track user.id) {
+      @for (user of users; track user.id) {
       <div class="visitor-card-container">
         <app-visitor-card
           [user]="user"
@@ -64,6 +71,7 @@
       </div>
       }
     </div>
+    } }
     }
     <!-- Bouton quitter en bas du container blanc -->
     <app-countdown-timer></app-countdown-timer>

@@ -39,6 +39,7 @@ export class CreateSaloonPageComponent {
     longitude: [null, [Validators.required, Validators.min(-180), Validators.max(180)]],
     radiusMeters: [100, [Validators.min(10), Validators.max(100000)]],
     type: ['BAR', Validators.required],
+    isPrivate: [false],
   });
 
   onFileSelected(event: Event): void {
@@ -86,6 +87,7 @@ export class CreateSaloonPageComponent {
     formData.append('longitude', this.saloonForm.get('longitude')?.value);
     formData.append('radiusMeters', this.saloonForm.get('radiusMeters')?.value || '100');
     formData.append('type', this.saloonForm.get('type')?.value || 'BAR');
+    formData.append('isPrivate', this.saloonForm.get('isPrivate')?.value ? 'true' : 'false');
 
     this._adminService.createSaloonWithImage(formData).subscribe({
       next: () => {
@@ -107,6 +109,7 @@ export class CreateSaloonPageComponent {
       country: 'France',
       radiusMeters: 100,
       type: 'BAR',
+      isPrivate: false,
     });
     this.selectedFile = null;
     this.imagePreview = null;

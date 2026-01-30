@@ -132,11 +132,26 @@
         </button>
         } @else {
         <!-- Peut rejoindre -->
+        @if (!isLocationGranted && !canJoinWithoutLocation) {
+        <div class="error-message">
+          {{ locationStatusMessage }}
+        </div>
+        <div class="location-actions">
+          <button type="button" class="btn btn-primary" (click)="requestGeolocation()">
+            Activer la localisation
+          </button>
+          @if (isLocationBlocked) {
+          <button type="button" class="btn btn-secondary" (click)="openLocationSettings()">
+            Ouvrir les réglages
+          </button>
+          }
+        </div>
+        }
         <button
           type="button"
           class="btn btn-primary"
           (click)="joinSaloon()"
-          [disabled]="isLoading || isTooFar"
+          [disabled]="isLoading || isTooFar || (!isLocationGranted && !canJoinWithoutLocation)"
         >
           @if (isLoading) {
           <span class="spinner"></span>

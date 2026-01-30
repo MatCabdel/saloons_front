@@ -43,6 +43,27 @@ $text-light: #888;
       flex: 1;
     }
 
+    .empty-visitors {
+      background: rgba($gradient-top, 0.06);
+      border: 1px dashed rgba($gradient-bottom, 0.35);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      color: $gradient-top;
+      margin: 8px 0 16px;
+
+      p {
+        margin: 0;
+        font-weight: 600;
+      }
+
+      .hint {
+        margin-top: 8px;
+        font-weight: 400;
+        color: $text-light;
+      }
+    }
+
     .visitor-card-container {
       width: 50%;
       box-sizing: border-box;

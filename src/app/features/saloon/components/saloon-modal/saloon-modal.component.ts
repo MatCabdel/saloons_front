@@ -18,6 +18,7 @@ import { SaloonPresenceRealtimeService } from '../../services/saloon-presence-re
 import { SALOON_TYPE_LABELS } from '../../models/saloonModel';
 import { ConfirmLeaveModalComponent } from '../confirm-leave-modal/confirm-leave-modal.component';
 import { FirebaseAuthService } from 'src/app/features/auth/services/firebase-auth.service';
+import { AuthApiService } from 'src/app/features/auth/services/auth-api.service';
 
 @Component({
   selector: 'app-saloon-modal',
@@ -30,7 +31,9 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
   @Input() saloon: SaloonMapItem | null = null;
   @Input() userLat: number | null = null;
   @Input() userLng: number | null = null;
+  @Input() geoLocationStatus: 'prompt' | 'loading' | 'granted' | 'denied' | 'unavailable' = 'prompt';
   @Output() closed = new EventEmitter<void>();
+  @Output() requestLocation = new EventEmitter<void>();
 
   isLoading = false;
   errorMessage = '';
@@ -46,10 +49,43 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
   private _presenceWsService = inject(PresenceWebSocketService);
   private _presenceRealtimeService = inject(SaloonPresenceRealtimeService);
   private _authService = inject(FirebaseAuthService);
+  private _authApiService = inject(AuthApiService);
   private _router = inject(Router);
 
   get isPremium(): boolean {
     return this._authService.currentUser()?.isPremium ?? false;
+  }
+
+  get isLocationGranted(): boolean {
+    return this.geoLocationStatus === 'granted';
+  }
+
+  get isLocationBlocked(): boolean {
+    return this.geoLocationStatus === 'denied' || this.geoLocationStatus === 'unavailable';
+  }
+
+  get locationStatusMessage(): string {
+    switch (this.geoLocationStatus) {
+      case 'loading':
+        return 'Recherche de votre position...';
+      case 'denied':
+        return "La géolocalisation est désactivée. Activez-la pour entrer.";
+      case 'unavailable':
+        return "Position indisponible. Activez la géolocalisation pour entrer.";
+      case 'prompt':
+        return "Activez la localisation pour entrer dans un saloon.";
+      default:
+        return '';
+    }
+  }
+
+  get isReviewerOrAdmin(): boolean {
+    const roles = this._authApiService.getUserRoles();
+    return roles.includes('ROLE_REVIEWER') || roles.includes('ROLE_ADMIN');
+  }
+
+  get canJoinWithoutLocation(): boolean {
+    return this.isReviewerOrAdmin && this.saloon?.isPrivate === true;
   }
 
   ngOnInit(): void {
@@ -158,6 +194,14 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
       });
   }
 
+  requestGeolocation(): void {
+    this.requestLocation.emit();
+  }
+
+  openLocationSettings(): void {
+    window.location.href = 'app-settings:';
+  }
+
   /**
    * Revenir au saloon (sans rejoindre, juste naviguer)
    */
@@ -222,6 +266,9 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
     // Temporairement désactivé pour les tests
     // Si pas de position utilisateur, on autorise l'entrée (le backend validera)
     if (!this.saloon || !this.saloon.distanceMeters || !this.saloon.radiusMeters) {
+      return false;
+    }
+    if (this.saloon.isPrivate === true && this.isReviewerOrAdmin) {
       return false;
     }
     return this.saloon.distanceMeters > this.saloon.radiusMeters;
