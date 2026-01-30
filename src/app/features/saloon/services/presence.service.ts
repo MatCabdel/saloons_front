@@ -62,6 +62,7 @@ export type SaloonMapItem = {
   distanceMeters: number | null;
   connectedCount: number;
   type?: SaloonType;
+  isPrivate?: boolean;
 };
 
 export type PresenceEvent = {

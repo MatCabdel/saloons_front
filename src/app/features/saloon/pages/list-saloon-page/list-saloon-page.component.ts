@@ -16,6 +16,7 @@ import { SaloonApiService } from '../../services/saloon-api.service';
 import { SaloonModalComponent } from '../../components/saloon-modal/saloon-modal.component';
 import { SaloonMapItem, PresenceService } from '../../services/presence.service';
 import { SaloonPresenceRealtimeService } from '../../services/saloon-presence-realtime.service';
+import { AuthApiService } from 'src/app/features/auth/services/auth-api.service';
 
 // Distance maximale pour afficher les saloons (en mètres)
 const MAX_DISTANCE_METERS = 50000; // 50km
@@ -50,6 +51,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   private _presenceRealtimeService = inject(SaloonPresenceRealtimeService);
   private _presenceService = inject(PresenceService);
   private _router = inject(Router);
+  private _authApiService = inject(AuthApiService);
   private _destroy$ = new Subject<void>();
 
   // Position utilisateur
@@ -59,7 +61,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   private _refreshTrigger$ = new BehaviorSubject<void>(undefined);
 
   // État de la géolocalisation
-  geoLocationStatus = signal<'loading' | 'granted' | 'denied' | 'unavailable'>('loading');
+  geoLocationStatus = signal<'prompt' | 'loading' | 'granted' | 'denied' | 'unavailable'>('prompt');
   totalSaloonsCount = signal<number>(0);
 
   // Filtres
@@ -76,6 +78,11 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   // Modal
   showModal = false;
   selectedSaloon: SaloonMapItem | null = null;
+
+  get isReviewerOrAdmin(): boolean {
+    const roles = this._authApiService.getUserRoles();
+    return roles.includes('ROLE_REVIEWER') || roles.includes('ROLE_ADMIN');
+  }
 
   // Saloons triés par distance avec mise à jour temps réel de la présence
   // Filtrés à MAX_DISTANCE_METERS (50km) de l'utilisateur
@@ -112,11 +119,22 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
       });
 
       // Filtrer les saloons à moins de MAX_DISTANCE_METERS (50km)
-      let filteredSaloons = position
-        ? saloonsWithDistance.filter(
-            saloon => saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
-          )
-        : [];
+      // Exception: reviewers/admins voient les saloons privés même s'ils sont loin
+      let filteredSaloons = [] as (Saloon & { distanceMeters: number | null })[];
+      if (position) {
+        filteredSaloons = this.isReviewerOrAdmin
+          ? saloonsWithDistance.filter(saloon =>
+              saloon.isPrivate === true
+                ? true
+                : saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
+            )
+          : saloonsWithDistance.filter(
+              saloon => saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
+            );
+      } else if (this.isReviewerOrAdmin) {
+        // Sans position, montrer uniquement les privés pour les reviewers/admins
+        filteredSaloons = saloonsWithDistance.filter(saloon => saloon.isPrivate === true);
+      }
 
       // Appliquer le filtre par type
       if (filter !== 'ALL' && filter !== 'CHAUD') {
@@ -153,7 +171,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   );
 
   ngOnInit(): void {
-    this._getUserLocation();
+    this._maybeAutoFetchLocation();
     // Connecter au WebSocket pour les mises à jour temps réel
     this._presenceRealtimeService.connect();
     // Charger la session active de l'utilisateur (pour savoir s'il est dans un saloon)
@@ -170,6 +188,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
 
   private _getUserLocation(): void {
     if ('geolocation' in navigator) {
+      this.geoLocationStatus.set('loading');
       navigator.geolocation.getCurrentPosition(
         position => {
           this.userLat = position.coords.latitude;
@@ -189,6 +208,31 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
     } else {
       this.geoLocationStatus.set('unavailable');
     }
+  }
+
+  requestLocation(): void {
+    localStorage.setItem('saloons_location_prompted', 'true');
+    this._getUserLocation();
+  }
+
+  openLocationSettings(): void {
+    window.location.href = 'app-settings:';
+  }
+
+  private _maybeAutoFetchLocation(): void {
+    if (!('permissions' in navigator) || !navigator.permissions?.query) {
+      return;
+    }
+    navigator.permissions
+      .query({ name: 'geolocation' as PermissionName })
+      .then(result => {
+        if (result.state === 'granted' && localStorage.getItem('saloons_location_prompted')) {
+          this._getUserLocation();
+        }
+      })
+      .catch(() => {
+        // Ignore permissions API errors
+      });
   }
 
   private _calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -219,10 +263,11 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
       city: saloon.city || '',
       latitude: saloon.latitude || 0,
       longitude: saloon.longitude || 0,
-      radiusMeters: saloon.radiusMeters || 50000, // Pour les tests
+      radiusMeters: saloon.radiusMeters || 100,
       distanceMeters: saloon.distanceMeters,
       connectedCount: saloon.connectedCount || saloon.visitorNumber || 0,
       type: saloon.type,
+      isPrivate: saloon.isPrivate,
     };
     this.showModal = true;
   }

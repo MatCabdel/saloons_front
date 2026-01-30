@@ -48,6 +48,7 @@ export type CreateSaloonRequest = {
   latitude: number;
   longitude: number;
   radiusMeters?: number;
+  isPrivate?: boolean;
 };
 
 // Types for paginated responses
@@ -165,6 +166,10 @@ export class AdminService {
 
   toggleSaloonActive(id: number): Observable<Saloon> {
     return this._http.patch<Saloon>(`${this._BASE_URL}/admin/saloon/${id}/toggle-active`, {});
+  }
+
+  toggleSaloonPrivate(id: number): Observable<Saloon> {
+    return this._http.patch<Saloon>(`${this._BASE_URL}/admin/saloon/${id}/toggle-private`, {});
   }
 
   deleteSaloon(id: number): Observable<void> {

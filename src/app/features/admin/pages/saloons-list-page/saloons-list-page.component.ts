@@ -161,6 +161,25 @@ export class SaloonsListPageComponent implements OnInit {
     });
   }
 
+  togglePrivate(saloon: Saloon): void {
+    this._adminService.toggleSaloonPrivate(saloon.id).subscribe({
+      next: updated => {
+        this.saloons.update(list => {
+          const index = list.findIndex(s => s.id === saloon.id);
+          if (index !== -1) {
+            const newList = [...list];
+            newList[index] = { ...list[index], ...updated };
+            return newList;
+          }
+          return list;
+        });
+      },
+      error: err => {
+        console.error('Erreur toggle private:', err);
+      },
+    });
+  }
+
   confirmDeleteSaloon(saloon: Saloon): void {
     this.saloonToDelete.set(saloon);
     this.showDeleteModal.set(true);

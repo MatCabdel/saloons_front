@@ -124,6 +124,7 @@
           <th>Adresse</th>
           <th>Coordonnées</th>
           <th>Connectés</th>
+          <th>Privé</th>
           <th>Statut</th>
           <th>Actions</th>
         </tr>
@@ -166,6 +167,17 @@
               </svg>
               {{ saloon.connectedCount || 0 }}
             </span>
+          </td>
+          <td class="cell-private">
+            <button
+              type="button"
+              class="privacy-badge"
+              [class.private]="saloon.isPrivate === true"
+              [class.public]="saloon.isPrivate !== true"
+              (click)="togglePrivate(saloon)"
+            >
+              {{ saloon.isPrivate === true ? 'Privé' : 'Public' }}
+            </button>
           </td>
           <td class="cell-status">
             <button
@@ -409,6 +421,15 @@
             </svg>
             {{ saloon.connectedCount || 0 }} en ligne
           </span>
+          <button
+            type="button"
+            class="privacy-badge"
+            [class.private]="saloon.isPrivate === true"
+            [class.public]="saloon.isPrivate !== true"
+            (click)="togglePrivate(saloon); $event.stopPropagation()"
+          >
+            {{ saloon.isPrivate === true ? 'Privé' : 'Public' }}
+          </button>
           <button
             type="button"
             class="status-badge"
