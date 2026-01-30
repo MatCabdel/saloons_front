@@ -49,8 +49,17 @@ export class UsersListPageComponent implements OnInit {
   userToDelete = signal<User | null>(null);
   deleting = signal(false);
 
+  // Role update state
+  updatingUserRoles = signal<Set<number>>(new Set());
+
   // Mobile expanded cards
   expandedUserIds = signal<Set<number>>(new Set());
+
+  readonly roleOptions = [
+    { label: 'user', value: 'ROLE_USER' },
+    { label: 'reviewer', value: 'ROLE_REVIEWER' },
+    { label: 'admin', value: 'ROLE_ADMIN' },
+  ];
 
   ngOnInit(): void {
     this.loadUsers();
@@ -230,5 +239,38 @@ export class UsersListPageComponent implements OnInit {
         console.error('Erreur lors du toggle premium:', err);
       },
     });
+  }
+
+  onRoleChange(user: User, role: string): void {
+    if (!role || role === user.role) {
+      return;
+    }
+
+    this.updatingUserRoles.update(ids => new Set(ids).add(user.id));
+
+    this._adminService.updateUserRole(user.id, role).subscribe({
+      next: updatedUser => {
+        this.users.update(users =>
+          users.map(u => (u.id === user.id ? { ...u, role: updatedUser.role } : u))
+        );
+        this.updatingUserRoles.update(ids => {
+          const next = new Set(ids);
+          next.delete(user.id);
+          return next;
+        });
+      },
+      error: (err: unknown) => {
+        console.error('Erreur lors de la mise à jour du rôle:', err);
+        this.updatingUserRoles.update(ids => {
+          const next = new Set(ids);
+          next.delete(user.id);
+          return next;
+        });
+      },
+    });
+  }
+
+  isUpdatingRole(userId: number): boolean {
+    return this.updatingUserRoles().has(userId);
   }
 }

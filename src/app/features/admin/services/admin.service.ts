@@ -186,4 +186,8 @@ export class AdminService {
       {}
     );
   }
+
+  updateUserRole(id: number, role: string): Observable<User> {
+    return this._http.patch<User>(`${this._BASE_URL}/admin/user/${id}/role`, { role });
+  }
 }

@@ -115,6 +115,7 @@
           <th>Âge</th>
           <th>Dernière connexion</th>
           <th>Statut</th>
+          <th>Rôle</th>
           <th>Premium</th>
           <th>Actions</th>
         </tr>
@@ -150,6 +151,23 @@
             } @else {
             <span class="badge badge-warning">Incomplet</span>
             }
+          </td>
+          <td class="cell-role">
+            <div class="role-select-wrapper">
+              <select
+                class="role-select"
+                [ngModel]="user.role || 'ROLE_USER'"
+                (ngModelChange)="onRoleChange(user, $event)"
+                [disabled]="isUpdatingRole(user.id)"
+              >
+                @for (option of roleOptions; track option.value) {
+                <option [ngValue]="option.value">{{ option.label }}</option>
+                }
+              </select>
+              @if (isUpdatingRole(user.id)) {
+              <span class="role-saving">...</span>
+              }
+            </div>
           </td>
           <td class="cell-premium">
             <button
@@ -351,6 +369,19 @@
         <div class="user-info-item">
           <span class="info-label">Dernière connexion</span>
           <span class="info-value">{{ formatLastLogin(user.lastLoginAt) }}</span>
+        </div>
+        <div class="user-info-item role-item">
+          <span class="info-label">Rôle</span>
+          <select
+            class="role-select"
+            [ngModel]="user.role || 'ROLE_USER'"
+            (ngModelChange)="onRoleChange(user, $event)"
+            [disabled]="isUpdatingRole(user.id)"
+          >
+            @for (option of roleOptions; track option.value) {
+            <option [ngValue]="option.value">{{ option.label }}</option>
+            }
+          </select>
         </div>
       </div>
       <div class="user-card-actions">
