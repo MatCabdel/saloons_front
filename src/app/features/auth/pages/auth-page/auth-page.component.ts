@@ -1,10 +1,11 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { FirebaseAuthService } from '../../services/firebase-auth.service';
 import { environment } from 'src/environments/environment';
 import { LEGAL_NOTICES_TEXT, PRIVACY_POLICY_TEXT, TERMS_TEXT } from '../../legal/legal-texts';
+import { Capacitor } from '@capacitor/core';
 
 type AuthMode = 'register' | 'login' | 'register-email';
 
@@ -50,6 +51,16 @@ export class AuthPageComponent implements OnInit {
       this.mode.set('login');
     } else {
       this.mode.set('register');
+    }
+
+    if (this._isNativePlatform()) {
+      effect(() => {
+        const user = this._firebaseAuth.currentUser();
+        if (!user) {
+          return;
+        }
+        this._handleAuthSuccess(false, user.profileStatus, user.role);
+      });
     }
   }
 
@@ -118,6 +129,9 @@ export class AuthPageComponent implements OnInit {
     this._firebaseAuth.signInWithGoogle().subscribe({
       next: response => {
         this.isLoading.set(false);
+        if (!response) {
+          return;
+        }
         this._handleAuthSuccess(response.newUser, response.user.profileStatus, response.user.role);
       },
       error: err => {
@@ -142,6 +156,9 @@ export class AuthPageComponent implements OnInit {
     this._firebaseAuth.signInWithFacebook().subscribe({
       next: response => {
         this.isLoading.set(false);
+        if (!response) {
+          return;
+        }
         this._handleAuthSuccess(response.newUser, response.user.profileStatus, response.user.role);
       },
       error: err => {
@@ -290,6 +307,10 @@ export class AuthPageComponent implements OnInit {
     }
 
     return 'Une erreur est survenue. Veuillez réessayer.';
+  }
+
+  private _isNativePlatform(): boolean {
+    return Capacitor.isNativePlatform();
   }
 
   isFieldInvalid(form: FormGroup, fieldName: string): boolean {

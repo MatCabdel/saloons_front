@@ -11,19 +11,20 @@ import { environment } from '../environments/environment';
 })
 export class AppComponent implements OnInit {
   apiStatus = signal<'checking' | 'ok' | 'offline'>('checking');
+  private readonly _apiCheckTimeoutMs = 5000;
 
   ngOnInit(): void {
-    this.checkApiReachability();
+    this._checkApiReachability();
   }
 
   async retryApi(): Promise<void> {
-    await this.checkApiReachability();
+    await this._checkApiReachability();
   }
 
-  private async checkApiReachability(): Promise<void> {
+  private async _checkApiReachability(): Promise<void> {
     this.apiStatus.set('checking');
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+    const timeout = setTimeout(() => controller.abort(), this._apiCheckTimeoutMs);
 
     try {
       await fetch(environment.apiUrl, {

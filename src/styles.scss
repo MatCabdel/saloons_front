@@ -37,6 +37,13 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
+input,
+textarea,
+select,
+button {
+  font-size: 16px !important;
+}
+
 :root {
   --safe-top: env(safe-area-inset-top);
   --safe-right: env(safe-area-inset-right);
