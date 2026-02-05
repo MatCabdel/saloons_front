@@ -24,9 +24,12 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeRole</key>
-			<string>None</string>
+			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
-			<array/>
+			<array>
+				<string>com.saloons.app</string>
+				<string>com.googleusercontent.apps.575950337220-ld8lbbqd0fv4dfjp9bfh2u6n07sn6fgo</string>
+			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>

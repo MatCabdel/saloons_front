@@ -13,7 +13,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent } from 'src/app/common/components/header/header.component';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { SaloonApiService } from '../../services/saloon-api.service';
-import { SaloonChatService, SaloonMessageDTO, CHAT_MIN_PARTICIPANTS } from '../../services/saloon-chat.service';
+import {
+  SaloonChatService,
+  SaloonMessageDTO,
+  CHAT_MIN_PARTICIPANTS,
+} from '../../services/saloon-chat.service';
 import { Observable, Subscription } from 'rxjs';
 import { Saloon } from '../../models/saloonModel';
 import { PresenceService } from '../../services/presence.service';
@@ -98,12 +102,14 @@ export class SaloonChatPageComponent implements OnInit, OnDestroy, AfterViewChec
     // Présence du saloon (nombre de connectés dans le saloon, pas seulement dans le chat)
     this._presenceService.getPresence(this.saloonId).subscribe();
     this._presenceWsService.connect(this.saloonId);
-    this._saloonPresenceSubscription = this._presenceService.currentPresence$.subscribe(presence => {
-      if (presence) {
-        this.connectedCount = presence.connectedCount;
-        this.isChatEnabled = this.connectedCount >= CHAT_MIN_PARTICIPANTS;
+    this._saloonPresenceSubscription = this._presenceService.currentPresence$.subscribe(
+      presence => {
+        if (presence) {
+          this.connectedCount = presence.connectedCount;
+          this.isChatEnabled = this.connectedCount >= CHAT_MIN_PARTICIPANTS;
+        }
       }
-    });
+    );
 
     // S'abonner aux nouveaux messages via WebSocket
     this._messageSubscription = this._chatService.messages$.subscribe(message => {
