@@ -1,4 +1,4 @@
-import { environment } from './environment.production';
+import { environment } from './environment';
 
 export const verifyEnvironment = (): void => {
   const ALLOWED_ENVIRONMENTS: string[] = ['development', 'staging', 'production'];

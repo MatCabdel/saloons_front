@@ -3,13 +3,16 @@ import { inject, Injectable, signal } from '@angular/core';
 import {
   Auth,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   FacebookAuthProvider,
   signOut,
   User as FirebaseUser,
 } from '@angular/fire/auth';
+import { Capacitor } from '@capacitor/core';
 import { Router } from '@angular/router';
-import { Observable, from, tap, switchMap, map } from 'rxjs';
+import { EMPTY, Observable, from, tap, switchMap, map, catchError, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { UserStoreService } from '../../user/store/user-store.service';
 
@@ -61,6 +64,7 @@ export class FirebaseAuthService {
 
   constructor() {
     this._loadUserFromStorage();
+    this._handleRedirectResult();
   }
 
   private _loadUserFromStorage(): void {
@@ -84,6 +88,16 @@ export class FirebaseAuthService {
     this.isLoading.set(true);
     const provider = new GoogleAuthProvider();
 
+    if (this._isNativePlatform()) {
+      return from(signInWithRedirect(this._auth, provider)).pipe(
+        switchMap(() => EMPTY as Observable<AuthResponse>),
+        catchError(error => {
+          this.isLoading.set(false);
+          return throwError(() => error);
+        })
+      );
+    }
+
     return from(signInWithPopup(this._auth, provider)).pipe(
       switchMap(result => this._authenticateWithBackend(result.user)),
       tap(response => this._handleAuthResponse(response)),
@@ -97,6 +111,16 @@ export class FirebaseAuthService {
   signInWithFacebook(): Observable<AuthResponse> {
     this.isLoading.set(true);
     const provider = new FacebookAuthProvider();
+
+    if (this._isNativePlatform()) {
+      return from(signInWithRedirect(this._auth, provider)).pipe(
+        switchMap(() => EMPTY as Observable<AuthResponse>),
+        catchError(error => {
+          this.isLoading.set(false);
+          return throwError(() => error);
+        })
+      );
+    }
 
     return from(signInWithPopup(this._auth, provider)).pipe(
       switchMap(result => this._authenticateWithBackend(result.user)),
@@ -192,6 +216,35 @@ export class FirebaseAuthService {
         this._http.post<AuthResponse>(`${this._BASE_URL}/auth/firebase`, { firebaseToken })
       )
     );
+  }
+
+  private _handleRedirectResult(): void {
+    if (!this._isNativePlatform()) {
+      return;
+    }
+
+    from(getRedirectResult(this._auth))
+      .pipe(
+        switchMap(result => {
+          if (!result?.user) {
+            return EMPTY;
+          }
+          this.isLoading.set(true);
+          return this._authenticateWithBackend(result.user).pipe(
+            tap(response => this._handleAuthResponse(response)),
+            tap(() => this.isLoading.set(false))
+          );
+        })
+      )
+      .subscribe({
+        error: () => {
+          this.isLoading.set(false);
+        },
+      });
+  }
+
+  private _isNativePlatform(): boolean {
+    return Capacitor.isNativePlatform();
   }
 
   /**

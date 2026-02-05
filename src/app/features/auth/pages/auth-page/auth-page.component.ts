@@ -4,11 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { FirebaseAuthService } from '../../services/firebase-auth.service';
 import { environment } from 'src/environments/environment';
-import {
-  LEGAL_NOTICES_TEXT,
-  PRIVACY_POLICY_TEXT,
-  TERMS_TEXT,
-} from '../../legal/legal-texts';
+import { LEGAL_NOTICES_TEXT, PRIVACY_POLICY_TEXT, TERMS_TEXT } from '../../legal/legal-texts';
 
 type AuthMode = 'register' | 'login' | 'register-email';
 
@@ -92,7 +88,7 @@ export class AuthPageComponent implements OnInit {
   }
 
   openTerms(): void {
-    this._openLegalModal("Conditions d’utilisation", TERMS_TEXT);
+    this._openLegalModal('Conditions d’utilisation', TERMS_TEXT);
   }
 
   openPrivacyPolicy(): void {

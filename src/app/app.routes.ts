@@ -108,7 +108,11 @@ export const routes: Routes = [
   { path: 'saloon-demande', component: SaloonDemandePageComponent, canActivate: [isLoggedInGuard] },
   { path: 'faq', component: FaqPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'contact', component: ContactPageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'mentions-legales', component: LegalNoticesPageComponent, canActivate: [isLoggedInGuard] },
+  {
+    path: 'mentions-legales',
+    component: LegalNoticesPageComponent,
+    canActivate: [isLoggedInGuard],
+  },
   {
     path: 'dashboard',
     component: DashboardPageComponent,
