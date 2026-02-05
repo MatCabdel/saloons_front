@@ -84,13 +84,13 @@ export class FirebaseAuthService {
   /**
    * Sign in with Google
    */
-  signInWithGoogle(): Observable<AuthResponse> {
+  signInWithGoogle(): Observable<AuthResponse | null> {
     this.isLoading.set(true);
     const provider = new GoogleAuthProvider();
 
     if (this._isNativePlatform()) {
       return from(signInWithRedirect(this._auth, provider)).pipe(
-        switchMap(() => EMPTY as Observable<AuthResponse>),
+        map(() => null),
         catchError(error => {
           this.isLoading.set(false);
           return throwError(() => error);
@@ -108,13 +108,13 @@ export class FirebaseAuthService {
   /**
    * Sign in with Facebook
    */
-  signInWithFacebook(): Observable<AuthResponse> {
+  signInWithFacebook(): Observable<AuthResponse | null> {
     this.isLoading.set(true);
     const provider = new FacebookAuthProvider();
 
     if (this._isNativePlatform()) {
       return from(signInWithRedirect(this._auth, provider)).pipe(
-        switchMap(() => EMPTY as Observable<AuthResponse>),
+        map(() => null),
         catchError(error => {
           this.isLoading.set(false);
           return throwError(() => error);
