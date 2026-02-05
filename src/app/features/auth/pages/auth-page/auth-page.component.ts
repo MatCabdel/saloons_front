@@ -1,11 +1,13 @@
-import { Component, inject, signal, OnInit, effect } from '@angular/core';
+import { Component, inject, signal, OnInit, effect, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { FirebaseAuthService } from '../../services/firebase-auth.service';
 import { environment } from 'src/environments/environment';
 import { LEGAL_NOTICES_TEXT, PRIVACY_POLICY_TEXT, TERMS_TEXT } from '../../legal/legal-texts';
 import { Capacitor } from '@capacitor/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs/operators';
 
 type AuthMode = 'register' | 'login' | 'register-email';
 
@@ -20,6 +22,7 @@ export class AuthPageComponent implements OnInit {
   private _fb = inject(FormBuilder);
   private _firebaseAuth = inject(FirebaseAuthService);
   private _router = inject(Router);
+  private _destroyRef = inject(DestroyRef);
 
   mode = signal<AuthMode>('register');
   isLoading = signal(false);
@@ -46,12 +49,15 @@ export class AuthPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    const url = this._router.url;
-    if (url.includes('login')) {
-      this.mode.set('login');
-    } else {
-      this.mode.set('register');
-    }
+    this._setModeFromUrl(this._router.url);
+    this._router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this._destroyRef)
+      )
+      .subscribe(event => {
+        this._setModeFromUrl(event.urlAfterRedirects);
+      });
 
     if (this._isNativePlatform()) {
       effect(() => {
@@ -311,6 +317,14 @@ export class AuthPageComponent implements OnInit {
 
   private _isNativePlatform(): boolean {
     return Capacitor.isNativePlatform();
+  }
+
+  private _setModeFromUrl(url: string): void {
+    if (url.includes('login')) {
+      this.mode.set('login');
+      return;
+    }
+    this.mode.set('register');
   }
 
   isFieldInvalid(form: FormGroup, fieldName: string): boolean {
