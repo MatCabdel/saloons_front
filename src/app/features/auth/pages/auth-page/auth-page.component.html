@@ -277,6 +277,14 @@
           Pas encore de compte ?
           <button type="button" class="link-btn" (click)="goToRegister()">S'inscrire</button>
         </p>
+
+        <!-- Bouton de déconnexion si déjà connecté -->
+        @if (isAlreadyAuthenticated) {
+        <p class="switch-text" style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.7;">
+          Déjà connecté ?
+          <button type="button" class="link-btn" (click)="logout()">Se déconnecter</button>
+        </p>
+        }
       </div>
       }
 
@@ -484,9 +492,7 @@
     </div>
     <div class="legal-modal-body" [innerHTML]="legalModalContent()"></div>
     <div class="legal-modal-footer">
-      <button type="button" class="close-btn-action" (click)="closeLegalModal()">
-        Fermer
-      </button>
+      <button type="button" class="close-btn-action" (click)="closeLegalModal()">Fermer</button>
     </div>
   </div>
 </div>
