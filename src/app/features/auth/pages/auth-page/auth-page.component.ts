@@ -1,7 +1,9 @@
 import { Component, inject, signal, OnInit, effect, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FirebaseAuthService } from '../../services/firebase-auth.service';
 import { environment } from 'src/environments/environment';
 import { LEGAL_NOTICES_TEXT, PRIVACY_POLICY_TEXT, TERMS_TEXT } from '../../legal/legal-texts';
@@ -22,6 +24,8 @@ export class AuthPageComponent implements OnInit {
   private _fb = inject(FormBuilder);
   private _firebaseAuth = inject(FirebaseAuthService);
   private _router = inject(Router);
+  private _route = inject(ActivatedRoute);
+  private _location = inject(Location);
   private _destroyRef = inject(DestroyRef);
 
   mode = signal<AuthMode>('register');
@@ -49,14 +53,14 @@ export class AuthPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this._setModeFromUrl(this._router.url);
+    this._setModeFromRoute(this._router.url);
     this._router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntilDestroyed(this._destroyRef)
       )
       .subscribe(event => {
-        this._setModeFromUrl(event.urlAfterRedirects);
+        this._setModeFromRoute(event.urlAfterRedirects);
       });
 
     if (this._isNativePlatform()) {
@@ -319,8 +323,10 @@ export class AuthPageComponent implements OnInit {
     return Capacitor.isNativePlatform();
   }
 
-  private _setModeFromUrl(url: string): void {
-    if (url.includes('login')) {
+  private _setModeFromRoute(url: string): void {
+    const routePath = this._route.snapshot.routeConfig?.path ?? '';
+    const currentPath = url || this._location.path() || routePath;
+    if (currentPath.includes('login')) {
       this.mode.set('login');
       return;
     }
