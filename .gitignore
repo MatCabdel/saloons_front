@@ -43,3 +43,10 @@ testem.log
 ## System files
 .DS_Store
 Thumbs.db
+
+## Firebase & Sensitive Config Files
+**/GoogleService-Info.plist
+**/google-services.json
+.env
+.env.local
+.env.*.local

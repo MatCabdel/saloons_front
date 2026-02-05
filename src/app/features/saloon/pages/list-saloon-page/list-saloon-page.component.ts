@@ -129,7 +129,8 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
                 : saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
             )
           : saloonsWithDistance.filter(
-              saloon => saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
+              saloon =>
+                saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
             );
       } else if (this.isReviewerOrAdmin) {
         // Sans position, montrer uniquement les privés pour les reviewers/admins
