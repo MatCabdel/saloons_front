@@ -142,7 +142,11 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
   }
 
   ngAfterViewChecked(): void {
-    if (!this._hasScrolledToBottom && this.messages.length > 0 && this.messagesList?.nativeElement) {
+    if (
+      !this._hasScrolledToBottom &&
+      this.messages.length > 0 &&
+      this.messagesList?.nativeElement
+    ) {
       const element = this.messagesList.nativeElement;
       if (element.scrollTop < element.scrollHeight - element.clientHeight - 10) {
         setTimeout(() => {
