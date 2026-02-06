@@ -66,12 +66,15 @@ export class AuthPageComponent implements OnInit {
     if (this._isNativePlatform()) {
       effect(() => {
         const user = this._firebaseAuth.currentUser();
-        // Ne pas rediriger automatiquement si on est sur la page de connexion
-        // L'utilisateur veut peut-être se déconnecter ou utiliser un autre compte
-        if (!user || this.mode() === 'login') {
+        // Sur iOS natif, on redirige automatiquement SI ce n'est pas la page de connexion
+        // (la page de connexion doit rester accessible pour se déconnecter)
+        if (!user) {
           return;
         }
-        this._handleAuthSuccess(false, user.profileStatus, user.role);
+        // Ne rediriger que si on est sur la page d'inscription (pas login)
+        if (this.mode() !== 'login') {
+          this._handleAuthSuccess(false, user.profileStatus, user.role);
+        }
       });
     }
   }

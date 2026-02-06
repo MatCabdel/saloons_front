@@ -20,6 +20,7 @@ Le fichier est ignoré par `.gitignore` pour des raisons de sécurité.
 ## Structure attendue
 
 Le fichier doit contenir les clés suivantes :
+
 - `API_KEY`
 - `GCM_SENDER_ID`
 - `PROJECT_ID`
@@ -31,6 +32,7 @@ Le fichier doit contenir les clés suivantes :
 ## En cas de clé compromise
 
 Si une clé API a été exposée publiquement :
+
 1. Allez dans [Google Cloud Console](https://console.cloud.google.com/)
 2. Naviguez vers **APIs & Services** > **Credentials**
 3. Regénérez la clé compromise

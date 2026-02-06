@@ -27,14 +27,23 @@ export const profileCompleteGuard: CanActivateFn = () => {
 
 /**
  * Guard that prevents authenticated users with complete profiles from accessing auth/onboarding pages.
+ * EXCEPTION: Allow access to /login even if authenticated (to allow logout or account switching).
  */
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = route => {
   const firebaseAuthService = inject(FirebaseAuthService);
   const router = inject(Router);
 
+  // Allow access to /login even if authenticated (for logout/account switching)
+  const isLoginPage = route.routeConfig?.path === 'login';
+  
   // If user is authenticated
   if (firebaseAuthService.isAuthenticated()) {
-    // If profile is complete, redirect to map
+    // Allow login page access (for logout/switching accounts)
+    if (isLoginPage) {
+      return true;
+    }
+    
+    // For other auth pages (registration), redirect based on profile status
     if (firebaseAuthService.isProfileComplete()) {
       router.navigate(['/map']);
       return false;
