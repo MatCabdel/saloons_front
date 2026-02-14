@@ -28,7 +28,7 @@ export class AuthPageComponent implements OnInit {
   showLegalModal = signal(false);
   legalModalTitle = signal('');
   legalModalContent = signal('');
-  
+
   // Pour détecter si l'utilisateur est déjà connecté
   get isAlreadyAuthenticated(): boolean {
     return this._firebaseAuth.isAuthenticated();

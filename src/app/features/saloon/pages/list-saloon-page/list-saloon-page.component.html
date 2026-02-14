@@ -5,8 +5,8 @@
     <i class="fas fa-location-arrow"></i>
     <h3>Localisation requise</h3>
     <p>
-      Saloons utilise votre position pour afficher les lieux proches et vous permettre d’entrer
-      dans un saloon.
+      Saloons utilise votre position pour afficher les lieux proches et vous permettre d’entrer dans
+      un saloon.
     </p>
     <button type="button" class="primary-btn" (click)="requestLocation()">
       Activer la localisation
@@ -81,13 +81,11 @@
     </div>
   </div>
 
-  @if (saloons$ | async; as saloons) { @if (saloons.length > 0) {
-  @if (geoLocationStatus() !== 'granted' && isReviewerOrAdmin) {
+  @if (saloons$ | async; as saloons) { @if (saloons.length > 0) { @if (geoLocationStatus() !==
+  'granted' && isReviewerOrAdmin) {
   <div class="location-message info">
     <i class="fas fa-info-circle"></i>
-    <p>
-      Accès reviewer/admin : les saloons privés sont visibles même sans localisation.
-    </p>
+    <p>Accès reviewer/admin : les saloons privés sont visibles même sans localisation.</p>
     <button type="button" class="primary-btn" (click)="requestLocation()">
       Activer la localisation
     </button>

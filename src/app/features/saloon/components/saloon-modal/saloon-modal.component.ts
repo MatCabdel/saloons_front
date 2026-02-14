@@ -31,7 +31,8 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
   @Input() saloon: SaloonMapItem | null = null;
   @Input() userLat: number | null = null;
   @Input() userLng: number | null = null;
-  @Input() geoLocationStatus: 'prompt' | 'loading' | 'granted' | 'denied' | 'unavailable' = 'prompt';
+  @Input() geoLocationStatus: 'prompt' | 'loading' | 'granted' | 'denied' | 'unavailable' =
+    'prompt';
   @Output() closed = new EventEmitter<void>();
   @Output() requestLocation = new EventEmitter<void>();
 
@@ -69,11 +70,11 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
       case 'loading':
         return 'Recherche de votre position...';
       case 'denied':
-        return "La géolocalisation est désactivée. Activez-la pour entrer.";
+        return 'La géolocalisation est désactivée. Activez-la pour entrer.';
       case 'unavailable':
-        return "Position indisponible. Activez la géolocalisation pour entrer.";
+        return 'Position indisponible. Activez la géolocalisation pour entrer.';
       case 'prompt':
-        return "Activez la localisation pour entrer dans un saloon.";
+        return 'Activez la localisation pour entrer dans un saloon.';
       default:
         return '';
     }
