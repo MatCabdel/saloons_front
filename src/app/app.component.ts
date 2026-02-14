@@ -13,14 +13,14 @@ export class AppComponent implements OnInit {
   apiStatus = signal<'checking' | 'ok' | 'offline'>('checking');
 
   ngOnInit(): void {
-    this.checkApiReachability();
+    this._checkApiReachability();
   }
 
   async retryApi(): Promise<void> {
-    await this.checkApiReachability();
+    await this._checkApiReachability();
   }
 
-  private async checkApiReachability(): Promise<void> {
+  private async _checkApiReachability(): Promise<void> {
     this.apiStatus.set('checking');
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);

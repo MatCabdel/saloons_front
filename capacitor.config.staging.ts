@@ -6,6 +6,7 @@ const config: CapacitorConfig = {
   webDir: 'dist/frontend/browser',
   server: {
     androidScheme: 'https',
+    iosScheme: 'https',
   },
 };
 

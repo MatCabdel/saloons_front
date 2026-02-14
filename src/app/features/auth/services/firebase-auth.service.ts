@@ -3,8 +3,6 @@ import { inject, Injectable, signal } from '@angular/core';
 import {
   Auth,
   signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
   GoogleAuthProvider,
   FacebookAuthProvider,
   signOut,
@@ -12,7 +10,7 @@ import {
 } from '@angular/fire/auth';
 import { Capacitor } from '@capacitor/core';
 import { Router } from '@angular/router';
-import { EMPTY, Observable, from, tap, switchMap, map, catchError, throwError } from 'rxjs';
+import { Observable, from, tap, switchMap, map, catchError, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { UserStoreService } from '../../user/store/user-store.service';
 
@@ -64,7 +62,6 @@ export class FirebaseAuthService {
 
   constructor() {
     this._loadUserFromStorage();
-    this._handleRedirectResult();
   }
 
   private _loadUserFromStorage(): void {
@@ -82,50 +79,51 @@ export class FirebaseAuthService {
   }
 
   /**
-   * Sign in with Google
+   * Sign in with Google.
+   * Uses signInWithPopup on all platforms (web + Capacitor iOS/Android).
+   * signInWithRedirect does NOT work on Capacitor WebView because the redirect
+   * session (sessionStorage/indexedDB) is not shared between the external browser
+   * and the Capacitor WebView, so getRedirectResult() always returns null.
    */
   signInWithGoogle(): Observable<AuthResponse> {
     this.isLoading.set(true);
     const provider = new GoogleAuthProvider();
+    const platform = Capacitor.isNativePlatform() ? 'native' : 'web';
 
-    if (this._isNativePlatform()) {
-      return from(signInWithRedirect(this._auth, provider)).pipe(
-        switchMap(() => EMPTY as Observable<AuthResponse>),
-        catchError(error => {
-          this.isLoading.set(false);
-          return throwError(() => error);
-        })
-      );
-    }
+    console.log(`[FirebaseAuth] ${platform} platform — signInWithPopup for Google`);
 
     return from(signInWithPopup(this._auth, provider)).pipe(
       switchMap(result => this._authenticateWithBackend(result.user)),
       tap(response => this._handleAuthResponse(response)),
-      tap(() => this.isLoading.set(false))
+      tap(() => this.isLoading.set(false)),
+      catchError(error => {
+        console.error(`[FirebaseAuth] Google signInWithPopup error (${platform}):`, error);
+        this.isLoading.set(false);
+        return throwError(() => error);
+      })
     );
   }
 
   /**
-   * Sign in with Facebook
+   * Sign in with Facebook.
+   * Uses signInWithPopup on all platforms (same reason as Google — see above).
    */
   signInWithFacebook(): Observable<AuthResponse> {
     this.isLoading.set(true);
     const provider = new FacebookAuthProvider();
+    const platform = Capacitor.isNativePlatform() ? 'native' : 'web';
 
-    if (this._isNativePlatform()) {
-      return from(signInWithRedirect(this._auth, provider)).pipe(
-        switchMap(() => EMPTY as Observable<AuthResponse>),
-        catchError(error => {
-          this.isLoading.set(false);
-          return throwError(() => error);
-        })
-      );
-    }
+    console.log(`[FirebaseAuth] ${platform} platform — signInWithPopup for Facebook`);
 
     return from(signInWithPopup(this._auth, provider)).pipe(
       switchMap(result => this._authenticateWithBackend(result.user)),
       tap(response => this._handleAuthResponse(response)),
-      tap(() => this.isLoading.set(false))
+      tap(() => this.isLoading.set(false)),
+      catchError(error => {
+        console.error(`[FirebaseAuth] Facebook signInWithPopup error (${platform}):`, error);
+        this.isLoading.set(false);
+        return throwError(() => error);
+      })
     );
   }
 
@@ -212,35 +210,16 @@ export class FirebaseAuthService {
    */
   private _authenticateWithBackend(firebaseUser: FirebaseUser): Observable<AuthResponse> {
     return from(firebaseUser.getIdToken()).pipe(
+      tap(token => console.log('[FirebaseAuth] Got Firebase ID token, sending to backend...', token?.substring(0, 20) + '...')),
       switchMap(firebaseToken =>
         this._http.post<AuthResponse>(`${this._BASE_URL}/auth/firebase`, { firebaseToken })
-      )
+      ),
+      tap(response => console.log('[FirebaseAuth] Backend auth response received:', response?.user?.email)),
+      catchError(error => {
+        console.error('[FirebaseAuth] Backend auth error:', error?.status, error?.message || error?.error);
+        return throwError(() => error);
+      })
     );
-  }
-
-  private _handleRedirectResult(): void {
-    if (!this._isNativePlatform()) {
-      return;
-    }
-
-    from(getRedirectResult(this._auth))
-      .pipe(
-        switchMap(result => {
-          if (!result?.user) {
-            return EMPTY;
-          }
-          this.isLoading.set(true);
-          return this._authenticateWithBackend(result.user).pipe(
-            tap(response => this._handleAuthResponse(response)),
-            tap(() => this.isLoading.set(false))
-          );
-        })
-      )
-      .subscribe({
-        error: () => {
-          this.isLoading.set(false);
-        },
-      });
   }
 
   private _isNativePlatform(): boolean {
