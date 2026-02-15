@@ -12,7 +12,7 @@ export const environment = {
     appId: '1:575950337220:web:5aa25ba4a77f828a824591',
   },
   google: {
-    iOSClientId: '575950337220-ld8lbbqd0fv4dfjp9bfh2u6n07sn6fgo.apps.googleusercontent.com',
-    webClientId: '575950337220-753r070cen3jh5l9gonvu7khg3jjmbha.apps.googleusercontent.com', // TODO: Get from Firebase Console > Auth > Sign-in method > Google > Web client ID
+    iOSClientId: '575950337220-smbrt1qql9aknk61fklcbvub7iuaomcm.apps.googleusercontent.com',
+    webClientId: '575950337220-753r070cen3jh5l9gonvu7khg3jjmbha.apps.googleusercontent.com',
   },
 };
