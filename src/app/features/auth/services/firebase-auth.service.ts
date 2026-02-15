@@ -3,7 +3,6 @@ import { inject, Injectable, signal } from '@angular/core';
 import {
   Auth,
   signInWithPopup,
-  signInWithCredential,
   GoogleAuthProvider,
   FacebookAuthProvider,
   signOut,
@@ -149,16 +148,19 @@ export class FirebaseAuthService {
 
   /**
    * Native Google sign-in via @capgo/capacitor-social-login.
-   * 1. SocialLogin.login() → opens native Google sign-in sheet
-   * 2. Returns { idToken } (Google ID token, because mode='online')
-   * 3. GoogleAuthProvider.credential(idToken) → Firebase OAuthCredential
-   * 4. signInWithCredential() → Firebase UserCredential
-   * 5. user.getIdToken() → Firebase ID token → POST to our backend
+   *
+   * signInWithCredential() from Firebase JS SDK hangs on capacitor:// origins
+   * because the SDK cannot complete its internal network calls from WKWebView.
+   *
+   * Workaround: use Firebase Auth REST API (identitytoolkit) directly:
+   *  1. SocialLogin.login() → native Google sheet → Google ID token
+   *  2. POST to Firebase REST verifyAssertion → Firebase ID token
+   *  3. POST Firebase ID token to our backend /auth/firebase
    */
   private _signInWithGoogleNative(): Observable<AuthResponse> {
     console.log('[FirebaseAuth][G2] Native → using SocialLogin plugin');
 
-    const nativeLogin = async (): Promise<FirebaseUser> => {
+    const nativeLogin = async (): Promise<string> => {
       await this._initNativeGoogleIfNeeded();
 
       console.log('[FirebaseAuth][G3] Calling SocialLogin.login({ provider: "google" })...');
@@ -169,48 +171,69 @@ export class FirebaseAuthService {
         },
       });
 
-      console.log('[FirebaseAuth][G4] SocialLogin.login() result:', JSON.stringify(result));
+      console.log('[FirebaseAuth][G4] SocialLogin.login() OK');
 
       const googleIdToken = (result?.result as any)?.idToken;
-      const googleAccessToken = (result?.result as any)?.accessToken?.token;
       if (!googleIdToken) {
         throw new Error('No idToken returned from native Google sign-in');
       }
 
       console.log(
-        `[FirebaseAuth][G5] Got Google idToken (length=${googleIdToken.length}), accessToken=${
-          googleAccessToken ? 'present' : 'missing'
-        } — exchanging for Firebase credential...`
+        `[FirebaseAuth][G5] Got Google idToken (length=${googleIdToken.length}), calling Firebase REST API...`
       );
 
-      try {
-        const credential = GoogleAuthProvider.credential(googleIdToken, googleAccessToken);
-        const userCredential = await signInWithCredential(this._auth, credential);
+      // Use Firebase Auth REST API to exchange Google ID token for Firebase ID token
+      // This avoids signInWithCredential() which hangs on capacitor:// in WKWebView
+      const firebaseApiKey = environment.firebase.apiKey;
+      const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${firebaseApiKey}`;
 
-        console.log(
-          '[FirebaseAuth][G6] signInWithCredential OK — uid:',
-          userCredential.user?.uid,
-          'email:',
-          userCredential.user?.email
-        );
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          postBody: `id_token=${googleIdToken}&providerId=google.com`,
+          requestUri: 'https://localhost',
+          returnIdpCredential: true,
+          returnSecureToken: true,
+        }),
+      });
 
-        return userCredential.user;
-      } catch (error: any) {
-        console.error(
-          '[FirebaseAuth][G6] signInWithCredential error:',
-          error?.code || error?.message || error
-        );
-        throw error;
+      if (!response.ok) {
+        const errorBody = await response.text();
+        console.error('[FirebaseAuth][G6] Firebase REST API error:', response.status, errorBody);
+        throw new Error(`Firebase REST signInWithIdp failed: ${response.status} ${errorBody}`);
       }
+
+      const data = await response.json();
+      const firebaseIdToken = data.idToken;
+
+      if (!firebaseIdToken) {
+        console.error('[FirebaseAuth][G6] No idToken in Firebase REST response:', data);
+        throw new Error('No Firebase ID token in REST response');
+      }
+
+      console.log(
+        `[FirebaseAuth][G6] Firebase REST API OK — got Firebase idToken (length=${firebaseIdToken.length}), email=${data.email}`
+      );
+
+      return firebaseIdToken;
     };
 
     return from(nativeLogin()).pipe(
-      switchMap(firebaseUser => this._authenticateWithBackend(firebaseUser)),
-      tap(response => this._handleAuthResponse(response)),
+      switchMap(firebaseIdToken => {
+        // Send Firebase ID token directly to our backend
+        const payload = { firebaseToken: firebaseIdToken };
+        console.log('[FirebaseAuth][G7] POST /auth/firebase — token length:', firebaseIdToken.length);
+        return this._http.post<AuthResponse>(`${this._BASE_URL}/auth/firebase`, payload);
+      }),
+      tap(response => {
+        console.log('[FirebaseAuth][G8] Backend response OK — email:', response?.user?.email);
+        this._handleAuthResponse(response);
+      }),
       tap(() => this.isLoading.set(false)),
       catchError(error => {
         console.error(
-          '[FirebaseAuth][G7] Native Google sign-in error:',
+          '[FirebaseAuth][G9] Native Google sign-in error:',
           error?.code || error?.message || error
         );
         this.isLoading.set(false);
