@@ -159,7 +159,6 @@ export class FirebaseAuthService {
     console.log('[FirebaseAuth][G2] Native → using SocialLogin plugin');
 
     const nativeLogin = async (): Promise<FirebaseUser> => {
-      // Ensure initialized
       await this._initNativeGoogleIfNeeded();
 
       console.log('[FirebaseAuth][G3] Calling SocialLogin.login({ provider: "google" })...');
@@ -173,26 +172,36 @@ export class FirebaseAuthService {
       console.log('[FirebaseAuth][G4] SocialLogin.login() result:', JSON.stringify(result));
 
       const googleIdToken = (result?.result as any)?.idToken;
+      const googleAccessToken = (result?.result as any)?.accessToken?.token;
       if (!googleIdToken) {
         throw new Error('No idToken returned from native Google sign-in');
       }
 
       console.log(
-        `[FirebaseAuth][G5] Got Google idToken (length=${googleIdToken.length}), exchanging for Firebase credential...`
+        `[FirebaseAuth][G5] Got Google idToken (length=${googleIdToken.length}), accessToken=${
+          googleAccessToken ? 'present' : 'missing'
+        } — exchanging for Firebase credential...`
       );
 
-      // Create Firebase credential from Google ID token
-      const credential = GoogleAuthProvider.credential(googleIdToken);
-      const userCredential = await signInWithCredential(this._auth, credential);
+      try {
+        const credential = GoogleAuthProvider.credential(googleIdToken, googleAccessToken);
+        const userCredential = await signInWithCredential(this._auth, credential);
 
-      console.log(
-        '[FirebaseAuth][G6] signInWithCredential OK — uid:',
-        userCredential.user?.uid,
-        'email:',
-        userCredential.user?.email
-      );
+        console.log(
+          '[FirebaseAuth][G6] signInWithCredential OK — uid:',
+          userCredential.user?.uid,
+          'email:',
+          userCredential.user?.email
+        );
 
-      return userCredential.user;
+        return userCredential.user;
+      } catch (error: any) {
+        console.error(
+          '[FirebaseAuth][G6] signInWithCredential error:',
+          error?.code || error?.message || error
+        );
+        throw error;
+      }
     };
 
     return from(nativeLogin()).pipe(
