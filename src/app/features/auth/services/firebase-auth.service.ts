@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal, NgZone } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import {
   Auth,
   signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithCredential,
   GoogleAuthProvider,
   FacebookAuthProvider,
   signOut,
@@ -12,9 +11,10 @@ import {
 } from '@angular/fire/auth';
 import { Capacitor } from '@capacitor/core';
 import { Router } from '@angular/router';
-import { Observable, from, tap, switchMap, map, catchError, throwError, EMPTY } from 'rxjs';
+import { Observable, from, tap, switchMap, map, catchError, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { UserStoreService } from '../../user/store/user-store.service';
+import { SocialLogin } from '@capgo/capacitor-social-login';
 
 export type ProfileStatus = 'PROFILE_INCOMPLETE' | 'ACTIVE';
 export type AuthProvider = 'EMAIL' | 'GOOGLE' | 'FACEBOOK';
@@ -57,18 +57,15 @@ export class FirebaseAuthService {
   private _http = inject(HttpClient);
   private _router = inject(Router);
   private _userStore = inject(UserStoreService);
-  private _ngZone = inject(NgZone);
   private readonly _BASE_URL = environment.apiUrl;
-
-  /** Timeout for signInWithPopup on native platforms (ms) */
-  private readonly _POPUP_TIMEOUT_MS = 15_000;
 
   currentUser = signal<UserDTO | null>(null);
   isLoading = signal(false);
+  private _nativeGoogleInitialized = false;
 
   constructor() {
     this._loadUserFromStorage();
-    this._handleRedirectResult();
+    this._initNativeGoogleIfNeeded();
   }
 
   private _loadUserFromStorage(): void {
@@ -86,45 +83,58 @@ export class FirebaseAuthService {
   }
 
   /**
+   * Initialize the native Google sign-in plugin (only on Capacitor iOS/Android).
+   * Must be called once before SocialLogin.login().
+   */
+  private async _initNativeGoogleIfNeeded(): Promise<void> {
+    if (!this._isNativePlatform() || this._nativeGoogleInitialized) {
+      return;
+    }
+    try {
+      console.log('[FirebaseAuth][INIT] Initializing SocialLogin for native Google...');
+      await SocialLogin.initialize({
+        google: {
+          iOSClientId: environment.google.iOSClientId,
+          iOSServerClientId: environment.google.webClientId,
+          webClientId: environment.google.webClientId,
+          mode: 'online',
+        },
+      });
+      this._nativeGoogleInitialized = true;
+      console.log('[FirebaseAuth][INIT] SocialLogin initialized ✅');
+    } catch (err) {
+      console.error('[FirebaseAuth][INIT] SocialLogin.initialize() failed:', err);
+    }
+  }
+
+  /**
    * Sign in with Google.
    *
-   * On WEB: signInWithPopup works (same browsing context).
-   * On iOS WKWebView: signInWithPopup HANGS because window.open() is blocked
-   * silently by WKWebView — the Promise never resolves nor rejects.
-   *
-   * Strategy for native:
-   *  1. Try signInWithPopup with a 15s timeout
-   *  2. If it times out (expected on iOS), fall back to signInWithRedirect
-   *  3. signInWithRedirect navigates away; on app resume _handleRedirectResult()
-   *     picks up the result
+   * On WEB: signInWithPopup (works in same browsing context).
+   * On NATIVE (iOS / Android): @capgo/capacitor-social-login opens the native
+   * Google sign-in sheet, returns a Google ID token, then we exchange it for a
+   * Firebase credential via signInWithCredential → getIdToken → POST backend.
    */
   signInWithGoogle(): Observable<AuthResponse> {
     const platform = this._isNativePlatform() ? 'native' : 'web';
     console.log(`[FirebaseAuth][G1] signInWithGoogle() called — platform=${platform}`);
     this.isLoading.set(true);
 
-    const provider = new GoogleAuthProvider();
-
-    // On native iOS, go straight to redirect (popup is blocked by WKWebView)
     if (this._isNativePlatform()) {
-      console.log('[FirebaseAuth][G2] Native detected → using signInWithRedirect');
-      return from(signInWithRedirect(this._auth, provider)).pipe(
-        // signInWithRedirect navigates away, so this observable won't emit.
-        // The result is handled by _handleRedirectResult() on app resume.
-        switchMap(() => EMPTY as Observable<AuthResponse>),
-        catchError(error => {
-          console.error('[FirebaseAuth][G3] signInWithRedirect error:', error?.code, error?.message);
-          this.isLoading.set(false);
-          return throwError(() => error);
-        })
-      );
+      return this._signInWithGoogleNative();
     }
 
     // Web: signInWithPopup works normally
     console.log('[FirebaseAuth][G2] Web → using signInWithPopup');
+    const provider = new GoogleAuthProvider();
     return from(signInWithPopup(this._auth, provider)).pipe(
       tap(result => {
-        console.log('[FirebaseAuth][G4] signInWithPopup resolved — uid:', result.user?.uid, 'email:', result.user?.email);
+        console.log(
+          '[FirebaseAuth][G4] signInWithPopup resolved — uid:',
+          result.user?.uid,
+          'email:',
+          result.user?.email
+        );
       }),
       switchMap(result => this._authenticateWithBackend(result.user)),
       tap(response => this._handleAuthResponse(response)),
@@ -138,8 +148,71 @@ export class FirebaseAuthService {
   }
 
   /**
+   * Native Google sign-in via @capgo/capacitor-social-login.
+   * 1. SocialLogin.login() → opens native Google sign-in sheet
+   * 2. Returns { idToken } (Google ID token, because mode='online')
+   * 3. GoogleAuthProvider.credential(idToken) → Firebase OAuthCredential
+   * 4. signInWithCredential() → Firebase UserCredential
+   * 5. user.getIdToken() → Firebase ID token → POST to our backend
+   */
+  private _signInWithGoogleNative(): Observable<AuthResponse> {
+    console.log('[FirebaseAuth][G2] Native → using SocialLogin plugin');
+
+    const nativeLogin = async (): Promise<FirebaseUser> => {
+      // Ensure initialized
+      await this._initNativeGoogleIfNeeded();
+
+      console.log('[FirebaseAuth][G3] Calling SocialLogin.login({ provider: "google" })...');
+      const result = await SocialLogin.login({
+        provider: 'google',
+        options: {
+          scopes: ['email', 'profile'],
+        },
+      });
+
+      console.log('[FirebaseAuth][G4] SocialLogin.login() result:', JSON.stringify(result));
+
+      const googleIdToken = (result?.result as any)?.idToken;
+      if (!googleIdToken) {
+        throw new Error('No idToken returned from native Google sign-in');
+      }
+
+      console.log(
+        `[FirebaseAuth][G5] Got Google idToken (length=${googleIdToken.length}), exchanging for Firebase credential...`
+      );
+
+      // Create Firebase credential from Google ID token
+      const credential = GoogleAuthProvider.credential(googleIdToken);
+      const userCredential = await signInWithCredential(this._auth, credential);
+
+      console.log(
+        '[FirebaseAuth][G6] signInWithCredential OK — uid:',
+        userCredential.user?.uid,
+        'email:',
+        userCredential.user?.email
+      );
+
+      return userCredential.user;
+    };
+
+    return from(nativeLogin()).pipe(
+      switchMap(firebaseUser => this._authenticateWithBackend(firebaseUser)),
+      tap(response => this._handleAuthResponse(response)),
+      tap(() => this.isLoading.set(false)),
+      catchError(error => {
+        console.error(
+          '[FirebaseAuth][G7] Native Google sign-in error:',
+          error?.code || error?.message || error
+        );
+        this.isLoading.set(false);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
    * Sign in with Facebook.
-   * Same strategy as Google: redirect on native, popup on web.
+   * On web: signInWithPopup. On native: not yet implemented with SocialLogin plugin.
    */
   signInWithFacebook(): Observable<AuthResponse> {
     const platform = this._isNativePlatform() ? 'native' : 'web';
@@ -148,22 +221,15 @@ export class FirebaseAuthService {
 
     const provider = new FacebookAuthProvider();
 
-    if (this._isNativePlatform()) {
-      console.log('[FirebaseAuth][F2] Native detected → using signInWithRedirect');
-      return from(signInWithRedirect(this._auth, provider)).pipe(
-        switchMap(() => EMPTY as Observable<AuthResponse>),
-        catchError(error => {
-          console.error('[FirebaseAuth][F3] signInWithRedirect error:', error?.code, error?.message);
-          this.isLoading.set(false);
-          return throwError(() => error);
-        })
-      );
-    }
-
-    console.log('[FirebaseAuth][F2] Web → using signInWithPopup');
+    console.log('[FirebaseAuth][F2] Using signInWithPopup');
     return from(signInWithPopup(this._auth, provider)).pipe(
       tap(result => {
-        console.log('[FirebaseAuth][F4] signInWithPopup resolved — uid:', result.user?.uid, 'email:', result.user?.email);
+        console.log(
+          '[FirebaseAuth][F4] signInWithPopup resolved — uid:',
+          result.user?.uid,
+          'email:',
+          result.user?.email
+        );
       }),
       switchMap(result => this._authenticateWithBackend(result.user)),
       tap(response => this._handleAuthResponse(response)),
@@ -259,25 +325,47 @@ export class FirebaseAuthService {
    * The backend expects: { "firebaseToken": "<Firebase ID token>" }
    */
   private _authenticateWithBackend(firebaseUser: FirebaseUser): Observable<AuthResponse> {
-    console.log('[FirebaseAuth][B1] _authenticateWithBackend — uid:', firebaseUser?.uid, 'email:', firebaseUser?.email);
+    console.log(
+      '[FirebaseAuth][B1] _authenticateWithBackend — uid:',
+      firebaseUser?.uid,
+      'email:',
+      firebaseUser?.email
+    );
 
     return from(firebaseUser.getIdToken()).pipe(
       tap(token => {
         const len = token?.length ?? 0;
         const prefix = token?.substring(0, 10) ?? '<null>';
         const isJwt = token?.startsWith('eyJ') ?? false;
-        console.log(`[FirebaseAuth][B2] getIdToken() → length=${len}, startsWithEyJ=${isJwt}, prefix=${prefix}...`);
+        console.log(
+          `[FirebaseAuth][B2] getIdToken() → length=${len}, startsWithEyJ=${isJwt}, prefix=${prefix}...`
+        );
       }),
       switchMap(firebaseToken => {
         const payload = { firebaseToken };
-        console.log('[FirebaseAuth][B3] POST /auth/firebase — payload keys:', Object.keys(payload), 'token length:', firebaseToken?.length);
+        console.log(
+          '[FirebaseAuth][B3] POST /auth/firebase — payload keys:',
+          Object.keys(payload),
+          'token length:',
+          firebaseToken?.length
+        );
         return this._http.post<AuthResponse>(`${this._BASE_URL}/auth/firebase`, payload);
       }),
       tap(response =>
-        console.log('[FirebaseAuth][B4] Backend response OK — email:', response?.user?.email, 'newUser:', response?.newUser)
+        console.log(
+          '[FirebaseAuth][B4] Backend response OK — email:',
+          response?.user?.email,
+          'newUser:',
+          response?.newUser
+        )
       ),
       catchError(error => {
-        console.error('[FirebaseAuth][B5] Backend error — status:', error?.status, 'body:', JSON.stringify(error?.error));
+        console.error(
+          '[FirebaseAuth][B5] Backend error — status:',
+          error?.status,
+          'body:',
+          JSON.stringify(error?.error)
+        );
         return throwError(() => error);
       })
     );
@@ -285,66 +373,6 @@ export class FirebaseAuthService {
 
   private _isNativePlatform(): boolean {
     return Capacitor.isNativePlatform();
-  }
-
-  /**
-   * On native platforms, after signInWithRedirect completes and the app resumes,
-   * getRedirectResult() returns the OAuth credential.
-   *
-   * IMPORTANT: For this to work on Capacitor iOS:
-   *  - iosScheme must be 'https' in capacitor.config.ts (so origin = https://localhost)
-   *  - server.hostname should NOT be set (defaults to 'localhost')
-   *  - The Firebase JS SDK stores the pending redirect in indexedDB keyed by origin
-   *  - When the WKWebView reloads after redirect, same origin → same indexedDB → result found
-   */
-  private _handleRedirectResult(): void {
-    if (!this._isNativePlatform()) {
-      console.log('[FirebaseAuth][R0] Web platform — skipping redirect result check');
-      return;
-    }
-
-    console.log('[FirebaseAuth][R1] Native platform — checking getRedirectResult()...');
-
-    from(getRedirectResult(this._auth)).subscribe({
-      next: result => {
-        if (!result?.user) {
-          console.log('[FirebaseAuth][R2] getRedirectResult → null (no pending redirect)');
-          this.isLoading.set(false);
-          return;
-        }
-
-        console.log('[FirebaseAuth][R3] getRedirectResult → user found!', 'uid:', result.user.uid, 'email:', result.user.email);
-        this.isLoading.set(true);
-
-        // Run inside NgZone so Angular detects the async state changes
-        this._ngZone.run(() => {
-          this._authenticateWithBackend(result.user).subscribe({
-            next: response => {
-              console.log('[FirebaseAuth][R4] Backend auth OK after redirect');
-              this._handleAuthResponse(response);
-              this.isLoading.set(false);
-
-              // Navigate based on user state
-              if (response.newUser || response.user.profileStatus === 'PROFILE_INCOMPLETE') {
-                this._router.navigate(['/onboarding']);
-              } else if (response.user.role === 'ROLE_ADMIN') {
-                this._router.navigate(['/dashboard']);
-              } else {
-                this._router.navigate(['/map']);
-              }
-            },
-            error: error => {
-              console.error('[FirebaseAuth][R5] Backend auth error after redirect:', error?.status, error?.error);
-              this.isLoading.set(false);
-            },
-          });
-        });
-      },
-      error: error => {
-        console.error('[FirebaseAuth][R6] getRedirectResult error:', error?.code, error?.message);
-        this.isLoading.set(false);
-      },
-    });
   }
 
   /**
