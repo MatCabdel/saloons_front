@@ -9,8 +9,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
       console.error('🚨 Erreur HTTP interceptée :', error.status, error.url);
 
       // Si l'utilisateur n'est plus authentifié ou autorisé (compte supprimé, token expiré, etc.)
-      // Note: status 0 = erreur CORS/réseau, souvent causée par un 401 sans headers CORS
-      if ((error.status === 401 || error.status === 403 || error.status === 0) && !isLoggingOut) {
+      if ((error.status === 401 || error.status === 403) && !isLoggingOut) {
         // Ne pas déconnecter si c'est une requête d'authentification
         if (!req.url.includes('/auth/')) {
           console.log('🔒 Utilisateur non autorisé, déconnexion forcée...');

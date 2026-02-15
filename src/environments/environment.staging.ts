@@ -2,6 +2,7 @@ export const environment = {
   production: false,
   name: 'staging',
   apiUrl: 'https://staging-api.saloons.fr',
+  BASE_URL: 'https://staging-api.saloons.fr',
   frontendUrl: 'https://staging.saloons.fr',
   firebase: {
     apiKey: 'AIzaSyCRpCxE31epQAFrXVB6lXbIySPI_L83GX4',

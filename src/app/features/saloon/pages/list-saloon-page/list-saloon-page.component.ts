@@ -129,7 +129,8 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
                 : saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
             )
           : saloonsWithDistance.filter(
-              saloon => saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
+              saloon =>
+                saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
             );
       } else if (this.isReviewerOrAdmin) {
         // Sans position, montrer uniquement les privés pour les reviewers/admins
@@ -175,8 +176,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
     // Connecter au WebSocket pour les mises à jour temps réel
     this._presenceRealtimeService.connect();
     // Charger la session active de l'utilisateur (pour savoir s'il est dans un saloon)
-    this._presenceService
-      .getMySession()
+    this._presenceService.getMySession()
       .pipe(takeUntil(this._destroy$))
       .subscribe();
   }

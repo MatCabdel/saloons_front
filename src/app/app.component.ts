@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { environment } from '../environments/environment';
 
@@ -10,18 +10,16 @@ import { environment } from '../environments/environment';
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-  apiStatus = signal<'checking' | 'ok' | 'offline'>('checking');
-
   ngOnInit(): void {
     this._checkApiReachability();
   }
 
-  async retryApi(): Promise<void> {
-    await this._checkApiReachability();
-  }
-
+  /**
+   * Non-blocking API health check.
+   * Logs a warning if the API is unreachable but never blocks the UI.
+   * This ensures Apple reviewers always see content at launch.
+   */
   private async _checkApiReachability(): Promise<void> {
-    this.apiStatus.set('checking');
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
 
@@ -32,9 +30,9 @@ export class AppComponent implements OnInit {
         cache: 'no-store',
         signal: controller.signal,
       });
-      this.apiStatus.set('ok');
+      console.log('✅ API reachable');
     } catch {
-      this.apiStatus.set('offline');
+      console.warn('⚠️ API unreachable at startup — the app will retry on user actions');
     } finally {
       clearTimeout(timeout);
     }
