@@ -14,6 +14,7 @@ import { Observable, from, tap, switchMap, map, catchError, throwError } from 'r
 import { environment } from 'src/environments/environment';
 import { UserStoreService } from '../../user/store/user-store.service';
 import { SocialLogin } from '@capgo/capacitor-social-login';
+import { PushNotificationService } from '../../../core/services/push-notification.service';
 
 export type ProfileStatus = 'PROFILE_INCOMPLETE' | 'ACTIVE';
 export type AuthProvider = 'EMAIL' | 'GOOGLE' | 'FACEBOOK';
@@ -56,6 +57,7 @@ export class FirebaseAuthService {
   private _http = inject(HttpClient);
   private _router = inject(Router);
   private _userStore = inject(UserStoreService);
+  private _pushService = inject(PushNotificationService);
   private readonly _BASE_URL = environment.apiUrl;
 
   currentUser = signal<UserDTO | null>(null);
@@ -75,6 +77,13 @@ export class FirebaseAuthService {
         this.currentUser.set(user);
         // Synchroniser avec UserStoreService
         this._userStore.setUserConnected(user);
+
+        // Si l'utilisateur est déjà connecté, initialiser les push notifications
+        if (localStorage.getItem('saloon_auth_token')) {
+          this._pushService.initialize().catch(err => {
+            console.error('Failed to initialize push notifications on startup:', err);
+          });
+        }
       } catch {
         localStorage.removeItem('user');
       }
@@ -416,12 +425,22 @@ export class FirebaseAuthService {
     this._userStore.setUserConnected(response.user as any);
     localStorage.setItem('saloon_auth_token', response.token);
     localStorage.setItem('user', JSON.stringify(response.user));
+
+    // Initialiser les push notifications après connexion
+    this._pushService.initialize().catch(err => {
+      console.error('Failed to initialize push notifications:', err);
+    });
   }
 
   /**
    * Sign out from Firebase and clear local storage
    */
   signOut(): Observable<void> {
+    // D'abord désenregistrer le token push (avant de supprimer le JWT)
+    this._pushService.unregisterToken().catch(err => {
+      console.error('Failed to unregister push token:', err);
+    });
+
     return from(signOut(this._auth)).pipe(
       tap(() => {
         this.currentUser.set(null);

@@ -17,6 +17,10 @@ const config: CapacitorConfig = {
         twitter: false,
       },
     },
+    FirebaseMessaging: {
+      // Présentation de la permission avec explication
+      presentationOptions: ['badge', 'sound', 'alert'],
+    },
   },
 };
 
