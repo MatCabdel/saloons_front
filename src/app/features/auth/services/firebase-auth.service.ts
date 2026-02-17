@@ -232,7 +232,10 @@ export class FirebaseAuthService {
       switchMap(firebaseIdToken => {
         // Send Firebase ID token directly to our backend
         const payload = { firebaseToken: firebaseIdToken };
-        console.log('[FirebaseAuth][G7] POST /auth/firebase — token length:', firebaseIdToken.length);
+        console.log(
+          '[FirebaseAuth][G7] POST /auth/firebase — token length:',
+          firebaseIdToken.length
+        );
         return this._http.post<AuthResponse>(`${this._BASE_URL}/auth/firebase`, payload);
       }),
       tap(response => {

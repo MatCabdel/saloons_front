@@ -28,7 +28,9 @@ export class PushNotificationService {
   public readonly fcmToken$ = this._fcmToken$.asObservable();
 
   /** Statut de la permission */
-  private readonly _permissionStatus$ = new BehaviorSubject<'granted' | 'denied' | 'prompt'>('prompt');
+  private readonly _permissionStatus$ = new BehaviorSubject<'granted' | 'denied' | 'prompt'>(
+    'prompt'
+  );
   public readonly permissionStatus$ = this._permissionStatus$.asObservable();
 
   /**
@@ -158,15 +160,18 @@ export class PushNotificationService {
     });
 
     // Listener : utilisateur tape sur la notification
-    FirebaseMessaging.addListener('notificationActionPerformed', (event: NotificationActionPerformedEvent) => {
-      console.log('🔔 Notification tapped:', event.notification);
+    FirebaseMessaging.addListener(
+      'notificationActionPerformed',
+      (event: NotificationActionPerformedEvent) => {
+        console.log('🔔 Notification tapped:', event.notification);
 
-      // Récupérer les data de la notification
-      const data = event.notification.data;
-      if (data && Object.keys(data).length > 0) {
-        this._handleNotificationNavigation(data as Record<string, unknown>);
+        // Récupérer les data de la notification
+        const data = event.notification.data;
+        if (data && Object.keys(data).length > 0) {
+          this._handleNotificationNavigation(data as Record<string, unknown>);
+        }
       }
-    });
+    );
   }
 
   /**
