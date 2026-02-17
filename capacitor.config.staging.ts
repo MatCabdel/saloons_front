@@ -17,6 +17,9 @@ const config: CapacitorConfig = {
         twitter: false,
       },
     },
+    FirebaseMessaging: {
+      presentationOptions: ['badge', 'sound', 'alert'],
+    },
   },
 };
 
