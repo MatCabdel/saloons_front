@@ -12,10 +12,16 @@
       [class.ended]="conv.isMatchCancelled"
       [class.expired]="conv.otherParticipantLeft && !conv.isMatchCancelled && !conv.isPermanent"
       [class.permanent]="conv.isPermanent"
+      [class.unread]="conv.unreadCount > 0"
       (click)="openConversation(conv.id)"
       (keydown.enter)="openConversation(conv.id)"
       tabindex="0"
     >
+      <!-- Badge unread -->
+      @if (conv.unreadCount > 0) {
+      <div class="unread-badge">{{ conv.unreadCount > 9 ? '9+' : conv.unreadCount }}</div>
+      }
+      
       <!-- Avatar -->
       @if (conv.isMatchCancelled) {
       <div class="avatar-placeholder">

@@ -5,6 +5,10 @@ import { environment } from 'src/environments/environment';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
+// Constants
+const DEFAULT_MESSAGE_LIMIT = 50;
+const PRESENCE_REFRESH_DELAY_MS = 500;
+
 export type SaloonMessageDTO = {
   id: number;
   saloonId: number;
@@ -66,14 +70,15 @@ export class SaloonChatService {
   }
 
   get connectedCount(): number {
-    return this._presenceSubject.value?.connectedCount ?? 0;
+    const ZERO = 0;
+    return this._presenceSubject.value?.connectedCount ?? ZERO;
   }
 
   /**
    * Récupère l'historique du chat avec les messages depuis le joinedAt de l'utilisateur
    * C'est la méthode principale à utiliser pour charger le chat
    */
-  getChatHistory(saloonId: number, limit = 50): Observable<SaloonChatHistoryDTO> {
+  getChatHistory(saloonId: number, limit = DEFAULT_MESSAGE_LIMIT): Observable<SaloonChatHistoryDTO> {
     return this._http.get<SaloonChatHistoryDTO>(
       `${this._apiUrl}/${saloonId}/history?limit=${limit}`
     );
@@ -82,7 +87,7 @@ export class SaloonChatService {
   /**
    * @deprecated Utiliser getChatHistory à la place
    */
-  getMessages(saloonId: number, limit = 50): Observable<SaloonMessageDTO[]> {
+  getMessages(saloonId: number, limit = DEFAULT_MESSAGE_LIMIT): Observable<SaloonMessageDTO[]> {
     return this._http.get<SaloonMessageDTO[]>(
       `${this._apiUrl}/${saloonId}/messages?limit=${limit}`
     );
@@ -146,7 +151,7 @@ export class SaloonChatService {
             this._presenceSubject.next(presence);
           },
         });
-      }, 500);
+      }, PRESENCE_REFRESH_DELAY_MS);
     };
 
     this._stompClient.onStompError = (): void => {

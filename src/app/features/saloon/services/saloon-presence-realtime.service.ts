@@ -78,7 +78,8 @@ export class SaloonPresenceRealtimeService {
    * Récupère le compteur pour un saloon spécifique
    */
   getCount(saloonId: number): number {
-    return this._presenceCounts.value.get(saloonId) ?? 0;
+    const DEFAULT_COUNT = 0;
+    return this._presenceCounts.value.get(saloonId) ?? DEFAULT_COUNT;
   }
 
   disconnect(): void {

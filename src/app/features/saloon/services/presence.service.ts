@@ -4,6 +4,15 @@ import { BehaviorSubject, Observable, Subject, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { SaloonType } from '../models/saloonModel';
 
+// Time constants
+const SECONDS_PER_HOUR = 3600;
+const SECONDS_PER_MINUTE = 60;
+const MS_PER_SECOND = 1000;
+const TIME_PAD_LENGTH = 2;
+const ZERO = 0;
+const DECREMENT = 1;
+const DEFAULT_RADIUS = 5000;
+
 // Types
 export type UserPresence = {
   id: number;
@@ -97,7 +106,7 @@ export class PresenceService {
   public currentPresence$ = this._currentPresence$.asObservable();
 
   // Timer pour le compte à rebours
-  private _remainingSeconds$ = new BehaviorSubject<number>(0);
+  private _remainingSeconds$ = new BehaviorSubject<number>(ZERO);
   public remainingSeconds$ = this._remainingSeconds$.asObservable();
 
   // Event émis quand la session expire
@@ -198,7 +207,7 @@ export class PresenceService {
   /**
    * Récupère les saloons à proximité.
    */
-  getNearbySaloons(lat: number, lng: number, radius: number = 5000): Observable<SaloonMapItem[]> {
+  getNearbySaloons(lat: number, lng: number, radius: number = DEFAULT_RADIUS): Observable<SaloonMapItem[]> {
     return this._http.get<SaloonMapItem[]>(`${this._BASE_URL_API}/api/saloons/nearby`, {
       params: { lat: lat.toString(), lng: lng.toString(), radius: radius.toString() },
     });
@@ -255,13 +264,13 @@ export class PresenceService {
     this._remainingSeconds$.next(seconds);
 
     this._timerInterval = setInterval(() => {
-      const remaining = this._remainingSeconds$.value - 1;
-      if (remaining <= 0) {
+      const remaining = this._remainingSeconds$.value - DECREMENT;
+      if (remaining <= ZERO) {
         this._stopTimer();
         const expiredSession = this._activeSession$.value;
         this._activeSession$.next(null);
         this._currentPresence$.next(null);
-        this._remainingSeconds$.next(0);
+        this._remainingSeconds$.next(ZERO);
 
         // Notifier le backend que la session a expiré (pour créer le cooldown)
         if (expiredSession) {
@@ -275,7 +284,7 @@ export class PresenceService {
       } else {
         this._remainingSeconds$.next(remaining);
       }
-    }, 1000);
+    }, MS_PER_SECOND);
   }
 
   /**
@@ -306,12 +315,12 @@ export class PresenceService {
    * Formate les secondes en HH:MM:SS.
    */
   formatTime(seconds: number): string {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s
+    const h = Math.floor(seconds / SECONDS_PER_HOUR);
+    const m = Math.floor((seconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE);
+    const s = seconds % SECONDS_PER_MINUTE;
+    return `${h.toString().padStart(TIME_PAD_LENGTH, '0')}:${m.toString().padStart(TIME_PAD_LENGTH, '0')}:${s
       .toString()
-      .padStart(2, '0')}`;
+      .padStart(TIME_PAD_LENGTH, '0')}`;
   }
 
   // ==================== LEAVE REQUEST / CANCEL ====================

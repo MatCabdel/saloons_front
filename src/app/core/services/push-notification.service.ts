@@ -11,6 +11,7 @@ import {
 } from '@capacitor-firebase/messaging';
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BadgeService } from './badge.service';
 
 /**
  * Service de gestion des notifications push via Firebase Cloud Messaging.
@@ -22,6 +23,7 @@ import { BehaviorSubject, firstValueFrom } from 'rxjs';
 export class PushNotificationService {
   private readonly _http = inject(HttpClient);
   private readonly _router = inject(Router);
+  private readonly _badgeService = inject(BadgeService);
 
   /** Token FCM actuel (null si pas encore récupéré ou permission refusée) */
   private readonly _fcmToken$ = new BehaviorSubject<string | null>(null);
@@ -55,8 +57,14 @@ export class PushNotificationService {
       // 2. Récupérer le token FCM
       await this._getAndRegisterToken();
 
-      // 3. Configurer les listeners
+      // 3. S'abonner au topic "test" pour debug via Firebase Console
+      await this._subscribeToTestTopic();
+
+      // 4. Configurer les listeners
       this._setupListeners();
+
+      // 5. Rafraîchir le compteur de messages non lus et le badge iOS
+      await this._badgeService.refreshUnreadCount();
 
       console.log('🔔 Push notifications: initialized successfully');
     } catch (error) {
@@ -125,6 +133,19 @@ export class PushNotificationService {
   }
 
   /**
+   * S'abonne au topic "test" pour tester via Firebase Console.
+   * Ce topic permet d'envoyer des notifs de test sans cibler un token spécifique.
+   */
+  private async _subscribeToTestTopic(): Promise<void> {
+    try {
+      await FirebaseMessaging.subscribeToTopic({ topic: 'test' });
+      console.log('🔔 ✅ Subscribed to topic "test" - You can now send test notifications from Firebase Console');
+    } catch (error) {
+      console.error('🔔 ❌ Failed to subscribe to topic "test":', error);
+    }
+  }
+
+  /**
    * Envoie le token FCM au backend pour l'associer à l'utilisateur.
    */
   private async _registerTokenOnBackend(token: string): Promise<void> {
@@ -145,6 +166,8 @@ export class PushNotificationService {
    * Configure les listeners pour les notifications.
    */
   private _setupListeners(): void {
+    console.log('🔔 Setting up push notification listeners...');
+
     // Listener : nouveau token (refresh)
     FirebaseMessaging.addListener('tokenReceived', async (event: TokenReceivedEvent) => {
       console.log('🔔 Token refreshed:', event.token.substring(0, 20) + '...');
@@ -154,16 +177,32 @@ export class PushNotificationService {
 
     // Listener : notification reçue en foreground
     FirebaseMessaging.addListener('notificationReceived', (event: NotificationReceivedEvent) => {
-      console.log('🔔 Notification received (foreground):', event.notification);
-      // En foreground sur iOS, la notif s'affiche automatiquement grâce à presentationOptions
-      // Tu peux ajouter une logique custom ici (ex: toast, badge update)
+      console.log('🔔 ================================');
+      console.log('🔔 NOTIFICATION RECEIVED (FOREGROUND)');
+      console.log('🔔 Title:', event.notification.title);
+      console.log('🔔 Body:', event.notification.body);
+      console.log('🔔 Data:', JSON.stringify(event.notification.data));
+      console.log('🔔 Full notification:', JSON.stringify(event.notification));
+      console.log('🔔 ================================');
+      
+      // Incrémenter le badge pour les notifications de type message
+      const data = event.notification.data as Record<string, unknown> | undefined;
+      if (data && data['type'] === 'private_message') {
+        this._badgeService.incrementUnread(1);
+      }
     });
 
     // Listener : utilisateur tape sur la notification
     FirebaseMessaging.addListener(
       'notificationActionPerformed',
       (event: NotificationActionPerformedEvent) => {
-        console.log('🔔 Notification tapped:', event.notification);
+        console.log('🔔 ================================');
+        console.log('🔔 NOTIFICATION TAPPED');
+        console.log('🔔 Title:', event.notification.title);
+        console.log('🔔 Body:', event.notification.body);
+        console.log('🔔 Data:', JSON.stringify(event.notification.data));
+        console.log('🔔 ActionId:', event.actionId);
+        console.log('🔔 ================================');
 
         // Récupérer les data de la notification
         const data = event.notification.data;
@@ -172,6 +211,8 @@ export class PushNotificationService {
         }
       }
     );
+
+    console.log('🔔 ✅ All listeners set up successfully');
   }
 
   /**

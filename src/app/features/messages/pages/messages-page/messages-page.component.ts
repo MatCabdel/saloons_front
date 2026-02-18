@@ -17,6 +17,7 @@ import {
 } from 'src/app/features/conversation/models/Conversation';
 import { interval, Subscription } from 'rxjs';
 import { PresenceService } from 'src/app/features/saloon/services/presence.service';
+import { BadgeService } from 'src/app/core/services/badge.service';
 
 @Component({
   selector: 'app-messages-page',
@@ -33,6 +34,7 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   private _userStore = inject(UserStoreService);
   private _userService = inject(UserService);
   private _presenceService = inject(PresenceService);
+  private _badgeService = inject(BadgeService);
 
   userTarget?: User;
   conversationId: number | null = null;
@@ -96,6 +98,9 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
         this.isMatchCancelled = conv.isMatchCancelled || false;
         this.conversation = conv;
 
+        // Marquer la conversation comme lue
+        this._markConversationAsRead();
+
         // Charger le statut des coups de cœur seulement si expiré mais pas annulé
         if (this.otherParticipantLeft && !this.isMatchCancelled) {
           this._loadHeartRequestStatus();
@@ -106,6 +111,29 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
         if (err.status === 403) {
           this._router.navigate(['/chat']);
         }
+      },
+    });
+  }
+
+  /**
+   * Marque la conversation comme lue et met à jour le badge iOS.
+   */
+  private _markConversationAsRead(): void {
+    if (!this.conversationId) return;
+
+    // Mémoriser le nombre de non lus avant de marquer comme lu
+    const unreadBefore = this.conversation?.unreadCount || 0;
+
+    this._conversationService.markAsRead(this.conversationId).subscribe({
+      next: () => {
+        console.log('📖 Conversation marked as read:', this.conversationId);
+        // Décrémenter le badge iOS du nombre qu'on vient de lire
+        if (unreadBefore > 0) {
+          this._badgeService.decrementUnread(unreadBefore);
+        }
+      },
+      error: err => {
+        console.error('Failed to mark conversation as read:', err);
       },
     });
   }

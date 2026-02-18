@@ -2,14 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>575950337220-5fg34lpe2tm4db9rhluamh4kpjusf98f.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.575950337220-5fg34lpe2tm4db9rhluamh4kpjusf98f</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCRpCxE31epQAFrXVB6lXbIySPI_L83GX4</string>
+	<string>AIzaSyB4uM7NuGAPhdHLbjw9dlKCx2geKA5GD7A</string>
 	<key>GCM_SENDER_ID</key>
 	<string>575950337220</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.saloons.app</string>
+	<string>io.saloons.app</string>
 	<key>PROJECT_ID</key>
 	<string>saloons-ba99c</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,10 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:575950337220:ios:5aa25ba4a77f828a824591</string>
-	<key>CLIENT_ID</key>
-	<string>575950337220-smbrt1qql9aknk61fklcbvub7iuaomcm.apps.googleusercontent.com</string>
-	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.575950337220-smbrt1qql9aknk61fklcbvub7iuaomcm</string>
+	<string>1:575950337220:ios:609115301347e41c824591</string>
 </dict>
 </plist>

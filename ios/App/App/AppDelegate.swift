@@ -45,11 +45,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     // Afficher les notifications même quand l'app est en foreground
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        let userInfo = notification.request.content.userInfo
+        print("🔔 ====== NOTIFICATION RECEIVED (iOS Native) ======")
+        print("🔔 Title: \(notification.request.content.title)")
+        print("🔔 Body: \(notification.request.content.body)")
+        print("🔔 UserInfo: \(userInfo)")
+        print("🔔 Showing with: banner, badge, sound")
+        print("🔔 =================================================")
         completionHandler([.banner, .badge, .sound])
     }
     
     // Gérer le tap sur une notification
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        print("🔔 ====== NOTIFICATION TAPPED (iOS Native) ======")
+        print("🔔 Title: \(response.notification.request.content.title)")
+        print("🔔 ActionId: \(response.actionIdentifier)")
+        print("🔔 ================================================")
         // Le plugin Capacitor gère automatiquement cet événement
         completionHandler()
     }
