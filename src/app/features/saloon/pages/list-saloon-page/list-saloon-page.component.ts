@@ -178,8 +178,10 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
     // Connecter au WebSocket pour les mises à jour temps réel
     this._presenceRealtimeService.connect();
     // Charger la session active de l'utilisateur (pour savoir s'il est dans un saloon)
-    this._presenceService.getMySession().pipe(takeUntil(this._destroy$))
-.subscribe();
+    this._presenceService
+      .getMySession()
+      .pipe(takeUntil(this._destroy$))
+      .subscribe();
   }
 
   ngOnDestroy(): void {
@@ -244,18 +246,46 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   }
 
   private _maybeAutoFetchLocation(): void {
-    if (!('permissions' in navigator) || !navigator.permissions?.query) {
+    // Si l'utilisateur a déjà accepté la géoloc précédemment, récupérer directement
+    const alreadyPrompted = localStorage.getItem('saloons_location_prompted');
+
+    // Sur mobile (Capacitor), vérifier avec le plugin natif
+    if (Capacitor.isNativePlatform()) {
+      if (alreadyPrompted) {
+        // Déjà passé par le prompt custom, récupérer la position directement
+        this._getUserLocation();
+      }
+      // Sinon, laisser afficher le prompt custom (geoLocationStatus = 'prompt')
       return;
     }
+
+    // Sur web, utiliser l'API Permissions si disponible
+    if (!('permissions' in navigator) || !navigator.permissions?.query) {
+      // API non dispo, se fier au localStorage
+      if (alreadyPrompted) {
+        this._getUserLocation();
+      }
+      return;
+    }
+
     navigator.permissions
       .query({ name: 'geolocation' as PermissionName })
       .then(result => {
-        if (result.state === 'granted' && localStorage.getItem('saloons_location_prompted')) {
+        if (result.state === 'granted') {
+          // Permission déjà accordée, récupérer position sans afficher modal
+          localStorage.setItem('saloons_location_prompted', 'true');
           this._getUserLocation();
+        } else if (result.state === 'denied') {
+          // Permission refusée, afficher l'état denied
+          this.geoLocationStatus.set('denied');
         }
+        // Si 'prompt', laisser afficher le prompt custom
       })
       .catch(() => {
-        // Ignore permissions API errors
+        // Ignore permissions API errors, se fier au localStorage
+        if (alreadyPrompted) {
+          this._getUserLocation();
+        }
       });
   }
 
