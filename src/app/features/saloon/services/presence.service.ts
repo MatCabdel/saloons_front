@@ -207,7 +207,11 @@ export class PresenceService {
   /**
    * Récupère les saloons à proximité.
    */
-  getNearbySaloons(lat: number, lng: number, radius: number = DEFAULT_RADIUS): Observable<SaloonMapItem[]> {
+  getNearbySaloons(
+    lat: number,
+    lng: number,
+    radius: number = DEFAULT_RADIUS
+  ): Observable<SaloonMapItem[]> {
     return this._http.get<SaloonMapItem[]>(`${this._BASE_URL_API}/api/saloons/nearby`, {
       params: { lat: lat.toString(), lng: lng.toString(), radius: radius.toString() },
     });
@@ -318,9 +322,9 @@ export class PresenceService {
     const h = Math.floor(seconds / SECONDS_PER_HOUR);
     const m = Math.floor((seconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE);
     const s = seconds % SECONDS_PER_MINUTE;
-    return `${h.toString().padStart(TIME_PAD_LENGTH, '0')}:${m.toString().padStart(TIME_PAD_LENGTH, '0')}:${s
+    return `${h.toString().padStart(TIME_PAD_LENGTH, '0')}:${m
       .toString()
-      .padStart(TIME_PAD_LENGTH, '0')}`;
+      .padStart(TIME_PAD_LENGTH, '0')}:${s.toString().padStart(TIME_PAD_LENGTH, '0')}`;
   }
 
   // ==================== LEAVE REQUEST / CANCEL ====================

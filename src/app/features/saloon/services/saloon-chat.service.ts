@@ -78,7 +78,10 @@ export class SaloonChatService {
    * Récupère l'historique du chat avec les messages depuis le joinedAt de l'utilisateur
    * C'est la méthode principale à utiliser pour charger le chat
    */
-  getChatHistory(saloonId: number, limit = DEFAULT_MESSAGE_LIMIT): Observable<SaloonChatHistoryDTO> {
+  getChatHistory(
+    saloonId: number,
+    limit = DEFAULT_MESSAGE_LIMIT
+  ): Observable<SaloonChatHistoryDTO> {
     return this._http.get<SaloonChatHistoryDTO>(
       `${this._apiUrl}/${saloonId}/history?limit=${limit}`
     );

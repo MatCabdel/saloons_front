@@ -88,7 +88,14 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  private _loadConversation(): void {
+  @HostListener('window:focus')
+  onWindowFocus(): void {
+    if (this.conversationId) {
+      this._loadConversation(false);
+    }
+  }
+
+  private _loadConversation(markAsRead: boolean = true): void {
     if (!this.conversationId) return;
 
     this._conversationService.getConversation(this.conversationId).subscribe({
@@ -100,8 +107,10 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
         this.isHeartWindowExpired = conv.isHeartWindowExpired || false;
         this.conversation = conv;
 
-        // Marquer la conversation comme lue
-        this._markConversationAsRead();
+        // Marquer la conversation comme lue uniquement au chargement principal
+        if (markAsRead) {
+          this._markConversationAsRead();
+        }
 
         // Charger le statut des coups de cœur seulement si expiré mais pas annulé ET fenêtre pas expirée
         if (this.otherParticipantLeft && !this.isMatchCancelled && !this.isHeartWindowExpired) {

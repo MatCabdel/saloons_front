@@ -139,7 +139,9 @@ export class PushNotificationService {
   private async _subscribeToTestTopic(): Promise<void> {
     try {
       await FirebaseMessaging.subscribeToTopic({ topic: 'test' });
-      console.log('🔔 ✅ Subscribed to topic "test" - You can now send test notifications from Firebase Console');
+      console.log(
+        '🔔 ✅ Subscribed to topic "test" - You can now send test notifications from Firebase Console'
+      );
     } catch (error) {
       console.error('🔔 ❌ Failed to subscribe to topic "test":', error);
     }
@@ -184,7 +186,7 @@ export class PushNotificationService {
       console.log('🔔 Data:', JSON.stringify(event.notification.data));
       console.log('🔔 Full notification:', JSON.stringify(event.notification));
       console.log('🔔 ================================');
-      
+
       // Incrémenter le badge pour les notifications de type message
       const data = event.notification.data as Record<string, unknown> | undefined;
       if (data && data['type'] === 'private_message') {

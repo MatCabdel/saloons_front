@@ -10,8 +10,18 @@
     <div
       class="conversation-card"
       [class.ended]="conv.isMatchCancelled"
-      [class.expired]="conv.otherParticipantLeft && !conv.isMatchCancelled && !conv.isPermanent && !conv.isHeartWindowExpired"
-      [class.fully-expired]="conv.otherParticipantLeft && !conv.isMatchCancelled && !conv.isPermanent && conv.isHeartWindowExpired"
+      [class.expired]="
+        conv.otherParticipantLeft &&
+        !conv.isMatchCancelled &&
+        !conv.isPermanent &&
+        !conv.isHeartWindowExpired
+      "
+      [class.fully-expired]="
+        conv.otherParticipantLeft &&
+        !conv.isMatchCancelled &&
+        !conv.isPermanent &&
+        conv.isHeartWindowExpired
+      "
       [class.permanent]="conv.isPermanent"
       [class.unread]="conv.unreadCount > 0"
       (click)="openConversation(conv.id)"
@@ -22,7 +32,7 @@
       @if (conv.unreadCount > 0) {
       <div class="unread-badge">{{ conv.unreadCount > 9 ? '9+' : conv.unreadCount }}</div>
       }
-      
+
       <!-- Avatar -->
       @if (conv.isMatchCancelled) {
       <div class="avatar-placeholder">
