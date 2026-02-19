@@ -47,7 +47,7 @@ export class RegisterProfilComponent implements OnInit {
   ngOnInit(): void {
     const d = new Date();
     d.setFullYear(d.getFullYear() - 18);
-    this.maxBirthDate = d.toISOString().split('T')[0];
+    this.maxBirthDate = this._formatDateForInput(d);
 
     this.formGroup = this._fb.group({
       account: this._fb.group(
@@ -132,7 +132,12 @@ export class RegisterProfilComponent implements OnInit {
     return (control: AbstractControl) => {
       const value = control.value;
       if (!value) return null;
-      const birth = new Date(value);
+
+      const birth = this._parseLocalDate(value);
+      if (!birth) {
+        return { minAge: { requiredAge: minYears, actualAge: null } };
+      }
+
       const today = new Date();
       const age =
         today.getFullYear() -
@@ -151,5 +156,29 @@ export class RegisterProfilComponent implements OnInit {
   }
   closeConditionsModal(): void {
     this.showConditionsModal = false;
+  }
+
+  private _formatDateForInput(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  private _parseLocalDate(value: unknown): Date | null {
+    if (typeof value !== 'string' || !value) {
+      return null;
+    }
+
+    const [yearRaw, monthRaw, dayRaw] = value.split('-');
+    const year = Number(yearRaw);
+    const month = Number(monthRaw);
+    const day = Number(dayRaw);
+
+    if (!year || !month || !day) {
+      return null;
+    }
+
+    return new Date(year, month - 1, day);
   }
 }
