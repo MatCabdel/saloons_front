@@ -18,6 +18,7 @@ import {
 import { interval, Subscription } from 'rxjs';
 import { PresenceService } from 'src/app/features/saloon/services/presence.service';
 import { BadgeService } from 'src/app/core/services/badge.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-messages-page',
@@ -143,7 +144,7 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
           this._badgeService.decrementUnread(unreadBefore);
         }
       },
-      error: err => {
+      error: (err: HttpErrorResponse) => {
         console.error('Failed to mark conversation as read:', err);
       },
     });

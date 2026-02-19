@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { environment } from '../environments/environment';
+import { signal } from '@angular/core';
+
+type ApiStatus = 'checking' | 'ok' | 'error';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +13,14 @@ import { environment } from '../environments/environment';
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
+  readonly apiStatus = signal<ApiStatus>('checking');
+
   ngOnInit(): void {
+    this._checkApiReachability();
+  }
+
+  retryApi(): void {
+    this.apiStatus.set('checking');
     this._checkApiReachability();
   }
 
@@ -31,8 +41,10 @@ export class AppComponent implements OnInit {
         signal: controller.signal,
       });
       console.log('✅ API reachable');
+      this.apiStatus.set('ok');
     } catch {
       console.warn('⚠️ API unreachable at startup — the app will retry on user actions');
+      this.apiStatus.set('error');
     } finally {
       clearTimeout(timeout);
     }
