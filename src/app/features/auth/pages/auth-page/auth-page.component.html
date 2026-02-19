@@ -3,7 +3,7 @@
   <div class="auth-branding">
     <div class="branding-content">
       <h1 class="brand-title">SAL<span class="yellow">OO</span>NS</h1>
-      <h2 class="brand-tagline">The meeting before the match</h2>
+      <h2 class="brand-tagline">Ici, on ne swipe pas. On se rencontre.</h2>
     </div>
   </div>
 
@@ -12,7 +12,7 @@
     <!-- Logo mobile -->
     <div class="mobile-header">
       <h1 class="mobile-title">SAL<span class="yellow">OO</span>NS</h1>
-      <h2 class="mobile-tagline">The meeting before the match</h2>
+      <h2 class="mobile-tagline">Ici, on ne swipe pas. On se rencontre.</h2>
     </div>
 
     <div class="auth-form-container">
@@ -277,6 +277,14 @@
           Pas encore de compte ?
           <button type="button" class="link-btn" (click)="goToRegister()">S'inscrire</button>
         </p>
+
+        <!-- Bouton de déconnexion si déjà connecté -->
+        @if (isAlreadyAuthenticated) {
+        <p class="switch-text" style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.7">
+          Déjà connecté ?
+          <button type="button" class="link-btn" (click)="logout()">Se déconnecter</button>
+        </p>
+        }
       </div>
       }
 

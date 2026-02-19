@@ -85,6 +85,7 @@ export class OnboardingPageComponent {
   });
 
   private _photoFile: File | null = null;
+  private _photoPreviewUrl: string | null = null;
 
   constructor() {
     this._setupCityAutocomplete();
@@ -163,13 +164,13 @@ export class OnboardingPageComponent {
   get minBirthDate(): string {
     const date = new Date();
     date.setFullYear(date.getFullYear() - 100);
-    return date.toISOString().split('T')[0];
+    return this._formatDateForInput(date);
   }
 
   get maxBirthDate(): string {
     const date = new Date();
     date.setFullYear(date.getFullYear() - 18);
-    return date.toISOString().split('T')[0];
+    return this._formatDateForInput(date);
   }
 
   // Appelé quand l'utilisateur accepte les règles (dernière étape)
@@ -194,12 +195,10 @@ export class OnboardingPageComponent {
 
     // Check age validation
     if (step === 'birthdate') {
-      const birthDate = new Date(this.birthdateForm.value.birthDate);
-      const today = new Date();
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
+      const age = this._calculateAge(this.birthdateForm.value.birthDate);
+      if (age === null) {
+        this.errorMessage.set('Date de naissance invalide');
+        return;
       }
       if (age < 18) {
         this.errorMessage.set('Vous devez avoir au moins 18 ans pour utiliser Saloons');
@@ -232,31 +231,26 @@ export class OnboardingPageComponent {
 
       // Validate file type
       if (!file.type.startsWith('image/')) {
+        this._clearPhotoSelection(input);
         this.errorMessage.set('Veuillez sélectionner une image');
         return;
       }
 
       // Validate file size (max 10MB)
       if (file.size > 10 * 1024 * 1024) {
+        this._clearPhotoSelection(input);
         this.errorMessage.set("L'image ne doit pas dépasser 10MB");
         return;
       }
 
       this._photoFile = file;
       this.errorMessage.set(null);
-
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e): void => {
-        this.photoPreview.set(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      this._setPhotoPreview(file);
     }
   }
 
   removePhoto(): void {
-    this._photoFile = null;
-    this.photoPreview.set(null);
+    this._clearPhotoSelection();
   }
 
   skipPhoto(): void {
@@ -348,5 +342,72 @@ export class OnboardingPageComponent {
     }
 
     return '';
+  }
+
+  private _formatDateForInput(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  private _parseLocalDate(dateValue: string | null | undefined): Date | null {
+    if (!dateValue || typeof dateValue !== 'string') {
+      return null;
+    }
+
+    const [yearRaw, monthRaw, dayRaw] = dateValue.split('-');
+    const year = Number(yearRaw);
+    const month = Number(monthRaw);
+    const day = Number(dayRaw);
+
+    if (!year || !month || !day) {
+      return null;
+    }
+
+    return new Date(year, month - 1, day);
+  }
+
+  private _calculateAge(dateValue: string | null | undefined): number | null {
+    const birthDate = this._parseLocalDate(dateValue);
+    if (!birthDate) {
+      return null;
+    }
+
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    const hasBirthdayPassed =
+      monthDiff > 0 || (monthDiff === 0 && today.getDate() >= birthDate.getDate());
+
+    if (!hasBirthdayPassed) {
+      age--;
+    }
+
+    return age;
+  }
+
+  get hasSelectedPhoto(): boolean {
+    return this._photoFile !== null;
+  }
+
+  private _setPhotoPreview(file: File): void {
+    if (this._photoPreviewUrl) {
+      URL.revokeObjectURL(this._photoPreviewUrl);
+    }
+    this._photoPreviewUrl = URL.createObjectURL(file);
+    this.photoPreview.set(this._photoPreviewUrl);
+  }
+
+  private _clearPhotoSelection(input?: HTMLInputElement): void {
+    this._photoFile = null;
+    if (this._photoPreviewUrl) {
+      URL.revokeObjectURL(this._photoPreviewUrl);
+      this._photoPreviewUrl = null;
+    }
+    this.photoPreview.set(null);
+    if (input) {
+      input.value = '';
+    }
   }
 }

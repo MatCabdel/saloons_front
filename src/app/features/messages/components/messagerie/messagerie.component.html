@@ -36,8 +36,29 @@
 </div>
 
 <!-- Zone d'envoi de message OU bouton coup de cœur -->
-@if (isConversationEnded && !isMatchCancelled) {
-<!-- Conversation expirée : afficher le bouton coup de cœur -->
+@if (isConversationEnded && !isMatchCancelled && isHeartWindowExpired) {
+<!-- Conversation expirée ET fenêtre 12h passée : conversation définitivement terminée -->
+<div class="conversation-expired-notice">
+  <div class="expired-icon">⏰</div>
+  <p>Conversation expirée, vous ne pouvez plus discuter avec cette personne</p>
+</div>
+<div class="send-box disabled">
+  <textarea placeholder="Conversation expirée" disabled></textarea>
+  <button type="button" disabled>
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path>
+    </svg>
+  </button>
+</div>
+} @else if (isConversationEnded && !isMatchCancelled) {
+<!-- Conversation expirée mais fenêtre 12h active : afficher le bouton coup de cœur -->
 <div class="heart-request-box">
   @if (isPermanent) {
   <div class="heart-status success">

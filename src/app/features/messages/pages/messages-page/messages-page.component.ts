@@ -17,6 +17,7 @@ import {
 } from 'src/app/features/conversation/models/Conversation';
 import { interval, Subscription } from 'rxjs';
 import { PresenceService } from 'src/app/features/saloon/services/presence.service';
+import { BadgeService } from 'src/app/core/services/badge.service';
 
 @Component({
   selector: 'app-messages-page',
@@ -33,12 +34,14 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   private _userStore = inject(UserStoreService);
   private _userService = inject(UserService);
   private _presenceService = inject(PresenceService);
+  private _badgeService = inject(BadgeService);
 
   userTarget?: User;
   conversationId: number | null = null;
   matchUserId: number | null = null; // Mode match sans conversation
   otherParticipantLeft = false;
   isMatchCancelled = false;
+  isHeartWindowExpired = false; // true si la fenêtre 12h pour coup de cœur est expirée
   conversation?: Conversation;
 
   // Heart Request state
@@ -85,7 +88,14 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  private _loadConversation(): void {
+  @HostListener('window:focus')
+  onWindowFocus(): void {
+    if (this.conversationId) {
+      this._loadConversation(false);
+    }
+  }
+
+  private _loadConversation(markAsRead: boolean = true): void {
     if (!this.conversationId) return;
 
     this._conversationService.getConversation(this.conversationId).subscribe({
@@ -94,10 +104,16 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
         this.userTarget = conv.participants.find((u: User) => u.id !== myId);
         this.otherParticipantLeft = conv.otherParticipantLeft || false;
         this.isMatchCancelled = conv.isMatchCancelled || false;
+        this.isHeartWindowExpired = conv.isHeartWindowExpired || false;
         this.conversation = conv;
 
-        // Charger le statut des coups de cœur seulement si expiré mais pas annulé
-        if (this.otherParticipantLeft && !this.isMatchCancelled) {
+        // Marquer la conversation comme lue uniquement au chargement principal
+        if (markAsRead) {
+          this._markConversationAsRead();
+        }
+
+        // Charger le statut des coups de cœur seulement si expiré mais pas annulé ET fenêtre pas expirée
+        if (this.otherParticipantLeft && !this.isMatchCancelled && !this.isHeartWindowExpired) {
           this._loadHeartRequestStatus();
         }
       },
@@ -106,6 +122,29 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
         if (err.status === 403) {
           this._router.navigate(['/chat']);
         }
+      },
+    });
+  }
+
+  /**
+   * Marque la conversation comme lue et met à jour le badge iOS.
+   */
+  private _markConversationAsRead(): void {
+    if (!this.conversationId) return;
+
+    // Mémoriser le nombre de non lus avant de marquer comme lu
+    const unreadBefore = this.conversation?.unreadCount || 0;
+
+    this._conversationService.markAsRead(this.conversationId).subscribe({
+      next: () => {
+        console.log('📖 Conversation marked as read:', this.conversationId);
+        // Décrémenter le badge iOS du nombre qu'on vient de lire
+        if (unreadBefore > 0) {
+          this._badgeService.decrementUnread(unreadBefore);
+        }
+      },
+      error: err => {
+        console.error('Failed to mark conversation as read:', err);
       },
     });
   }

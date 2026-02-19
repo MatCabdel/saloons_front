@@ -18,6 +18,8 @@ export type Conversation = {
   isPermanent: boolean;
   expiredAt: string | null;
   isMatchCancelled: boolean; // true si match annulé, false si juste quitté le saloon
+  unreadCount: number; // Nombre de messages non lus
+  isHeartWindowExpired: boolean; // true si la fenêtre 12h pour envoyer un coup de cœur est expirée
 };
 
 export type HeartRequestStatus = {

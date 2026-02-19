@@ -1,1 +1,1 @@
-(window as any).global = window;
+(window as unknown as { global: typeof globalThis }).global = window;

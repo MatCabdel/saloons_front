@@ -32,4 +32,12 @@ export class ConversationService {
   deleteConversation(conversationId: number): Observable<void> {
     return this._http.delete<void>(`${this._apiUrl}/${conversationId}`);
   }
+
+  /**
+   * Marque une conversation comme lue.
+   * Met à jour lastReadAt côté backend.
+   */
+  markAsRead(conversationId: number): Observable<void> {
+    return this._http.post<void>(`${this._apiUrl}/${conversationId}/mark-as-read`, {});
+  }
 }

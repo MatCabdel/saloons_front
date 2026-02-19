@@ -1,15 +1,10 @@
-import { Component, inject, signal, OnInit, effect, DestroyRef } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FirebaseAuthService } from '../../services/firebase-auth.service';
 import { environment } from 'src/environments/environment';
 import { LEGAL_NOTICES_TEXT, PRIVACY_POLICY_TEXT, TERMS_TEXT } from '../../legal/legal-texts';
-import { Capacitor } from '@capacitor/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { filter } from 'rxjs/operators';
 
 type AuthMode = 'register' | 'login' | 'register-email';
 
@@ -24,9 +19,6 @@ export class AuthPageComponent implements OnInit {
   private _fb = inject(FormBuilder);
   private _firebaseAuth = inject(FirebaseAuthService);
   private _router = inject(Router);
-  private _route = inject(ActivatedRoute);
-  private _location = inject(Location);
-  private _destroyRef = inject(DestroyRef);
 
   mode = signal<AuthMode>('register');
   isLoading = signal(false);
@@ -36,6 +28,11 @@ export class AuthPageComponent implements OnInit {
   showLegalModal = signal(false);
   legalModalTitle = signal('');
   legalModalContent = signal('');
+
+  // Pour détecter si l'utilisateur est déjà connecté
+  get isAlreadyAuthenticated(): boolean {
+    return this._firebaseAuth.isAuthenticated();
+  }
 
   // Formulaire inscription email
   registerForm: FormGroup = this._fb.group({
@@ -53,29 +50,11 @@ export class AuthPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this._setModeFromRoute(this._router.url);
-    this._router.events
-      .pipe(
-        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        takeUntilDestroyed(this._destroyRef)
-      )
-      .subscribe(event => {
-        this._setModeFromRoute(event.urlAfterRedirects);
-      });
-
-    if (this._isNativePlatform()) {
-      effect(() => {
-        const user = this._firebaseAuth.currentUser();
-        // Sur iOS natif, on redirige automatiquement SI ce n'est pas la page de connexion
-        // (la page de connexion doit rester accessible pour se déconnecter)
-        if (!user) {
-          return;
-        }
-        // Ne rediriger que si on est sur la page d'inscription (pas login)
-        if (this.mode() !== 'login') {
-          this._handleAuthSuccess(false, user.profileStatus, user.role);
-        }
-      });
+    const url = this._router.url;
+    if (url.includes('login')) {
+      this.mode.set('login');
+    } else {
+      this.mode.set('register');
     }
   }
 
@@ -129,6 +108,11 @@ export class AuthPageComponent implements OnInit {
     this.showLegalModal.set(false);
   }
 
+  async logout(): Promise<void> {
+    await this._firebaseAuth.signOut();
+    this.errorMessage.set('Déconnexion réussie');
+  }
+
   onGoogleAuth(): void {
     // Vérifier si Firebase est configuré
     if (environment.firebase.apiKey === 'YOUR_FIREBASE_API_KEY') {
@@ -144,9 +128,6 @@ export class AuthPageComponent implements OnInit {
     this._firebaseAuth.signInWithGoogle().subscribe({
       next: response => {
         this.isLoading.set(false);
-        if (!response) {
-          return;
-        }
         this._handleAuthSuccess(response.newUser, response.user.profileStatus, response.user.role);
       },
       error: err => {
@@ -171,9 +152,6 @@ export class AuthPageComponent implements OnInit {
     this._firebaseAuth.signInWithFacebook().subscribe({
       next: response => {
         this.isLoading.set(false);
-        if (!response) {
-          return;
-        }
         this._handleAuthSuccess(response.newUser, response.user.profileStatus, response.user.role);
       },
       error: err => {
@@ -322,20 +300,6 @@ export class AuthPageComponent implements OnInit {
     }
 
     return 'Une erreur est survenue. Veuillez réessayer.';
-  }
-
-  private _isNativePlatform(): boolean {
-    return Capacitor.isNativePlatform();
-  }
-
-  private _setModeFromRoute(url: string): void {
-    const routePath = this._route.snapshot.routeConfig?.path ?? '';
-    const currentPath = url || this._location.path() || routePath;
-    if (currentPath.includes('login')) {
-      this.mode.set('login');
-      return;
-    }
-    this.mode.set('register');
   }
 
   isFieldInvalid(form: FormGroup, fieldName: string): boolean {

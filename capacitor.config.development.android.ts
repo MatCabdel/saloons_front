@@ -8,6 +8,11 @@ const config: CapacitorConfig = {
     url: 'http://localhost:4200',
     cleartext: true,
   },
+  plugins: {
+    FirebaseMessaging: {
+      presentationOptions: ['badge', 'sound', 'alert'],
+    },
+  },
 };
 
 export default config;

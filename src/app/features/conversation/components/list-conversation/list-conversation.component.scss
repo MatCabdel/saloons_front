@@ -58,6 +58,41 @@
       &:hover {
         background: #f0e9ff;
       }
+
+      // Style pour conversation non lue
+      &.unread {
+        background: #f8f5ff;
+        border-left: 4px solid #7c4dff;
+
+        .name {
+          font-weight: 700;
+          color: #333;
+        }
+
+        .last-message {
+          font-weight: 600;
+          color: #444;
+        }
+      }
+
+      // Badge nombre de messages non lus
+      .unread-badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: #7c4dff;
+        color: white;
+        font-size: 0.7rem;
+        font-weight: 700;
+        min-width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 6px;
+        box-shadow: 0 2px 4px rgba(124, 77, 255, 0.3);
+      }
     }
 
     .conversation-card img {
@@ -148,6 +183,20 @@
 
       img {
         filter: grayscale(50%);
+      }
+    }
+
+    // Conversation totalement expirée (fenêtre 12h passée) - style grisé similaire à ended
+    .conversation-card.fully-expired {
+      opacity: 0.6;
+
+      .avatar-wrapper img {
+        filter: grayscale(70%);
+        border: 2px solid #ccc;
+      }
+
+      .name {
+        color: #888;
       }
     }
 

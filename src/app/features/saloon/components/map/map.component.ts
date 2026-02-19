@@ -2,10 +2,16 @@ import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import { Subject, takeUntil } from 'rxjs';
+import { Capacitor } from '@capacitor/core';
+import { Geolocation } from '@capacitor/geolocation';
 import { SaloonModalComponent } from '../saloon-modal/saloon-modal.component';
 import { SaloonMapItem } from '../../services/presence.service';
 import { SaloonApiService } from '../../services/saloon-api.service';
 import { Saloon } from '../../models/saloonModel';
+
+const GEO_TIMEOUT_MS = 6000;
+const GEO_MAX_AGE_MS = 5 * 60 * 1000;
+const LOCATION_CACHE_KEY = 'saloons_last_location';
 
 @Component({
   selector: 'app-map',
@@ -49,6 +55,7 @@ export class MapComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.configMap();
     this._loadSaloons();
+    this._hydrateLocationFromCache();
     this._maybeAutoFetchLocation();
   }
 
@@ -135,13 +142,23 @@ export class MapComponent implements OnInit, OnDestroy {
     });
   }
 
-  private _getUserLocation(): void {
-    if ('geolocation' in navigator) {
+  private _getUserLocation(showLoading: boolean = true): void {
+    if (showLoading) {
       this.geoLocationStatus = 'loading';
-      navigator.geolocation.getCurrentPosition(
-        position => {
+    }
+
+    // Sur mobile (iOS/Android), utiliser le plugin Capacitor
+    // Évite le popup "localhost" qui apparaît avec navigator.geolocation dans WebView
+    if (Capacitor.isNativePlatform()) {
+      Geolocation.getCurrentPosition({
+        enableHighAccuracy: false,
+        timeout: GEO_TIMEOUT_MS,
+        maximumAge: GEO_MAX_AGE_MS,
+      })
+        .then(position => {
           this.userLat = position.coords.latitude;
           this.userLng = position.coords.longitude;
+          this._persistLocationInCache(this.userLat, this.userLng);
           this.geoLocationStatus = 'granted';
 
           // Mettre à jour les distances
@@ -152,18 +169,53 @@ export class MapComponent implements OnInit, OnDestroy {
 
           // Centrer la carte sur l'utilisateur
           this.map.setView([this.userLat, this.userLng], 15);
-        },
-        error => {
+        })
+        .catch(error => {
           console.warn('Géolocalisation non disponible:', error.message);
-          if (error.code === error.PERMISSION_DENIED) {
+          if (!showLoading && this.userLat !== null && this.userLng !== null) {
+            return;
+          }
+          if (error.message?.includes('denied') || error.message?.includes('permission')) {
             this.geoLocationStatus = 'denied';
           } else {
             this.geoLocationStatus = 'unavailable';
           }
-        }
-      );
+        });
     } else {
-      this.geoLocationStatus = 'unavailable';
+      // Sur web (desktop), utiliser navigator.geolocation
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            this.userLat = position.coords.latitude;
+            this.userLng = position.coords.longitude;
+            this._persistLocationInCache(this.userLat, this.userLng);
+            this.geoLocationStatus = 'granted';
+
+            // Mettre à jour les distances
+            this._updateDistances();
+
+            // Ajouter le marqueur de position utilisateur
+            this._addUserMarker();
+
+            // Centrer la carte sur l'utilisateur
+            this.map.setView([this.userLat, this.userLng], 15);
+          },
+          error => {
+            console.warn('Géolocalisation non disponible:', error.message);
+            if (!showLoading && this.userLat !== null && this.userLng !== null) {
+              return;
+            }
+            if (error.code === error.PERMISSION_DENIED) {
+              this.geoLocationStatus = 'denied';
+            } else {
+              this.geoLocationStatus = 'unavailable';
+            }
+          },
+          { enableHighAccuracy: false, timeout: GEO_TIMEOUT_MS, maximumAge: GEO_MAX_AGE_MS }
+        );
+      } else {
+        this.geoLocationStatus = 'unavailable';
+      }
     }
   }
 
@@ -186,6 +238,7 @@ export class MapComponent implements OnInit, OnDestroy {
    */
   centerOnUser(): void {
     if (this.userLat !== null && this.userLng !== null) {
+      this._addUserMarker();
       this.map.setView([this.userLat, this.userLng], 15);
     } else {
       // Si pas de position, demander à nouveau
@@ -240,7 +293,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   requestLocation(): void {
     localStorage.setItem('saloons_location_prompted', 'true');
-    this._getUserLocation();
+    this._getUserLocation(true);
   }
 
   openLocationSettings(): void {
@@ -248,18 +301,68 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private _maybeAutoFetchLocation(): void {
-    if (!('permissions' in navigator) || !navigator.permissions?.query) {
+    // Si l'utilisateur a déjà accepté la géoloc précédemment, récupérer directement
+    const alreadyPrompted = localStorage.getItem('saloons_location_prompted');
+
+    // Sur mobile (Capacitor), vérifier avec le plugin natif
+    if (Capacitor.isNativePlatform()) {
+      if (alreadyPrompted) {
+        // Déjà passé par le prompt custom, récupérer la position directement
+        this._getUserLocation(false);
+      }
+      // Sinon, laisser afficher le prompt custom (geoLocationStatus = 'prompt')
       return;
     }
+
+    // Sur web, utiliser l'API Permissions si disponible
+    if (!('permissions' in navigator) || !navigator.permissions?.query) {
+      // API non dispo, se fier au localStorage
+      if (alreadyPrompted) {
+        this._getUserLocation(false);
+      }
+      return;
+    }
+
     navigator.permissions
       .query({ name: 'geolocation' as PermissionName })
       .then(result => {
-        if (result.state === 'granted' && localStorage.getItem('saloons_location_prompted')) {
-          this._getUserLocation();
+        if (result.state === 'granted') {
+          // Permission déjà accordée, récupérer position sans afficher modal
+          localStorage.setItem('saloons_location_prompted', 'true');
+          this._getUserLocation(false);
+        } else if (result.state === 'denied') {
+          // Permission refusée, afficher l'état denied
+          this.geoLocationStatus = 'denied';
         }
+        // Si 'prompt', laisser afficher le prompt custom
       })
       .catch(() => {
-        // Ignore permissions API errors
+        // Ignore permissions API errors, se fier au localStorage
+        if (alreadyPrompted) {
+          this._getUserLocation(false);
+        }
       });
+  }
+
+  private _hydrateLocationFromCache(): void {
+    const raw = localStorage.getItem(LOCATION_CACHE_KEY);
+    if (!raw) return;
+
+    try {
+      const cached = JSON.parse(raw) as { lat: number; lng: number };
+      if (Number.isFinite(cached.lat) && Number.isFinite(cached.lng)) {
+        this.userLat = cached.lat;
+        this.userLng = cached.lng;
+        this.geoLocationStatus = 'granted';
+        this._updateDistances();
+        this._addUserMarker();
+      }
+    } catch {
+      localStorage.removeItem(LOCATION_CACHE_KEY);
+    }
+  }
+
+  private _persistLocationInCache(lat: number, lng: number): void {
+    localStorage.setItem(LOCATION_CACHE_KEY, JSON.stringify({ lat, lng }));
   }
 }

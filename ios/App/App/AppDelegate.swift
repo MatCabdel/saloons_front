@@ -1,14 +1,68 @@
 import UIKit
 import Capacitor
+import FirebaseCore
+import FirebaseMessaging
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
 
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Initialize Firebase
+        FirebaseApp.configure()
+        
+        // Set up push notifications
+        UNUserNotificationCenter.current().delegate = self
+        Messaging.messaging().delegate = self
+        
+        // Register for remote notifications
+        application.registerForRemoteNotifications()
+        
         return true
+    }
+    
+    // MARK: - APNs Token Registration
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        // Pass device token to Firebase
+        Messaging.messaging().apnsToken = deviceToken
+        NotificationCenter.default.post(name: .capacitorDidRegisterForRemoteNotifications, object: deviceToken)
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        NotificationCenter.default.post(name: .capacitorDidFailToRegisterForRemoteNotifications, object: error)
+    }
+    
+    // MARK: - MessagingDelegate
+    
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        print("🔔 FCM Token received: \(fcmToken ?? "nil")")
+        // Le token est automatiquement géré par le plugin Capacitor
+    }
+    
+    // MARK: - UNUserNotificationCenterDelegate
+    
+    // Afficher les notifications même quand l'app est en foreground
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        let userInfo = notification.request.content.userInfo
+        print("🔔 ====== NOTIFICATION RECEIVED (iOS Native) ======")
+        print("🔔 Title: \(notification.request.content.title)")
+        print("🔔 Body: \(notification.request.content.body)")
+        print("🔔 UserInfo: \(userInfo)")
+        print("🔔 Showing with: banner, badge, sound")
+        print("🔔 =================================================")
+        completionHandler([.banner, .badge, .sound])
+    }
+    
+    // Gérer le tap sur une notification
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        print("🔔 ====== NOTIFICATION TAPPED (iOS Native) ======")
+        print("🔔 Title: \(response.notification.request.content.title)")
+        print("🔔 ActionId: \(response.actionIdentifier)")
+        print("🔔 ================================================")
+        // Le plugin Capacitor gère automatiquement cet événement
+        completionHandler()
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

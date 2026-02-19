@@ -10,12 +10,29 @@
     <div
       class="conversation-card"
       [class.ended]="conv.isMatchCancelled"
-      [class.expired]="conv.otherParticipantLeft && !conv.isMatchCancelled && !conv.isPermanent"
+      [class.expired]="
+        conv.otherParticipantLeft &&
+        !conv.isMatchCancelled &&
+        !conv.isPermanent &&
+        !conv.isHeartWindowExpired
+      "
+      [class.fully-expired]="
+        conv.otherParticipantLeft &&
+        !conv.isMatchCancelled &&
+        !conv.isPermanent &&
+        conv.isHeartWindowExpired
+      "
       [class.permanent]="conv.isPermanent"
+      [class.unread]="conv.unreadCount > 0"
       (click)="openConversation(conv.id)"
       (keydown.enter)="openConversation(conv.id)"
       tabindex="0"
     >
+      <!-- Badge unread -->
+      @if (conv.unreadCount > 0) {
+      <div class="unread-badge">{{ conv.unreadCount > 9 ? '9+' : conv.unreadCount }}</div>
+      }
+
       <!-- Avatar -->
       @if (conv.isMatchCancelled) {
       <div class="avatar-placeholder">
@@ -39,6 +56,8 @@
         <div class="content-body">
           @if (conv.isMatchCancelled) {
           <span class="last-message ended-message">Conversation terminée</span>
+          } @else if (conv.otherParticipantLeft && !conv.isPermanent && conv.isHeartWindowExpired) {
+          <span class="last-message ended-message">Conversation expirée</span>
           } @else if (conv.otherParticipantLeft && !conv.isPermanent) {
           <span class="last-message expired-message"
             >A quitté le saloon - Envoyez un coup de cœur !</span
