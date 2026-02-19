@@ -176,7 +176,8 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
     // Connecter au WebSocket pour les mises à jour temps réel
     this._presenceRealtimeService.connect();
     // Charger la session active de l'utilisateur (pour savoir s'il est dans un saloon)
-    this._presenceService.getMySession().pipe(takeUntil(this._destroy$)).subscribe();
+    this._presenceService.getMySession().pipe(takeUntil(this._destroy$))
+.subscribe();
   }
 
   ngOnDestroy(): void {

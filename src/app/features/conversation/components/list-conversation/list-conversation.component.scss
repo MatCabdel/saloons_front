@@ -186,6 +186,20 @@
       }
     }
 
+    // Conversation totalement expirée (fenêtre 12h passée) - style grisé similaire à ended
+    .conversation-card.fully-expired {
+      opacity: 0.6;
+
+      .avatar-wrapper img {
+        filter: grayscale(70%);
+        border: 2px solid #ccc;
+      }
+
+      .name {
+        color: #888;
+      }
+    }
+
     // Conversation expirée - bordure jaune sur la photo
     .conversation-card.expired .avatar-wrapper img {
       border: 3px solid #ffc122;

@@ -134,6 +134,32 @@
   white-space: pre-wrap;
 }
 
+// Notice "conversation expirée" (fenêtre 12h dépassée)
+.conversation-expired-notice {
+  position: fixed;
+  bottom: 80px;
+  left: 16px;
+  right: 16px;
+  background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 9;
+
+  .expired-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.4;
+  }
+}
+
 .send-box {
   position: fixed;
   bottom: 0;

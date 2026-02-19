@@ -60,6 +60,7 @@
     <app-messagerie
       [isConversationEnded]="otherParticipantLeft && !isMatchCancelled"
       [isMatchCancelled]="isMatchCancelled"
+      [isHeartWindowExpired]="isHeartWindowExpired"
       [isPermanent]="conversation?.isPermanent || false"
       [heartRequestStatus]="heartRequestStatus"
       [heartRequestCountdown]="heartRequestCountdown()"

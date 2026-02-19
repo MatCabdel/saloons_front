@@ -41,6 +41,7 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   matchUserId: number | null = null; // Mode match sans conversation
   otherParticipantLeft = false;
   isMatchCancelled = false;
+  isHeartWindowExpired = false; // true si la fenêtre 12h pour coup de cœur est expirée
   conversation?: Conversation;
 
   // Heart Request state
@@ -96,13 +97,14 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
         this.userTarget = conv.participants.find((u: User) => u.id !== myId);
         this.otherParticipantLeft = conv.otherParticipantLeft || false;
         this.isMatchCancelled = conv.isMatchCancelled || false;
+        this.isHeartWindowExpired = conv.isHeartWindowExpired || false;
         this.conversation = conv;
 
         // Marquer la conversation comme lue
         this._markConversationAsRead();
 
-        // Charger le statut des coups de cœur seulement si expiré mais pas annulé
-        if (this.otherParticipantLeft && !this.isMatchCancelled) {
+        // Charger le statut des coups de cœur seulement si expiré mais pas annulé ET fenêtre pas expirée
+        if (this.otherParticipantLeft && !this.isMatchCancelled && !this.isHeartWindowExpired) {
           this._loadHeartRequestStatus();
         }
       },
