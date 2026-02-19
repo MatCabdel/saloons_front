@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import { Subject, takeUntil } from 'rxjs';
+import { Capacitor } from '@capacitor/core';
+import { Geolocation } from '@capacitor/geolocation';
 import { SaloonModalComponent } from '../saloon-modal/saloon-modal.component';
 import { SaloonMapItem } from '../../services/presence.service';
 import { SaloonApiService } from '../../services/saloon-api.service';
@@ -136,10 +138,13 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private _getUserLocation(): void {
-    if ('geolocation' in navigator) {
-      this.geoLocationStatus = 'loading';
-      navigator.geolocation.getCurrentPosition(
-        position => {
+    this.geoLocationStatus = 'loading';
+
+    // Sur mobile (iOS/Android), utiliser le plugin Capacitor
+    // Évite le popup "localhost" qui apparaît avec navigator.geolocation dans WebView
+    if (Capacitor.isNativePlatform()) {
+      Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 10000 })
+        .then(position => {
           this.userLat = position.coords.latitude;
           this.userLng = position.coords.longitude;
           this.geoLocationStatus = 'granted';
@@ -152,18 +157,45 @@ export class MapComponent implements OnInit, OnDestroy {
 
           // Centrer la carte sur l'utilisateur
           this.map.setView([this.userLat, this.userLng], 15);
-        },
-        error => {
+        })
+        .catch(error => {
           console.warn('Géolocalisation non disponible:', error.message);
-          if (error.code === error.PERMISSION_DENIED) {
+          if (error.message?.includes('denied') || error.message?.includes('permission')) {
             this.geoLocationStatus = 'denied';
           } else {
             this.geoLocationStatus = 'unavailable';
           }
-        }
-      );
+        });
     } else {
-      this.geoLocationStatus = 'unavailable';
+      // Sur web (desktop), utiliser navigator.geolocation
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            this.userLat = position.coords.latitude;
+            this.userLng = position.coords.longitude;
+            this.geoLocationStatus = 'granted';
+
+            // Mettre à jour les distances
+            this._updateDistances();
+
+            // Ajouter le marqueur de position utilisateur
+            this._addUserMarker();
+
+            // Centrer la carte sur l'utilisateur
+            this.map.setView([this.userLat, this.userLng], 15);
+          },
+          error => {
+            console.warn('Géolocalisation non disponible:', error.message);
+            if (error.code === error.PERMISSION_DENIED) {
+              this.geoLocationStatus = 'denied';
+            } else {
+              this.geoLocationStatus = 'unavailable';
+            }
+          }
+        );
+      } else {
+        this.geoLocationStatus = 'unavailable';
+      }
     }
   }
 

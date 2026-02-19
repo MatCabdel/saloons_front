@@ -10,6 +10,8 @@ import {
   Subject,
   takeUntil,
 } from 'rxjs';
+import { Capacitor } from '@capacitor/core';
+import { Geolocation } from '@capacitor/geolocation';
 import { Saloon, SaloonType } from '../../models/saloonModel';
 import { SaloonCardComponent } from '../../components/saloon-card/saloon-card.component';
 import { SaloonApiService } from '../../services/saloon-api.service';
@@ -186,26 +188,49 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   }
 
   private _getUserLocation(): void {
-    if ('geolocation' in navigator) {
-      this.geoLocationStatus.set('loading');
-      navigator.geolocation.getCurrentPosition(
-        position => {
+    this.geoLocationStatus.set('loading');
+
+    // Sur mobile (iOS/Android), utiliser le plugin Capacitor
+    // Évite le popup "localhost" qui apparaît avec navigator.geolocation dans WebView
+    if (Capacitor.isNativePlatform()) {
+      Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 10000 })
+        .then(position => {
           this.userLat = position.coords.latitude;
           this.userLng = position.coords.longitude;
           this._userPosition$.next({ lat: this.userLat, lng: this.userLng });
           this.geoLocationStatus.set('granted');
-        },
-        error => {
+        })
+        .catch(error => {
           console.warn('Géolocalisation non disponible:', error.message);
-          if (error.code === error.PERMISSION_DENIED) {
+          // Capacitor renvoie 'denied' si permission refusée
+          if (error.message?.includes('denied') || error.message?.includes('permission')) {
             this.geoLocationStatus.set('denied');
           } else {
             this.geoLocationStatus.set('unavailable');
           }
-        }
-      );
+        });
     } else {
-      this.geoLocationStatus.set('unavailable');
+      // Sur web (desktop), utiliser navigator.geolocation
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            this.userLat = position.coords.latitude;
+            this.userLng = position.coords.longitude;
+            this._userPosition$.next({ lat: this.userLat, lng: this.userLng });
+            this.geoLocationStatus.set('granted');
+          },
+          error => {
+            console.warn('Géolocalisation non disponible:', error.message);
+            if (error.code === error.PERMISSION_DENIED) {
+              this.geoLocationStatus.set('denied');
+            } else {
+              this.geoLocationStatus.set('unavailable');
+            }
+          }
+        );
+      } else {
+        this.geoLocationStatus.set('unavailable');
+      }
     }
   }
 
