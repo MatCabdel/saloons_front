@@ -1,6 +1,6 @@
 // Variables
 $gradient-top: #413443;
-$gradient-bottom: #8336a9;
+$gradient-bottom: #926aa6;
 $primary-color: #6b4c7a;
 $primary-dark: #5a3d68;
 $yellow: #ffc122;
@@ -71,10 +71,11 @@ $white: #fff;
   .brand-tagline {
     color: $white;
     font-family: 'Urbanist', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 300;
-    margin-top: 0.5rem;
-    letter-spacing: 0.05em;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 0.02rem;
+    letter-spacing: 0.02em;
+    opacity: 0.92;
   }
 }
 
@@ -123,10 +124,11 @@ $white: #fff;
   .mobile-tagline {
     color: rgba($white, 0.85);
     font-family: 'Urbanist', sans-serif;
-    font-size: 1rem;
-    font-weight: 300;
-    margin-top: 0.5rem;
-    letter-spacing: 0.05em;
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-top: 0.02rem;
+    letter-spacing: 0.02em;
+    opacity: 0.9;
   }
 }
 
