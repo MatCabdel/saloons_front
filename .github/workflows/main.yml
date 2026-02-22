@@ -116,6 +116,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Hotfix Rollup optional dependency on Linux
+        run: npm i @rollup/rollup-linux-x64-gnu --no-save
+
       - name: Run Cypress tests for the target branch
         run: |
           BASE="${{ github.event.pull_request.base.ref }}"

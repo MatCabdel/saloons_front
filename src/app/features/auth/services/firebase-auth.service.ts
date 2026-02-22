@@ -109,7 +109,7 @@ export class FirebaseAuthService {
       return;
     }
 
-    this._nativeGoogleInitPromise = (async () => {
+    this._nativeGoogleInitPromise = (async (): Promise<void> => {
       console.log('[FirebaseAuth][INIT] Initializing SocialLogin for native Google...');
       await SocialLogin.initialize({
         google: {
@@ -191,12 +191,19 @@ export class FirebaseAuthService {
       await this._initNativeGoogleIfNeeded();
 
       console.log('[FirebaseAuth][G3] Calling SocialLogin.login({ provider: "google" })...');
-      const result = await SocialLogin.login({
+      // The plugin type requires `options` for Google on all platforms.
+      // Keep custom scopes off on Android to avoid extra native config.
+      const loginPayload: {
+        provider: 'google';
+        options: { scopes: string[] };
+      } = {
         provider: 'google',
         options: {
-          scopes: ['email', 'profile'],
+          scopes: Capacitor.getPlatform() === 'android' ? [] : ['email', 'profile'],
         },
-      });
+      };
+
+      const result = await SocialLogin.login(loginPayload);
 
       console.log('[FirebaseAuth][G4] SocialLogin.login() OK');
 

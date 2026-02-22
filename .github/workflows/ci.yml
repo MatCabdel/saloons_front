@@ -85,6 +85,9 @@ jobs:
         run: |
           echo "export const environmentSecret = { apiMapKey: '${{ secrets.MAP_API_KEY }}', };" > src/environments/environment.secret.ts
 
+      - name: Hotfix Rollup optional dependency on Linux
+        run: npm i @rollup/rollup-linux-x64-gnu --no-save
+
       - name: Build Angular app
         run: |
           if [ "${{ github.base_ref }}" == "production" ]; then
@@ -126,6 +129,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Hotfix Rollup optional dependency on Linux
+        run: npm i @rollup/rollup-linux-x64-gnu --no-save
+
       - name: Build Angular app for E2E
         run: |
           if [ "${{ github.base_ref }}" == "production" ]; then
@@ -139,6 +145,11 @@ jobs:
 
       - name: Run E2E tests
         run: |
+          if ! find cypress/e2e -type f \( -name "*.cy.js" -o -name "*.cy.jsx" -o -name "*.cy.ts" -o -name "*.cy.tsx" \) 2>/dev/null | grep -q .; then
+            echo "⚠️ No Cypress E2E specs found in cypress/e2e, skipping E2E job."
+            exit 0
+          fi
+
           npx serve -s dist/frontend/browser -l 4200 &
           SERVER_PID=$!
           
