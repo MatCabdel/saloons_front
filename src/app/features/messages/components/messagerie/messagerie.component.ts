@@ -7,6 +7,7 @@ import {
   EventEmitter,
   inject,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild,
@@ -31,7 +32,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   templateUrl: './messagerie.component.html',
   styleUrl: './messagerie.component.scss',
 })
-export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChecked {
+export class MessagerieComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
   @Input() isConversationEnded = false; // Conversation expirée (a quitté le saloon)
   @Input() isMatchCancelled = false; // Match annulé définitivement
   @Input() isHeartWindowExpired = false; // Fenêtre 12h pour coup de cœur expirée
@@ -157,6 +158,10 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
     }
   }
 
+  ngOnDestroy(): void {
+    this._webSocketService.disconnect();
+  }
+
   public jumpToBottom(): void {
     try {
       if (this.messagesList && this.messagesList.nativeElement) {
@@ -200,6 +205,10 @@ export class MessagerieComponent implements OnInit, AfterViewInit, AfterViewChec
   }
 
   handleNewMessage(msg: Message): void {
+    if (!this.conversationId || Number(msg.conversationId) !== Number(this.conversationId)) {
+      return;
+    }
+
     msg.sender = Number(msg.sender);
 
     const messageExists = this.messages.some(

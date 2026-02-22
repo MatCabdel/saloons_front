@@ -150,11 +150,22 @@ export class MapComponent implements OnInit, OnDestroy {
     // Sur mobile (iOS/Android), utiliser le plugin Capacitor
     // Évite le popup "localhost" qui apparaît avec navigator.geolocation dans WebView
     if (Capacitor.isNativePlatform()) {
-      Geolocation.getCurrentPosition({
-        enableHighAccuracy: false,
-        timeout: GEO_TIMEOUT_MS,
-        maximumAge: GEO_MAX_AGE_MS,
-      })
+      Geolocation.requestPermissions()
+        .then(permissionStatus => {
+          const granted =
+            permissionStatus.location === 'granted' ||
+            permissionStatus.coarseLocation === 'granted';
+          if (!granted) {
+            this.geoLocationStatus = 'denied';
+            throw new Error('Location permission denied');
+          }
+
+          return Geolocation.getCurrentPosition({
+            enableHighAccuracy: false,
+            timeout: GEO_TIMEOUT_MS,
+            maximumAge: GEO_MAX_AGE_MS,
+          });
+        })
         .then(position => {
           this.userLat = position.coords.latitude;
           this.userLng = position.coords.longitude;

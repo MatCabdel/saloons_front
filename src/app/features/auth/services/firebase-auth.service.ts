@@ -63,10 +63,13 @@ export class FirebaseAuthService {
   currentUser = signal<UserDTO | null>(null);
   isLoading = signal(false);
   private _nativeGoogleInitialized = false;
+  private _nativeGoogleInitPromise: Promise<void> | null = null;
 
   constructor() {
     this._loadUserFromStorage();
-    this._initNativeGoogleIfNeeded();
+    void this._initNativeGoogleIfNeeded().catch(err => {
+      console.error('[FirebaseAuth][INIT] Native Google init at startup failed:', err);
+    });
   }
 
   private _loadUserFromStorage(): void {
@@ -95,10 +98,18 @@ export class FirebaseAuthService {
    * Must be called once before SocialLogin.login().
    */
   private async _initNativeGoogleIfNeeded(): Promise<void> {
-    if (!this._isNativePlatform() || this._nativeGoogleInitialized) {
+    if (!this._isNativePlatform()) {
       return;
     }
-    try {
+    if (this._nativeGoogleInitialized) {
+      return;
+    }
+    if (this._nativeGoogleInitPromise) {
+      await this._nativeGoogleInitPromise;
+      return;
+    }
+
+    this._nativeGoogleInitPromise = (async () => {
       console.log('[FirebaseAuth][INIT] Initializing SocialLogin for native Google...');
       await SocialLogin.initialize({
         google: {
@@ -110,8 +121,15 @@ export class FirebaseAuthService {
       });
       this._nativeGoogleInitialized = true;
       console.log('[FirebaseAuth][INIT] SocialLogin initialized ✅');
+    })();
+
+    try {
+      await this._nativeGoogleInitPromise;
     } catch (err) {
       console.error('[FirebaseAuth][INIT] SocialLogin.initialize() failed:', err);
+      throw err;
+    } finally {
+      this._nativeGoogleInitPromise = null;
     }
   }
 

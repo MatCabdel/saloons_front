@@ -9,9 +9,11 @@ import { environment } from 'src/environments/environment';
 })
 export class WebSocketService {
   private _stompClient!: Client;
-  private _messageSubject = new Subject<any>();
+  private _messageSubject = new Subject<Message>();
 
   connect(conversationId: number): void {
+    this.disconnect();
+
     const wsUrl = this.getWebSocketUrl();
 
     this._stompClient = new Client({
@@ -21,7 +23,15 @@ export class WebSocketService {
 
     this._stompClient.onConnect = (): void => {
       this._stompClient.subscribe(`/queue/conversation.${conversationId}`, (message: IMessage) => {
-        this._messageSubject.next(JSON.parse(message.body));
+        const parsed = JSON.parse(message.body);
+        const normalized = this._normalizeMessage(parsed, conversationId);
+
+        // Garde-fou: ignorer tout message d'une autre conversation.
+        if (normalized.conversationId !== conversationId) {
+          return;
+        }
+
+        this._messageSubject.next(normalized);
       });
     };
 
@@ -57,5 +67,22 @@ export class WebSocketService {
 
   getMessages(): Observable<Message> {
     return this._messageSubject.asObservable();
+  }
+
+  disconnect(): void {
+    if (this._stompClient && this._stompClient.active) {
+      this._stompClient.deactivate();
+    }
+  }
+
+  private _normalizeMessage(raw: any, fallbackConversationId: number): Message {
+    return {
+      id: Number(raw?.id ?? Date.now()),
+      conversationId: Number(raw?.conversationId ?? raw?.conversation?.id ?? fallbackConversationId),
+      sender: Number(raw?.senderId ?? raw?.sender ?? 0),
+      senderName: String(raw?.senderName ?? ''),
+      content: String(raw?.content ?? ''),
+      sentAt: String(raw?.sentAt ?? new Date().toISOString()),
+    };
   }
 }
