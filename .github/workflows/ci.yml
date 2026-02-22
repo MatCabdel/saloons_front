@@ -85,6 +85,9 @@ jobs:
         run: |
           echo "export const environmentSecret = { apiMapKey: '${{ secrets.MAP_API_KEY }}', };" > src/environments/environment.secret.ts
 
+      - name: Hotfix Rollup optional dependency on Linux
+        run: npm i @rollup/rollup-linux-x64-gnu --no-save
+
       - name: Build Angular app
         run: |
           if [ "${{ github.base_ref }}" == "production" ]; then
@@ -125,6 +128,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Hotfix Rollup optional dependency on Linux
+        run: npm i @rollup/rollup-linux-x64-gnu --no-save
 
       - name: Build Angular app for E2E
         run: |
