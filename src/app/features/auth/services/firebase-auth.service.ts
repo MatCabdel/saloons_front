@@ -109,7 +109,7 @@ export class FirebaseAuthService {
       return;
     }
 
-    this._nativeGoogleInitPromise = (async () => {
+    this._nativeGoogleInitPromise = (async (): Promise<void> => {
       console.log('[FirebaseAuth][INIT] Initializing SocialLogin for native Google...');
       await SocialLogin.initialize({
         google: {
