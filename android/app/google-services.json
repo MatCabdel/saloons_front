@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "575950337220",
+    "project_id": "saloons-ba99c",
+    "storage_bucket": "saloons-ba99c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:575950337220:android:ba221d98a8f24787824591",
+        "android_client_info": {
+          "package_name": "com.saloons.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "575950337220-753r070cen3jh5l9gonvu7khg3jjmbha.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5UMsxD8_UeLIrnyutdWofZT93DaVZGnM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "575950337220-753r070cen3jh5l9gonvu7khg3jjmbha.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "575950337220-5fg34lpe2tm4db9rhluamh4kpjusf98f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.saloons.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
