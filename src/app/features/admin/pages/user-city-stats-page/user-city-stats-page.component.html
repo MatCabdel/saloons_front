@@ -1,0 +1,171 @@
+<div class="user-city-stats-page">
+  <header class="page-header">
+    <h1>Utilisateurs par ville</h1>
+    <p class="subtitle">Inscrits, actifs (7 derniers jours) et évolution mensuelle par ville</p>
+  </header>
+
+  @if (isLoading) {
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Chargement des statistiques...</p>
+  </div>
+  } @else if (error) {
+  <div class="error-message">
+    <p>{{ error }}</p>
+    <button type="button" (click)="loadStats()">Réessayer</button>
+  </div>
+  } @else {
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="summary-card">
+      <div class="summary-icon registered">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      </div>
+      <div class="summary-content">
+        <span class="summary-value">{{ getTotalRegistered() }}</span>
+        <span class="summary-label">Inscrits au total</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon active">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+      </div>
+      <div class="summary-content">
+        <span class="summary-value">{{ getTotalActive() }}</span>
+        <span class="summary-label">Actifs (7j)</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon cities">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+          <circle cx="12" cy="10" r="3" />
+        </svg>
+      </div>
+      <div class="summary-content">
+        <span class="summary-value">{{ getTotalCities() }}</span>
+        <span class="summary-label">Villes représentées</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- City Table -->
+  <section class="section">
+    <h2 class="section-title">Inscrits &amp; actifs par ville</h2>
+    @if (cityRows.length === 0) {
+    <div class="empty-state">
+      <p>Aucune donnée disponible</p>
+    </div>
+    } @else {
+    <div class="city-table-wrapper">
+      <table class="city-table">
+        <thead>
+          <tr>
+            <th>Ville</th>
+            <th>Inscrits</th>
+            <th>Actifs (7j)</th>
+            <th>Taux d'activité</th>
+            <th class="bar-col">Répartition</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of cityRows; track row.city) {
+          <tr>
+            <td class="cell-city">{{ row.city }}</td>
+            <td class="cell-number">{{ row.registered }}</td>
+            <td class="cell-number active">{{ row.active }}</td>
+            <td class="cell-rate">
+              <span
+                class="rate-badge"
+                [class.high]="row.activeRate >= 50"
+                [class.mid]="row.activeRate >= 20 && row.activeRate < 50"
+                [class.low]="row.activeRate < 20"
+              >
+                {{ row.activeRate }}%
+              </span>
+            </td>
+            <td class="cell-bar">
+              <div class="bar-track">
+                <div class="bar-registered" [style.width.%]="getBarWidth(row.registered)"></div>
+                <div class="bar-active" [style.width.%]="getBarWidth(row.active)"></div>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </section>
+
+  <!-- Monthly Heatmap -->
+  @if (allCities.length > 0 && monthLabels.length > 0) {
+  <section class="section">
+    <h2 class="section-title">Évolution des actifs par mois et par ville</h2>
+    <p class="section-subtitle">
+      Nombre d'utilisateurs actifs (ayant eu au moins une connexion) chaque mois, par ville
+    </p>
+    <div class="heatmap-wrapper">
+      <table class="heatmap-table">
+        <thead>
+          <tr>
+            <th class="city-col">Ville</th>
+            @for (ml of monthLabels; track ml.year + '-' + ml.month) {
+            <th class="month-col">{{ ml.label }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (city of allCities; track city) {
+          <tr>
+            <td class="city-col">{{ city }}</td>
+            @for (ml of monthLabels; track ml.year + '-' + ml.month; let i = $index) {
+            <td class="heat-cell" [style.--opacity]="getCellOpacity(monthlyMatrix[city][i])">
+              <span class="heat-value">{{ monthlyMatrix[city][i] || '' }}</span>
+            </td>
+            }
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="heatmap-legend">
+      <span class="legend-label">0</span>
+      <div class="legend-gradient"></div>
+      <span class="legend-label">Max</span>
+    </div>
+  </section>
+  } }
+</div>

@@ -1,0 +1,174 @@
+<div class="match-chat-page">
+  <header class="page-header">
+    <h1>Match & Chat</h1>
+    <p class="subtitle">Matchs, conversations et demandes de cœur</p>
+  </header>
+
+  <app-period-filter (periodChange)="onPeriodChange($event)"></app-period-filter>
+
+  @if (isLoading) {
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Chargement...</p>
+  </div>
+  } @else if (error) {
+  <div class="error-message">
+    <p>{{ error }}</p>
+    <button type="button" (click)="loadStats()">Réessayer</button>
+  </div>
+  } @else if (stats) {
+
+  <!-- KPI Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon matches">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+          />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.totalMatches }}</span>
+        <span class="stat-label">Matchs</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon conversations">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.conversationsStarted }}</span>
+        <span class="stat-label">Conversations</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon messages">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="22" y1="2" x2="11" y2="13" />
+          <polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.totalMessages }}</span>
+        <span class="stat-label">Messages</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon hearts">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+          />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.heartRequestsSent }}</span>
+        <span class="stat-label">Demandes ❤️</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Rates -->
+  <div class="rates-row">
+    <div class="rate-card">
+      <span class="rate-value">{{ stats.matchRatePerEntry }}%</span>
+      <span class="rate-label">Taux match / entrée</span>
+    </div>
+    <div class="rate-card">
+      <span class="rate-value">{{
+        stats.avgMessagesPerConversation !== null
+          ? stats.avgMessagesPerConversation.toFixed(1)
+          : '—'
+      }}</span>
+      <span class="rate-label">Moy. messages / conversation</span>
+    </div>
+  </div>
+
+  <!-- Matches Chart -->
+  <section class="chart-section">
+    <h2>Matchs par jour</h2>
+    <div class="chart-container">
+      @if (stats.matchesPerDay && stats.matchesPerDay.length > 0) {
+      <div class="chart">
+        @for (point of stats.matchesPerDay; track point.date) {
+        <div class="chart-bar-container">
+          <div
+            class="chart-bar matches-bar"
+            [style.height]="getBarHeight(point.value, getMaxValue(stats.matchesPerDay))"
+          >
+            <span class="bar-value">{{ point.value }}</span>
+          </div>
+          <span class="bar-label">{{ formatBarLabel(point.date) }}</span>
+        </div>
+        }
+      </div>
+      } @else {
+      <p class="no-data">Aucune donnée pour cette période</p>
+      }
+    </div>
+  </section>
+
+  <!-- Heart Requests Chart -->
+  <section class="chart-section">
+    <h2>Demandes de cœur par jour</h2>
+    <div class="chart-container">
+      @if (stats.heartRequestsPerDay && stats.heartRequestsPerDay.length > 0) {
+      <div class="chart">
+        @for (point of stats.heartRequestsPerDay; track point.date) {
+        <div class="chart-bar-container">
+          <div
+            class="chart-bar hearts-bar"
+            [style.height]="getBarHeight(point.value, getMaxValue(stats.heartRequestsPerDay))"
+          >
+            <span class="bar-value">{{ point.value }}</span>
+          </div>
+          <span class="bar-label">{{ formatBarLabel(point.date) }}</span>
+        </div>
+        }
+      </div>
+      } @else {
+      <p class="no-data">Aucune donnée pour cette période</p>
+      }
+    </div>
+  </section>
+
+  }
+</div>

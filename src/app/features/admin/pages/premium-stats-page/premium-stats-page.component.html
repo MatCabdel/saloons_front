@@ -1,0 +1,139 @@
+<div class="premium-stats-page">
+  <header class="page-header">
+    <h1>Premium</h1>
+    <p class="subtitle">Abonnements, taux de conversion et répartition</p>
+  </header>
+
+  <app-period-filter (periodChange)="onPeriodChange($event)"></app-period-filter>
+
+  @if (isLoading) {
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Chargement...</p>
+  </div>
+  } @else if (error) {
+  <div class="error-message">
+    <p>{{ error }}</p>
+    <button type="button" (click)="loadStats()">Réessayer</button>
+  </div>
+  } @else if (stats) {
+
+  <!-- KPI Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon total-premium">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+          />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.totalPremium }}</span>
+        <span class="stat-label">Premium actifs</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon new-subs">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="12" y1="1" x2="12" y2="23" />
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.newSubscriptions }}</span>
+        <span class="stat-label">Nouveaux abonnements</span>
+      </div>
+    </div>
+
+    <div class="stat-card highlight">
+      <div class="stat-icon conversion">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+          <polyline points="17 6 23 6 23 12" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.conversionRate }}%</span>
+        <span class="stat-label">Taux de conversion</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subscriptions Chart -->
+  <section class="chart-section">
+    <h2>Évolution des abonnements</h2>
+    <div class="chart-container">
+      @if (stats.subscriptionsPerDay && stats.subscriptionsPerDay.length > 0) {
+      <div class="chart">
+        @for (point of stats.subscriptionsPerDay; track point.date) {
+        <div class="chart-bar-container">
+          <div
+            class="chart-bar"
+            [style.height]="getBarHeight(point.value, getMaxValue(stats.subscriptionsPerDay))"
+          >
+            <span class="bar-value">{{ point.value }}</span>
+          </div>
+          <span class="bar-label">{{ formatBarLabel(point.date) }}</span>
+        </div>
+        }
+      </div>
+      } @else {
+      <p class="no-data">Aucune donnée pour cette période</p>
+      }
+    </div>
+  </section>
+
+  <!-- Premium by City -->
+  <section class="ranked-section">
+    <h2>Premium par ville</h2>
+    @if (stats.premiumByCity && stats.premiumByCity.length > 0) {
+    <div class="ranked-list">
+      @for (item of stats.premiumByCity; track item.name; let i = $index) {
+      <div class="ranked-item">
+        <span class="rank">#{{ i + 1 }}</span>
+        <div class="ranked-info">
+          <span class="ranked-name">{{ item.name }}</span>
+          <div class="ranked-bar-track">
+            <div
+              class="ranked-bar-fill"
+              [style.width]="getRankedBarWidth(item.value, stats.premiumByCity[0].value)"
+            ></div>
+          </div>
+        </div>
+        <span class="ranked-value">{{ item.value }}</span>
+      </div>
+      }
+    </div>
+    } @else {
+    <p class="no-data">Aucune donnée</p>
+    }
+  </section>
+
+  }
+</div>

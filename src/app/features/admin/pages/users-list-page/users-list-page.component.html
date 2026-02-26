@@ -113,6 +113,7 @@
           <th>Email</th>
           <th>Ville</th>
           <th>Âge</th>
+          <th>Inscription</th>
           <th>Dernière connexion</th>
           <th>Statut</th>
           <th>Rôle</th>
@@ -144,6 +145,7 @@
           <td class="cell-email">{{ user.email }}</td>
           <td class="cell-city">{{ user.city || '-' }}</td>
           <td class="cell-age">{{ user.age || '-' }}</td>
+          <td class="cell-created-at">{{ formatCreatedAt(user.createdAt) }}</td>
           <td class="cell-last-login">{{ formatLastLogin(user.lastLoginAt) }}</td>
           <td class="cell-status">
             @if (user.profileStatus === 'ACTIVE') {
@@ -369,6 +371,10 @@
         <div class="user-info-item">
           <span class="info-label">Dernière connexion</span>
           <span class="info-value">{{ formatLastLogin(user.lastLoginAt) }}</span>
+        </div>
+        <div class="user-info-item">
+          <span class="info-label">Inscription</span>
+          <span class="info-value">{{ formatCreatedAt(user.createdAt) }}</span>
         </div>
         <div class="user-info-item role-item">
           <span class="info-label">Rôle</span>

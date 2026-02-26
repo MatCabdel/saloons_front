@@ -139,11 +139,21 @@
           <div class="saloon-info">
             <span class="saloon-name">{{ saloon.name }}</span>
           </div>
-          <div class="saloon-connected">
-            <span class="connected-value" [class.active]="saloon.connectedCount > 0">
-              {{ saloon.connectedCount }}
-            </span>
-            <span class="connected-label">participants</span>
+          <div class="saloon-stats-row">
+            <div class="saloon-stat-block">
+              <span class="stat-value" [class.active]="saloon.connectedCount > 0">{{
+                saloon.connectedCount
+              }}</span>
+              <span class="stat-label">en ligne</span>
+            </div>
+            <div class="saloon-stat-block">
+              <span class="stat-value total">{{ saloon.totalVisits }}</span>
+              <span class="stat-label">visites totales</span>
+            </div>
+            <div class="saloon-stat-block">
+              <span class="stat-value peak">{{ saloon.peakConnected }}</span>
+              <span class="stat-label">pic max</span>
+            </div>
           </div>
         </div>
         }
