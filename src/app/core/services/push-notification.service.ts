@@ -191,7 +191,11 @@ export class PushNotificationService {
       const data = event.notification.data as Record<string, unknown> | undefined;
       if (data) {
         const type = data['type'] as string | undefined;
-        if (type === 'private_message' || type === 'mutual_heart' || type === 'conversation_expired') {
+        if (
+          type === 'private_message' ||
+          type === 'mutual_heart' ||
+          type === 'conversation_expired'
+        ) {
           this._badgeService.incrementUnread(1);
         }
       }
