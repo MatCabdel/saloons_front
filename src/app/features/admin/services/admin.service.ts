@@ -32,11 +32,26 @@ export type SaloonStatsItem = {
   city: string;
   imgUrl: string;
   connectedCount: number;
+  totalVisits: number;
+  peakConnected: number;
 };
 
 export type SaloonsByCityStats = {
   saloonCountByCity: Record<string, number>;
   saloonsByCity: Record<string, SaloonStatsItem[]>;
+};
+
+export type MonthlyActiveByCityPoint = {
+  year: number;
+  month: number;
+  city: string;
+  count: number;
+};
+
+export type UserCityStats = {
+  registeredByCity: Record<string, number>;
+  activeByCity: Record<string, number>;
+  monthlyActiveByCity: MonthlyActiveByCityPoint[];
 };
 
 export type CreateSaloonRequest = {
@@ -93,6 +108,10 @@ export class AdminService {
 
   getSaloonsStatisticsByCity(): Observable<SaloonsByCityStats> {
     return this._http.get<SaloonsByCityStats>(`${this._BASE_URL}/admin/statistics/saloons-by-city`);
+  }
+
+  getUserCityStats(): Observable<UserCityStats> {
+    return this._http.get<UserCityStats>(`${this._BASE_URL}/admin/statistics/users-by-city`);
   }
 
   getSaloonUsers(saloonId: number): Observable<User[]> {

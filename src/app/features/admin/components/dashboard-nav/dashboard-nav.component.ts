@@ -22,13 +22,27 @@ export class DashboardNavComponent {
 
   menuItems: MenuItem[] = [
     {
-      label: 'Général',
+      label: 'Statistiques',
       icon: 'chart-bar',
       expanded: true,
       children: [
-        { label: 'Statistiques', route: 'statistics' },
+        { label: "Vue d'ensemble", route: 'overview' },
+        { label: 'Croissance', route: 'growth' },
+        { label: 'Saloons & Engagement', route: 'saloon-engagement' },
+        { label: 'Match & Chat', route: 'match-chat' },
+        { label: 'Premium', route: 'premium' },
+        { label: 'Villes & Pics', route: 'geography' },
+      ],
+    },
+    {
+      label: 'Stats Générales',
+      icon: 'archive',
+      expanded: false,
+      children: [
+        { label: 'Statistiques générales', route: 'statistics' },
         { label: 'Stats par ville', route: 'city-stats' },
         { label: 'Stats des saloons', route: 'saloons-stats' },
+        { label: 'Stats utilisateurs/ville', route: 'user-city-stats' },
       ],
     },
     {

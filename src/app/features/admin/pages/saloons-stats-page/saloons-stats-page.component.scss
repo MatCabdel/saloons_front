@@ -292,25 +292,42 @@
     }
   }
 
-  .saloon-connected {
+  .saloon-stats-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .saloon-stat-block {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 70px;
+    min-width: 60px;
 
-    .connected-value {
-      font-size: 1.25rem;
+    .stat-value {
+      font-size: 1.1rem;
       font-weight: 700;
       color: rgba(255, 255, 255, 0.4);
 
       &.active {
         color: #38ef7d;
       }
+
+      &.total {
+        color: rgba(102, 126, 234, 0.9);
+      }
+
+      &.peak {
+        color: rgba(255, 193, 34, 0.9);
+      }
     }
 
-    .connected-label {
-      font-size: 0.7rem;
+    .stat-label {
+      font-size: 0.65rem;
       color: rgba(255, 255, 255, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
     }
   }
 }

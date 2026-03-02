@@ -1,5 +1,5 @@
 .saloons-list-page {
-  max-width: 1400px;
+  width: 100%;
 }
 
 .page-header {
@@ -339,7 +339,8 @@
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
-  overflow: hidden;
+  overflow-x: auto;
+  width: 100%;
 }
 
 .saloons-table {
@@ -348,14 +349,15 @@
 
   th,
   td {
-    padding: 1rem;
+    padding: 0.6rem 0.5rem;
     text-align: left;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    white-space: nowrap;
   }
 
   th {
     background: rgba(255, 255, 255, 0.05);
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.7);
     text-transform: uppercase;
@@ -364,7 +366,7 @@
 
   td {
     color: rgba(255, 255, 255, 0.9);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
   }
 
   tbody tr {
@@ -422,7 +424,7 @@
 }
 
 .cell-address {
-  max-width: 200px;
+  max-width: 150px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

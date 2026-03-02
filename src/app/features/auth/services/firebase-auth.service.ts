@@ -191,14 +191,16 @@ export class FirebaseAuthService {
       await this._initNativeGoogleIfNeeded();
 
       console.log('[FirebaseAuth][G3] Calling SocialLogin.login({ provider: "google" })...');
-      // Scopes are configured in MainActivity.java for Android via GoogleProvider.setAdditionalScopes()
+
+      // Android: éviter les scopes custom sans config native supplémentaire.
+      // iOS conserve les scopes existants.
       const loginPayload: {
         provider: 'google';
         options: { scopes: string[] };
       } = {
         provider: 'google',
         options: {
-          scopes: ['email', 'profile'],
+          scopes: Capacitor.getPlatform() !== 'android' ? ['email', 'profile'] : [],
         },
       };
 

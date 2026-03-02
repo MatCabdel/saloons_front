@@ -17,4 +17,5 @@ export type User = {
   profileStatus?: string;
   authProvider?: string;
   lastLoginAt?: string;
+  createdAt?: string;
 };

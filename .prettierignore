@@ -14,3 +14,8 @@ coverage/**
 # Ignorer les dossiers spécifiques
 /dist
 /node_modules
+
+# Ignorer les dossiers Android et iOS (Capacitor)
+android/**
+ios/**
+

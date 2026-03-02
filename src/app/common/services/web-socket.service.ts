@@ -78,7 +78,9 @@ export class WebSocketService {
   private _normalizeMessage(raw: any, fallbackConversationId: number): Message {
     return {
       id: Number(raw?.id ?? Date.now()),
-      conversationId: Number(raw?.conversationId ?? raw?.conversation?.id ?? fallbackConversationId),
+      conversationId: Number(
+        raw?.conversationId ?? raw?.conversation?.id ?? fallbackConversationId
+      ),
       sender: Number(raw?.senderId ?? raw?.sender ?? 0),
       senderName: String(raw?.senderName ?? ''),
       content: String(raw?.content ?? ''),

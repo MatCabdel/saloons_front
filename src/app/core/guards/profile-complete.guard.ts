@@ -35,14 +35,14 @@ export const authGuard: CanActivateFn = route => {
 
   // Allow access to /login even if authenticated (for logout/account switching)
   const isLoginPage = route.routeConfig?.path === 'login';
-  
+
   // If user is authenticated
   if (firebaseAuthService.isAuthenticated()) {
     // Allow login page access (for logout/switching accounts)
     if (isLoginPage) {
       return true;
     }
-    
+
     // For other auth pages (registration), redirect based on profile status
     if (firebaseAuthService.isProfileComplete()) {
       router.navigate(['/map']);

@@ -187,10 +187,17 @@ export class PushNotificationService {
       console.log('🔔 Full notification:', JSON.stringify(event.notification));
       console.log('🔔 ================================');
 
-      // Incrémenter le badge pour les notifications de type message
+      // Incrémenter le badge selon le type de notification
       const data = event.notification.data as Record<string, unknown> | undefined;
-      if (data && data['type'] === 'private_message') {
-        this._badgeService.incrementUnread(1);
+      if (data) {
+        const type = data['type'] as string | undefined;
+        if (
+          type === 'private_message' ||
+          type === 'mutual_heart' ||
+          type === 'conversation_expired'
+        ) {
+          this._badgeService.incrementUnread(1);
+        }
       }
     });
 
@@ -224,15 +231,35 @@ export class PushNotificationService {
     const conversationId = data['conversationId'] as string | undefined;
     const messageType = data['type'] as string | undefined;
 
-    if (conversationId) {
-      console.log('🔔 Navigating to conversation:', conversationId);
-      // Navigation vers la page de messages avec la conversation
-      this._router.navigate(['/messages', conversationId]);
-    } else if (messageType === 'saloon_chat') {
-      const saloonId = data['saloonId'] as string | undefined;
-      if (saloonId) {
-        this._router.navigate(['/saloon', saloonId, 'chat']);
+    switch (messageType) {
+      case 'mutual_heart':
+      case 'conversation_expired':
+      case 'private_message':
+        if (conversationId) {
+          console.log('🔔 Navigating to conversation:', conversationId);
+          this._router.navigate(['/messages', conversationId]);
+        }
+        break;
+
+      case 'saloon_15min':
+        // Pas de navigation spécifique, l'utilisateur est déjà dans le saloon
+        console.log('🔔 15min alert received — no navigation needed');
+        break;
+
+      case 'saloon_chat': {
+        const saloonId = data['saloonId'] as string | undefined;
+        if (saloonId) {
+          this._router.navigate(['/saloon', saloonId, 'chat']);
+        }
+        break;
       }
+
+      default:
+        if (conversationId) {
+          console.log('🔔 Navigating to conversation:', conversationId);
+          this._router.navigate(['/messages', conversationId]);
+        }
+        break;
     }
   }
 

@@ -228,6 +228,16 @@ export class UsersListPageComponent implements OnInit {
     });
   }
 
+  formatCreatedAt(createdAt: string | undefined): string {
+    if (!createdAt) return '-';
+    const date = new Date(createdAt);
+    return date.toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  }
+
   togglePremium(user: User): void {
     this._adminService.toggleUserPremium(user.id).subscribe({
       next: response => {
