@@ -118,7 +118,8 @@ export class GeolocationService {
   }
 
   /**
-   * Récupère la position GPS de l'utilisateur.
+   * Récupère la position de l'utilisateur.
+   * Stratégie : d'abord position rapide (réseau), puis affinage GPS si besoin.
    */
   private _fetchPosition(): void {
     if (this._fetching) return;
@@ -126,20 +127,21 @@ export class GeolocationService {
     this.status.set('loading');
 
     if (Capacitor.isNativePlatform()) {
-      Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 10000 })
+      // 1) Position rapide (réseau/WiFi) - timeout court
+      Geolocation.getCurrentPosition({ enableHighAccuracy: false, timeout: 3000 })
         .then(position => {
           this._setPosition(position.coords.latitude, position.coords.longitude);
-        })
-        .catch(error => {
-          console.warn('Géolocalisation non disponible:', error.message);
-          this._fetching = false;
-          if (error.message?.includes('denied') || error.message?.includes('permission')) {
-            this.status.set('denied');
-          } else {
-            this.status.set('unavailable');
+          // 2) Affinage GPS en arrière-plan (si la précision est faible)
+          if (position.coords.accuracy > 100) {
+            this._refineWithGps();
           }
+        })
+        .catch(() => {
+          // Si échec réseau, essayer directement le GPS
+          this._fetchHighAccuracy();
         });
     } else {
+      // Web : position rapide d'abord
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
           position => {
@@ -153,13 +155,47 @@ export class GeolocationService {
             } else {
               this.status.set('unavailable');
             }
-          }
+          },
+          { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
         );
       } else {
         this._fetching = false;
         this.status.set('unavailable');
       }
     }
+  }
+
+  /**
+   * Fallback : GPS haute précision si le réseau échoue
+   */
+  private _fetchHighAccuracy(): void {
+    Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 10000 })
+      .then(position => {
+        this._setPosition(position.coords.latitude, position.coords.longitude);
+      })
+      .catch(error => {
+        console.warn('Géolocalisation non disponible:', error.message);
+        this._fetching = false;
+        if (error.message?.includes('denied') || error.message?.includes('permission')) {
+          this.status.set('denied');
+        } else {
+          this.status.set('unavailable');
+        }
+      });
+  }
+
+  /**
+   * Affine la position avec le GPS (après avoir affiché la position réseau)
+   */
+  private _refineWithGps(): void {
+    Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 8000 })
+      .then(position => {
+        // Met à jour seulement si meilleure précision
+        this._setPosition(position.coords.latitude, position.coords.longitude);
+      })
+      .catch(() => {
+        // Pas grave, on garde la position réseau
+      });
   }
 
   private _setPosition(lat: number, lng: number): void {
