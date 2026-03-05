@@ -5,7 +5,7 @@
   (keydown.enter)="onCardClick()"
 >
   <div class="img-card">
-    <img [src]="user.imgUrl" [alt]="user.userName" />
+    <img [src]="user.imgUrl" [alt]="user.userName" loading="lazy" />
     <div class="title-img">
       <h1>{{ user.userName }}</h1>
       @if (userCity) {

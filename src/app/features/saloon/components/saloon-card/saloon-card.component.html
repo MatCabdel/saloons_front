@@ -1,6 +1,6 @@
 <div class="place-card-container">
   <div class="img-card">
-    <img [src]="saloon.imgUrl" [alt]="saloon.name" />
+    <img [src]="saloon.imgUrl" [alt]="saloon.name" loading="lazy" />
     @if (formattedDistance) {
     <span class="distance-badge">{{ formattedDistance }}</span>
     }

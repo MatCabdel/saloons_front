@@ -174,7 +174,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   );
 
   ngOnInit(): void {
-    this._maybeAutoFetchLocation();
+    this._checkAndMaybeRequestLocation();
     // Connecter au WebSocket pour les mises à jour temps réel
     this._presenceRealtimeService.connect();
     // Charger la session active de l'utilisateur (pour savoir s'il est dans un saloon)
@@ -246,20 +246,63 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
     window.location.href = 'app-settings:';
   }
 
-  private _maybeAutoFetchLocation(): void {
-    if (!('permissions' in navigator) || !navigator.permissions?.query) {
-      return;
-    }
-    navigator.permissions
-      .query({ name: 'geolocation' as PermissionName })
-      .then(result => {
-        if (result.state === 'granted' && localStorage.getItem('saloons_location_prompted')) {
+  /**
+   * Vérifie les permissions de géolocalisation et agit en conséquence :
+   * - Si déjà accordée → récupère la position directement
+   * - Si refusée → affiche l'état 'denied'
+   * - Si jamais demandée et premier login → affiche le prompt
+   * - Si déjà prompté avant → ne redemande pas (reste en 'prompt' jusqu'à action user)
+   */
+  private async _checkAndMaybeRequestLocation(): Promise<void> {
+    if (Capacitor.isNativePlatform()) {
+      // Sur mobile (iOS/Android), utiliser le plugin Capacitor
+      try {
+        const status = await Geolocation.checkPermissions();
+        if (status.location === 'granted' || status.coarseLocation === 'granted') {
+          // Permission déjà accordée → récupérer la position
           this._getUserLocation();
+        } else if (status.location === 'denied') {
+          // Permission refusée → afficher l'état denied
+          this.geoLocationStatus.set('denied');
+        } else {
+          // Permission 'prompt' → vérifier si c'est la première fois
+          const alreadyPrompted = localStorage.getItem('saloons_location_prompted');
+          if (!alreadyPrompted) {
+            // Première connexion → laisser le prompt s'afficher (géré par le template)
+            this.geoLocationStatus.set('prompt');
+          }
+          // Si déjà prompté mais pas accordé, on reste en 'prompt' sans redemander
         }
-      })
-      .catch(() => {
-        // Ignore permissions API errors
-      });
+      } catch {
+        this.geoLocationStatus.set('unavailable');
+      }
+    } else {
+      // Sur web (desktop), utiliser l'API Permissions si disponible
+      if ('permissions' in navigator && navigator.permissions?.query) {
+        try {
+          const result = await navigator.permissions.query({
+            name: 'geolocation' as PermissionName,
+          });
+          if (result.state === 'granted') {
+            this._getUserLocation();
+          } else if (result.state === 'denied') {
+            this.geoLocationStatus.set('denied');
+          } else {
+            // 'prompt' → vérifier si déjà demandé
+            const alreadyPrompted = localStorage.getItem('saloons_location_prompted');
+            if (!alreadyPrompted) {
+              this.geoLocationStatus.set('prompt');
+            }
+          }
+        } catch {
+          // Fallback si l'API Permissions échoue
+          this.geoLocationStatus.set('prompt');
+        }
+      } else {
+        // Pas d'API Permissions → fallback
+        this.geoLocationStatus.set('prompt');
+      }
+    }
   }
 
   private _calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {

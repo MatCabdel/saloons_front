@@ -19,8 +19,7 @@ export class MonComptePageComponent implements OnInit {
 
   user = signal<UserDTO | null>(null);
   isPremium = computed(() => {
-    // TODO: Implémenter la logique premium quand le backend sera prêt
-    return false;
+    return this.user()?.isPremium ?? false;
   });
 
   ngOnInit(): void {
