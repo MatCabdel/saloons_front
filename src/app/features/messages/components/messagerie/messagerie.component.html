@@ -1,8 +1,15 @@
 <div class="message-list" #messagesList>
-  @if (isMatchCancelled && messages.length === 0) {
+  @if (isMatchExpired && messages.length === 0) {
+  <!-- Match expiré sans conversation -->
+  <div class="conversation-ended">
+    <div class="ended-icon">⏰</div>
+    <h3>Match expiré</h3>
+    <p>Ce match a expiré sans échange de messages.</p>
+  </div>
+  } @else if (isMatchCancelled && messages.length === 0) {
   <!-- Match annulé et pas de messages -->
   <div class="conversation-ended">
-    <div class="ended-icon">�</div>
+    <div class="ended-icon">😔</div>
     <h3>Conversation terminée</h3>
     <p>Cette conversation n'est plus active.</p>
   </div>
@@ -36,7 +43,28 @@
 </div>
 
 <!-- Zone d'envoi de message OU bouton coup de cœur -->
-@if (isConversationEnded && !isMatchCancelled && isHeartWindowExpired) {
+@if (isMatchExpired) {
+<!-- Match expiré : zone désactivée avec possibilité de supprimer -->
+<div class="conversation-expired-notice">
+  <div class="expired-icon">⏰</div>
+  <p>Ce match a expiré</p>
+</div>
+<div class="send-box disabled">
+  <textarea placeholder="Match expiré" disabled></textarea>
+  <button type="button" disabled>
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path>
+    </svg>
+  </button>
+</div>
+} @else if (isConversationEnded && !isMatchCancelled && isHeartWindowExpired) {
 <!-- Conversation expirée ET fenêtre 12h passée : conversation définitivement terminée -->
 <div class="conversation-expired-notice">
   <div class="expired-icon">⏰</div>

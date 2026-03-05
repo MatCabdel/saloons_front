@@ -35,6 +35,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class MessagerieComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
   @Input() isConversationEnded = false; // Conversation expirée (a quitté le saloon)
   @Input() isMatchCancelled = false; // Match annulé définitivement
+  @Input() isMatchExpired = false; // Match expiré (session terminée, pas de conversation créée)
   @Input() isHeartWindowExpired = false; // Fenêtre 12h pour coup de cœur expirée
   @Input() isPermanent = false; // Conversation permanente
   @Input() heartRequestStatus: HeartRequestStatus | null = null;

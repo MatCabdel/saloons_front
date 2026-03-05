@@ -19,6 +19,7 @@ import { interval, Subscription } from 'rxjs';
 import { PresenceService } from 'src/app/features/saloon/services/presence.service';
 import { BadgeService } from 'src/app/core/services/badge.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatchService } from 'src/app/features/match/services/match.service';
 
 @Component({
   selector: 'app-messages-page',
@@ -36,10 +37,12 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   private _userService = inject(UserService);
   private _presenceService = inject(PresenceService);
   private _badgeService = inject(BadgeService);
+  private _matchService = inject(MatchService);
 
   userTarget?: User;
   conversationId: number | null = null;
   matchUserId: number | null = null; // Mode match sans conversation
+  isMatchExpired = false; // Mode match expiré (session terminée, pas de conversation)
   otherParticipantLeft = false;
   isMatchCancelled = false;
   isHeartWindowExpired = false; // true si la fenêtre 12h pour coup de cœur est expirée
@@ -71,14 +74,16 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const conversationIdParam = this._route.snapshot.paramMap.get('conversationId');
     const matchUserIdParam = this._route.snapshot.paramMap.get('matchUserId');
+    const expiredParam = this._route.snapshot.queryParamMap.get('expired');
 
     if (conversationIdParam) {
       // Mode conversation existante
       this.conversationId = Number(conversationIdParam);
       this._loadConversation();
     } else if (matchUserIdParam) {
-      // Mode match sans conversation (conversation sera créée au premier message)
+      // Mode match sans conversation
       this.matchUserId = Number(matchUserIdParam);
+      this.isMatchExpired = expiredParam === 'true';
       this._loadMatchUser();
     }
 
@@ -291,8 +296,23 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   }
 
   deleteMatch(): void {
+    if (!this.conversationId && this.matchUserId) {
+      // En mode match sans conversation, supprimer le match directement via l'API
+      this._matchService.deleteMatch(this.matchUserId).subscribe({
+        next: () => {
+          this.showDeleteMatchModal = false;
+          this._router.navigate(['/chat']);
+        },
+        error: (err: Error) => {
+          console.error('Erreur lors de la suppression du match:', err);
+          this.showDeleteMatchModal = false;
+          this._router.navigate(['/chat']);
+        },
+      });
+      return;
+    }
+
     if (!this.conversationId) {
-      // En mode match sans conversation, retourner simplement à la liste
       this._router.navigate(['/chat']);
       return;
     }

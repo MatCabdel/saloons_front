@@ -78,8 +78,11 @@ export class ListMatchComponent implements OnInit, OnChanges {
         // Conversation existe → naviguer vers elle
         this._router.navigate(['/messages', conv.id]);
       } else {
-        // Pas de conversation → ouvrir en mode "match" (conversation sera créée au premier message)
-        this._router.navigate(['/messages/match', user.id]);
+        // Pas de conversation → ouvrir en mode "match"
+        // Si session expirée, passer le paramètre pour afficher le mode expiré
+        this._router.navigate(['/messages/match', user.id], {
+          queryParams: user.sessionExpired ? { expired: 'true' } : {},
+        });
       }
     });
   }
