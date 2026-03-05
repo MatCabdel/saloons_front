@@ -12,6 +12,7 @@ export type UserDTO = {
   description?: string | null;
   birthDate?: string | null;
   age?: number | null;
+  isPremium?: boolean;
 };
 
 export type UserRegistrationDTO = {
