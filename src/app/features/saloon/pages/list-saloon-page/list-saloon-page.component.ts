@@ -280,7 +280,9 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
       // Sur web (desktop), utiliser l'API Permissions si disponible
       if ('permissions' in navigator && navigator.permissions?.query) {
         try {
-          const result = await navigator.permissions.query({ name: 'geolocation' as PermissionName });
+          const result = await navigator.permissions.query({
+            name: 'geolocation' as PermissionName,
+          });
           if (result.state === 'granted') {
             this._getUserLocation();
           } else if (result.state === 'denied') {
