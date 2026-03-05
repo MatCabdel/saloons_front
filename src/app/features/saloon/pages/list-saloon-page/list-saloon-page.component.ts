@@ -10,8 +10,6 @@ import {
   Subject,
   takeUntil,
 } from 'rxjs';
-import { Capacitor } from '@capacitor/core';
-import { Geolocation } from '@capacitor/geolocation';
 import { Saloon, SaloonType } from '../../models/saloonModel';
 import { SaloonCardComponent } from '../../components/saloon-card/saloon-card.component';
 import { SaloonApiService } from '../../services/saloon-api.service';
@@ -19,6 +17,7 @@ import { SaloonModalComponent } from '../../components/saloon-modal/saloon-modal
 import { SaloonMapItem, PresenceService } from '../../services/presence.service';
 import { SaloonPresenceRealtimeService } from '../../services/saloon-presence-realtime.service';
 import { AuthApiService } from 'src/app/features/auth/services/auth-api.service';
+import { GeolocationService } from 'src/app/core/services/geolocation.service';
 
 // Distance maximale pour afficher les saloons (en mètres)
 const MAX_DISTANCE_METERS = 50000; // 50km
@@ -54,16 +53,17 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   private _presenceService = inject(PresenceService);
   private _router = inject(Router);
   private _authApiService = inject(AuthApiService);
+  private _geoService = inject(GeolocationService);
   private _destroy$ = new Subject<void>();
 
-  // Position utilisateur
-  userLat: number | null = null;
-  userLng: number | null = null;
+  // Position utilisateur (délégué au service partagé)
+  get userLat(): number | null { return this._geoService.userLat(); }
+  get userLng(): number | null { return this._geoService.userLng(); }
   private _userPosition$ = new BehaviorSubject<{ lat: number; lng: number } | null>(null);
   private _refreshTrigger$ = new BehaviorSubject<void>(undefined);
 
-  // État de la géolocalisation
-  geoLocationStatus = signal<'prompt' | 'loading' | 'granted' | 'denied' | 'unavailable'>('prompt');
+  // État de la géolocalisation (délégué au service partagé)
+  get geoLocationStatus(): typeof this._geoService.status { return this._geoService.status; }
   totalSaloonsCount = signal<number>(0);
 
   // Filtres
@@ -174,7 +174,19 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   );
 
   ngOnInit(): void {
-    this._checkAndMaybeRequestLocation();
+    // Initialiser la géolocalisation via le service partagé
+    this._geoService.init();
+    // S'abonner aux changements de position du service
+    this._geoService.userPosition$
+      .pipe(takeUntil(this._destroy$))
+      .subscribe(pos => this._userPosition$.next(pos));
+    // Si le service a déjà une position, la propager immédiatement
+    if (this._geoService.hasPosition()) {
+      this._userPosition$.next({
+        lat: this._geoService.userLat()!,
+        lng: this._geoService.userLng()!,
+      });
+    }
     // Connecter au WebSocket pour les mises à jour temps réel
     this._presenceRealtimeService.connect();
     // Charger la session active de l'utilisateur (pour savoir s'il est dans un saloon)
@@ -190,119 +202,12 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
     this._destroy$.complete();
   }
 
-  private _getUserLocation(): void {
-    this.geoLocationStatus.set('loading');
-
-    // Sur mobile (iOS/Android), utiliser le plugin Capacitor
-    // Évite le popup "localhost" qui apparaît avec navigator.geolocation dans WebView
-    if (Capacitor.isNativePlatform()) {
-      Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 10000 })
-        .then(position => {
-          this.userLat = position.coords.latitude;
-          this.userLng = position.coords.longitude;
-          this._userPosition$.next({ lat: this.userLat, lng: this.userLng });
-          this.geoLocationStatus.set('granted');
-        })
-        .catch(error => {
-          console.warn('Géolocalisation non disponible:', error.message);
-          // Capacitor renvoie 'denied' si permission refusée
-          if (error.message?.includes('denied') || error.message?.includes('permission')) {
-            this.geoLocationStatus.set('denied');
-          } else {
-            this.geoLocationStatus.set('unavailable');
-          }
-        });
-    } else {
-      // Sur web (desktop), utiliser navigator.geolocation
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          position => {
-            this.userLat = position.coords.latitude;
-            this.userLng = position.coords.longitude;
-            this._userPosition$.next({ lat: this.userLat, lng: this.userLng });
-            this.geoLocationStatus.set('granted');
-          },
-          error => {
-            console.warn('Géolocalisation non disponible:', error.message);
-            if (error.code === error.PERMISSION_DENIED) {
-              this.geoLocationStatus.set('denied');
-            } else {
-              this.geoLocationStatus.set('unavailable');
-            }
-          }
-        );
-      } else {
-        this.geoLocationStatus.set('unavailable');
-      }
-    }
-  }
-
   requestLocation(): void {
-    localStorage.setItem('saloons_location_prompted', 'true');
-    this._getUserLocation();
+    this._geoService.requestLocation();
   }
 
   openLocationSettings(): void {
-    window.location.href = 'app-settings:';
-  }
-
-  /**
-   * Vérifie les permissions de géolocalisation et agit en conséquence :
-   * - Si déjà accordée → récupère la position directement
-   * - Si refusée → affiche l'état 'denied'
-   * - Si jamais demandée et premier login → affiche le prompt
-   * - Si déjà prompté avant → ne redemande pas (reste en 'prompt' jusqu'à action user)
-   */
-  private async _checkAndMaybeRequestLocation(): Promise<void> {
-    if (Capacitor.isNativePlatform()) {
-      // Sur mobile (iOS/Android), utiliser le plugin Capacitor
-      try {
-        const status = await Geolocation.checkPermissions();
-        if (status.location === 'granted' || status.coarseLocation === 'granted') {
-          // Permission déjà accordée → récupérer la position
-          this._getUserLocation();
-        } else if (status.location === 'denied') {
-          // Permission refusée → afficher l'état denied
-          this.geoLocationStatus.set('denied');
-        } else {
-          // Permission 'prompt' → vérifier si c'est la première fois
-          const alreadyPrompted = localStorage.getItem('saloons_location_prompted');
-          if (!alreadyPrompted) {
-            // Première connexion → laisser le prompt s'afficher (géré par le template)
-            this.geoLocationStatus.set('prompt');
-          }
-          // Si déjà prompté mais pas accordé, on reste en 'prompt' sans redemander
-        }
-      } catch {
-        this.geoLocationStatus.set('unavailable');
-      }
-    } else {
-      // Sur web (desktop), utiliser l'API Permissions si disponible
-      if ('permissions' in navigator && navigator.permissions?.query) {
-        try {
-          const result = await navigator.permissions.query({
-            name: 'geolocation' as PermissionName,
-          });
-          if (result.state === 'granted') {
-            this._getUserLocation();
-          } else if (result.state === 'denied') {
-            this.geoLocationStatus.set('denied');
-          } else {
-            // 'prompt' → vérifier si déjà demandé
-            const alreadyPrompted = localStorage.getItem('saloons_location_prompted');
-            if (!alreadyPrompted) {
-              this.geoLocationStatus.set('prompt');
-            }
-          }
-        } catch {
-          // Fallback si l'API Permissions échoue
-          this.geoLocationStatus.set('prompt');
-        }
-      } else {
-        // Pas d'API Permissions → fallback
-        this.geoLocationStatus.set('prompt');
-      }
-    }
+    this._geoService.openLocationSettings();
   }
 
   private _calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {

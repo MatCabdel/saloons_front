@@ -1,13 +1,12 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import { Subject, takeUntil } from 'rxjs';
-import { Capacitor } from '@capacitor/core';
-import { Geolocation } from '@capacitor/geolocation';
 import { SaloonModalComponent } from '../saloon-modal/saloon-modal.component';
 import { SaloonMapItem } from '../../services/presence.service';
 import { SaloonApiService } from '../../services/saloon-api.service';
 import { Saloon } from '../../models/saloonModel';
+import { GeolocationService } from 'src/app/core/services/geolocation.service';
 
 @Component({
   selector: 'app-map',
@@ -22,13 +21,16 @@ export class MapComponent implements OnInit, OnDestroy {
   private _userMarker: L.Marker | null = null;
   private _destroy$ = new Subject<void>();
   private _saloonApiService = inject(SaloonApiService);
+  private _geoService = inject(GeolocationService);
 
   // Modal state
   showModal = false;
   selectedSaloon: SaloonMapItem | null = null;
-  userLat: number | null = null;
-  userLng: number | null = null;
-  geoLocationStatus: 'prompt' | 'loading' | 'granted' | 'denied' | 'unavailable' = 'prompt';
+
+  // Déléguer au service partagé
+  get userLat(): number | null { return this._geoService.userLat(); }
+  get userLng(): number | null { return this._geoService.userLng(); }
+  get geoLocationStatus(): string { return this._geoService.status(); }
 
   private _customIcon = L.icon({
     iconUrl: 'assets/icons/mapmarker.svg',
@@ -48,10 +50,23 @@ export class MapComponent implements OnInit, OnDestroy {
   // Données des saloons chargées depuis l'API
   private _saloonsData: SaloonMapItem[] = [];
 
+  // Effet réactif : dès que la position change dans le service, mettre à jour la carte
+  private _positionEffect = effect(() => {
+    const lat = this._geoService.userLat();
+    const lng = this._geoService.userLng();
+    const status = this._geoService.status();
+    if (status === 'granted' && lat !== null && lng !== null && this.map) {
+      this._updateDistances();
+      this._addUserMarker();
+      this.map.setView([lat, lng], 15);
+    }
+  });
+
   ngOnInit(): void {
     this.configMap();
     this._loadSaloons();
-    this._maybeAutoFetchLocation();
+    // Initialiser la géolocalisation via le service partagé (ne re-prompte pas si déjà fait)
+    this._geoService.init();
   }
 
   ngOnDestroy(): void {
@@ -137,65 +152,15 @@ export class MapComponent implements OnInit, OnDestroy {
     });
   }
 
-  private _getUserLocation(): void {
-    this.geoLocationStatus = 'loading';
-
-    // Sur mobile (iOS/Android), utiliser le plugin Capacitor
-    // Évite le popup "localhost" qui apparaît avec navigator.geolocation dans WebView
-    if (Capacitor.isNativePlatform()) {
-      Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 10000 })
-        .then(position => {
-          this.userLat = position.coords.latitude;
-          this.userLng = position.coords.longitude;
-          this.geoLocationStatus = 'granted';
-
-          // Mettre à jour les distances
-          this._updateDistances();
-
-          // Ajouter le marqueur de position utilisateur
-          this._addUserMarker();
-
-          // Centrer la carte sur l'utilisateur
-          this.map.setView([this.userLat, this.userLng], 15);
-        })
-        .catch(error => {
-          console.warn('Géolocalisation non disponible:', error.message);
-          if (error.message?.includes('denied') || error.message?.includes('permission')) {
-            this.geoLocationStatus = 'denied';
-          } else {
-            this.geoLocationStatus = 'unavailable';
-          }
-        });
+  /**
+   * Recentre la carte sur la position de l'utilisateur
+   */
+  centerOnUser(): void {
+    if (this.userLat !== null && this.userLng !== null) {
+      this.map.setView([this.userLat, this.userLng], 15);
     } else {
-      // Sur web (desktop), utiliser navigator.geolocation
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          position => {
-            this.userLat = position.coords.latitude;
-            this.userLng = position.coords.longitude;
-            this.geoLocationStatus = 'granted';
-
-            // Mettre à jour les distances
-            this._updateDistances();
-
-            // Ajouter le marqueur de position utilisateur
-            this._addUserMarker();
-
-            // Centrer la carte sur l'utilisateur
-            this.map.setView([this.userLat, this.userLng], 15);
-          },
-          error => {
-            console.warn('Géolocalisation non disponible:', error.message);
-            if (error.code === error.PERMISSION_DENIED) {
-              this.geoLocationStatus = 'denied';
-            } else {
-              this.geoLocationStatus = 'unavailable';
-            }
-          }
-        );
-      } else {
-        this.geoLocationStatus = 'unavailable';
-      }
+      // Si pas de position, demander via le service
+      this.requestLocation();
     }
   }
 
@@ -211,18 +176,6 @@ export class MapComponent implements OnInit, OnDestroy {
     this._userMarker = L.marker([this.userLat, this.userLng], { icon: this._userIcon }).addTo(
       this.map
     );
-  }
-
-  /**
-   * Recentre la carte sur la position de l'utilisateur
-   */
-  centerOnUser(): void {
-    if (this.userLat !== null && this.userLng !== null) {
-      this.map.setView([this.userLat, this.userLng], 15);
-    } else {
-      // Si pas de position, demander à nouveau
-      this.requestLocation();
-    }
   }
 
   private _updateDistances(): void {
@@ -271,27 +224,10 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   requestLocation(): void {
-    localStorage.setItem('saloons_location_prompted', 'true');
-    this._getUserLocation();
+    this._geoService.requestLocation();
   }
 
   openLocationSettings(): void {
-    window.location.href = 'app-settings:';
-  }
-
-  private _maybeAutoFetchLocation(): void {
-    if (!('permissions' in navigator) || !navigator.permissions?.query) {
-      return;
-    }
-    navigator.permissions
-      .query({ name: 'geolocation' as PermissionName })
-      .then(result => {
-        if (result.state === 'granted' && localStorage.getItem('saloons_location_prompted')) {
-          this._getUserLocation();
-        }
-      })
-      .catch(() => {
-        // Ignore permissions API errors
-      });
+    this._geoService.openLocationSettings();
   }
 }
