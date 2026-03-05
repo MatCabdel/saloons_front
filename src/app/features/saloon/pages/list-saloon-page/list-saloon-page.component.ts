@@ -57,13 +57,19 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   private _destroy$ = new Subject<void>();
 
   // Position utilisateur (délégué au service partagé)
-  get userLat(): number | null { return this._geoService.userLat(); }
-  get userLng(): number | null { return this._geoService.userLng(); }
+  get userLat(): number | null {
+    return this._geoService.userLat();
+  }
+  get userLng(): number | null {
+    return this._geoService.userLng();
+  }
   private _userPosition$ = new BehaviorSubject<{ lat: number; lng: number } | null>(null);
   private _refreshTrigger$ = new BehaviorSubject<void>(undefined);
 
   // État de la géolocalisation (délégué au service partagé)
-  get geoLocationStatus(): typeof this._geoService.status { return this._geoService.status; }
+  get geoLocationStatus(): typeof this._geoService.status {
+    return this._geoService.status;
+  }
   totalSaloonsCount = signal<number>(0);
 
   // Filtres

@@ -6,7 +6,7 @@ import { SaloonModalComponent } from '../saloon-modal/saloon-modal.component';
 import { SaloonMapItem } from '../../services/presence.service';
 import { SaloonApiService } from '../../services/saloon-api.service';
 import { Saloon } from '../../models/saloonModel';
-import { GeolocationService } from 'src/app/core/services/geolocation.service';
+import { GeolocationService, GeoLocationStatus } from 'src/app/core/services/geolocation.service';
 
 @Component({
   selector: 'app-map',
@@ -28,9 +28,15 @@ export class MapComponent implements OnInit, OnDestroy {
   selectedSaloon: SaloonMapItem | null = null;
 
   // Déléguer au service partagé
-  get userLat(): number | null { return this._geoService.userLat(); }
-  get userLng(): number | null { return this._geoService.userLng(); }
-  get geoLocationStatus(): string { return this._geoService.status(); }
+  get userLat(): number | null {
+    return this._geoService.userLat();
+  }
+  get userLng(): number | null {
+    return this._geoService.userLng();
+  }
+  get geoLocationStatus(): GeoLocationStatus {
+    return this._geoService.status();
+  }
 
   private _customIcon = L.icon({
     iconUrl: 'assets/icons/mapmarker.svg',
