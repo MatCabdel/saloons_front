@@ -27,4 +27,11 @@ export class MatchService {
   getMatches(): Observable<MatchUser[]> {
     return this._http.get<MatchUser[]>(`${this._BASE_URL_API}/match/matches`);
   }
+
+  /**
+   * Supprime un match avec un autre utilisateur.
+   */
+  deleteMatch(otherUserId: number): Observable<void> {
+    return this._http.delete<void>(`${this._BASE_URL_API}/match/${otherUserId}`);
+  }
 }
