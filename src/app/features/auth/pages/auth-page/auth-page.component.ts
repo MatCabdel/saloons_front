@@ -61,7 +61,7 @@ export class AuthPageComponent implements OnInit {
   goToRegister(): void {
     this.mode.set('register');
     this.errorMessage.set(null);
-    this._router.navigate(['/']);
+    this._router.navigate(['/auth']);
   }
 
   goToLogin(): void {

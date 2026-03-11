@@ -44,10 +44,13 @@ import { FaqPageComponent } from './features/menu/pages/faq-page/faq-page.compon
 import { ContactPageComponent } from './features/menu/pages/contact-page/contact-page.component';
 import { ForgotPasswordPageComponent } from './features/auth/pages/forgot-password-page/forgot-password-page.component';
 import { LegalNoticesPageComponent } from './features/menu/pages/legal-notices-page/legal-notices-page.component';
+import { WelcomePageComponent } from './features/home/pages/welcome-page/welcome-page.component';
 
 export const routes: Routes = [
-  // Page d'accueil = inscription
-  { path: '', component: AuthPageComponent, canActivate: [authGuard] },
+  // Splash screen au lancement
+  { path: '', component: WelcomePageComponent },
+  // Page d'accueil auth
+  { path: 'auth', component: AuthPageComponent, canActivate: [authGuard] },
   // Page de connexion
   { path: 'login', component: AuthPageComponent, canActivate: [authGuard] },
   { path: 'mot-de-passe-oublie', component: ForgotPasswordPageComponent, canActivate: [authGuard] },
@@ -64,8 +67,7 @@ export const routes: Routes = [
   },
   { path: 'map', redirectTo: 'saloons/map', pathMatch: 'full' },
   // Legacy routes
-  { path: 'register', redirectTo: '', pathMatch: 'full' },
-  { path: 'auth', redirectTo: '', pathMatch: 'full' },
+  { path: 'register', redirectTo: 'auth', pathMatch: 'full' },
   { path: 'profil', component: ProfilPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'profil/edit', component: EditProfilPageComponent, canActivate: [isLoggedInGuard] },
   { path: 'chat', component: ConversationsPageComponent, canActivate: [isLoggedInGuard] },
