@@ -124,6 +124,7 @@ export class SaloonChatService {
     this._stompClient = new Client({
       webSocketFactory: (): WebSocket => new SockJS(`${this._wsUrl}/ws`),
       connectHeaders: {
+        Authorization: `Bearer ${localStorage.getItem('saloon_auth_token') || ''}`,
         saloonId: String(saloonId),
       },
       reconnectDelay: 5000,
@@ -157,8 +158,14 @@ export class SaloonChatService {
       }, PRESENCE_REFRESH_DELAY_MS);
     };
 
-    this._stompClient.onStompError = (): void => {
-      // Erreur WebSocket silencieuse
+    this._stompClient.onStompError = (frame: any): void => {
+      const msg: string = frame?.headers?.message ?? '';
+      if (msg.includes('Access denied') || msg.includes('Authentication')) {
+        this.disconnect();
+        localStorage.removeItem('saloon_auth_token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      }
     };
 
     this._stompClient.activate();
