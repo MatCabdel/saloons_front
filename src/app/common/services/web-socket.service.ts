@@ -15,10 +15,12 @@ export class WebSocketService {
     this.disconnect();
 
     const wsUrl = this.getWebSocketUrl();
+    const token = localStorage.getItem('saloon_auth_token');
 
     this._stompClient = new Client({
       webSocketFactory: (): any => new WebSocket(wsUrl),
       reconnectDelay: 5000,
+      connectHeaders: token ? { Authorization: `Bearer ${token}` } : {},
     });
 
     this._stompClient.onConnect = (): void => {
@@ -36,7 +38,13 @@ export class WebSocketService {
     };
 
     this._stompClient.onStompError = (frame: any): void => {
-      console.error('STOMP erreur', frame);
+      const msg: string = frame?.headers?.message ?? '';
+      if (msg.includes('Access denied') || msg.includes('Authentication')) {
+        this.disconnect();
+        localStorage.removeItem('saloon_auth_token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      }
     };
 
     this._stompClient.activate();
