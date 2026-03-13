@@ -1,0 +1,21 @@
+<div class="upload">
+  @if (imageUrl) {
+  <img [src]="imageUrl" alt="Aperçu image" width="200" height="200" />
+  }
+  <button type="button" class="button-with-icon" (click)="fileUpload.click()">
+    <div class="icon">
+      <img src="/assets/icons/upload.svg" alt="Icône" />
+    </div>
+    <span>Choisir une image</span>
+  </button>
+
+  <input
+    #fileUpload
+    id="fileUpload"
+    type="file"
+    class="file-input"
+    hidden
+    (change)="onFileSelected($event)"
+    accept="image/png, image/jpeg, image/svg+xml, image/webp"
+  />
+</div>

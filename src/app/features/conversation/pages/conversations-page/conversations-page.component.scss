@@ -1,0 +1,37 @@
+// Variables
+$gradient-top: #413443;
+
+.messages-container {
+  background-color: #faf9f6;
+  min-width: 100vw;
+  margin: 0 auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  .header-messages {
+    position: relative;
+    flex-shrink: 0;
+    height: calc(140px + var(--safe-top));
+    background: linear-gradient(to right, $gradient-top 0%, lighten($gradient-top, 10%) 100%);
+
+    .nav-header {
+      width: 100%;
+
+      app-header {
+        display: block;
+        width: 100%;
+      }
+    }
+
+    h1 {
+      text-align: left;
+      color: white;
+      padding-top: 12px;
+      padding-left: 20px;
+      margin-top: calc(-1 * var(--safe-top));
+      font-size: 1.2em;
+      margin: 0;
+    }
+  }
+}

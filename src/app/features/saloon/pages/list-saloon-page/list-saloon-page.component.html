@@ -1,0 +1,167 @@
+<div class="list-saloons-container">
+  <!-- Écran explicatif avant demande de permission -->
+  @if (geoLocationStatus() === 'prompt') {
+  <div class="location-message prompt">
+    <i class="fas fa-location-arrow"></i>
+    <h3>Localisation requise</h3>
+    <p>
+      Saloons utilise votre position pour afficher les lieux proches et vous permettre d’entrer dans
+      un saloon.
+    </p>
+    <button type="button" class="primary-btn" (click)="requestLocation()">
+      Activer la localisation
+    </button>
+  </div>
+  }
+
+  <!-- Message si géolocalisation en cours -->
+  @if (geoLocationStatus() === 'loading') {
+  <div class="location-message loading">
+    <i class="fas fa-spinner fa-spin"></i>
+    <p>Recherche de votre position...</p>
+  </div>
+  }
+
+  <!-- Message si géolocalisation refusée -->
+  @if (geoLocationStatus() === 'denied') {
+  <div class="location-message denied">
+    <i class="fas fa-location-crosshairs"></i>
+    <h3>Géolocalisation désactivée</h3>
+    <p>
+      Pour voir les saloons près de vous, veuillez autoriser l'accès à votre position dans les
+      paramètres de votre navigateur.
+    </p>
+    <div class="location-actions">
+      <button type="button" class="primary-btn" (click)="requestLocation()">
+        Activer la localisation
+      </button>
+      <button type="button" class="secondary-btn" (click)="openLocationSettings()">
+        Ouvrir les réglages
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- Message si géolocalisation indisponible -->
+  @if (geoLocationStatus() === 'unavailable') {
+  <div class="location-message unavailable">
+    <i class="fas fa-map-marker-alt"></i>
+    <h3>Position indisponible</h3>
+    <p>
+      Impossible de déterminer votre position. Vérifiez que la géolocalisation est activée sur votre
+      appareil.
+    </p>
+    <div class="location-actions">
+      <button type="button" class="primary-btn" (click)="requestLocation()">
+        Activer la localisation
+      </button>
+      <button type="button" class="secondary-btn" (click)="openLocationSettings()">
+        Ouvrir les réglages
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- Liste des saloons si position disponible OU reviewer/admin -->
+  @if (geoLocationStatus() === 'granted' || isReviewerOrAdmin) {
+  <!-- Filtres par type -->
+  <div class="filters-section">
+    <div class="filters-grid">
+      @for (tab of filterTabs; track tab.value) {
+      <button
+        type="button"
+        class="filter-chip"
+        [class.active]="activeFilter() === tab.value"
+        [class.hot]="tab.value === 'CHAUD'"
+        (click)="setFilter(tab.value)"
+      >
+        {{ tab.label }}
+      </button>
+      }
+    </div>
+  </div>
+
+  @if (saloons$ | async; as saloons) { @if (saloons.length > 0) { @if (geoLocationStatus() !==
+  'granted' && isReviewerOrAdmin) {
+  <div class="location-message info">
+    <i class="fas fa-info-circle"></i>
+    <p>Accès reviewer/admin : les saloons privés sont visibles même sans localisation.</p>
+    <button type="button" class="primary-btn" (click)="requestLocation()">
+      Activer la localisation
+    </button>
+  </div>
+  }
+  <p class="saloons-count">
+    <span class="count">{{ filteredSaloonsCount() }}</span> saloon{{
+      filteredSaloonsCount() > 1 ? 's' : ''
+    }}
+    @if (activeFilter() === 'CHAUD') { les plus populaires } @else { à proximité }
+  </p>
+  <div class="list-places">
+    @for (saloon of saloons; track saloon.id) {
+    <app-saloon-card
+      [saloon]="saloon"
+      [distanceMeters]="saloon.distanceMeters"
+      (click)="openModal(saloon)"
+    >
+    </app-saloon-card>
+    }
+  </div>
+
+  <!-- Pagination -->
+  @if (totalPages() > 1) {
+  <div class="pagination">
+    <button
+      type="button"
+      class="pagination-btn"
+      [disabled]="currentPage() === 1"
+      (click)="previousPage()"
+    >
+      ‹
+    </button>
+    <span class="pagination-info">{{ currentPage() }} / {{ totalPages() }}</span>
+    <button
+      type="button"
+      class="pagination-btn"
+      [disabled]="currentPage() === totalPages()"
+      (click)="nextPage()"
+    >
+      ›
+    </button>
+  </div>
+  } } @else {
+  <div class="location-message no-saloons">
+    <i class="fas fa-store-slash"></i>
+    <h3>Aucun saloon trouvé</h3>
+    @if (activeFilter() !== 'ALL') {
+    <p>Aucun saloon de ce type n'a été trouvé à proximité.</p>
+    } @else {
+    <p>Il n'y a pas de saloon dans un rayon de 50 km autour de vous.</p>
+    @if (totalSaloonsCount() > 0) {
+    <span class="hint">{{ totalSaloonsCount() }} saloon(s) disponible(s) dans d'autres zones</span>
+    } }
+
+    <div class="request-section">
+      <p class="request-text">Vous souhaitez voir un saloon près de chez vous ?</p>
+      <button type="button" class="request-btn" (click)="goToRequestSaloon()">
+        Faites la demande
+      </button>
+    </div>
+  </div>
+  } } }
+</div>
+
+<!-- Modal -->
+@if (showModal && selectedSaloon) {
+<app-saloon-modal
+  [saloon]="selectedSaloon"
+  [userLat]="userLat"
+  [userLng]="userLng"
+  [geoLocationStatus]="geoLocationStatus()"
+  (requestLocation)="requestLocation()"
+  (closed)="closeModal()"
+>
+</app-saloon-modal>
+}
+
+<!-- Toast d'annulation supprimé -->

@@ -1,0 +1,60 @@
+<div class="edit-profil-wrapper">
+  <form [formGroup]="formGroup" class="edit-form" (ngSubmit)="onSubmit()">
+    <!-- Photo de profil -->
+    <div class="photo-section">
+      <app-file-upload (fileEmitter)="receiveImage($event)" [imageUrl]="imageUrl"></app-file-upload>
+    </div>
+
+    <!-- Champs du formulaire -->
+    <div class="form-fields">
+      <div class="container-input">
+        <label class="label-form" for="userName">Pseudo *</label>
+        <input
+          class="input-form"
+          id="userName"
+          type="text"
+          formControlName="userName"
+          placeholder="Votre pseudo"
+        />
+        @if (formGroup.get('userName')?.invalid && formGroup.get('userName')?.touched) {
+        <span class="error">Le pseudo est requis (2-30 caractères)</span>
+        }
+      </div>
+
+      <div class="container-input">
+        <label class="label-form" for="city">Ville</label>
+        <input
+          class="input-form"
+          id="city"
+          type="text"
+          formControlName="city"
+          placeholder="Votre ville"
+        />
+      </div>
+
+      <div class="container-input">
+        <label class="label-form" for="description">À propos de moi</label>
+        <textarea
+          class="input-form textarea"
+          id="description"
+          formControlName="description"
+          placeholder="Décrivez-vous en quelques mots..."
+          rows="4"
+        ></textarea>
+        <span class="char-count">{{ formGroup.get('description')?.value?.length || 0 }}/500</span>
+      </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="btn-actions">
+      <button type="button" class="btn-cancel" (click)="goBack()">Annuler</button>
+      <button type="submit" class="btn-save" [disabled]="formGroup.invalid || isLoading">
+        @if (isLoading) {
+        <span>Enregistrement...</span>
+        } @else {
+        <span>Enregistrer</span>
+        }
+      </button>
+    </div>
+  </form>
+</div>

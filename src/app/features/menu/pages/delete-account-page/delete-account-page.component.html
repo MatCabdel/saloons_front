@@ -1,0 +1,89 @@
+<div class="delete-account-page">
+  <app-header [title]="'Supprimer mon compte'" [showBackButton]="true"></app-header>
+
+  <div class="page-content">
+    @if (!showConfirmation()) {
+    <!-- Warning Section -->
+    <div class="warning-section">
+      <div class="warning-icon">⚠️</div>
+      <h2>Attention</h2>
+      <p class="warning-text">Tu es sur le point de supprimer définitivement ton compte Saloons.</p>
+    </div>
+
+    <!-- Consequences List -->
+    <div class="consequences-section">
+      <h3>Cette action entraînera :</h3>
+      <ul class="consequences-list">
+        <li>
+          <span class="list-icon">❌</span>
+          <span>La suppression de ton profil et de tes photos</span>
+        </li>
+        <li>
+          <span class="list-icon">❌</span>
+          <span>La perte de tous tes matchs et conversations</span>
+        </li>
+        <li>
+          <span class="list-icon">❌</span>
+          <span>L'annulation de ton abonnement Premium (si applicable)</span>
+        </li>
+        <li>
+          <span class="list-icon">❌</span>
+          <span>L'impossibilité de récupérer tes données</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button type="button" class="btn-danger" (click)="proceedToConfirmation()">
+        Je comprends, supprimer mon compte
+      </button>
+      <button type="button" class="btn-cancel" (click)="goBack()">Annuler</button>
+    </div>
+    } @else {
+    <!-- Confirmation Section -->
+    <div class="confirmation-section">
+      <div class="confirm-icon">🗑️</div>
+      <h2>Confirme la suppression</h2>
+      <p class="confirm-text">
+        Pour confirmer la suppression de ton compte, tape <strong>SUPPRIMER</strong> dans le champ
+        ci-dessous.
+      </p>
+
+      <form [formGroup]="form" class="confirm-form">
+        <div class="form-group">
+          <input
+            type="text"
+            id="confirmText"
+            formControlName="confirmText"
+            placeholder="Tape SUPPRIMER"
+            autocomplete="off"
+          />
+        </div>
+
+        @if (errorMessage()) {
+        <div class="error-banner">
+          {{ errorMessage() }}
+        </div>
+        }
+
+        <div class="action-buttons">
+          <button
+            type="button"
+            class="btn-danger"
+            [disabled]="!isConfirmValid() || isDeleting()"
+            (click)="deleteAccount()"
+          >
+            @if (isDeleting()) {
+            <span class="spinner"></span>
+            Suppression en cours... } @else { Supprimer définitivement }
+          </button>
+          <button type="button" class="btn-cancel" (click)="cancelDeletion()">
+            J'ai changé d'avis
+          </button>
+        </div>
+      </form>
+    </div>
+    }
+  </div>
+</div>

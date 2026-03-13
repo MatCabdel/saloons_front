@@ -1,0 +1,23 @@
+import { Component } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+
+@Component({
+  selector: 'app-navbar',
+  standalone: true,
+  imports: [RouterModule],
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.scss',
+})
+export class NavbarComponent {
+  navItems = [
+    { route: '/profil', icon: 'assets/icons/user.svg', alt: 'profil' },
+    { route: '/saloons', icon: 'assets/icons/home.svg', alt: 'home' },
+    { route: '/chat', icon: 'assets/icons/chat3.svg', alt: 'tchat' },
+  ];
+
+  constructor(private _router: Router) {}
+
+  isActive(route: string): boolean {
+    return this._router.url.startsWith(route);
+  }
+}

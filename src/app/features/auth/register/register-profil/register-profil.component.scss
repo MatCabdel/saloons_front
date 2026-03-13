@@ -1,0 +1,405 @@
+.formulaire {
+  width: 100%;
+  background-color: transparent !important;
+}
+
+.container-input {
+  margin-top: 10px;
+  width: 98%;
+
+  .password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .input-form {
+      padding: 8px 45px 8px 10px !important;
+      border: none;
+      border-radius: 5px;
+      margin-top: 6px;
+      width: 100%;
+      box-sizing: border-box;
+
+      &::placeholder {
+        color: rgb(151, 150, 150);
+        font-style: italic;
+      }
+    }
+
+    .password-toggle-btn {
+      position: absolute;
+      right: 12px;
+      top: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      color: #666;
+      font-size: 16px;
+      transition: color 0.2s ease;
+      z-index: 1;
+
+      &:hover {
+        color: #ffc122;
+      }
+
+      &:focus {
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+
+      i {
+        pointer-events: none;
+      }
+    }
+  }
+}
+
+.container-input span {
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.label-form {
+  margin-top: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  color: white;
+}
+
+.input-form {
+  padding: 8px 10px;
+  border: none;
+  border-radius: 5px;
+  margin-top: 6px;
+  width: 100%;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: rgb(151, 150, 150);
+    font-style: italic;
+  }
+}
+
+.formulaire.ng-submitted input.ng-invalid {
+  border-color: red;
+}
+.error {
+  font-size: 10px;
+  color: red;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+.mdp-error {
+  font-size: 10px;
+  color: black;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+.btn-connexion {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 20px auto;
+  gap: 5px;
+
+  button {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #ffc122;
+    color: #ffc122;
+    border-radius: 4px;
+    padding: 5px 10px;
+    border-radius: 44px;
+  }
+
+  .btn-prev {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff; /* contraste fort sur fond sombre */
+    border: 1px solid rgba(255, 255, 255, 0.35);
+
+    &:hover {
+      color: #ffc122;
+      border-color: #ffc122;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 193, 34, 0.25);
+    }
+  }
+}
+
+.checkbox-cgv {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.checkbox-cgv input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.checkbox-cgv label {
+  font-weight: 400;
+  font-size: 12px;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.stepper-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 5px;
+}
+.step {
+  flex: 1;
+  text-align: center;
+  padding: 4px;
+  border-radius: 4px 11px 1px 1px;
+  font-weight: 400;
+  color: white;
+  border: 1px solid #ffc122;
+
+  &.active {
+    background: #ffc122;
+    color: white;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.date-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input.input-form[type='date'] {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 193, 34, 0.35);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    width: 100%;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: #ffc122;
+      box-shadow: 0 0 0 3px rgba(255, 193, 34, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.55);
+      font-style: italic;
+    }
+
+    &::-webkit-datetime-edit,
+    &::-webkit-datetime-edit-text,
+    &::-webkit-datetime-edit-day-field,
+    &::-webkit-datetime-edit-month-field,
+    &::-webkit-datetime-edit-year-field {
+      color: #fff;
+    }
+    &::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      opacity: 0.85;
+      filter: invert(86%) sepia(52%) saturate(731%) hue-rotate(344deg) brightness(101%)
+        contrast(104%); /* teinte #ffc122 */
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      &:hover {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+    }
+
+    &::-webkit-inner-spin-button {
+      display: none;
+    }
+  }
+
+  .calendar-btn {
+    position: absolute;
+    right: 12px;
+    top: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    color: #bdbdbd;
+    font-size: 16px;
+    transition: color 0.2s ease, transform 0.2s ease;
+    z-index: 1;
+
+    &:hover {
+      color: #ffc122;
+      transform: scale(1.05);
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    i {
+      pointer-events: none;
+    }
+  }
+}
+
+.container-input textarea.input-form {
+  display: block;
+  width: 100%;
+  min-height: 120px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 193, 34, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  resize: vertical;
+  line-height: 1.4;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #ffc122;
+    box-shadow: 0 0 0 3px rgba(255, 193, 34, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+    font-style: italic;
+  }
+}
+.checkbox-cgv {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  cursor: pointer;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #fff; // texte blanc sur fond sombre
+    font-weight: 400;
+    cursor: pointer;
+  }
+
+  input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+    accent-color: #ffc122; // couleur coche
+    margin-right: 8px;
+    cursor: pointer;
+  }
+
+  .cgv-text {
+    color: #fff; // texte blanc
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+  }
+
+  .cgv-link {
+    color: #ffc122; // jaune pour le lien
+    text-decoration: underline;
+    font-weight: 600;
+    margin-left: 4px;
+    cursor: pointer;
+    transition: color 0.2s;
+    &:hover {
+      color: #fff;
+      background: #ffc122;
+      border-radius: 2px;
+      text-decoration: none;
+      padding: 0 2px;
+    }
+    &:focus {
+      outline: 2px solid #ffc122;
+    }
+  }
+}
+.modal-rgpd {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+  .modal-content {
+    background: #fff;
+    color: #2d0140;
+    padding: 2.5rem 2rem 2rem 2rem;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(40, 0, 60, 0.25), 0 1.5px 0 #ffc122;
+    width: 100%;
+    box-sizing: border-box; // <-- Ajoute cette ligne
+    position: relative;
+    text-align: left;
+
+    h2 {
+      color: #2d0140; // titre violet foncé
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #ffc122; // touche jaune sous le titre
+      padding-bottom: 0.5rem;
+    }
+
+    .modal-body {
+      font-size: 1rem;
+      color: #2d0140;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      p {
+        margin: 0;
+      }
+      a {
+        color: #2d0140;
+        font-weight: 600;
+        text-decoration: underline;
+        transition: color 0.2s;
+        &:hover {
+          color: #ffc122;
+        }
+      }
+    }
+
+    button {
+      background: #ffc122;
+      color: #2d0140;
+      border: none;
+      border-radius: 8px;
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      box-shadow: 0 2px 8px rgba(40, 0, 60, 0.12);
+
+      &:hover,
+      &:focus {
+        background: #2d0140;
+        color: #ffc122;
+        outline: none;
+      }
+    }
+  }
+}

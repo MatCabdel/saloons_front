@@ -1,0 +1,161 @@
+<div class="saloon-engagement-page">
+  <header class="page-header">
+    <h1>Saloons & Engagement</h1>
+    <p class="subtitle">Fréquentation des saloons et engagement des utilisateurs</p>
+  </header>
+
+  <app-period-filter (periodChange)="onPeriodChange($event)"></app-period-filter>
+
+  @if (isLoading) {
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Chargement...</p>
+  </div>
+  } @else if (error) {
+  <div class="error-message">
+    <p>{{ error }}</p>
+    <button type="button" (click)="loadStats()">Réessayer</button>
+  </div>
+  } @else if (stats) {
+
+  <!-- KPI Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon entries">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+          <polyline points="10 17 15 12 10 7" />
+          <line x1="15" y1="12" x2="3" y2="12" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.totalEntries }}</span>
+        <span class="stat-label">Entrées totales</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon visitors">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.uniqueVisitors }}</span>
+        <span class="stat-label">Visiteurs uniques</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon avg">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="18" y1="20" x2="18" y2="10" />
+          <line x1="12" y1="20" x2="12" y2="4" />
+          <line x1="6" y1="20" x2="6" y2="14" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{
+          stats.avgSaloonsPerUser !== null ? stats.avgSaloonsPerUser.toFixed(1) : '—'
+        }}</span>
+        <span class="stat-label">Moy. saloons / user</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Entries Chart -->
+  <section class="chart-section">
+    <h2>Entrées par jour</h2>
+    <div class="chart-container">
+      @if (stats.entriesPerDay && stats.entriesPerDay.length > 0) {
+      <div class="chart">
+        @for (point of stats.entriesPerDay; track point.date) {
+        <div class="chart-bar-container">
+          <div
+            class="chart-bar"
+            [style.height]="getBarHeight(point.value, getMaxValue(stats.entriesPerDay))"
+          >
+            <span class="bar-value">{{ point.value }}</span>
+          </div>
+          <span class="bar-label">{{ formatBarLabel(point.date) }}</span>
+        </div>
+        }
+      </div>
+      } @else {
+      <p class="no-data">Aucune donnée pour cette période</p>
+      }
+    </div>
+  </section>
+
+  <!-- Top Saloons -->
+  <section class="ranked-section">
+    <h2>Top Saloons</h2>
+    @if (stats.topSaloons && stats.topSaloons.length > 0) {
+    <div class="ranked-list">
+      @for (item of stats.topSaloons; track item.name; let i = $index) {
+      <div class="ranked-item">
+        <span class="rank">#{{ i + 1 }}</span>
+        <div class="ranked-info">
+          <span class="ranked-name">{{ item.name }}</span>
+          <div class="ranked-bar-track">
+            <div
+              class="ranked-bar-fill"
+              [style.width]="getRankedBarWidth(item.value, stats.topSaloons[0].value)"
+            ></div>
+          </div>
+        </div>
+        <span class="ranked-value">{{ item.value }}</span>
+      </div>
+      }
+    </div>
+    } @else {
+    <p class="no-data">Aucune donnée</p>
+    }
+  </section>
+
+  <!-- Entries by City -->
+  <section class="ranked-section">
+    <h2>Entrées par ville</h2>
+    @if (stats.entriesByCity && stats.entriesByCity.length > 0) {
+    <div class="city-grid">
+      @for (item of stats.entriesByCity; track item.name) {
+      <div class="city-card">
+        <span class="city-name">{{ item.name }}</span>
+        <span class="city-count">{{ item.value }}</span>
+      </div>
+      }
+    </div>
+    } @else {
+    <p class="no-data">Aucune donnée</p>
+    }
+  </section>
+
+  }
+</div>

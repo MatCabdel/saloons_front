@@ -1,0 +1,72 @@
+// Variables
+$purple-dark: #413443;
+$white: #fff;
+
+.nav-container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: calc(70px + var(--safe-bottom));
+  min-height: 70px;
+  padding-bottom: var(--safe-bottom);
+  background: $white;
+  z-index: 99990;
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.08);
+
+  .buttons-container {
+    display: flex;
+    justify-content: space-around;
+    height: 100%;
+    align-items: center;
+    max-width: 400px;
+    margin: 0 auto;
+
+    div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    button {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+
+      &:active {
+        transform: scale(0.92);
+      }
+
+      img {
+        width: 26px;
+        height: 26px;
+        object-fit: contain;
+        filter: brightness(0) saturate(100%) invert(20%) sepia(10%) saturate(1000%)
+          hue-rotate(260deg) brightness(95%) contrast(90%);
+        transition: filter 0.25s ease;
+      }
+
+      &:hover:not(.active) {
+        background: rgba($purple-dark, 0.08);
+      }
+
+      // État actif : fond violet foncé, icône blanche
+      &.active {
+        background: $purple-dark;
+        box-shadow: 0 4px 12px rgba($purple-dark, 0.3);
+
+        img {
+          filter: brightness(0) invert(1);
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  background: #0f0f1a;
+}
+
+.dashboard-content {
+  flex: 1;
+  background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+  padding: 2rem 3rem;
+  overflow-y: auto;
+  color: white;
+}
+
+// Mobile responsive
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+
+  .dashboard-content {
+    padding: 1rem;
+    padding-top: 4.5rem; // Space for fixed mobile header
+  }
+}

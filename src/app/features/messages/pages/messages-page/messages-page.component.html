@@ -1,0 +1,153 @@
+<div class="messages-container">
+  <div class="header-messages">
+    <app-header [showBackButton]="true" backRoute="/chat"></app-header>
+    <div class="onglets">
+      <div class="spacer"></div>
+      <div
+        class="user-header"
+        (click)="goToUserProfil()"
+        (keyup.enter)="goToUserProfil()"
+        [class.clickable]="!isMatchCancelled"
+        [attr.tabindex]="isMatchCancelled ? null : 0"
+        role="button"
+      >
+        <!-- Match annulé : avatar grisé -->
+        @if (isMatchCancelled) {
+        <div class="avatar-placeholder">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+            />
+          </svg>
+        </div>
+        <span class="username">{{ userTarget?.userName ?? 'Utilisateur' }}</span>
+        } @else if (userTarget) {
+        <!-- Conversation normale ou expirée (quitté saloon) : photo normale -->
+        <img [src]="userTarget.imgUrl" alt="avatar" class="avatar-header" />
+        <span class="username">{{ userTarget.userName }}</span>
+        }
+      </div>
+      <div class="menu-container">
+        <button
+          type="button"
+          class="dots-menu-btn"
+          (click)="toggleMenu()"
+          [attr.aria-expanded]="isMenuOpen"
+        >
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </button>
+        @if (isMenuOpen) {
+        <div class="dropdown-menu">
+          @if (!isMatchCancelled) {
+          <button type="button" class="menu-item delete" (click)="confirmDeleteMatch()">
+            Supprimer le match
+          </button>
+          }
+          <button type="button" class="menu-item delete-conv" (click)="confirmDeleteConversation()">
+            Supprimer la conversation
+          </button>
+          @if (!isMatchCancelled) {
+          <button type="button" class="menu-item report" (click)="reportUser()">Signaler</button>
+          }
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  <div class="messagerie-content">
+    <app-messagerie
+      [isConversationEnded]="otherParticipantLeft && !isMatchCancelled"
+      [isMatchCancelled]="isMatchCancelled"
+      [isMatchExpired]="isMatchExpired"
+      [isHeartWindowExpired]="isHeartWindowExpired"
+      [isPermanent]="conversation?.isPermanent || false"
+      [heartRequestStatus]="heartRequestStatus"
+      [heartRequestCountdown]="heartRequestCountdown()"
+      [heartRequestSending]="heartRequestSending()"
+      [matchUserId]="matchUserId"
+      (sendHeartRequestClicked)="sendHeartRequest()"
+      (conversationCreated)="onConversationCreated($event)"
+    >
+    </app-messagerie>
+  </div>
+
+  <!-- Message si match annulé -->
+  @if (isMatchCancelled) {
+  <div class="match-cancelled-notice">
+    <span class="icon">🚫</span>
+    <span>Cette conversation est terminée</span>
+  </div>
+  }
+</div>
+
+<!-- Modal de confirmation pour supprimer le match -->
+@if (showDeleteMatchModal) {
+<div
+  class="modal-overlay"
+  (click)="cancelDelete()"
+  (keyup.escape)="cancelDelete()"
+  tabindex="0"
+  role="dialog"
+>
+  <div
+    class="modal-content"
+    (click)="$event.stopPropagation()"
+    (keyup.escape)="$event.stopPropagation()"
+    role="document"
+  >
+    <h2>Supprimer le match ?</h2>
+    <p>
+      Vous ne verrez plus cet utilisateur dans vos winks et conversations. L'autre personne verra
+      que vous êtes parti.
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn-cancel" (click)="cancelDelete()">Annuler</button>
+      <button type="button" class="btn-delete" (click)="deleteMatch()">Supprimer</button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Modal de confirmation pour supprimer la conversation -->
+@if (showDeleteConvModal) {
+<div
+  class="modal-overlay"
+  (click)="cancelDelete()"
+  (keyup.escape)="cancelDelete()"
+  tabindex="0"
+  role="dialog"
+>
+  <div
+    class="modal-content"
+    (click)="$event.stopPropagation()"
+    (keyup.escape)="$event.stopPropagation()"
+    role="document"
+  >
+    @if (otherParticipantLeft) {
+    <h2>Supprimer cette conversation ?</h2>
+    <p>
+      Cette conversation est terminée car l'autre utilisateur est parti. Elle sera supprimée de
+      votre liste.
+    </p>
+    } @else {
+    <h2>Supprimer la conversation ?</h2>
+    <p>La conversation sera supprimée de votre liste mais le match restera actif.</p>
+    }
+    <div class="modal-actions">
+      <button type="button" class="btn-cancel" (click)="cancelDelete()">Annuler</button>
+      <button type="button" class="btn-delete" (click)="deleteConversation()">Supprimer</button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Modal de signalement -->
+@if (showReportModal() && reportModalData()) {
+<app-report-modal
+  [data]="reportModalData()!"
+  (closed)="closeReportModal()"
+  (reported)="onReported()"
+></app-report-modal>
+}

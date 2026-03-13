@@ -1,0 +1,416 @@
+$gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$white: #fff;
+$yellow: #ffc122;
+$about-bg: #f5f0f6;
+$text-light: #888;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.saloon-chat-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: linear-gradient(180deg, $gradient-top 0%, $gradient-bottom 100%);
+
+  .chat-header {
+    width: 100%;
+    flex-shrink: 0;
+
+    app-header {
+      display: block;
+      width: 100%;
+    }
+
+    .chat-info {
+      padding: 12px 16px;
+      text-align: center;
+
+      h1 {
+        color: $white;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 0 0 4px 0;
+      }
+
+      .saloon-name {
+        color: rgba($white, 0.8);
+        font-size: 0.9rem;
+        background: rgba($white, 0.1);
+        padding: 4px 12px;
+        border-radius: 20px;
+        display: inline-block;
+      }
+
+      .presence-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 8px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        background: rgba($white, 0.15);
+        color: rgba($white, 0.8);
+        font-size: 0.8rem;
+
+        .presence-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: rgba($white, 0.5);
+        }
+
+        &.active {
+          background: rgba(76, 175, 80, 0.3);
+          color: #c8e6c9;
+
+          .presence-dot {
+            background: #4caf50;
+            box-shadow: 0 0 6px #4caf50;
+          }
+        }
+      }
+    }
+  }
+
+  .respect-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba($gradient-top, 0.1);
+    color: $text-light;
+    font-size: 0.75rem;
+    text-align: center;
+    border-bottom: 1px solid rgba($gradient-top, 0.1);
+    flex-shrink: 0;
+
+    .heart-icon {
+      flex-shrink: 0;
+    }
+  }
+
+  .joined-at-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(#2196f3, 0.1);
+    color: #1976d2;
+    font-size: 0.75rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(#2196f3, 0.1);
+    flex-shrink: 0;
+
+    .clock-icon {
+      flex-shrink: 0;
+    }
+  }
+
+  .chat-disabled-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: rgba(#ff9800, 0.15);
+    color: #e65100;
+    font-size: 0.8rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(#ff9800, 0.2);
+    flex-shrink: 0;
+    font-weight: 500;
+
+    .lock-icon {
+      flex-shrink: 0;
+    }
+  }
+
+  .chat-disabled {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px 24px;
+    color: $gradient-top;
+
+    .disabled-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      opacity: 0.6;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 0 12px 0;
+    }
+
+    .participant-count {
+      font-size: 1rem;
+      font-weight: 700;
+      color: $gradient-bottom;
+      margin: 0 0 8px 0;
+    }
+
+    .hint {
+      font-size: 0.85rem;
+      color: $text-light;
+      margin: 0;
+    }
+  }
+
+  .messages-area {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: $white;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .message-list {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    padding-bottom: 20px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+
+    .empty-chat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: $text-light;
+
+      .empty-icon {
+        font-size: 3rem;
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
+
+      p {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: $gradient-top;
+        margin: 0 0 8px 0;
+      }
+
+      span {
+        font-size: 0.85rem;
+        max-width: 250px;
+      }
+    }
+  }
+
+  .message-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+
+    &.me {
+      flex-direction: row-reverse;
+
+      .message-wrapper {
+        align-items: flex-end;
+
+        .name {
+          color: #9b7ed9;
+        }
+
+        .time {
+          color: $text-light;
+        }
+      }
+
+      .bubble {
+        background: linear-gradient(135deg, $gradient-top 0%, $gradient-bottom 100%);
+        border-radius: 18px 18px 4px 18px;
+
+        .content {
+          color: $white;
+        }
+      }
+    }
+
+    &.other {
+      .message-wrapper {
+        align-items: flex-start;
+
+        .name {
+          color: #2196f3;
+        }
+
+        .time {
+          color: $text-light;
+        }
+      }
+
+      .bubble {
+        background: $about-bg;
+        border-radius: 18px 18px 18px 4px;
+
+        .content {
+          color: #333;
+        }
+      }
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+
+      &.clickable {
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border: 2px solid transparent;
+
+        &:hover {
+          transform: scale(1.1);
+          border-color: #6c47b6;
+          box-shadow: 0 2px 8px rgba(108, 71, 182, 0.3);
+        }
+
+        &:focus {
+          outline: none;
+          border-color: #6c47b6;
+          box-shadow: 0 0 0 3px rgba(108, 71, 182, 0.2);
+        }
+      }
+    }
+
+    .message-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-width: 280px;
+
+      .name {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0 4px;
+      }
+
+      .time {
+        font-size: 0.7rem;
+        padding: 0 4px;
+      }
+    }
+
+    .bubble {
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+
+      .content {
+        font-size: 0.95rem;
+        word-break: break-word;
+        white-space: pre-wrap;
+      }
+    }
+  }
+
+  .send-box {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    background: $white;
+    border-top: 1px solid rgba($gradient-top, 0.1);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+
+    textarea {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid rgba($gradient-top, 0.2);
+      border-radius: 24px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      line-height: 1.3;
+      resize: none;
+      outline: none;
+      min-height: 24px;
+      max-height: 100px;
+      overflow-y: auto;
+      transition: border-color 0.2s ease;
+
+      &:focus {
+        border-color: $gradient-bottom;
+      }
+
+      &::placeholder {
+        color: $text-light;
+      }
+    }
+
+    button {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, $gradient-top 0%, $gradient-bottom 100%);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba($gradient-top, 0.3);
+
+      svg {
+        stroke: $white;
+      }
+
+      &:hover:not(:disabled) {
+        transform: scale(1.05);
+        box-shadow: 0 6px 16px rgba($gradient-top, 0.4);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+    }
+
+    &.disabled {
+      opacity: 0.6;
+      background: #f0f0f0;
+
+      textarea {
+        background: #e8e8e8;
+        color: $text-light;
+      }
+    }
+  }
+}

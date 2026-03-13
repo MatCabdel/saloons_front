@@ -1,0 +1,115 @@
+<div class="geography-stats-page">
+  <header class="page-header">
+    <h1>Villes & Pics</h1>
+    <p class="subtitle">Répartition géographique et pics d'activité</p>
+  </header>
+
+  <app-period-filter (periodChange)="onPeriodChange($event)"></app-period-filter>
+
+  @if (isLoading) {
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Chargement...</p>
+  </div>
+  } @else if (error) {
+  <div class="error-message">
+    <p>{{ error }}</p>
+    <button type="button" (click)="loadStats()">Réessayer</button>
+  </div>
+  } @else if (stats) {
+
+  <!-- KPI -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon cities">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+          <circle cx="12" cy="10" r="3" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.totalCities }}</span>
+        <span class="stat-label">Villes couvertes</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Heatmap -->
+  <section class="heatmap-section">
+    <h2>Activité par jour & heure</h2>
+    <div class="heatmap-container">
+      <div class="heatmap-scroll">
+        <!-- Hour labels -->
+        <div class="heatmap-row hour-labels">
+          <div class="day-label"></div>
+          @for (h of hours; track h) {
+          <div class="hour-label">{{ h % 2 === 0 ? formatHour(h) : '' }}</div>
+          }
+        </div>
+
+        <!-- Data rows -->
+        @for (day of dayLabels; track day; let i = $index) {
+        <div class="heatmap-row">
+          <div class="day-label">{{ day }}</div>
+          @for (h of hours; track h) {
+          <div
+            class="heatmap-cell"
+            [style.background]="getHeatmapColor(heatmapMatrix[i][h])"
+            [title]="day + ' ' + formatHour(h) + ' : ' + heatmapMatrix[i][h] + ' entrées'"
+          ></div>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- Legend -->
+      <div class="heatmap-legend">
+        <span class="legend-label">Moins</span>
+        <div class="legend-scale">
+          <div class="legend-cell" style="background: rgba(255, 255, 255, 0.03)"></div>
+          <div class="legend-cell" style="background: rgba(17, 153, 142, 0.4)"></div>
+          <div class="legend-cell" style="background: rgba(56, 239, 125, 0.5)"></div>
+          <div class="legend-cell" style="background: rgba(255, 193, 34, 0.7)"></div>
+          <div class="legend-cell" style="background: rgba(255, 152, 0, 0.9)"></div>
+        </div>
+        <span class="legend-label">Plus</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Activity by City -->
+  <section class="ranked-section">
+    <h2>Activité par ville</h2>
+    @if (stats.entriesByCity && stats.entriesByCity.length > 0) {
+    <div class="ranked-list">
+      @for (item of stats.entriesByCity; track item.name; let i = $index) {
+      <div class="ranked-item">
+        <span class="rank">#{{ i + 1 }}</span>
+        <div class="ranked-info">
+          <span class="ranked-name">{{ item.name }}</span>
+          <div class="ranked-bar-track">
+            <div
+              class="ranked-bar-fill"
+              [style.width]="getRankedBarWidth(item.value, stats.entriesByCity[0].value)"
+            ></div>
+          </div>
+        </div>
+        <span class="ranked-value">{{ item.value }}</span>
+      </div>
+      }
+    </div>
+    } @else {
+    <p class="no-data">Aucune donnée</p>
+    }
+  </section>
+
+  }
+</div>

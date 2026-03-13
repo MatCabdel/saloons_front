@@ -1,0 +1,17 @@
+@if (isVisible && countdown) {
+<div class="btn-container">
+  <button type="button" class="btn-leave" (click)="openLeaveConfirmation()">
+    Sortir du Saloon
+    <span class="countdown">({{ countdown }})</span>
+  </button>
+</div>
+}
+
+<!-- Modal de confirmation -->
+<app-confirm-leave-modal
+  [isOpen]="showConfirmModal"
+  [isPremium]="isPremium"
+  [saloonName]="saloonName"
+  (confirmed)="onLeaveConfirmed()"
+  (cancelled)="closeConfirmModal()"
+/>

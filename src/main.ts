@@ -4,4 +4,6 @@ import { AppComponent } from './app/app.component';
 import { verifyEnvironment } from './environments/verify-environment';
 
 verifyEnvironment();
-bootstrapApplication(AppComponent, appConfig).catch(err => console.error(err));
+bootstrapApplication(AppComponent, appConfig).catch(err =>
+  console.error('Failed to bootstrap application:', err)
+);

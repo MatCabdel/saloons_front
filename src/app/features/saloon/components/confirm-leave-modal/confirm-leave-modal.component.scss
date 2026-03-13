@@ -1,0 +1,135 @@
+// Variables - Couleurs de l'app
+$gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$yellow: #ffc122;
+$white: #fff;
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba($gradient-top, 0.7);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: $white;
+  border-radius: 24px;
+  padding: 28px 24px;
+  max-width: 340px;
+  width: 90%;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  text-align: center;
+  margin-bottom: 16px;
+
+  h2 {
+    color: $gradient-top;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+  }
+}
+
+.modal-body {
+  margin-bottom: 24px;
+
+  p {
+    margin: 0;
+    line-height: 1.6;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  .warning-text {
+    color: $gradient-top;
+
+    strong {
+      color: $gradient-top;
+      font-weight: 700;
+    }
+  }
+
+  .neutral-text {
+    color: rgba($gradient-top, 0.8);
+
+    strong {
+      color: $gradient-top;
+      font-weight: 600;
+    }
+  }
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  button {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+  }
+
+  .btn-stay {
+    background: $yellow;
+    color: $gradient-top;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba($yellow, 0.4);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  .btn-leave {
+    background: transparent;
+    border: 2px solid rgba($gradient-top, 0.2);
+    color: $gradient-top;
+
+    &:hover {
+      background: rgba($gradient-top, 0.05);
+      border-color: rgba($gradient-top, 0.3);
+    }
+  }
+}

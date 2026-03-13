@@ -1,0 +1,241 @@
+$gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$white: #fff;
+$yellow: #ffc122;
+
+.mon-compte-page {
+  min-height: 100vh;
+  background: linear-gradient(to right, $gradient-top 0%, lighten($gradient-top, 10%) 100%);
+}
+
+.page-content {
+  padding: 1.5rem;
+  color: $white;
+}
+
+// Profile Card
+.profile-card {
+  background: rgba($white, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .avatar-container {
+    flex-shrink: 0;
+
+    .avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid $yellow;
+    }
+
+    .avatar-placeholder {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, $yellow, darken($yellow, 15%));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      span {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: $gradient-top;
+      }
+    }
+  }
+
+  .profile-info {
+    flex: 1;
+    min-width: 0;
+
+    .user-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0 0 0.25rem 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-email {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin: 0 0 0.25rem 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-username {
+      font-size: 0.85rem;
+      opacity: 0.6;
+      margin: 0;
+    }
+  }
+}
+
+// Subscription Section
+.subscription-section {
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba($white, 0.1);
+
+  .subscription-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background: rgba($white, 0.1);
+    margin-bottom: 0.75rem;
+
+    &.premium {
+      background: linear-gradient(135deg, $yellow, darken($yellow, 10%));
+      color: $gradient-top;
+
+      .badge-text {
+        font-weight: 600;
+      }
+    }
+
+    .badge-icon {
+      font-size: 1rem;
+    }
+
+    .badge-text {
+      font-size: 0.9rem;
+    }
+  }
+
+  .subscription-info {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin: 0;
+  }
+}
+
+// Actions Section
+.actions-section {
+  margin-bottom: 2rem;
+
+  .section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    opacity: 0.8;
+  }
+}
+
+.action-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba($white, 0.1);
+  border: none;
+  border-radius: 12px;
+  color: $white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 0.75rem;
+  text-align: left;
+
+  &:hover {
+    background: rgba($white, 0.15);
+    transform: translateX(4px);
+  }
+
+  &.premium-btn {
+    background: linear-gradient(135deg, rgba($yellow, 0.2), rgba($yellow, 0.1));
+    border: 1px solid rgba($yellow, 0.3);
+
+    &:hover {
+      background: linear-gradient(135deg, rgba($yellow, 0.3), rgba($yellow, 0.2));
+    }
+
+    .btn-icon {
+      font-size: 1.5rem;
+    }
+  }
+
+  &.danger-btn {
+    background: rgba(#ff6b6b, 0.1);
+    border: 1px solid rgba(#ff6b6b, 0.2);
+
+    &:hover {
+      background: rgba(#ff6b6b, 0.2);
+    }
+
+    .btn-title {
+      color: #ff6b6b;
+    }
+  }
+
+  .btn-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .btn-content {
+    flex: 1;
+    min-width: 0;
+
+    .btn-title {
+      display: block;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 0.125rem;
+    }
+
+    .btn-subtitle {
+      display: block;
+      font-size: 0.8rem;
+      opacity: 0.6;
+    }
+  }
+
+  .btn-arrow {
+    font-size: 1.5rem;
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+}
+
+// Logout Button
+.logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: transparent;
+  border: 2px solid rgba($white, 0.3);
+  border-radius: 12px;
+  color: $white;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba($white, 0.1);
+    border-color: rgba($white, 0.5);
+  }
+
+  .btn-icon {
+    font-size: 1.25rem;
+  }
+}

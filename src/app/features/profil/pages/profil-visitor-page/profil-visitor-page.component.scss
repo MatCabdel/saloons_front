@@ -1,0 +1,18 @@
+$gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$white: #fff;
+
+.visitor-profil-page {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background: linear-gradient(180deg, $gradient-top 0%, $gradient-bottom 100%);
+
+  .visitor-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin-bottom: 70px;
+  }
+}

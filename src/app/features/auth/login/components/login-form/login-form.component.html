@@ -1,0 +1,37 @@
+<form class="formulaire" [formGroup]="loginForm" (ngSubmit)="login()" #formLogin="ngForm">
+  <div class="container-input">
+    <label class="label-form" for="email">Email *</label>
+    <input
+      class="input-form"
+      type="text"
+      id="email"
+      name="email"
+      formControlName="email"
+      placeholder="Votre email"
+    />
+    @if (formLogin.submitted && loginForm.controls['email'].errors) {
+    <div class="error">
+      <div [hidden]="!loginForm.controls['email'].errors['required']">L'email est requis</div>
+      <div [hidden]="!loginForm.controls['email'].invalid">L'email est invalide</div>
+    </div>
+    }
+  </div>
+  <div class="container-input">
+    <label class="label-form" for="password">Mot de passe *</label>
+    <input
+      class="input-form"
+      type="password"
+      id="password"
+      name="password"
+      formControlName="password"
+      placeholder="Votre mot de passe"
+    />
+    @if (formLogin.submitted && loginForm.get('password')?.errors?.['required']) {
+    <div class="error">Mot de passe requis</div>
+    }
+  </div>
+
+  <div class="btn-connexion">
+    <button type="submit" (click)="login()">Se connecter</button>
+  </div>
+</form>

@@ -14,7 +14,32 @@ on:
       - production
 
 jobs:
+  validate-pr-source:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Validate PR source
+        run: |
+          BASE="${{ github.event.pull_request.base.ref }}"
+          HEAD="${{ github.event.pull_request.head.ref }}"
+          echo "Base branch: $BASE"
+          echo "Head branch: $HEAD"
+
+          # Autoriser uniquement development vers staging
+          if [ "${{ github.base_ref }}" == "staging" ] && [ "${{ github.head_ref }}" != "development" ]; then
+            echo "❌ Seul 'development' peut faire un PR vers 'staging'"
+            exit 1
+          fi
+
+          # Autoriser uniquement staging vers production
+          if [ "${{ github.base_ref }}" == "production" ] && [ "${{ github.head_ref }}" != "staging" ]; then
+            echo "❌ Seul 'staging' peut faire un PR vers 'production'"
+            exit 1
+          fi
+
+          echo "✅ Validation réussie"
   lint:
+    needs: validate-pr-source
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -23,23 +48,24 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '22'
 
-      - name: Cache node modules
+      - name: Cache npm
         uses: actions/cache@v3
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-modules-
+            ${{ runner.os }}-npm-
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run ESLint
         run: npm run lint
 
   test:
+    needs: validate-pr-source
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -48,10 +74,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '22'
+
+      - name: Cache npm
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
           
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       
       - name: Run tests with increased memory
         run: node --max-old-space-size=4096 ./node_modules/.bin/jest --verbose
@@ -69,21 +103,27 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '22'
 
-      - name: Cache node modules
+      - name: Cache npm
         uses: actions/cache@v3
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-modules-
+            ${{ runner.os }}-npm-
 
       - name: Install dependencies
         run: npm ci
 
+      - name: Hotfix Rollup optional dependency on Linux
+        run: npm i @rollup/rollup-linux-x64-gnu --no-save
+
       - name: Run Cypress tests for the target branch
         run: |
+          BASE="${{ github.event.pull_request.base.ref }}"
+          echo "Base branch is $BASE"
+
           if [ "${{ github.base_ref }}" == "staging" ]; then
             echo "Running e2e tests for staging"
             npm run e2e:ci:staging

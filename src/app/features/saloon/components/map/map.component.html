@@ -1,0 +1,69 @@
+<div class="map-container">
+  <div id="map" class="map-element"></div>
+
+  <!-- Écran explicatif avant demande de permission -->
+  @if (geoLocationStatus === 'prompt') {
+  <div class="location-overlay">
+    <div class="location-card">
+      <h3>Localisation requise</h3>
+      <p>
+        Saloons utilise votre position pour afficher les lieux proches et vous permettre d’entrer
+        dans un saloon.
+      </p>
+      <button type="button" class="primary-btn" (click)="requestLocation()">
+        Activer la localisation
+      </button>
+    </div>
+  </div>
+  } @if (geoLocationStatus === 'denied' || geoLocationStatus === 'unavailable') {
+  <div class="location-overlay">
+    <div class="location-card">
+      <h3>Localisation indisponible</h3>
+      <p>
+        Impossible d'accéder à votre position. Activez la géolocalisation pour entrer dans un
+        saloon.
+      </p>
+      <div class="location-actions">
+        <button type="button" class="primary-btn" (click)="requestLocation()">
+          Activer la localisation
+        </button>
+        <button type="button" class="secondary-btn" (click)="openLocationSettings()">
+          Ouvrir les réglages
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Bouton recentrer sur ma position -->
+  <button type="button" class="center-btn" (click)="centerOnUser()" title="Me localiser">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M12 2v4"></path>
+      <path d="M12 18v4"></path>
+      <path d="M2 12h4"></path>
+      <path d="M18 12h4"></path>
+    </svg>
+  </button>
+</div>
+
+<!-- Modal Saloon -->
+@if (showModal && selectedSaloon) {
+<app-saloon-modal
+  [saloon]="selectedSaloon"
+  [userLat]="userLat"
+  [userLng]="userLng"
+  [geoLocationStatus]="geoLocationStatus"
+  (requestLocation)="requestLocation()"
+  (closed)="closeModal()"
+>
+</app-saloon-modal>
+}

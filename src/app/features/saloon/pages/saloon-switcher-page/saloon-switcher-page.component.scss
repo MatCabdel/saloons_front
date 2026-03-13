@@ -1,0 +1,36 @@
+// Variables
+$gradient-top: #413443;
+$white: #fff;
+
+// Hauteurs fixes
+$header-height: 60px;
+$switch-height: 68px;
+$navbar-height: 70px;
+
+.saloons-page-container {
+  background: linear-gradient(to right, $gradient-top 0%, lighten($gradient-top, 10%) 100%);
+  height: 100vh;
+  height: 100dvh;
+  min-width: 100vw;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.header-section {
+  flex-shrink: 0;
+
+  .switch-container {
+    padding: 0 1rem 1rem;
+  }
+}
+
+.content-wrapper {
+  flex: 1;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: $navbar-height;
+}

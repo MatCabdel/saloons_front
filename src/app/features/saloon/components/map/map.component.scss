@@ -1,0 +1,178 @@
+// Variables
+$gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$yellow: #ffc122;
+$white: #fff;
+$navbar-height: 70px;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.map-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+
+  #map,
+  .map-element {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.location-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba($gradient-top, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 600;
+  padding: 1rem;
+  text-align: center;
+}
+
+.location-card {
+  background: $white;
+  border-radius: 20px;
+  padding: 2rem 1.5rem;
+  max-width: 360px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+
+  h3 {
+    margin: 0 0 0.75rem;
+    color: $gradient-top;
+    font-size: 1.4rem;
+  }
+
+  p {
+    margin: 0 0 1.25rem;
+    color: #7a6f7f;
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+}
+
+.location-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.primary-btn {
+  background: $gradient-top;
+  color: $white;
+  border: none;
+  border-radius: 50px;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    background: lighten($gradient-top, 5%);
+  }
+}
+
+.secondary-btn {
+  background: transparent;
+  color: $gradient-top;
+  border: 1px solid rgba($gradient-top, 0.4);
+  border-radius: 50px;
+  padding: 0.85rem 1.3rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: rgba($gradient-top, 0.7);
+    background: rgba($gradient-top, 0.06);
+  }
+}
+
+// Bouton de recentrage - positionné au-dessus de la navbar
+.center-btn {
+  position: fixed; // Fixed pour être toujours visible
+  bottom: calc(#{$navbar-height} + 20px); // Au-dessus de la navbar
+  right: 20px;
+  z-index: 500; // Sous le menu burger (z-index: 999)
+  width: 48px;
+  height: 48px;
+  background: rgba($white, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+
+  svg {
+    color: $gradient-top;
+  }
+
+  &:hover {
+    background: $white;
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// Marqueur de position utilisateur (point bleu pulsant)
+:host ::ng-deep {
+  .user-location-marker {
+    position: relative;
+  }
+
+  .user-marker-dot {
+    width: 14px;
+    height: 14px;
+    background: #4285f4;
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+  }
+
+  .user-marker-pulse {
+    width: 40px;
+    height: 40px;
+    background: rgba(66, 133, 244, 0.3);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 2s ease-out infinite;
+    z-index: 1;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: translate(-50%, -50%) scale(0.5);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1.5);
+      opacity: 0;
+    }
+  }
+}

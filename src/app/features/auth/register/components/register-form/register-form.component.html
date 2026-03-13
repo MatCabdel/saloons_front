@@ -1,0 +1,119 @@
+<form class="formulaire" [formGroup]="registerForm" (ngSubmit)="onSubmit()" #formRegister="ngForm">
+  <div class="infos">
+    <div class="firstname-name">
+      <div class="container-input">
+        <label class="label-form" for="lastname">Nom *</label>
+        <input
+          class="input-form"
+          type="text"
+          id="lastname"
+          name="lastname"
+          formControlName="lastname"
+          placeholder="Votre nom"
+          autocomplete="on"
+        />
+        <app-field-error
+          [control]="registerForm.get('lastname')"
+          [submitted]="formRegister.submitted"
+        ></app-field-error>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-input">
+    <label class="label-form" for="email">
+      Email *
+      <span>
+        Utilisez votre adresse
+        {{ registerForm.get('email')?.errors?.['extension']?.expected }}
+      </span>
+    </label>
+    <input
+      class="input-form"
+      type="text"
+      id="email"
+      name="email"
+      formControlName="email"
+      placeholder="Votre email"
+      autocomplete="on"
+    />
+    <app-field-error
+      [control]="registerForm.get('email')"
+      [submitted]="formRegister.submitted"
+    ></app-field-error>
+  </div>
+
+  <div class="container-input">
+    <div class="password-input-wrapper">
+      <label class="label-form" for="password">Mot de passe *</label>
+      <input
+        class="input-form"
+        [type]="showPassword ? 'text' : 'password'"
+        id="password"
+        name="password"
+        formControlName="password"
+        placeholder="Votre mot de passe"
+      />
+      <button
+        type="button"
+        class="password-toggle-btn"
+        (click)="togglePasswordVisibility()"
+        [attr.aria-label]="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+      >
+        <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+      </button>
+    </div>
+    <app-field-error
+      [control]="registerForm.get('password')"
+      [submitted]="formRegister.submitted"
+    ></app-field-error>
+  </div>
+
+  <div class="container-input">
+    <label class="label-form" for="checkPassword">Confirmation du mot de passe *</label>
+    <div>
+      <input
+        class="input-form"
+        [type]="showPassword ? 'text' : 'password'"
+        id="checkPassword"
+        name="checkPassword"
+        formControlName="checkPassword"
+        placeholder="Confirmation de votre mot de passe"
+      />
+      <button
+        type="button"
+        class="password-toggle-btn"
+        (click)="toggleConfirmPasswordVisibility()"
+        [attr.aria-label]="
+          showConfirmPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'
+        "
+      >
+        <i
+          class="fas"
+          [class.fa-eye]="!showConfirmPassword"
+          [class.fa-eye-slash]="showConfirmPassword"
+        ></i>
+      </button>
+    </div>
+    <app-field-error
+      [control]="registerForm.get('checkPassword')"
+      [submitted]="formRegister.submitted"
+    ></app-field-error>
+    @if (formRegister.submitted && registerForm.errors?.['notEqual']) {
+    <div class="error">Les mots de passe doivent être identiques</div>
+    }
+  </div>
+
+  <div class="checkbox-cgv">
+    <input class="input-form" type="checkbox" formControlName="checkboxCgv" id="checkbox-cgv" />
+    <label for="checkbox-cgv">J'accepte les conditions générales d'utilisation</label>
+  </div>
+  <app-field-error
+    [control]="registerForm.get('checkboxCgv')"
+    [submitted]="formRegister.submitted"
+  ></app-field-error>
+
+  <div class="btn-connexion">
+    <button type="submit" [disabled]="!registerForm.valid">S'inscrire</button>
+  </div>
+</form>

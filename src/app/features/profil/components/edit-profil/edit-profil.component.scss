@@ -1,0 +1,148 @@
+$gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$white: #fff;
+$text-dark: #2d2d2d;
+$text-light: #888;
+$yellow: #ffc122;
+$about-bg: #f5f0f6;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.edit-profil-wrapper {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  min-height: 0;
+  overflow-y: auto;
+
+  .edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+  }
+
+  .photo-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+  }
+
+  .container-input {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    .label-form {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: $gradient-top;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .input-form {
+      padding: 14px 16px;
+      border: 2px solid rgba($gradient-top, 0.15);
+      border-radius: 12px;
+      background: $about-bg;
+      color: $text-dark;
+      font-size: 0.95rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+      &::placeholder {
+        color: $text-light;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: $gradient-top;
+        box-shadow: 0 0 0 3px rgba($gradient-top, 0.1);
+      }
+    }
+
+    .textarea {
+      resize: vertical;
+      min-height: 100px;
+      font-family: inherit;
+    }
+
+    .error {
+      font-size: 12px;
+      color: #e74c3c;
+      margin-top: 6px;
+      font-style: italic;
+    }
+
+    .char-count {
+      font-size: 12px;
+      color: $text-light;
+      text-align: right;
+      margin-top: 6px;
+    }
+  }
+
+  .btn-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 20px;
+
+    button {
+      flex: 1;
+      padding: 16px 24px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+
+    .btn-cancel {
+      background: transparent;
+      color: $gradient-top;
+      border: 2px solid rgba($gradient-top, 0.3);
+
+      &:hover:not(:disabled) {
+        border-color: $gradient-top;
+        background: rgba($gradient-top, 0.05);
+      }
+    }
+
+    .btn-save {
+      background: $gradient-top;
+      color: $white;
+      border: none;
+      box-shadow: 0 4px 15px rgba($gradient-top, 0.3);
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba($gradient-top, 0.4);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+:host {
+  position: fixed;
+  right: 10%;
+  bottom: 100px;
+  z-index: 1001;
+}
+
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #8b362e;
+  color: #fff;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  padding: 18px;
+  font-size: 0.8em;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(76, 34, 120, 0.244);
+  cursor: pointer;
+  transition: background 0.2s;
+  outline: none;
+
+  &:hover {
+    background: #4d2e8c;
+  }
+}

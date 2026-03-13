@@ -1,0 +1,267 @@
+$white: #fff;
+$yellow: #ffc122;
+$gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$text-dark: #2d2d2d;
+$text-light: #888;
+$about-bg: #f5f0f6;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.visitor-profil-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  box-sizing: border-box;
+
+  .profile-card {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: $white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+
+    .img-section {
+      width: 100%;
+      height: 45%;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 33%;
+      }
+
+      .back-button {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba($white, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba($white, 0.3);
+        color: $white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: rgba($white, 0.3);
+          transform: scale(1.05);
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+
+      .options-button {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba($white, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba($white, 0.3);
+        color: $white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: rgba($white, 0.3);
+          transform: scale(1.05);
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        top: 60px;
+        right: 12px;
+        background: $white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        min-width: 180px;
+        z-index: 100;
+        animation: slideDown 0.2s ease;
+
+        .menu-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          width: 100%;
+          padding: 14px 16px;
+          border: none;
+          background: transparent;
+          text-align: left;
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: background 0.2s ease;
+          color: #444;
+
+          &:hover {
+            background: rgba(0, 0, 0, 0.05);
+          }
+
+          &.report {
+            color: #e74c3c;
+
+            svg {
+              color: #e74c3c;
+            }
+          }
+        }
+      }
+    }
+
+    .info-section {
+      width: 100%;
+      height: 55%;
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      box-sizing: border-box;
+      overflow: hidden;
+
+      .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 12px;
+        flex-shrink: 0;
+
+        h1 {
+          font-size: 1.3rem;
+          font-weight: 700;
+          color: $text-dark;
+          margin: 0;
+          flex: 1;
+        }
+
+        .city-tag {
+          flex-shrink: 0;
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: $white;
+          background: $gradient-top;
+          padding: 5px 10px;
+          border-radius: 8px;
+          letter-spacing: 0.02em;
+        }
+      }
+
+      .about-section {
+        background: $about-bg;
+        border-radius: 14px;
+        padding: 12px;
+        margin-bottom: 12px;
+        flex: 1;
+        max-height: 180px;
+        overflow-y: auto;
+        min-height: 0;
+
+        h2 {
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: $gradient-top;
+          margin: 0 0 8px 0;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          flex-shrink: 0;
+        }
+
+        p {
+          font-size: 0.85rem;
+          color: $text-light;
+          line-height: 1.4;
+          margin: 0;
+        }
+      }
+
+      .action-button {
+        width: 100%;
+        padding: 14px 20px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        border: none;
+        flex-shrink: 0;
+        margin-top: auto;
+
+        &.wink {
+          background: linear-gradient(135deg, $yellow 0%, #ffdb70 100%);
+          color: $gradient-top;
+          box-shadow: 0 4px 20px rgba($yellow, 0.4);
+
+          &:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba($yellow, 0.5);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+        }
+
+        &.wink-sent {
+          background: rgba(87, 53, 93, 0.635);
+          color: white;
+          cursor: default;
+          box-shadow: none;
+          border: 1px dashed $gradient-bottom;
+
+          &:hover {
+            transform: none;
+          }
+        }
+
+        &:focus-visible {
+          outline: 2px solid $gradient-top;
+          outline-offset: 2px;
+        }
+      }
+    }
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
