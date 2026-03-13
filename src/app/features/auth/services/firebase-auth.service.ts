@@ -243,7 +243,7 @@ export class FirebaseAuthService {
       const firebaseIdToken = data.idToken;
 
       if (!firebaseIdToken) {
-        console.error('[FirebaseAuth][G6] No idToken in Firebase REST response:', data);
+        console.error('[FirebaseAuth][G6] No idToken in Firebase REST response');
         throw new Error('No Firebase ID token in REST response');
       }
 

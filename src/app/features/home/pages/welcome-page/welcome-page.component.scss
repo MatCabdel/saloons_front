@@ -15,13 +15,9 @@
   overflow: hidden;
   display: grid;
   place-items: center;
-  padding:
-    max(32px, env(safe-area-inset-top))
-    max(24px, env(safe-area-inset-right))
-    max(32px, env(safe-area-inset-bottom))
-    max(24px, env(safe-area-inset-left));
-  background:
-    radial-gradient(circle at 50% 43%, rgb(255 214 102 / 0.08), transparent 22%),
+  padding: max(32px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
+    max(32px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+  background: radial-gradient(circle at 50% 43%, rgb(255 214 102 / 0.08), transparent 22%),
     linear-gradient(180deg, var(--bg-top) 0%, var(--bg-middle) 52%, var(--bg-bottom) 100%);
 }
 
@@ -65,9 +61,7 @@
   text-align: center;
   opacity: 0;
   transform: translateY(10px) scale(0.98);
-  text-shadow:
-    0 2px 0 rgb(255 255 255 / 0.12),
-    0 16px 30px rgb(29 10 40 / 0.34);
+  text-shadow: 0 2px 0 rgb(255 255 255 / 0.12), 0 16px 30px rgb(29 10 40 / 0.34);
   animation: brand-presence 4200ms ease-in-out 280ms forwards;
 }
 

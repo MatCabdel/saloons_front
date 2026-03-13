@@ -92,10 +92,12 @@ export class AuthApiService {
     this._userStore.setUserConnected({
       id: 0,
       email: '',
-      password: '',
       role: '',
       token: '',
       imgUrl: '',
+      firstName: '',
+      lastName: '',
+      userName: '',
       description: '',
       age: 0,
     } as UserDTO);
