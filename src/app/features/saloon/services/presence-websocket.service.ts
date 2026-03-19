@@ -31,10 +31,12 @@ export class PresenceWebSocketService {
     this._currentSaloonId = saloonId;
 
     const wsUrl = this._getWebSocketUrl();
+    const token = localStorage.getItem('saloon_auth_token');
 
     this._stompClient = new Client({
       webSocketFactory: (): WebSocket => new WebSocket(wsUrl),
       reconnectDelay: 5000,
+      connectHeaders: token ? { Authorization: `Bearer ${token}` } : {},
     });
 
     this._stompClient.onConnect = (): void => {

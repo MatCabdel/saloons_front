@@ -45,6 +45,11 @@ import { ContactPageComponent } from './features/menu/pages/contact-page/contact
 import { ForgotPasswordPageComponent } from './features/auth/pages/forgot-password-page/forgot-password-page.component';
 import { LegalNoticesPageComponent } from './features/menu/pages/legal-notices-page/legal-notices-page.component';
 import { WelcomePageComponent } from './features/home/pages/welcome-page/welcome-page.component';
+import { EventSwitcherPageComponent } from './features/event/pages/event-switcher-page/event-switcher-page.component';
+import { EventsPageComponent } from './features/event/pages/events-page/events-page.component';
+import { CreateEventPageComponent } from './features/admin/pages/create-event-page/create-event-page.component';
+import { EditEventPageComponent } from './features/admin/pages/edit-event-page/edit-event-page.component';
+import { EventsListPageComponent } from './features/admin/pages/events-list-page/events-list-page.component';
 
 export const routes: Routes = [
   // Splash screen au lancement
@@ -63,6 +68,14 @@ export const routes: Routes = [
     children: [
       { path: '', component: ListSaloonPageComponent },
       { path: 'map', component: MapSaloonPageComponent },
+    ],
+  },
+  {
+    path: 'events',
+    component: EventSwitcherPageComponent,
+    canActivate: [isLoggedInGuard, profileCompleteGuard],
+    children: [
+      { path: '', component: EventsPageComponent },
     ],
   },
   { path: 'map', redirectTo: 'saloons/map', pathMatch: 'full' },
@@ -141,6 +154,9 @@ export const routes: Routes = [
       { path: 'create-saloon', component: CreateSaloonPageComponent },
       { path: 'edit-saloon/:id', component: EditSaloonPageComponent },
       { path: 'reports-list', component: ReportsListPageComponent },
+      { path: 'create-event', component: CreateEventPageComponent },
+      { path: 'events-list', component: EventsListPageComponent },
+      { path: 'edit-event/:id', component: EditEventPageComponent },
       { path: '', redirectTo: 'overview', pathMatch: 'full' },
     ],
     canActivate: [isLoggedInGuard],

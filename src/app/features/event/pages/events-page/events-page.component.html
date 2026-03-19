@@ -1,0 +1,74 @@
+<div class="events-container">
+  <!-- Filtres par période -->
+  <div class="filters-section">
+    <div class="filters-grid">
+      @for (tab of periodTabs; track tab.value) {
+      <button
+        type="button"
+        class="filter-chip"
+        [class.active]="activePeriod() === tab.value"
+        (click)="setPeriod(tab.value)"
+      >
+        {{ tab.label }}
+      </button>
+      }
+    </div>
+  </div>
+
+  @if (!loading() && events().length > 0) {
+    <p class="events-count">
+      <span class="count">{{ eventsCount() }}</span> événement{{ eventsCount() > 1 ? 's' : '' }} saloons {{ periodLabel() }}
+    </p>
+    <div class="events-list">
+      @for (event of events(); track event.id) {
+      <app-event-card [event]="event" (click)="onEventClick(event)" (toggleInterest)="onToggleInterest($event)"></app-event-card>
+      }
+    </div>
+
+    <!-- Pagination -->
+    @if (totalPages() > 1) {
+    <div class="pagination">
+      <button type="button" class="page-btn" [disabled]="currentPage() === 1" (click)="prevPage()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+      <span class="page-info">{{ currentPage() }} / {{ totalPages() }}</span>
+      <button type="button" class="page-btn" [disabled]="currentPage() === totalPages()"
+        (click)="nextPage()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </button>
+    </div>
+    }
+  } @else if (!loading()) {
+    <div class="empty-state">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+      </svg>
+      <h3>Aucun événement</h3>
+      <p>Il n'y a pas d'événements pour cette période.</p>
+    </div>
+  }
+</div>
+
+<!-- Saloon Modal (identique à la liste des saloons, avec infos événement) -->
+@if (showModal && selectedSaloon) {
+<app-saloon-modal
+  [saloon]="selectedSaloon"
+  [userLat]="userLat"
+  [userLng]="userLng"
+  [geoLocationStatus]="geoLocationStatus()"
+  [eventInfo]="selectedEventInfo"
+  (requestLocation)="requestLocation()"
+  (closed)="closeModal()"
+>
+</app-saloon-modal>
+}

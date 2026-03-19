@@ -12,6 +12,7 @@ export class NavbarComponent {
   navItems = [
     { route: '/profil', icon: 'assets/icons/user.svg', alt: 'profil' },
     { route: '/saloons', icon: 'assets/icons/home.svg', alt: 'home' },
+    { route: '/events', icon: 'assets/icons/calendar.svg', alt: 'événements' },
     { route: '/chat', icon: 'assets/icons/chat3.svg', alt: 'tchat' },
   ];
 
