@@ -36,8 +36,11 @@ export class SaloonPresenceRealtimeService {
     // Note: Les compteurs initiaux viennent du backend via GET /saloon (connectedCount)
     // Le WebSocket sert uniquement pour les mises à jour en temps réel
 
+    const token = localStorage.getItem('saloon_auth_token');
+
     this._stompClient = new Client({
       webSocketFactory: (): WebSocket => new SockJS(`${this._wsUrl}/ws`),
+      connectHeaders: token ? { Authorization: `Bearer ${token}` } : {},
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,

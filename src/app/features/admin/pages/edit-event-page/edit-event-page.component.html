@@ -1,0 +1,177 @@
+<div class="edit-event-page">
+  <header class="page-header">
+    <button type="button" class="btn-back" (click)="goBack()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+      </svg>
+      Retour
+    </button>
+    <div class="header-content">
+      <h1>Modifier l'événement</h1>
+      <p class="subtitle">Mettez à jour les informations de l'événement</p>
+    </div>
+  </header>
+
+  @if (isLoading) {
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Chargement de l'événement...</p>
+  </div>
+  } @else if (success) {
+  <div class="success-message">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="48"
+      height="48"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+      <polyline points="22 4 12 14.01 9 11.01" />
+    </svg>
+    <h3>Événement modifié avec succès !</h3>
+    <p>Redirection en cours...</p>
+  </div>
+  } @else {
+  <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="event-form">
+    @if (error) {
+    <div class="error-banner">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+      {{ error }}
+    </div>
+    }
+
+    <div class="form-section">
+      <h2>Informations générales</h2>
+
+      <div class="form-group">
+        <label for="title">Titre de l'événement *</label>
+        <input type="text" id="title" formControlName="title" placeholder="Ex: Soirée DJ Live" />
+        @if (eventForm.get('title')?.invalid && eventForm.get('title')?.touched) {
+        <span class="field-error">Le titre est requis (2-200 caractères)</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="subTitle">Sous-titre</label>
+        <input
+          type="text"
+          id="subTitle"
+          formControlName="subTitle"
+          placeholder="Ex: Avec DJ Martin"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          rows="4"
+          placeholder="Décrivez l'événement..."
+        ></textarea>
+      </div>
+
+      <div class="image-upload-section">
+        <label for="event-image-input">Image de l'événement</label>
+        <button
+          type="button"
+          class="upload-area"
+          [class.has-image]="imagePreview"
+          (click)="fileInput.click()"
+          aria-label="Sélectionner une nouvelle image pour l'événement"
+        >
+          <input
+            #fileInput
+            id="event-image-input"
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+          />
+          @if (!imagePreview) {
+          <div class="upload-placeholder">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
+            </svg>
+            <p>Cliquez pour sélectionner une image</p>
+            <p class="hint">PNG, JPG, JPEG - Max 10MB</p>
+          </div>
+          } @else {
+          <div class="image-preview">
+            <img [src]="imagePreview" alt="Aperçu" />
+            <p class="change-hint">Cliquez pour changer l'image</p>
+          </div>
+          }
+        </button>
+        <p class="help-text">💡 Laissez vide pour conserver l'image actuelle</p>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h2>Date et lieu</h2>
+
+      <div class="form-group">
+        <label for="saloonId">Saloon associé *</label>
+        <select id="saloonId" formControlName="saloonId">
+          <option [ngValue]="null" disabled>-- Sélectionner un saloon --</option>
+          @for (saloon of saloons; track saloon.id) {
+          <option [ngValue]="saloon.id">{{ saloon.name }} — {{ saloon.city }}</option>
+          }
+        </select>
+        @if (eventForm.get('saloonId')?.invalid && eventForm.get('saloonId')?.touched) {
+        <span class="field-error">Le saloon est requis</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="startDateTime">Date et heure *</label>
+        <input type="datetime-local" id="startDateTime" formControlName="startDateTime" />
+        @if (eventForm.get('startDateTime')?.invalid && eventForm.get('startDateTime')?.touched) {
+        <span class="field-error">La date est requise</span>
+        }
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="resetForm()">Réinitialiser</button>
+      <button type="submit" class="btn-primary" [disabled]="isSaving">
+        @if (isSaving) {
+        <span class="spinner"></span>
+        Enregistrement... } @else { Enregistrer les modifications }
+      </button>
+    </div>
+  </form>
+  }
+</div>

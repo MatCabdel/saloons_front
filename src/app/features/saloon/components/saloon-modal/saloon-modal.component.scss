@@ -324,3 +324,155 @@ $white: #fff;
     transform: rotate(360deg);
   }
 }
+
+// ─── Event card (quand la modale est ouverte depuis un événement) ───
+.event-card {
+  margin: 0.85rem 1.25rem 0;
+  display: flex;
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(135deg, $gradient-top 0%, darken($gradient-bottom, 8%) 100%);
+  box-shadow: 0 2px 8px rgba($gradient-top, 0.25), 0 6px 20px rgba($gradient-top, 0.15);
+}
+
+.event-card-accent {
+  width: 4px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, $yellow, rgba($white, 0.6));
+}
+
+.event-card-body {
+  flex: 1;
+  padding: 0.9rem 1rem;
+  min-width: 0;
+  text-align: left;
+}
+
+.event-card-header {
+  margin-bottom: 0.6rem;
+}
+
+.event-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: $yellow;
+  margin: 0 0 0.1rem;
+  line-height: 1.3;
+}
+
+.event-card-subtitle {
+  font-size: 0.8rem;
+  color: rgba($white, 0.7);
+  margin: 0;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.event-card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.event-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.28rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: $white;
+  background: rgba($white, 0.13);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  white-space: nowrap;
+
+  svg {
+    color: $yellow;
+    flex-shrink: 0;
+  }
+}
+
+.event-card-description {
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: rgba($white, 0.8);
+  margin: 0;
+  white-space: pre-line;
+}
+
+.event-card-footer {
+  margin-top: 0.65rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba($white, 0.1);
+}
+
+.event-interest-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba($white, 0.1);
+  border: 1px solid rgba($white, 0.2);
+  border-radius: 20px;
+  padding: 0.38rem 0.75rem;
+  color: rgba($white, 0.75);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover {
+    background: rgba($white, 0.18);
+    color: $yellow;
+    border-color: rgba($yellow, 0.3);
+  }
+
+  &.interested {
+    background: rgba($yellow, 0.18);
+    color: $yellow;
+    border-color: rgba($yellow, 0.4);
+  }
+
+  .event-interest-count {
+    background: rgba($white, 0.15);
+    padding: 0.1rem 0.4rem;
+    border-radius: 10px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  &.interested .event-interest-count {
+    background: rgba($yellow, 0.25);
+  }
+}
+
+.event-saloon-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.8rem 1.5rem 0.2rem;
+}
+
+.event-saloon-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba($gradient-bottom, 0.3), transparent);
+}
+
+.event-saloon-divider-text {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: $gradient-bottom;
+  white-space: nowrap;
+}
+
+.saloon-name-small {
+  font-size: 1.2rem !important;
+  margin: 0.5rem 1.5rem 0.25rem !important;
+}
