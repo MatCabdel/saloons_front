@@ -93,7 +93,9 @@ export class EditEventPageComponent implements OnInit {
     if (!dateStr) return '';
     const date = new Date(dateStr);
     const pad = (n: number): string => n.toString().padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(
+      date.getHours()
+    )}:${pad(date.getMinutes())}`;
   }
 
   onFileSelected(event: Event): void {

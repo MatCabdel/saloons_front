@@ -189,7 +189,7 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
   onToggleInterest(): void {
     if (!this.eventInfo?.eventId) return;
     this._eventApiService.toggleInterest(this.eventInfo.eventId).subscribe({
-      next: (res) => {
+      next: res => {
         if (this.eventInfo) {
           this.eventInfo = {
             ...this.eventInfo,

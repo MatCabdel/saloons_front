@@ -83,14 +83,20 @@ export class EventsPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._geoService.init();
 
-    // Combine period + page changes → server-side fetch
-    combineLatest([this._activePeriod$, this._currentPage$])
+    // Combine period + page + user position → server-side fetch with geo filter
+    combineLatest([this._activePeriod$, this._currentPage$, this._geoService.userPosition$])
       .pipe(
         takeUntil(this._destroy$),
         tap(() => this.loading.set(true)),
-        switchMap(([period, page]) =>
-          this._eventApiService.getEvents(period, page, PAGE_SIZE),
-        ),
+        switchMap(([period, page, position]) =>
+          this._eventApiService.getEvents(
+            period,
+            page,
+            PAGE_SIZE,
+            position?.lat ?? null,
+            position?.lng ?? null,
+          )
+        )
       )
       .subscribe((pagedResponse: PagedEvents) => {
         this.events.set(pagedResponse.content);
@@ -174,7 +180,7 @@ export class EventsPageComponent implements OnInit, OnDestroy {
 
   onToggleInterest(event: EventItem): void {
     this._eventApiService.toggleInterest(event.id).subscribe({
-      next: (res) => {
+      next: res => {
         event.isInterested = res.interested;
         event.interestedCount = res.interestedCount;
       },
@@ -188,7 +194,9 @@ export class EventsPageComponent implements OnInit, OnDestroy {
     if (lat === null || lng === null || !event.saloonLatitude || !event.saloonLongitude) {
       return null;
     }
-    return Math.round(this._calculateDistance(lat, lng, event.saloonLatitude, event.saloonLongitude));
+    return Math.round(
+      this._calculateDistance(lat, lng, event.saloonLatitude, event.saloonLongitude)
+    );
   }
 
   private _calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {

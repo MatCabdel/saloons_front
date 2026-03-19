@@ -37,13 +37,11 @@ export class EventsListPageComponent implements OnInit {
   eventToDelete: EventItem | null = null;
 
   ngOnInit(): void {
-    this._searchSubject
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe(query => {
-        this.searchQuery.set(query);
-        this.currentPage.set(0);
-        this.loadEvents();
-      });
+    this._searchSubject.pipe(debounceTime(300), distinctUntilChanged()).subscribe(query => {
+      this.searchQuery.set(query);
+      this.currentPage.set(0);
+      this.loadEvents();
+    });
 
     this.loadEvents();
   }

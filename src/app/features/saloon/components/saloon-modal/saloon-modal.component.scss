@@ -332,9 +332,7 @@ $white: #fff;
   border-radius: 14px;
   overflow: hidden;
   background: linear-gradient(135deg, $gradient-top 0%, darken($gradient-bottom, 8%) 100%);
-  box-shadow:
-    0 2px 8px rgba($gradient-top, 0.25),
-    0 6px 20px rgba($gradient-top, 0.15);
+  box-shadow: 0 2px 8px rgba($gradient-top, 0.25), 0 6px 20px rgba($gradient-top, 0.15);
 }
 
 .event-card-accent {

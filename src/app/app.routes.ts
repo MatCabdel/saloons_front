@@ -74,9 +74,7 @@ export const routes: Routes = [
     path: 'events',
     component: EventSwitcherPageComponent,
     canActivate: [isLoggedInGuard, profileCompleteGuard],
-    children: [
-      { path: '', component: EventsPageComponent },
-    ],
+    children: [{ path: '', component: EventsPageComponent }],
   },
   { path: 'map', redirectTo: 'saloons/map', pathMatch: 'full' },
   // Legacy routes
