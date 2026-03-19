@@ -19,6 +19,19 @@ import { SALOON_TYPE_LABELS } from '../../models/saloonModel';
 import { ConfirmLeaveModalComponent } from '../confirm-leave-modal/confirm-leave-modal.component';
 import { FirebaseAuthService } from 'src/app/features/auth/services/firebase-auth.service';
 import { AuthApiService } from 'src/app/features/auth/services/auth-api.service';
+import { EventApiService } from 'src/app/features/event/services/event-api.service';
+
+/** Informations optionnelles d'un événement à afficher dans la modale saloon. */
+export type EventInfoForModal = {
+  title: string;
+  subTitle?: string;
+  imageUrl?: string;
+  description?: string;
+  startDateTime: string;
+  eventId?: number;
+  interestedCount?: number;
+  isInterested?: boolean;
+};
 
 @Component({
   selector: 'app-saloon-modal',
@@ -33,6 +46,8 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
   @Input() userLng: number | null = null;
   @Input() geoLocationStatus: 'prompt' | 'loading' | 'granted' | 'denied' | 'unavailable' =
     'prompt';
+  /** Données événement optionnelles – si renseignées, la modale affiche les infos événement au-dessus du saloon. */
+  @Input() eventInfo: EventInfoForModal | null = null;
   @Output() closed = new EventEmitter<void>();
   @Output() requestLocation = new EventEmitter<void>();
 
@@ -51,6 +66,7 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
   private _presenceRealtimeService = inject(SaloonPresenceRealtimeService);
   private _authService = inject(FirebaseAuthService);
   private _authApiService = inject(AuthApiService);
+  private _eventApiService = inject(EventApiService);
   private _router = inject(Router);
 
   get isPremium(): boolean {
@@ -165,6 +181,24 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
    */
   close(): void {
     this.closed.emit();
+  }
+
+  /**
+   * Toggle l'intérêt pour l'événement affiché.
+   */
+  onToggleInterest(): void {
+    if (!this.eventInfo?.eventId) return;
+    this._eventApiService.toggleInterest(this.eventInfo.eventId).subscribe({
+      next: res => {
+        if (this.eventInfo) {
+          this.eventInfo = {
+            ...this.eventInfo,
+            isInterested: res.interested,
+            interestedCount: res.interestedCount,
+          };
+        }
+      },
+    });
   }
 
   /**

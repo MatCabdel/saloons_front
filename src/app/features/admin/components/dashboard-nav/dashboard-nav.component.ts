@@ -61,6 +61,15 @@ export class DashboardNavComponent {
       ],
     },
     {
+      label: 'Événements',
+      icon: 'calendar',
+      expanded: false,
+      children: [
+        { label: 'Créer un événement', route: 'create-event' },
+        { label: 'Liste des événements', route: 'events-list' },
+      ],
+    },
+    {
       label: 'Notifications',
       icon: 'bell',
       expanded: false,

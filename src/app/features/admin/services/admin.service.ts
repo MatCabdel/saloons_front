@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Saloon } from '../../saloon/models/saloonModel';
+import { EventItem } from '../../event/models/event.model';
 import { User } from '../../user/models/user';
 
 export type DashboardStats = {
@@ -208,5 +209,47 @@ export class AdminService {
 
   updateUserRole(id: number, role: string): Observable<User> {
     return this._http.patch<User>(`${this._BASE_URL}/admin/user/${id}/role`, { role });
+  }
+
+  // ─── Events ───────────────────────────────────────────────
+
+  getEventsPaginated(params: PaginationParams): Observable<PagedResponse<EventItem>> {
+    let httpParams = new HttpParams()
+      .set('page', params.page.toString())
+      .set('size', params.size.toString())
+      .set('sortBy', params.sortBy)
+      .set('sortDir', params.sortDir);
+
+    if (params.search) {
+      httpParams = httpParams.set('search', params.search);
+    }
+
+    return this._http.get<PagedResponse<EventItem>>(`${this._BASE_URL}/admin/events`, {
+      params: httpParams,
+    });
+  }
+
+  getEventById(id: number): Observable<EventItem> {
+    return this._http.get<EventItem>(`${this._BASE_URL}/admin/event/${id}`);
+  }
+
+  createEventWithImage(formData: FormData): Observable<EventItem> {
+    return this._http.post<EventItem>(`${this._BASE_URL}/admin/event/upload`, formData);
+  }
+
+  updateEvent(id: number, event: Record<string, unknown>): Observable<EventItem> {
+    return this._http.put<EventItem>(`${this._BASE_URL}/admin/event/${id}`, event);
+  }
+
+  updateEventWithImage(id: number, formData: FormData): Observable<EventItem> {
+    return this._http.put<EventItem>(`${this._BASE_URL}/admin/event/${id}/upload`, formData);
+  }
+
+  toggleEventActive(id: number): Observable<EventItem> {
+    return this._http.patch<EventItem>(`${this._BASE_URL}/admin/event/${id}/toggle-active`, {});
+  }
+
+  deleteEvent(id: number): Observable<void> {
+    return this._http.delete<void>(`${this._BASE_URL}/admin/event/${id}`);
   }
 }
