@@ -1,11 +1,17 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 let isLoggingOut = false; // Éviter les redirections multiples
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
+      // Only handle errors from our own backend API
+      if (!req.url.startsWith(environment.apiUrl)) {
+        return throwError(() => error);
+      }
+
       console.error('🚨 Erreur HTTP interceptée :', error.status, error.url);
 
       // Si l'utilisateur n'est plus authentifié ou autorisé (compte supprimé, token expiré, etc.)

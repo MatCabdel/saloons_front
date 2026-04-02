@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, tap } from 'rxjs';
+import { BehaviorSubject, finalize, Observable, of, shareReplay, Subject, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { SaloonType } from '../models/saloonModel';
 
@@ -96,6 +96,8 @@ export type SessionAlert = {
 export class PresenceService {
   private _http = inject(HttpClient);
   private readonly _BASE_URL_API = environment.apiUrl;
+  private _hasLoadedSession = false;
+  private _sessionLoad$?: Observable<SessionResponse>;
 
   // État réactif de la session active
   private _activeSession$ = new BehaviorSubject<ActiveSession | null>(null);
@@ -128,6 +130,7 @@ export class PresenceService {
       .post<JoinResponse>(`${this._BASE_URL_API}/api/saloons/${saloonId}/join`, body)
       .pipe(
         tap(response => {
+          this._hasLoadedSession = true;
           const session: ActiveSession = {
             userId: 0, // Sera mis à jour
             saloonId: response.saloonId,
@@ -151,6 +154,7 @@ export class PresenceService {
       .post<{ message: string }>(`${this._BASE_URL_API}/api/saloons/${saloonId}/leave`, {})
       .pipe(
         tap(() => {
+          this._hasLoadedSession = true;
           this._activeSession$.next(null);
           this._currentPresence$.next(null);
           this._stopTimer();
@@ -178,6 +182,7 @@ export class PresenceService {
   getMySession(): Observable<SessionResponse> {
     return this._http.get<SessionResponse>(`${this._BASE_URL_API}/api/users/me/session`).pipe(
       tap(response => {
+        this._hasLoadedSession = true;
         if (response.hasActiveSession && response.session) {
           this._activeSession$.next(response.session);
           this._startTimer(response.session.remainingSeconds);
@@ -190,6 +195,39 @@ export class PresenceService {
   }
 
   /**
+   * Charge la session une seule fois et réutilise l'état déjà connu si disponible.
+   */
+  ensureMySessionLoaded(forceRefresh = false): Observable<SessionResponse> {
+    if (forceRefresh) {
+      this._hasLoadedSession = false;
+      this._sessionLoad$ = undefined;
+    }
+
+    if (this._hasLoadedSession && !forceRefresh) {
+      const session = this._activeSession$.value;
+      return of(
+        session
+          ? { hasActiveSession: true, session }
+          : { hasActiveSession: false, message: 'No active session' }
+      );
+    }
+
+    if (!forceRefresh && this._sessionLoad$) {
+      return this._sessionLoad$;
+    }
+
+    const request$ = this.getMySession().pipe(
+      finalize(() => {
+        this._sessionLoad$ = undefined;
+      }),
+      shareReplay({ bufferSize: 1, refCount: false })
+    );
+
+    this._sessionLoad$ = request$;
+    return request$;
+  }
+
+  /**
    * Force la déconnexion de la session actuelle.
    */
   leaveCurrentSession(): Observable<{ message: string }> {
@@ -197,6 +235,7 @@ export class PresenceService {
       .post<{ message: string }>(`${this._BASE_URL_API}/api/users/me/session/leave`, {})
       .pipe(
         tap(() => {
+          this._hasLoadedSession = true;
           this._activeSession$.next(null);
           this._currentPresence$.next(null);
           this._stopTimer();
@@ -368,6 +407,7 @@ export class PresenceService {
       .post<{ message: string }>(`${this._BASE_URL_API}/api/saloons/${saloonId}/leave-confirm`, {})
       .pipe(
         tap(() => {
+          this._hasLoadedSession = true;
           this._activeSession$.next(null);
           this._currentPresence$.next(null);
           this._leaveConfirmed$.next();
@@ -379,6 +419,7 @@ export class PresenceService {
    * Nettoie l'état local après sortie confirmée (appelé après expiration du délai).
    */
   clearSessionState(): void {
+    this._hasLoadedSession = true;
     this._activeSession$.next(null);
     this._currentPresence$.next(null);
     this._stopTimer();

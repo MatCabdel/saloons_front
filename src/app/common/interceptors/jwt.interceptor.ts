@@ -1,6 +1,12 @@
 import { HttpInterceptorFn } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
+  // Only add JWT to requests targeting our own backend API
+  if (!req.url.startsWith(environment.apiUrl)) {
+    return next(req);
+  }
+
   if (req.url.includes('/auth/')) {
     return next(req);
   }
