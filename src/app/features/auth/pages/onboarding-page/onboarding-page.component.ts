@@ -5,7 +5,16 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FirebaseAuthService } from '../../services/firebase-auth.service';
 import { environment } from 'src/environments/environment';
-import { debounceTime, distinctUntilChanged, filter, Observable, switchMap } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  firstValueFrom,
+  Observable,
+  of,
+  switchMap,
+} from 'rxjs';
 
 type OnboardingStep = 'username' | 'birthdate' | 'city' | 'photo' | 'bio' | 'warning';
 
@@ -35,6 +44,7 @@ type GeoCity = {
   styleUrl: './onboarding-page.component.scss',
 })
 export class OnboardingPageComponent {
+  private readonly _MIN_CITY_SEARCH_LENGTH = 2;
   private _fb = inject(FormBuilder);
   private _http = inject(HttpClient);
   private _router = inject(Router);
@@ -102,9 +112,11 @@ export class OnboardingPageComponent {
           if (this.selectedCity()) {
             return false;
           }
-          return !!value && value.length >= 2;
+          return !!value && value.length >= this._MIN_CITY_SEARCH_LENGTH;
         }),
-        switchMap((value: string) => this._searchCities(value))
+        switchMap((value: string) =>
+          this._searchCities(value).pipe(catchError(() => of([] as GeoCity[])))
+        )
       )
       .subscribe(cities => {
         this.citySuggestions.set(cities);
@@ -118,6 +130,75 @@ export class OnboardingPageComponent {
         query
       )}&fields=nom,code,codesPostaux,codeDepartement,departement,region&boost=population&limit=10`
     );
+  }
+
+  private async _ensureCityValue(): Promise<boolean> {
+    if (this.selectedCity()) {
+      return this.cityForm.valid;
+    }
+
+    const manualCityInput = this._getManualCityInput();
+    if (manualCityInput.length < this._MIN_CITY_SEARCH_LENGTH) {
+      return false;
+    }
+
+    const resolvedCity = await this._findMatchingCity(manualCityInput);
+    if (resolvedCity) {
+      this.selectCity(resolvedCity);
+      return true;
+    }
+
+    const normalizedCity = this._normalizeCityLabel(manualCityInput);
+    this.cityForm.patchValue({
+      citySearch: normalizedCity,
+      city: normalizedCity,
+      postalCode: '',
+    });
+    this.errorMessage.set(null);
+    return true;
+  }
+
+  private async _findMatchingCity(query: string): Promise<GeoCity | null> {
+    const cities = await firstValueFrom(
+      this._searchCities(query).pipe(catchError(() => of([] as GeoCity[])))
+    );
+    const normalizedQuery = this._normalizeCityKey(query);
+    return cities.find(city => this._normalizeCityKey(city.nom) === normalizedQuery) ?? null;
+  }
+
+  private _getManualCityInput(): string {
+    return String(this.cityForm.get('citySearch')?.value ?? '')
+      .trim()
+      .replace(/\s+/g, ' ');
+  }
+
+  private _normalizeCityLabel(value: string): string {
+    const lowerCased = value
+      .trim()
+      .replace(/\s+/g, ' ')
+      .toLocaleLowerCase('fr-FR');
+
+    let capitalizeNext = true;
+
+    return Array.from(lowerCased)
+      .map(character => {
+        if (capitalizeNext && /\p{L}/u.test(character)) {
+          capitalizeNext = false;
+          return character.toLocaleUpperCase('fr-FR');
+        }
+
+        capitalizeNext = /[\s'-]/.test(character);
+        return character;
+      })
+      .join('');
+  }
+
+  private _normalizeCityKey(value: string): string {
+    return this._normalizeCityLabel(value)
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[\s'-]/g, '')
+      .toLocaleLowerCase('fr-FR');
   }
 
   selectCity(city: GeoCity): void {
@@ -153,6 +234,13 @@ export class OnboardingPageComponent {
     setTimeout(() => this.showCitySuggestions.set(false), 200);
   }
 
+  get canContinueFromCity(): boolean {
+    return (
+      this.selectedCity() !== null ||
+      this._getManualCityInput().length >= this._MIN_CITY_SEARCH_LENGTH
+    );
+  }
+
   get currentStepIndex(): number {
     return this.steps.indexOf(this.currentStep());
   }
@@ -178,7 +266,7 @@ export class OnboardingPageComponent {
     this.submitProfile();
   }
 
-  nextStep(): void {
+  async nextStep(): Promise<void> {
     const currentIndex = this.currentStepIndex;
     const step = this.currentStep();
 
@@ -207,9 +295,12 @@ export class OnboardingPageComponent {
       this.errorMessage.set(null);
     }
 
-    if (step === 'city' && this.cityForm.invalid) {
-      this.cityForm.markAllAsTouched();
-      return;
+    if (step === 'city') {
+      const cityIsValid = await this._ensureCityValue();
+      if (!cityIsValid) {
+        this.cityForm.markAllAsTouched();
+        return;
+      }
     }
 
     if (currentIndex < this.steps.length - 1) {
