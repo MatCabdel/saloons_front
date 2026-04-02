@@ -14,6 +14,7 @@ import { Observable, from, tap, switchMap, map, catchError, throwError } from 'r
 import { environment } from 'src/environments/environment';
 import { UserStoreService } from '../../user/store/user-store.service';
 import { SocialLogin } from '@capgo/capacitor-social-login';
+import type { GoogleLoginOptions } from '@capgo/capacitor-social-login';
 import { PushNotificationService } from '../../../core/services/push-notification.service';
 
 export type ProfileStatus = 'PROFILE_INCOMPLETE' | 'ACTIVE';
@@ -194,14 +195,12 @@ export class FirebaseAuthService {
 
       // Android: éviter les scopes custom sans config native supplémentaire.
       // iOS conserve les scopes existants.
-      const loginPayload: {
-        provider: 'google';
-        options: { scopes: string[] };
-      } = {
-        provider: 'google',
-        options: {
-          scopes: Capacitor.getPlatform() !== 'android' ? ['email', 'profile'] : [],
-        },
+      const loginOptions: GoogleLoginOptions =
+        Capacitor.getPlatform() === 'android' ? {} : { scopes: ['email', 'profile'] };
+
+      const loginPayload = {
+        provider: 'google' as const,
+        options: loginOptions,
       };
 
       const result = await SocialLogin.login(loginPayload);
