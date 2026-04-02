@@ -14,7 +14,7 @@ $filter-active-text: $white;
 .list-saloons-container {
   min-height: calc(100vh - 60px);
   min-height: calc(100dvh - 60px);
-  padding-bottom: 80px; // Space for navbar
+  padding-bottom: calc(80px + var(--floating-saloon-actions-offset)); // Space for navbar + capsule
 }
 
 // Section des filtres
