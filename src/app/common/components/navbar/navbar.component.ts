@@ -3,11 +3,12 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { BadgeService } from 'src/app/core/services/badge.service';
+import { CurrentSaloonActionsComponent } from '../current-saloon-actions/current-saloon-actions.component';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, CurrentSaloonActionsComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })

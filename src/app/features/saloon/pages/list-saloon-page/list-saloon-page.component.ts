@@ -198,7 +198,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
     // Charger la session active de l'utilisateur (pour savoir s'il est dans un saloon)
     // prettier-ignore
     this._presenceService
-      .getMySession()
+      .ensureMySessionLoaded()
       .pipe(takeUntil(this._destroy$))
       .subscribe();
   }

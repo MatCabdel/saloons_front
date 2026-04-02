@@ -14,7 +14,7 @@ $filter-active-text: $white;
 .events-container {
   min-height: calc(100vh - 60px);
   min-height: calc(100dvh - 60px);
-  padding-bottom: 80px;
+  padding-bottom: calc(80px + var(--floating-saloon-actions-offset));
 }
 
 // Section des filtres
