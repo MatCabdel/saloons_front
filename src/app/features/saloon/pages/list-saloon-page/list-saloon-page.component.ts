@@ -1,4 +1,14 @@
-import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  ViewChild,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import {
@@ -33,9 +43,9 @@ const FILTER_TABS: { value: FilterType; label: string }[] = [
   { value: 'ALL', label: 'Tous' },
   { value: 'CHAUD', label: 'Populaire' },
   { value: 'BAR', label: 'Bar' },
+  { value: 'SPORT', label: 'Sport' },
   { value: 'PUBLIC', label: 'Public' },
   { value: 'LOISIRS', label: 'Loisirs' },
-  { value: 'SPORT', label: 'Sport' },
   { value: 'DISCO', label: 'Disco' },
   { value: 'TRAVAIL', label: 'Travail' },
 ];
@@ -47,7 +57,7 @@ const FILTER_TABS: { value: FilterType; label: string }[] = [
   templateUrl: './list-saloon-page.component.html',
   styleUrl: './list-saloon-page.component.scss',
 })
-export class ListSaloonPageComponent implements OnInit, OnDestroy {
+export class ListSaloonPageComponent implements OnInit, AfterViewInit, OnDestroy {
   private _saloonApiService = inject(SaloonApiService);
   private _presenceRealtimeService = inject(SaloonPresenceRealtimeService);
   private _presenceService = inject(PresenceService);
@@ -75,7 +85,9 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   // Filtres
   filterTabs = FILTER_TABS;
   activeFilter = signal<FilterType>('ALL');
+  filtersScrollHint = signal<'end' | 'start' | 'none'>('end');
   private _activeFilter$ = new BehaviorSubject<FilterType>('ALL');
+  @ViewChild('filtersScroller') private _filtersScroller?: ElementRef<HTMLDivElement>;
 
   // Pagination
   currentPage = signal<number>(1);
@@ -203,9 +215,18 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
+  ngAfterViewInit(): void {
+    queueMicrotask(() => this._syncFiltersScrollHint());
+  }
+
   ngOnDestroy(): void {
     this._destroy$.next();
     this._destroy$.complete();
+  }
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this._syncFiltersScrollHint();
   }
 
   requestLocation(): void {
@@ -214,6 +235,10 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
 
   openLocationSettings(): void {
     this._geoService.openLocationSettings();
+  }
+
+  onFiltersScroll(scroller: HTMLDivElement): void {
+    this._updateFiltersScrollHint(scroller);
   }
 
   private _calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -232,6 +257,23 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
 
   private _toRad(deg: number): number {
     return deg * (Math.PI / 180);
+  }
+
+  private _syncFiltersScrollHint(): void {
+    if (this._filtersScroller) {
+      this._updateFiltersScrollHint(this._filtersScroller.nativeElement);
+    }
+  }
+
+  private _updateFiltersScrollHint(scroller: HTMLDivElement): void {
+    const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
+
+    if (maxScrollLeft <= 2) {
+      this.filtersScrollHint.set('none');
+      return;
+    }
+
+    this.filtersScrollHint.set(scroller.scrollLeft >= maxScrollLeft - 4 ? 'start' : 'end');
   }
 
   openModal(saloon: Saloon & { distanceMeters: number | null }): void {
