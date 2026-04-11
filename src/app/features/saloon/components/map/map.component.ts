@@ -1,12 +1,15 @@
 import { Component, OnInit, OnDestroy, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, skip, takeUntil } from 'rxjs';
 import { SaloonModalComponent } from '../saloon-modal/saloon-modal.component';
 import { SaloonMapItem } from '../../services/presence.service';
 import { SaloonApiService } from '../../services/saloon-api.service';
-import { Saloon } from '../../models/saloonModel';
+import { Saloon, SaloonType } from '../../models/saloonModel';
 import { GeolocationService, GeoLocationStatus } from 'src/app/core/services/geolocation.service';
+import { SaloonBrowseStateService } from '../../services/saloon-browse-state.service';
+import { toSaloonTypeFilter } from '../../models/saloon-browse.model';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-map',
@@ -22,6 +25,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private _destroy$ = new Subject<void>();
   private _saloonApiService = inject(SaloonApiService);
   private _geoService = inject(GeolocationService);
+  private _browseState = inject(SaloonBrowseStateService);
 
   // Modal state
   showModal = false;
@@ -53,6 +57,9 @@ export class MapComponent implements OnInit, OnDestroy {
     iconAnchor: [10, 10],
   });
 
+  // Observable du filtre actif – créé ici (injection context) et non dans ngOnInit
+  private _activeFilter$ = toObservable(this._browseState.activeFilter);
+
   // Données des saloons chargées depuis l'API
   private _saloonsData: SaloonMapItem[] = [];
 
@@ -61,6 +68,7 @@ export class MapComponent implements OnInit, OnDestroy {
     const lat = this._geoService.userLat();
     const lng = this._geoService.userLng();
     const status = this._geoService.status();
+
     if (status === 'granted' && lat !== null && lng !== null && this.map) {
       this._updateDistances();
       this._addUserMarker();
@@ -69,8 +77,13 @@ export class MapComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
+    this._browseState.setVisibleSaloonCount(0);
     this.configMap();
-    this._loadSaloons();
+    this._loadSaloons(toSaloonTypeFilter(this._browseState.activeFilter()));
+    this._activeFilter$
+      .pipe(skip(1), takeUntil(this._destroy$))
+      .subscribe(filter => this._loadSaloons(toSaloonTypeFilter(filter)));
+
     // Initialiser la géolocalisation via le service partagé (ne re-prompte pas si déjà fait)
     this._geoService.init();
   }
@@ -86,14 +99,15 @@ export class MapComponent implements OnInit, OnDestroy {
   /**
    * Charge les saloons depuis l'API
    */
-  private _loadSaloons(): void {
+  private _loadSaloons(type?: SaloonType | null): void {
     this._saloonApiService
-      .getListSaloon()
+      .getListSaloon(type)
       .pipe(takeUntil(this._destroy$))
       .subscribe({
         next: saloons => {
           this._saloonsData = saloons.map(saloon => this._mapSaloonToMapItem(saloon));
           this._updateDistances();
+          this._browseState.setVisibleSaloonCount(this._saloonsData.length);
           this._addMarkers();
         },
         error: err => {
@@ -116,7 +130,7 @@ export class MapComponent implements OnInit, OnDestroy {
       longitude: saloon.longitude || 0,
       radiusMeters: saloon.radiusMeters || 100,
       distanceMeters: null,
-      connectedCount: saloon.visitorNumber || saloon.visitors || 0,
+      connectedCount: saloon.connectedCount || saloon.visitorNumber || saloon.visitors || 0,
       type: saloon.type,
       isPrivate: saloon.isPrivate,
     };
@@ -148,10 +162,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
       // Au clic sur le marker, ouvrir le modal avec le saloon actualisé
       marker.on('click', () => {
-        const currentSaloon = this._saloonsData.find(s => s.id === saloon.id);
-        if (currentSaloon) {
-          this._openModal(currentSaloon);
-        }
+        this._openModal(saloon);
       });
 
       this._markers.push(marker);

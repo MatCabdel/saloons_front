@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Saloon } from '../models/saloonModel';
+import { Saloon, SaloonType } from '../models/saloonModel';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
 import { User } from '../../user/models/user';
@@ -12,8 +12,9 @@ export class SaloonApiService {
   private _http = inject(HttpClient);
   private readonly _BASE_URL_API = environment.apiUrl;
 
-  getListSaloon(): Observable<Saloon[]> {
-    return this._http.get<Saloon[]>(this._BASE_URL_API + '/saloon');
+  getListSaloon(type?: SaloonType | null): Observable<Saloon[]> {
+    const params = type ? { type } : undefined;
+    return this._http.get<Saloon[]>(this._BASE_URL_API + '/saloon', { params });
   }
 
   getSaloonById(id: string): Observable<Saloon> {

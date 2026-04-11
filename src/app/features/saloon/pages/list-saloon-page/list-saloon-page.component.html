@@ -64,29 +64,6 @@
 
   <!-- Liste des saloons si position disponible OU reviewer/admin -->
   @if (geoLocationStatus() === 'granted' || isReviewerOrAdmin) {
-  <!-- Filtres par type -->
-  <div
-    class="filters-section"
-    [class.at-end]="filtersScrollHint() === 'start'"
-    [class.no-overflow]="filtersScrollHint() === 'none'"
-  >
-    <div class="filters-scroller" #filtersScroller (scroll)="onFiltersScroll(filtersScroller)">
-      <div class="filters-grid">
-        @for (tab of filterTabs; track tab.value) {
-        <button
-          type="button"
-          class="filter-chip"
-          [class.active]="activeFilter() === tab.value"
-          [class.hot]="tab.value === 'CHAUD'"
-          (click)="setFilter(tab.value)"
-        >
-          {{ tab.label }}
-        </button>
-        }
-      </div>
-    </div>
-  </div>
-
   @if (saloons$ | async; as saloons) { @if (saloons.length > 0) { @if (geoLocationStatus() !==
   'granted' && isReviewerOrAdmin) {
   <div class="location-message info">
@@ -97,12 +74,6 @@
     </button>
   </div>
   }
-  <p class="saloons-count">
-    <span class="count">{{ filteredSaloonsCount() }}</span> saloon{{
-      filteredSaloonsCount() > 1 ? 's' : ''
-    }}
-    @if (activeFilter() === 'CHAUD') { les plus populaires } @else { à proximité }
-  </p>
   <div class="list-places">
     @for (saloon of saloons; track saloon.id) {
     <app-saloon-card

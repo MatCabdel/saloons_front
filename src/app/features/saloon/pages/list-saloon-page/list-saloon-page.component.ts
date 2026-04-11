@@ -1,15 +1,6 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  HostListener,
-  ViewChild,
-  inject,
-  OnDestroy,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import {
   BehaviorSubject,
@@ -20,7 +11,7 @@ import {
   Subject,
   takeUntil,
 } from 'rxjs';
-import { Saloon, SaloonType } from '../../models/saloonModel';
+import { Saloon } from '../../models/saloonModel';
 import { SaloonCardComponent } from '../../components/saloon-card/saloon-card.component';
 import { SaloonApiService } from '../../services/saloon-api.service';
 import { SaloonModalComponent } from '../../components/saloon-modal/saloon-modal.component';
@@ -28,27 +19,11 @@ import { SaloonMapItem, PresenceService } from '../../services/presence.service'
 import { SaloonPresenceRealtimeService } from '../../services/saloon-presence-realtime.service';
 import { AuthApiService } from 'src/app/features/auth/services/auth-api.service';
 import { GeolocationService } from 'src/app/core/services/geolocation.service';
-
-// Distance maximale pour afficher les saloons (en mètres)
-const MAX_DISTANCE_METERS = 50000; // 50km
+import { SaloonBrowseStateService } from '../../services/saloon-browse-state.service';
+import { MAX_DISTANCE_METERS, toSaloonTypeFilter } from '../../models/saloon-browse.model';
 
 // Pagination
 const ITEMS_PER_PAGE = 5;
-
-// Type pour les filtres
-type FilterType = 'ALL' | 'CHAUD' | SaloonType;
-
-// Configuration des filtres
-const FILTER_TABS: { value: FilterType; label: string }[] = [
-  { value: 'ALL', label: 'Tous' },
-  { value: 'CHAUD', label: 'Populaire' },
-  { value: 'BAR', label: 'Bar' },
-  { value: 'SPORT', label: 'Sport' },
-  { value: 'PUBLIC', label: 'Public' },
-  { value: 'LOISIRS', label: 'Loisirs' },
-  { value: 'DISCO', label: 'Disco' },
-  { value: 'TRAVAIL', label: 'Travail' },
-];
 
 @Component({
   selector: 'app-list-saloon-page',
@@ -57,13 +32,14 @@ const FILTER_TABS: { value: FilterType; label: string }[] = [
   templateUrl: './list-saloon-page.component.html',
   styleUrl: './list-saloon-page.component.scss',
 })
-export class ListSaloonPageComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ListSaloonPageComponent implements OnInit, OnDestroy {
   private _saloonApiService = inject(SaloonApiService);
   private _presenceRealtimeService = inject(SaloonPresenceRealtimeService);
   private _presenceService = inject(PresenceService);
   private _router = inject(Router);
   private _authApiService = inject(AuthApiService);
   private _geoService = inject(GeolocationService);
+  private _browseState = inject(SaloonBrowseStateService);
   private _destroy$ = new Subject<void>();
 
   // Position utilisateur (délégué au service partagé)
@@ -81,13 +57,11 @@ export class ListSaloonPageComponent implements OnInit, AfterViewInit, OnDestroy
     return this._geoService.status;
   }
   totalSaloonsCount = signal<number>(0);
-
-  // Filtres
-  filterTabs = FILTER_TABS;
-  activeFilter = signal<FilterType>('ALL');
-  filtersScrollHint = signal<'end' | 'start' | 'none'>('end');
-  private _activeFilter$ = new BehaviorSubject<FilterType>('ALL');
-  @ViewChild('filtersScroller') private _filtersScroller?: ElementRef<HTMLDivElement>;
+  readonly activeFilter = this._browseState.activeFilter;
+  private _activeFilter$ = toObservable(this._browseState.activeFilter);
+  private _saloons$ = combineLatest([this._refreshTrigger$, this._activeFilter$]).pipe(
+    switchMap(([, filter]) => this._saloonApiService.getListSaloon(toSaloonTypeFilter(filter)))
+  );
 
   // Pagination
   currentPage = signal<number>(1);
@@ -107,7 +81,7 @@ export class ListSaloonPageComponent implements OnInit, AfterViewInit, OnDestroy
   // Saloons triés par distance avec mise à jour temps réel de la présence
   // Filtrés à MAX_DISTANCE_METERS (50km) de l'utilisateur
   saloons$: Observable<(Saloon & { distanceMeters: number | null })[]> = combineLatest([
-    this._refreshTrigger$.pipe(switchMap(() => this._saloonApiService.getListSaloon())),
+    this._saloons$,
     this._userPosition$,
     this._presenceRealtimeService.presenceCounts$,
     this._activeFilter$,
@@ -180,6 +154,7 @@ export class ListSaloonPageComponent implements OnInit, AfterViewInit, OnDestroy
 
       // Sauvegarder le nombre de résultats filtrés (avant pagination)
       this.filteredSaloonsCount.set(filteredSaloons.length);
+      this._browseState.setVisibleSaloonCount(filteredSaloons.length);
 
       // Calculer le nombre total de pages
       const total = Math.ceil(filteredSaloons.length / ITEMS_PER_PAGE);
@@ -192,6 +167,7 @@ export class ListSaloonPageComponent implements OnInit, AfterViewInit, OnDestroy
   );
 
   ngOnInit(): void {
+    this._browseState.setVisibleSaloonCount(0);
     // Initialiser la géolocalisation via le service partagé
     this._geoService.init();
     // S'abonner aux changements de position du service
@@ -213,20 +189,16 @@ export class ListSaloonPageComponent implements OnInit, AfterViewInit, OnDestroy
       .ensureMySessionLoaded()
       .pipe(takeUntil(this._destroy$))
       .subscribe();
-  }
 
-  ngAfterViewInit(): void {
-    queueMicrotask(() => this._syncFiltersScrollHint());
+    this._activeFilter$.pipe(takeUntil(this._destroy$)).subscribe(() => {
+      this.currentPage.set(1);
+      this._currentPage$.next(1);
+    });
   }
 
   ngOnDestroy(): void {
     this._destroy$.next();
     this._destroy$.complete();
-  }
-
-  @HostListener('window:resize')
-  onWindowResize(): void {
-    this._syncFiltersScrollHint();
   }
 
   requestLocation(): void {
@@ -235,10 +207,6 @@ export class ListSaloonPageComponent implements OnInit, AfterViewInit, OnDestroy
 
   openLocationSettings(): void {
     this._geoService.openLocationSettings();
-  }
-
-  onFiltersScroll(scroller: HTMLDivElement): void {
-    this._updateFiltersScrollHint(scroller);
   }
 
   private _calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -257,23 +225,6 @@ export class ListSaloonPageComponent implements OnInit, AfterViewInit, OnDestroy
 
   private _toRad(deg: number): number {
     return deg * (Math.PI / 180);
-  }
-
-  private _syncFiltersScrollHint(): void {
-    if (this._filtersScroller) {
-      this._updateFiltersScrollHint(this._filtersScroller.nativeElement);
-    }
-  }
-
-  private _updateFiltersScrollHint(scroller: HTMLDivElement): void {
-    const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
-
-    if (maxScrollLeft <= 2) {
-      this.filtersScrollHint.set('none');
-      return;
-    }
-
-    this.filtersScrollHint.set(scroller.scrollLeft >= maxScrollLeft - 4 ? 'start' : 'end');
   }
 
   openModal(saloon: Saloon & { distanceMeters: number | null }): void {
@@ -298,14 +249,6 @@ export class ListSaloonPageComponent implements OnInit, AfterViewInit, OnDestroy
   closeModal(): void {
     this.showModal = false;
     this.selectedSaloon = null;
-  }
-
-  setFilter(filter: FilterType): void {
-    this.activeFilter.set(filter);
-    this._activeFilter$.next(filter);
-    // Réinitialiser la pagination quand on change de filtre
-    this.currentPage.set(1);
-    this._currentPage$.next(1);
   }
 
   goToPage(page: number): void {
