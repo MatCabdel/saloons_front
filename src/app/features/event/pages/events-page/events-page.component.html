@@ -7,16 +7,16 @@
   >
     <div class="filters-scroller" #filtersScroller (scroll)="onFiltersScroll(filtersScroller)">
       <div class="filters-grid">
-      @for (tab of periodTabs; track tab.value) {
-      <button
-        type="button"
-        class="filter-chip"
-        [class.active]="activePeriod() === tab.value"
-        (click)="setPeriod(tab.value)"
-      >
-        {{ tab.label }}
-      </button>
-      }
+        @for (tab of periodTabs; track tab.value) {
+        <button
+          type="button"
+          class="filter-chip"
+          [class.active]="activePeriod() === tab.value"
+          (click)="setPeriod(tab.value)"
+        >
+          {{ tab.label }}
+        </button>
+        }
       </div>
     </div>
   </div>

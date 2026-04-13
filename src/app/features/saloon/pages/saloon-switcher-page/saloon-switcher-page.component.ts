@@ -8,7 +8,13 @@ import { SaloonBrowseToolbarComponent } from '../../components/saloon-browse-too
 @Component({
   selector: 'app-saloon-switcher-page',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, SaloonBrowseToolbarComponent, RouterOutlet, NavbarComponent],
+  imports: [
+    CommonModule,
+    HeaderComponent,
+    SaloonBrowseToolbarComponent,
+    RouterOutlet,
+    NavbarComponent,
+  ],
   templateUrl: './saloon-switcher-page.component.html',
   styleUrl: './saloon-switcher-page.component.scss',
 })

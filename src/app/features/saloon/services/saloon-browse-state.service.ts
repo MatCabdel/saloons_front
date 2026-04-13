@@ -1,8 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import {
-  SALOON_FILTER_TABS,
-  SaloonBrowseFilter,
-} from '../models/saloon-browse.model';
+import { SALOON_FILTER_TABS, SaloonBrowseFilter } from '../models/saloon-browse.model';
 
 @Injectable({ providedIn: 'root' })
 export class SaloonBrowseStateService {

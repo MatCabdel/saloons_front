@@ -1,15 +1,25 @@
 import { Component, OnInit, OnDestroy, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
-import { Subject, skip, takeUntil } from 'rxjs';
+import 'leaflet.markercluster';
+import { Subject, debounceTime, switchMap, takeUntil, catchError, EMPTY, skip, tap } from 'rxjs';
 import { SaloonModalComponent } from '../saloon-modal/saloon-modal.component';
 import { SaloonMapItem } from '../../services/presence.service';
 import { SaloonApiService } from '../../services/saloon-api.service';
-import { Saloon, SaloonType } from '../../models/saloonModel';
+import { SaloonType } from '../../models/saloonModel';
 import { GeolocationService, GeoLocationStatus } from 'src/app/core/services/geolocation.service';
 import { SaloonBrowseStateService } from '../../services/saloon-browse-state.service';
 import { toSaloonTypeFilter } from '../../models/saloon-browse.model';
 import { toObservable } from '@angular/core/rxjs-interop';
+
+// Constantes de configuration
+const DEBOUNCE_MS = 400;
+const BUFFER_RATIO = 0.3;
+const CLUSTER_ZOOM_THRESHOLD = 15;
+const DEFAULT_CENTER: L.LatLngExpression = [44.837789, -0.57918];
+const DEFAULT_ZOOM = 14;
+const USER_ZOOM = 15;
+const MAX_CLUSTER_RADIUS = 80;
 
 @Component({
   selector: 'app-map',
@@ -19,10 +29,16 @@ import { toObservable } from '@angular/core/rxjs-interop';
   styleUrl: './map.component.scss',
 })
 export class MapComponent implements OnInit, OnDestroy {
-  map: any;
-  private _markers: L.Marker[] = [];
+  map!: L.Map;
+  private _clusterGroup!: L.MarkerClusterGroup;
   private _userMarker: L.Marker | null = null;
   private _destroy$ = new Subject<void>();
+  private _mapMove$ = new Subject<void>();
+  private _fetchTrigger$ = new Subject<{
+    bounds: L.LatLngBounds;
+    type: SaloonType | null;
+  }>();
+
   private _saloonApiService = inject(SaloonApiService);
   private _geoService = inject(GeolocationService);
   private _browseState = inject(SaloonBrowseStateService);
@@ -57,11 +73,13 @@ export class MapComponent implements OnInit, OnDestroy {
     iconAnchor: [10, 10],
   });
 
-  // Observable du filtre actif – créé ici (injection context) et non dans ngOnInit
+  // Observable du filtre actif – créé dans l'injection context
   private _activeFilter$ = toObservable(this._browseState.activeFilter);
 
-  // Données des saloons chargées depuis l'API
-  private _saloonsData: SaloonMapItem[] = [];
+  // Cache mémoire
+  private _cachedSaloons: SaloonMapItem[] = [];
+  private _loadedBounds: L.LatLngBounds | null = null;
+  private _currentTypeFilter: SaloonType | null = null;
 
   // Effet réactif : dès que la position change dans le service, mettre à jour la carte
   private _positionEffect = effect(() => {
@@ -70,21 +88,24 @@ export class MapComponent implements OnInit, OnDestroy {
     const status = this._geoService.status();
 
     if (status === 'granted' && lat !== null && lng !== null && this.map) {
-      this._updateDistances();
       this._addUserMarker();
-      this.map.setView([lat, lng], 15);
+      this.map.setView([lat, lng], USER_ZOOM);
     }
   });
 
   ngOnInit(): void {
     this._browseState.setVisibleSaloonCount(0);
-    this.configMap();
-    this._loadSaloons(toSaloonTypeFilter(this._browseState.activeFilter()));
-    this._activeFilter$
-      .pipe(skip(1), takeUntil(this._destroy$))
-      .subscribe(filter => this._loadSaloons(toSaloonTypeFilter(filter)));
+    this._currentTypeFilter = toSaloonTypeFilter(this._browseState.activeFilter());
 
-    // Initialiser la géolocalisation via le service partagé (ne re-prompte pas si déjà fait)
+    this._initMap();
+    this._setupFetchPipeline();
+    this._setupMapMoveListener();
+    this._setupFilterListener();
+
+    // Chargement initial avec les bounds visibles
+    this._triggerFetch();
+
+    // Géolocalisation
     this._geoService.init();
   }
 
@@ -92,81 +113,154 @@ export class MapComponent implements OnInit, OnDestroy {
     this._destroy$.next();
     this._destroy$.complete();
     if (this.map) {
+      this.map.off('moveend');
       this.map.remove();
     }
   }
 
-  /**
-   * Charge les saloons depuis l'API
-   */
-  private _loadSaloons(type?: SaloonType | null): void {
-    this._saloonApiService
-      .getListSaloon(type)
-      .pipe(takeUntil(this._destroy$))
-      .subscribe({
-        next: saloons => {
-          this._saloonsData = saloons.map(saloon => this._mapSaloonToMapItem(saloon));
-          this._updateDistances();
-          this._browseState.setVisibleSaloonCount(this._saloonsData.length);
-          this._addMarkers();
-        },
-        error: err => {
-          console.error('Erreur lors du chargement des saloons:', err);
-        },
-      });
-  }
+  // ==================== Initialisation ====================
 
-  /**
-   * Convertit un Saloon en SaloonMapItem
-   */
-  private _mapSaloonToMapItem(saloon: Saloon): SaloonMapItem {
-    return {
-      id: saloon.id,
-      name: saloon.name,
-      imgUrl: saloon.imgUrl,
-      address: saloon.address,
-      city: saloon.city || '',
-      latitude: saloon.latitude || 0,
-      longitude: saloon.longitude || 0,
-      radiusMeters: saloon.radiusMeters || 100,
-      distanceMeters: null,
-      connectedCount: saloon.connectedCount || saloon.visitorNumber || saloon.visitors || 0,
-      type: saloon.type,
-      isPrivate: saloon.isPrivate,
-    };
-  }
-
-  configMap(): void {
+  private _initMap(): void {
     this.map = L.map('map', {
-      center: [44.837789, -0.57918],
-      zoom: 14,
+      center: DEFAULT_CENTER,
+      zoom: DEFAULT_ZOOM,
     });
+
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.map);
+
+    // Cluster group : déclustering automatique à partir du zoom 12
+    this._clusterGroup = L.markerClusterGroup({
+      disableClusteringAtZoom: CLUSTER_ZOOM_THRESHOLD,
+      maxClusterRadius: MAX_CLUSTER_RADIUS,
+      spiderfyOnMaxZoom: true,
+      showCoverageOnHover: false,
+      zoomToBoundsOnClick: true,
+      chunkedLoading: true,
+    });
+    this.map.addLayer(this._clusterGroup);
   }
 
-  private _addMarkers(): void {
-    // Supprimer les anciens markers
-    this._markers.forEach(marker => this.map.removeLayer(marker));
-    this._markers = [];
+  // ==================== Pipeline de chargement ====================
 
-    this._saloonsData.forEach(saloon => {
-      // Ne pas ajouter si pas de coordonnées
-      if (!saloon.latitude || !saloon.longitude) return;
+  /**
+   * Pipeline RxJS : fetchTrigger$ → switchMap (annule les requêtes obsolètes)
+   */
+  private _setupFetchPipeline(): void {
+    this._fetchTrigger$
+      .pipe(
+        switchMap(({ bounds, type }) => {
+          const expanded = this._expandBounds(bounds);
+          return this._saloonApiService
+            .getSaloonsForMap({
+              minLat: expanded.getSouth(),
+              maxLat: expanded.getNorth(),
+              minLng: expanded.getWest(),
+              maxLng: expanded.getEast(),
+              type,
+            })
+            .pipe(
+              tap(() => {
+                this._loadedBounds = expanded;
+              }),
+              catchError(err => {
+                console.error('Erreur chargement saloons map:', err);
+                return EMPTY;
+              })
+            );
+        }),
+        takeUntil(this._destroy$)
+      )
+      .subscribe(saloons => {
+        this._cachedSaloons = saloons;
+        this._browseState.setVisibleSaloonCount(saloons.length);
+        this._updateMarkers();
+      });
+  }
 
-      const marker = L.marker([saloon.latitude, saloon.longitude], {
-        icon: this._customIcon,
-      }).addTo(this.map);
+  /**
+   * Écoute moveend avec debounce, ne recharge que si hors zone tampon
+   */
+  private _setupMapMoveListener(): void {
+    this.map.on('moveend', () => this._mapMove$.next());
 
-      // Au clic sur le marker, ouvrir le modal avec le saloon actualisé
-      marker.on('click', () => {
-        this._openModal(saloon);
+    this._mapMove$
+      .pipe(debounceTime(DEBOUNCE_MS), takeUntil(this._destroy$))
+      .subscribe(() => {
+        const bounds = this.map.getBounds();
+        if (!this._isWithinLoadedBuffer(bounds)) {
+          this._triggerFetch();
+        }
+      });
+  }
+
+  /**
+   * Changement de filtre → invalide le cache et recharge immédiatement
+   */
+  private _setupFilterListener(): void {
+    this._activeFilter$.pipe(skip(1), takeUntil(this._destroy$)).subscribe(filter => {
+      this._currentTypeFilter = toSaloonTypeFilter(filter);
+      this._loadedBounds = null;
+      this._triggerFetch();
+    });
+  }
+
+  /**
+   * Déclenche un fetch avec les bounds actuels et le filtre courant
+   */
+  private _triggerFetch(): void {
+    this._fetchTrigger$.next({
+      bounds: this.map.getBounds(),
+      type: this._currentTypeFilter,
+    });
+  }
+
+  // ==================== Zone tampon (buffer) ====================
+
+  /**
+   * Vérifie si les bounds visibles sont entièrement contenus dans la zone tampon déjà chargée
+   */
+  private _isWithinLoadedBuffer(bounds: L.LatLngBounds): boolean {
+    if (!this._loadedBounds) return false;
+    return this._loadedBounds.contains(bounds);
+  }
+
+  /**
+   * Étend les bounds de BUFFER_RATIO (30%) sur chaque côté pour créer une zone tampon
+   */
+  private _expandBounds(bounds: L.LatLngBounds): L.LatLngBounds {
+    const latDiff = bounds.getNorth() - bounds.getSouth();
+    const lngDiff = bounds.getEast() - bounds.getWest();
+    const latBuffer = latDiff * BUFFER_RATIO;
+    const lngBuffer = lngDiff * BUFFER_RATIO;
+
+    return L.latLngBounds(
+      [bounds.getSouth() - latBuffer, bounds.getWest() - lngBuffer],
+      [bounds.getNorth() + latBuffer, bounds.getEast() + lngBuffer]
+    );
+  }
+
+  // ==================== Marqueurs ====================
+
+  /**
+   * Reconstruit les marqueurs dans le cluster group à partir du cache
+   */
+  private _updateMarkers(): void {
+    this._clusterGroup.clearLayers();
+
+    const markers = this._cachedSaloons
+      .filter(s => s.latitude && s.longitude)
+      .map(saloon => {
+        const marker = L.marker([saloon.latitude, saloon.longitude], {
+          icon: this._customIcon,
+        });
+        marker.on('click', () => this._openModal(saloon));
+        return marker;
       });
 
-      this._markers.push(marker);
-    });
+    this._clusterGroup.addLayers(markers);
   }
 
   /**
@@ -174,9 +268,8 @@ export class MapComponent implements OnInit, OnDestroy {
    */
   centerOnUser(): void {
     if (this.userLat !== null && this.userLng !== null) {
-      this.map.setView([this.userLat, this.userLng], 15);
+      this.map.setView([this.userLat, this.userLng], USER_ZOOM);
     } else {
-      // Si pas de position, demander via le service
       this.requestLocation();
     }
   }
@@ -184,30 +277,18 @@ export class MapComponent implements OnInit, OnDestroy {
   private _addUserMarker(): void {
     if (this.userLat === null || this.userLng === null) return;
 
-    // Supprimer l'ancien marqueur s'il existe
     if (this._userMarker) {
       this.map.removeLayer(this._userMarker);
     }
-
-    // Ajouter le nouveau marqueur
     this._userMarker = L.marker([this.userLat, this.userLng], { icon: this._userIcon }).addTo(
       this.map
     );
   }
 
-  private _updateDistances(): void {
-    if (this.userLat === null || this.userLng === null) return;
-
-    this._saloonsData = this._saloonsData.map(saloon => ({
-      ...saloon,
-      distanceMeters: Math.round(
-        this._calculateDistance(this.userLat!, this.userLng!, saloon.latitude, saloon.longitude)
-      ),
-    }));
-  }
+  // ==================== Distance (calcul à la demande) ====================
 
   private _calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
-    const R = 6371000; // Rayon de la Terre en mètres
+    const R = 6371000;
     const dLat = this._toRad(lat2 - lat1);
     const dLng = this._toRad(lng2 - lng1);
     const a =
@@ -224,14 +305,16 @@ export class MapComponent implements OnInit, OnDestroy {
     return deg * (Math.PI / 180);
   }
 
+  // ==================== Modal ====================
+
   private _openModal(saloon: SaloonMapItem): void {
-    // Recalculer la distance pour ce saloon spécifique
+    const withDistance = { ...saloon };
     if (this.userLat !== null && this.userLng !== null) {
-      saloon.distanceMeters = Math.round(
+      withDistance.distanceMeters = Math.round(
         this._calculateDistance(this.userLat, this.userLng, saloon.latitude, saloon.longitude)
       );
     }
-    this.selectedSaloon = saloon;
+    this.selectedSaloon = withDistance;
     this.showModal = true;
   }
 

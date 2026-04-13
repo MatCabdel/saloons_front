@@ -63,9 +63,8 @@
   }
 
   <!-- Liste des saloons si position disponible OU reviewer/admin -->
-  @if (geoLocationStatus() === 'granted' || isReviewerOrAdmin) {
-  @if (saloons$ | async; as saloons) { @if (saloons.length > 0) { @if (geoLocationStatus() !==
-  'granted' && isReviewerOrAdmin) {
+  @if (geoLocationStatus() === 'granted' || isReviewerOrAdmin) { @if (saloons$ | async; as saloons)
+  { @if (saloons.length > 0) { @if (geoLocationStatus() !== 'granted' && isReviewerOrAdmin) {
   <div class="location-message info">
     <i class="fas fa-info-circle"></i>
     <p>Accès reviewer/admin : les saloons privés sont visibles même sans localisation.</p>

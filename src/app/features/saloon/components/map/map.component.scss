@@ -175,4 +175,57 @@ $navbar-height: 70px;
       opacity: 0;
     }
   }
+
+  // Styles des clusters Leaflet MarkerCluster
+  .marker-cluster {
+    background: rgba($gradient-top, 0.25);
+    border-radius: 50%;
+
+    div {
+      background: linear-gradient(135deg, $gradient-top, $gradient-bottom);
+      color: $white;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+  }
+
+  .marker-cluster-small {
+    width: 36px;
+    height: 36px;
+
+    div {
+      width: 28px;
+      height: 28px;
+      margin: 4px;
+    }
+  }
+
+  .marker-cluster-medium {
+    width: 44px;
+    height: 44px;
+
+    div {
+      width: 34px;
+      height: 34px;
+      margin: 5px;
+      font-size: 14px;
+    }
+  }
+
+  .marker-cluster-large {
+    width: 52px;
+    height: 52px;
+
+    div {
+      width: 40px;
+      height: 40px;
+      margin: 6px;
+      font-size: 15px;
+    }
+  }
 }
