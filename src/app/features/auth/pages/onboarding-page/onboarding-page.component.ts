@@ -173,10 +173,8 @@ export class OnboardingPageComponent {
   }
 
   private _normalizeCityLabel(value: string): string {
-    const lowerCased = value
-      .trim()
-      .replace(/\s+/g, ' ')
-      .toLocaleLowerCase('fr-FR');
+    const normalizedCity = value.trim().replace(/\s+/g, ' ');
+    const lowerCased = normalizedCity.toLocaleLowerCase('fr-FR');
 
     let capitalizeNext = true;
 

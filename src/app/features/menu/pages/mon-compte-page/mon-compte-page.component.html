@@ -55,6 +55,7 @@
       }
 
       <!-- Change Password Button -->
+      @if (canChangePassword()) {
       <button type="button" class="action-btn" routerLink="/mon-compte/changer-mot-de-passe">
         <span class="btn-icon">🔒</span>
         <div class="btn-content">
@@ -63,6 +64,7 @@
         </div>
         <span class="btn-arrow">›</span>
       </button>
+      }
 
       <!-- Delete Account Button -->
       <button type="button" class="action-btn danger-btn" routerLink="/mon-compte/supprimer-compte">

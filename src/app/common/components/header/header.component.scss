@@ -1,6 +1,8 @@
 // Variables
 $gradient-top: #413443;
 $gradient-bottom: #a483a9;
+$menu-gradient-top: #0d0b0e;
+$menu-gradient-bottom: #5a3d6d;
 $yellow: #ffc122;
 $white: #fff;
 
@@ -19,6 +21,10 @@ $white: #fff;
   position: sticky;
   top: 0;
   z-index: 100;
+
+  &.use-page-background {
+    background: transparent;
+  }
 
   .header-spacer {
     width: 44px; // Même taille que le burger pour équilibrer
@@ -132,7 +138,7 @@ $white: #fff;
   height: calc(100dvh - 70px);
   padding-top: var(--safe-top);
   padding-right: var(--safe-right);
-  background: linear-gradient(180deg, $gradient-top 0%, darken($gradient-bottom, 10%) 100%);
+  background: linear-gradient(180deg, $menu-gradient-top 0%, $menu-gradient-bottom 100%);
   z-index: 999;
   display: flex;
   flex-direction: column;

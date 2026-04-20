@@ -18,7 +18,6 @@ const config: CapacitorConfig = {
       },
     },
     FirebaseMessaging: {
-      // Présentation de la permission avec explication
       presentationOptions: ['badge', 'sound', 'alert'],
     },
   },

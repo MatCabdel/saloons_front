@@ -21,6 +21,9 @@ export class MonComptePageComponent implements OnInit {
   isPremium = computed(() => {
     return this.user()?.isPremium ?? false;
   });
+  canChangePassword = computed(() => {
+    return (this.user()?.authProvider ?? 'EMAIL') === 'EMAIL';
+  });
 
   ngOnInit(): void {
     this._userStore.getUserConnected$().subscribe(user => {

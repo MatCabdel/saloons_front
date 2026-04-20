@@ -1,4 +1,4 @@
-<header class="header-container">
+<header class="header-container" [class.use-page-background]="usePageBackground()">
   <!-- Bouton retour ou spacer -->
   @if (showBackButton()) {
   <button type="button" class="back-btn" (click)="goBack()" aria-label="Retour">

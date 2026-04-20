@@ -27,6 +27,7 @@ export class HeaderComponent {
   showBackButton = input(false);
   backRoute = input<string>('');
   showMenu = input(true);
+  usePageBackground = input(false);
 
   isMenuOpen = signal(false);
 
