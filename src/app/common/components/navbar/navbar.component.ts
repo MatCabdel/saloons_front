@@ -20,7 +20,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   unreadCount = 0;
 
   navItems = [
-    { route: '/profil', icon: 'assets/icons/user.svg', alt: 'profil' },
+    { route: '/mon-compte', icon: 'assets/icons/user.svg', alt: 'mon compte' },
     { route: '/saloons', icon: 'assets/icons/home.svg', alt: 'home' },
     { route: '/events', icon: 'assets/icons/calendar.svg', alt: 'événements' },
     { route: '/chat', icon: 'assets/icons/chat3.svg', alt: 'tchat' },

@@ -1,4 +1,4 @@
-<header class="header-container">
+<header class="header-container" [class.use-page-background]="usePageBackground()">
   <!-- Bouton retour ou spacer -->
   @if (showBackButton()) {
   <button type="button" class="back-btn" (click)="goBack()" aria-label="Retour">
@@ -8,7 +8,10 @@
   <div class="header-spacer"></div>
   }
 
-  <!-- Logo centré -->
+  <!-- Titre ou logo centré -->
+  @if (title()) {
+  <h1 class="page-title">{{ title() }}</h1>
+  } @else {
   <h1
     (click)="navigateToWelcome()"
     class="clickable"
@@ -18,6 +21,7 @@
   >
     SAL<span class="yellow">OO</span>NS
   </h1>
+  }
 
   <!-- Menu burger -->
   @if (showMenu()) {

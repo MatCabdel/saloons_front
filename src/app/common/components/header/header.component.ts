@@ -24,6 +24,8 @@ export class HeaderComponent {
   private _router = inject(Router);
   private _authService = inject(AuthApiService);
 
+  title = input('');
+  usePageBackground = input(false);
   showBackButton = input(false);
   backRoute = input<string>('');
   showMenu = input(true);

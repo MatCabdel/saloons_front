@@ -20,6 +20,10 @@ $white: #fff;
   top: 0;
   z-index: 100;
 
+  &.use-page-background {
+    background: #5a3d6d;
+  }
+
   .header-spacer {
     width: 44px; // Même taille que le burger pour équilibrer
   }
@@ -66,6 +70,15 @@ $white: #fff;
     .yellow {
       color: $yellow;
     }
+  }
+
+  .page-title {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: default;
   }
 
   .burger-btn {

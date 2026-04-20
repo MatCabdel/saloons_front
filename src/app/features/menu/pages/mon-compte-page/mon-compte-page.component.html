@@ -1,81 +1,96 @@
 <div class="mon-compte-page">
-  <app-header [title]="'Mon compte'" [showBackButton]="true"></app-header>
+  <header class="account-header">
+    <div class="header-spacer" aria-hidden="true"></div>
+    <h1 class="header-title">Mon compte</h1>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </header>
 
   <div class="page-content">
-    <!-- Profil Card -->
-    <div class="profile-card">
-      <div class="profile-header">
-        <div class="avatar-container">
-          @if (user()?.imgUrl) {
-          <img [src]="user()?.imgUrl" alt="Photo de profil" class="avatar" />
-          } @else {
-          <div class="avatar-placeholder">
-            <span>{{ getInitials() }}</span>
-          </div>
-          }
+    <a class="profile-card" routerLink="/profil">
+      <div class="avatar-container">
+        @if (getProfileDisplayImage()) {
+        <img [src]="getProfileDisplayImage()!" alt="Photo de profil" class="avatar" />
+        } @else {
+        <div class="avatar-placeholder">
+          <span>{{ getInitials() }}</span>
         </div>
-        <div class="profile-info">
-          <h2 class="user-name">{{ user()?.firstName }} {{ user()?.lastName }}</h2>
-          <p class="user-email">{{ user()?.email }}</p>
-          <p class="user-username">&#64;{{ user()?.userName }}</p>
-        </div>
+        }
       </div>
 
-      <!-- Subscription Badge -->
-      <div class="subscription-section">
-        <div class="subscription-badge" [class.premium]="isPremium()">
-          @if (isPremium()) {
-          <span class="badge-icon">⭐</span>
-          <span class="badge-text">Premium</span>
-          } @else {
-          <span class="badge-text">Freemium</span>
-          }
-        </div>
-        <p class="subscription-info">
-          @if (isPremium()) { Tu profites de tous les avantages Premium ! } @else { Passe en Premium
-          pour débloquer toutes les fonctionnalités }
+      <div class="profile-info">
+        <h2 class="user-name">{{ displayName() }}</h2>
+        <p class="user-city">{{ displayCity() }}</p>
+      </div>
+
+      <span class="card-arrow">›</span>
+    </a>
+
+    @if (!isPremium()) {
+    <button type="button" class="premium-card" (click)="goToPremium()">
+      <div class="premium-copy">
+        <h3>Passer Premium</h3>
+        <p class="premium-subtitle">Profitez de tous les avantages exclusifs !</p>
+        <p class="premium-description">
+          Orb scelerisque rutrum ante, et ultrices lorem sollicitudin ac. Donec ac turpis sit amet
+          elit vehicula maximus.
         </p>
       </div>
-    </div>
+      <div class="premium-stars" aria-hidden="true">
+        <span class="star main">★</span>
+        <span class="star small top">★</span>
+        <span class="star small bottom">★</span>
+      </div>
+    </button>
+    }
 
-    <!-- Actions Section -->
-    <div class="actions-section">
-      <h3 class="section-title">Gérer mon compte</h3>
+    <section class="section-block">
+      <h3 class="section-title">Info complémentaire</h3>
 
-      <!-- Premium Button -->
-      @if (!isPremium()) {
-      <button type="button" class="action-btn premium-btn" (click)="goToPremium()">
-        <span class="btn-icon">⭐</span>
-        <div class="btn-content">
-          <span class="btn-title">Passer Premium</span>
-          <span class="btn-subtitle">Découvre les avantages exclusifs</span>
-        </div>
-        <span class="btn-arrow">›</span>
-      </button>
+      <a class="menu-row" routerLink="/faq">
+        <span class="menu-icon info-icon">❓</span>
+        <span class="menu-label">FAQ</span>
+        <span class="card-arrow">›</span>
+      </a>
+
+      <a class="menu-row" routerLink="/contact">
+        <span class="menu-icon info-icon contact-icon">✉</span>
+        <span class="menu-label">Contact</span>
+        <span class="card-arrow">›</span>
+      </a>
+
+      <a class="menu-row legal-row" routerLink="/mentions-legales">
+        <span class="menu-icon legal-icon">⚖</span>
+        <span class="menu-label">Mentions légales</span>
+        <span class="card-arrow">›</span>
+      </a>
+    </section>
+
+    <section class="section-block">
+      <h3 class="section-title">Informations personnelles</h3>
+
+      @if (canChangePassword()) {
+      <a class="menu-row" routerLink="/mon-compte/changer-mot-de-passe">
+        <span class="menu-icon">🔒</span>
+        <span class="menu-label">Modifier mon mot de passe</span>
+        <span class="card-arrow">›</span>
+      </a>
       }
 
-      <!-- Change Password Button -->
-      <button type="button" class="action-btn" routerLink="/mon-compte/changer-mot-de-passe">
-        <span class="btn-icon">🔒</span>
-        <div class="btn-content">
-          <span class="btn-title">Changer mon mot de passe</span>
-          <span class="btn-subtitle">Modifier mon mot de passe actuel</span>
-        </div>
-        <span class="btn-arrow">›</span>
+      <button type="button" class="menu-row" (click)="goToPremium()">
+        <span class="menu-icon">✨</span>
+        <span class="menu-label">{{ isPremium() ? 'Changer mon abonnement' : 'Passer Premium' }}</span>
+        <span class="card-arrow">›</span>
       </button>
 
-      <!-- Delete Account Button -->
-      <button type="button" class="action-btn danger-btn" routerLink="/mon-compte/supprimer-compte">
-        <span class="btn-icon">🗑️</span>
-        <div class="btn-content">
-          <span class="btn-title">Supprimer mon compte</span>
-          <span class="btn-subtitle">Cette action est irréversible</span>
-        </div>
-        <span class="btn-arrow">›</span>
-      </button>
-    </div>
+      <a class="menu-row danger" routerLink="/mon-compte/supprimer-compte">
+        <span class="menu-icon">✕</span>
+        <span class="menu-label">Supprimer mon compte</span>
+        <span class="card-arrow">›</span>
+      </a>
+    </section>
 
-    <!-- Logout Button -->
     <button type="button" class="logout-btn" (click)="logout()">Se déconnecter</button>
   </div>
+
+  <app-navbar></app-navbar>
 </div>
