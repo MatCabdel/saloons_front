@@ -1,4 +1,15 @@
-import { Component, inject, OnInit, OnDestroy, signal, Signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  Signal,
+  ViewChild,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, switchMap, Subject, takeUntil, tap } from 'rxjs';
@@ -20,10 +31,10 @@ const PAGE_SIZE = 10;
 
 // Filtres de période
 const PERIOD_TABS: { value: EventPeriod; label: string }[] = [
+  { value: 'all', label: 'Tous' },
   { value: 'today', label: "Aujourd'hui" },
   { value: 'week', label: 'Cette semaine' },
   { value: 'month', label: 'Ce mois' },
-  { value: 'all', label: 'Tous' },
 ];
 
 @Component({
@@ -33,7 +44,7 @@ const PERIOD_TABS: { value: EventPeriod; label: string }[] = [
   templateUrl: './events-page.component.html',
   styleUrl: './events-page.component.scss',
 })
-export class EventsPageComponent implements OnInit, OnDestroy {
+export class EventsPageComponent implements OnInit, AfterViewInit, OnDestroy {
   private _eventApiService = inject(EventApiService);
   private _router = inject(Router);
   private _geoService = inject(GeolocationService);
@@ -42,7 +53,9 @@ export class EventsPageComponent implements OnInit, OnDestroy {
   // Filtres
   periodTabs = PERIOD_TABS;
   activePeriod = signal<EventPeriod>('all');
+  filtersScrollHint = signal<'end' | 'start' | 'none'>('end');
   private _activePeriod$ = new BehaviorSubject<EventPeriod>('all');
+  @ViewChild('filtersScroller') private _filtersScroller?: ElementRef<HTMLDivElement>;
 
   // Labels par période
   private readonly _periodLabels: Record<EventPeriod, string> = {
@@ -107,9 +120,18 @@ export class EventsPageComponent implements OnInit, OnDestroy {
       });
   }
 
+  ngAfterViewInit(): void {
+    queueMicrotask(() => this._syncFiltersScrollHint());
+  }
+
   ngOnDestroy(): void {
     this._destroy$.next();
     this._destroy$.complete();
+  }
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this._syncFiltersScrollHint();
   }
 
   // ─── Filters / Pagination ─────────────────────────────
@@ -119,6 +141,10 @@ export class EventsPageComponent implements OnInit, OnDestroy {
     this._activePeriod$.next(period);
     // Retour à la première page quand on change de filtre
     this._currentPage$.next(0);
+  }
+
+  onFiltersScroll(scroller: HTMLDivElement): void {
+    this._updateFiltersScrollHint(scroller);
   }
 
   nextPage(): void {
@@ -215,5 +241,22 @@ export class EventsPageComponent implements OnInit, OnDestroy {
 
   private _toRad(deg: number): number {
     return deg * (Math.PI / 180);
+  }
+
+  private _syncFiltersScrollHint(): void {
+    if (this._filtersScroller) {
+      this._updateFiltersScrollHint(this._filtersScroller.nativeElement);
+    }
+  }
+
+  private _updateFiltersScrollHint(scroller: HTMLDivElement): void {
+    const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
+
+    if (maxScrollLeft <= 2) {
+      this.filtersScrollHint.set('none');
+      return;
+    }
+
+    this.filtersScrollHint.set(scroller.scrollLeft >= maxScrollLeft - 4 ? 'start' : 'end');
   }
 }

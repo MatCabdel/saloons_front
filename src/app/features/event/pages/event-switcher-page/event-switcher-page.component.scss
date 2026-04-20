@@ -1,5 +1,6 @@
 // Variables
-$gradient-top: #413443;
+$gradient-top: #5a3d6d;
+$gradient-bottom: #0d0b0e;
 $white: #fff;
 
 // Hauteurs fixes
@@ -7,7 +8,7 @@ $header-height: 60px;
 $navbar-height: 70px;
 
 .events-page-container {
-  background: linear-gradient(to right, $gradient-top 0%, lighten($gradient-top, 10%) 100%);
+  background: linear-gradient(180deg, $gradient-top 0%, $gradient-bottom 100%);
   height: 100vh;
   height: 100dvh;
   min-width: 100vw;

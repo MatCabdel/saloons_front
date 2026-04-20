@@ -1,10 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { HeaderComponent } from 'src/app/common/components/header/header.component';
 import { environment } from 'src/environments/environment';
+import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 
 @Component({
   selector: 'app-change-password-page',
@@ -13,10 +14,11 @@ import { environment } from 'src/environments/environment';
   templateUrl: './change-password-page.component.html',
   styleUrls: ['./change-password-page.component.scss'],
 })
-export class ChangePasswordPageComponent {
+export class ChangePasswordPageComponent implements OnInit {
   private _fb = inject(FormBuilder);
   private _http = inject(HttpClient);
   private _router = inject(Router);
+  private _userStore = inject(UserStoreService);
 
   private static readonly _MIN_PASSWORD_LENGTH = 8;
 
@@ -41,6 +43,13 @@ export class ChangePasswordPageComponent {
     },
     { validators: this.passwordMatchValidator }
   );
+
+  ngOnInit(): void {
+    const authProvider = this._userStore.getUserConnected$().value?.authProvider ?? 'EMAIL';
+    if (authProvider !== 'EMAIL') {
+      void this._router.navigate(['/mon-compte'], { replaceUrl: true });
+    }
+  }
 
   passwordMatchValidator(form: FormGroup): Record<string, boolean> | null {
     const newPassword = form.get('newPassword')?.value;
