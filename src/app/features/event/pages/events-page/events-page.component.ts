@@ -94,7 +94,7 @@ export class EventsPageComponent implements OnInit, OnDestroy {
             page,
             PAGE_SIZE,
             position?.lat ?? null,
-            position?.lng ?? null,
+            position?.lng ?? null
           )
         )
       )

@@ -78,7 +78,9 @@
 
       <button type="button" class="menu-row" (click)="goToPremium()">
         <span class="menu-icon">✨</span>
-        <span class="menu-label">{{ isPremium() ? 'Changer mon abonnement' : 'Passer Premium' }}</span>
+        <span class="menu-label">{{
+          isPremium() ? 'Changer mon abonnement' : 'Passer Premium'
+        }}</span>
         <span class="card-arrow">›</span>
       </button>
 
