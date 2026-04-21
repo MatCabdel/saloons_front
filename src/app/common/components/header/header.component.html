@@ -25,7 +25,12 @@
 
   <!-- Action saloon à la demande -->
   @if (showMenu()) {
-  <button type="button" class="plus-btn" (click)="goToSaloonRequest()" aria-label="Saloon à la demande">
+  <button
+    type="button"
+    class="plus-btn"
+    (click)="goToSaloonRequest()"
+    aria-label="Saloon à la demande"
+  >
     <span>+</span>
   </button>
   } @else {

@@ -64,8 +64,7 @@
           >
           } @else {
           <span class="last-message">{{ conv.lastMessage?.content || 'Aucun message' }}</span>
-          }
-          @if (conv.unreadCount > 0) {
+          } @if (conv.unreadCount > 0) {
           <div class="unread-badge">{{ conv.unreadCount > 9 ? '9+' : conv.unreadCount }}</div>
           }
         </div>

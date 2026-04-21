@@ -15,7 +15,8 @@
       </button>
     </div>
   </div>
-  } @if ((geoLocationStatus === 'denied' || geoLocationStatus === 'unavailable') && !isReviewerOrAdmin) {
+  } @if ((geoLocationStatus === 'denied' || geoLocationStatus === 'unavailable') &&
+  !isReviewerOrAdmin) {
   <div class="location-overlay">
     <div class="location-card">
       <h3>Localisation indisponible</h3>
@@ -33,7 +34,8 @@
       </div>
     </div>
   </div>
-  } @if ((geoLocationStatus === 'denied' || geoLocationStatus === 'unavailable') && isReviewerOrAdmin) {
+  } @if ((geoLocationStatus === 'denied' || geoLocationStatus === 'unavailable') &&
+  isReviewerOrAdmin) {
   <div class="reviewer-info-card">
     <p>Accès reviewer/admin : les saloons restent visibles même sans localisation.</p>
     <button type="button" class="primary-btn" (click)="requestLocation()">

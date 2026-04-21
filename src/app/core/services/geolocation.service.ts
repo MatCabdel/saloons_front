@@ -126,11 +126,15 @@ export class GeolocationService {
           }
         } catch {
           const alreadyPrompted = localStorage.getItem(GeolocationService._LOCATION_PROMPTED_KEY);
-          this.status.set(alreadyPrompted ? (this.hasPosition() ? 'granted' : 'unavailable') : 'prompt');
+          this.status.set(
+            alreadyPrompted ? (this.hasPosition() ? 'granted' : 'unavailable') : 'prompt'
+          );
         }
       } else {
         const alreadyPrompted = localStorage.getItem(GeolocationService._LOCATION_PROMPTED_KEY);
-        this.status.set(alreadyPrompted ? (this.hasPosition() ? 'granted' : 'unavailable') : 'prompt');
+        this.status.set(
+          alreadyPrompted ? (this.hasPosition() ? 'granted' : 'unavailable') : 'prompt'
+        );
       }
     }
   }
