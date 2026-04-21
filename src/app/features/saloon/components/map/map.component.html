@@ -2,7 +2,7 @@
   <div id="map" class="map-element"></div>
 
   <!-- Écran explicatif avant demande de permission -->
-  @if (geoLocationStatus === 'prompt') {
+  @if (geoLocationStatus === 'prompt' && !isReviewerOrAdmin) {
   <div class="location-overlay">
     <div class="location-card">
       <h3>Localisation requise</h3>
@@ -15,7 +15,7 @@
       </button>
     </div>
   </div>
-  } @if (geoLocationStatus === 'denied' || geoLocationStatus === 'unavailable') {
+  } @if ((geoLocationStatus === 'denied' || geoLocationStatus === 'unavailable') && !isReviewerOrAdmin) {
   <div class="location-overlay">
     <div class="location-card">
       <h3>Localisation indisponible</h3>
@@ -32,6 +32,13 @@
         </button>
       </div>
     </div>
+  </div>
+  } @if ((geoLocationStatus === 'denied' || geoLocationStatus === 'unavailable') && isReviewerOrAdmin) {
+  <div class="reviewer-info-card">
+    <p>Accès reviewer/admin : les saloons restent visibles même sans localisation.</p>
+    <button type="button" class="primary-btn" (click)="requestLocation()">
+      Activer la localisation
+    </button>
   </div>
   }
 

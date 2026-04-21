@@ -1,12 +1,11 @@
 <div class="edit-profil-page">
-  <app-header></app-header>
+  <header class="edit-header">
+    <button type="button" class="back-button" (click)="goBack()" aria-label="Retour">‹</button>
+    <h1 class="header-title">Modifier mon profil</h1>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </header>
   <div class="edit-content">
-    <div class="edit-card">
-      <div class="card-header">
-        <h1>Modifier mon profil</h1>
-      </div>
-      <app-edit-profil></app-edit-profil>
-    </div>
+    <app-edit-profil></app-edit-profil>
   </div>
   <app-navbar></app-navbar>
 </div>

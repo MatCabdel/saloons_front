@@ -1,13 +1,41 @@
 <div class="messages-container">
-  <div class="header-messages">
-    <div class="nav-header">
-      <app-header></app-header>
+  <header class="messages-header">
+    <div class="header-spacer" aria-hidden="true"></div>
+    <h1 class="header-title">Messages</h1>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </header>
+
+  <section class="winks-section">
+    <div class="section-heading section-heading-light">
+      <svg
+        class="section-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+      <span>Mes clins d’œil réciproques</span>
     </div>
-    <h1>New winks</h1>
-    <app-list-match [excludeUserIds]="conversationUserIds"></app-list-match>
-  </div>
-  <app-list-conversation
-    (conversationUserIdsChange)="updateConversationUserIds($event)"
-  ></app-list-conversation>
+  </section>
+
+  <section class="conversations-section">
+    <div class="reciprocal-winks-row">
+      <app-list-match [excludeUserIds]="conversationUserIds"></app-list-match>
+    </div>
+    <div class="section-heading section-heading-dark">
+      <img class="section-icon section-icon-chat" src="assets/icons/chat3.svg" alt="" aria-hidden="true" />
+      <span>Mes conversations</span>
+    </div>
+    <app-list-conversation
+      (conversationUserIdsChange)="updateConversationUserIds($event)"
+    ></app-list-conversation>
+  </section>
+
   <app-navbar></app-navbar>
 </div>

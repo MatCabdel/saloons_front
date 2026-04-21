@@ -1,5 +1,11 @@
 <div class="profil-page">
-  <app-header></app-header>
+  <header class="profile-header">
+    <button type="button" class="back-button" (click)="goBack()" aria-label="Retour">
+      ‹
+    </button>
+    <h1 class="page-title">Mon profil saloon</h1>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </header>
   <div class="profil-content">
     <app-my-profil></app-my-profil>
   </div>

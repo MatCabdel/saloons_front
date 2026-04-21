@@ -47,13 +47,18 @@
       <h3 class="section-title">Info complémentaire</h3>
 
       <a class="menu-row" routerLink="/faq">
-        <span class="menu-icon info-icon">❓</span>
+        <img src="assets/icons/faq.svg" alt="" aria-hidden="true" class="menu-icon menu-icon-img" />
         <span class="menu-label">FAQ</span>
         <span class="card-arrow">›</span>
       </a>
 
       <a class="menu-row" routerLink="/contact">
-        <span class="menu-icon info-icon contact-icon">✉</span>
+        <img
+          src="assets/icons/contact.svg"
+          alt=""
+          aria-hidden="true"
+          class="menu-icon menu-icon-img"
+        />
         <span class="menu-label">Contact</span>
         <span class="card-arrow">›</span>
       </a>
@@ -91,7 +96,20 @@
       </a>
     </section>
 
-    <button type="button" class="logout-btn" (click)="logout()">Se déconnecter</button>
+    <button type="button" class="logout-btn" (click)="logout()">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
+        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+      </svg>
+      <span>Se déconnecter</span>
+    </button>
   </div>
 
   <app-navbar></app-navbar>

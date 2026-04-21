@@ -227,12 +227,11 @@ $danger: #ff5c5c;
   font-size: 0.94rem;
 }
 
-.info-icon {
-  font-size: 1.08rem;
-}
-
-.contact-icon {
-  font-size: 1.22rem;
+.menu-icon-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 .legal-icon {
@@ -250,6 +249,10 @@ $danger: #ff5c5c;
   margin-top: 0.25rem;
   min-height: 52px;
   padding: 0.9rem 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
   background: rgba(13, 11, 14, 0.8);
   border: 1px solid rgba($white, 0.45);
   border-radius: 6px;
@@ -257,6 +260,10 @@ $danger: #ff5c5c;
   font-size: 0.96rem;
   font-weight: 600;
   box-shadow: inset 0 1px 0 rgba($white, 0.04);
+
+  svg {
+    flex-shrink: 0;
+  }
 }
 
 @media (max-width: 380px) {

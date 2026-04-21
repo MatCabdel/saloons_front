@@ -13,6 +13,10 @@ export type GeoLocationStatus = 'prompt' | 'loading' | 'granted' | 'denied' | 'u
  */
 @Injectable({ providedIn: 'root' })
 export class GeolocationService {
+  private static readonly _LOCATION_PROMPTED_KEY = 'saloons_location_prompted';
+  private static readonly _LOCATION_GRANTED_KEY = 'saloons_location_granted';
+  private static readonly _LOCATION_CACHE_KEY = 'saloons_location_cache';
+
   // Status de la géolocalisation
   readonly status = signal<GeoLocationStatus>('prompt');
 
@@ -31,6 +35,10 @@ export class GeolocationService {
   private _initialized = false;
   // Flag interne : fetch en cours ?
   private _fetching = false;
+
+  constructor() {
+    this._hydrateCachedState();
+  }
 
   /**
    * Vérifie les permissions et récupère la position si déjà accordée.
@@ -54,7 +62,7 @@ export class GeolocationService {
    * Marque dans localStorage que l'utilisateur a été prompté.
    */
   requestLocation(): void {
-    localStorage.setItem('saloons_location_prompted', 'true');
+    localStorage.setItem(GeolocationService._LOCATION_PROMPTED_KEY, 'true');
     this._fetchPosition();
   }
 
@@ -77,19 +85,23 @@ export class GeolocationService {
       try {
         const permStatus = await Geolocation.checkPermissions();
         if (permStatus.location === 'granted' || permStatus.coarseLocation === 'granted') {
+          localStorage.setItem(GeolocationService.LOCATION_GRANTED_KEY, 'true');
+          localStorage.setItem(GeolocationService._LOCATION_GRANTED_KEY, 'true');
           this._fetchPosition();
         } else if (permStatus.location === 'denied') {
+          localStorage.removeItem(GeolocationService._LOCATION_GRANTED_KEY);
           this.status.set('denied');
         } else {
           // Permission 'prompt'
-          const alreadyPrompted = localStorage.getItem('saloons_location_prompted');
+          const alreadyPrompted = localStorage.getItem(GeolocationService._LOCATION_PROMPTED_KEY);
           if (!alreadyPrompted) {
             this.status.set('prompt');
+          } else {
+            this.status.set(this.hasPosition() ? 'granted' : 'unavailable');
           }
-          // Si déjà prompté mais pas accordé, on reste en 'prompt' (pas de re-prompt automatique)
         }
       } catch {
-        this.status.set('unavailable');
+        this.status.set(this.hasPosition() ? 'granted' : 'unavailable');
       }
     } else {
       // Web desktop
@@ -99,20 +111,26 @@ export class GeolocationService {
             name: 'geolocation' as PermissionName,
           });
           if (result.state === 'granted') {
+            localStorage.setItem(GeolocationService._LOCATION_GRANTED_KEY, 'true');
             this._fetchPosition();
           } else if (result.state === 'denied') {
+            localStorage.removeItem(GeolocationService._LOCATION_GRANTED_KEY);
             this.status.set('denied');
           } else {
-            const alreadyPrompted = localStorage.getItem('saloons_location_prompted');
+            const alreadyPrompted = localStorage.getItem(GeolocationService._LOCATION_PROMPTED_KEY);
             if (!alreadyPrompted) {
               this.status.set('prompt');
+            } else {
+              this.status.set(this.hasPosition() ? 'granted' : 'unavailable');
             }
           }
         } catch {
-          this.status.set('prompt');
+          const alreadyPrompted = localStorage.getItem(GeolocationService._LOCATION_PROMPTED_KEY);
+          this.status.set(alreadyPrompted ? (this.hasPosition() ? 'granted' : 'unavailable') : 'prompt');
         }
       } else {
-        this.status.set('prompt');
+        const alreadyPrompted = localStorage.getItem(GeolocationService._LOCATION_PROMPTED_KEY);
+        this.status.set(alreadyPrompted ? (this.hasPosition() ? 'granted' : 'unavailable') : 'prompt');
       }
     }
   }
@@ -151,9 +169,10 @@ export class GeolocationService {
             console.warn('Géolocalisation non disponible:', error.message);
             this._fetching = false;
             if (error.code === error.PERMISSION_DENIED) {
+              localStorage.removeItem(GeolocationService._LOCATION_GRANTED_KEY);
               this.status.set('denied');
             } else {
-              this.status.set('unavailable');
+              this.status.set(this.hasPosition() ? 'granted' : 'unavailable');
             }
           },
           { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
@@ -177,9 +196,10 @@ export class GeolocationService {
         console.warn('Géolocalisation non disponible:', error.message);
         this._fetching = false;
         if (error.message?.includes('denied') || error.message?.includes('permission')) {
+          localStorage.removeItem(GeolocationService._LOCATION_GRANTED_KEY);
           this.status.set('denied');
         } else {
-          this.status.set('unavailable');
+          this.status.set(this.hasPosition() ? 'granted' : 'unavailable');
         }
       });
   }
@@ -203,6 +223,29 @@ export class GeolocationService {
     this.userLat.set(lat);
     this.userLng.set(lng);
     this._userPosition$.next({ lat, lng });
+    localStorage.setItem(GeolocationService._LOCATION_GRANTED_KEY, 'true');
+    localStorage.setItem(GeolocationService._LOCATION_CACHE_KEY, JSON.stringify({ lat, lng }));
     this.status.set('granted');
+  }
+
+  private _hydrateCachedState(): void {
+    const granted = localStorage.getItem(GeolocationService._LOCATION_GRANTED_KEY);
+    const rawPosition = localStorage.getItem(GeolocationService._LOCATION_CACHE_KEY);
+
+    if (!granted || !rawPosition) {
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(rawPosition) as { lat?: number; lng?: number };
+      if (typeof parsed.lat === 'number' && typeof parsed.lng === 'number') {
+        this.userLat.set(parsed.lat);
+        this.userLng.set(parsed.lng);
+        this._userPosition$.next({ lat: parsed.lat, lng: parsed.lng });
+        this.status.set('granted');
+      }
+    } catch {
+      localStorage.removeItem(GeolocationService._LOCATION_CACHE_KEY);
+    }
   }
 }

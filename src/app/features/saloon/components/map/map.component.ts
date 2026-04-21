@@ -11,6 +11,7 @@ import { GeolocationService, GeoLocationStatus } from 'src/app/core/services/geo
 import { SaloonBrowseStateService } from '../../services/saloon-browse-state.service';
 import { toSaloonTypeFilter } from '../../models/saloon-browse.model';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { AuthApiService } from 'src/app/features/auth/services/auth-api.service';
 
 // Constantes de configuration
 const DEBOUNCE_MS = 400;
@@ -42,6 +43,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private _saloonApiService = inject(SaloonApiService);
   private _geoService = inject(GeolocationService);
   private _browseState = inject(SaloonBrowseStateService);
+  private _authApiService = inject(AuthApiService);
 
   // Modal state
   showModal = false;
@@ -56,6 +58,11 @@ export class MapComponent implements OnInit, OnDestroy {
   }
   get geoLocationStatus(): GeoLocationStatus {
     return this._geoService.status();
+  }
+
+  get isReviewerOrAdmin(): boolean {
+    const roles = this._authApiService.getUserRoles();
+    return roles.includes('ROLE_REVIEWER') || roles.includes('ROLE_ADMIN');
   }
 
   private _customIcon = L.icon({
@@ -186,14 +193,12 @@ export class MapComponent implements OnInit, OnDestroy {
   private _setupMapMoveListener(): void {
     this.map.on('moveend', () => this._mapMove$.next());
 
-    this._mapMove$
-      .pipe(debounceTime(DEBOUNCE_MS), takeUntil(this._destroy$))
-      .subscribe(() => {
-        const bounds = this.map.getBounds();
-        if (!this._isWithinLoadedBuffer(bounds)) {
-          this._triggerFetch();
-        }
-      });
+    this._mapMove$.pipe(debounceTime(DEBOUNCE_MS), takeUntil(this._destroy$)).subscribe(() => {
+      const bounds = this.map.getBounds();
+      if (!this._isWithinLoadedBuffer(bounds)) {
+        this._triggerFetch();
+      }
+    });
   }
 
   /**
