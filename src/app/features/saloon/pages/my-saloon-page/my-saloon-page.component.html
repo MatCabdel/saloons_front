@@ -17,8 +17,9 @@
       <button class="modal-btn" type="button" (click)="closeModal()">C'est parti !</button>
     </div>
   </div>
+  } @if (saloon$ | async; as saloon) {
+  <app-header [title]="saloon.name" [showMenu]="false" [usePageBackground]="true"></app-header>
   }
-  <app-header></app-header>
   <div class="profils-container">
     @if (saloon$ | async; as saloon) { @if (users$ | async; as users) { @if (users.length === 0) {
     <h1>Vous êtes le premier connecté dans le saloon !</h1>
