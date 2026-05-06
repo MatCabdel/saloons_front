@@ -1,5 +1,6 @@
-$gradient-top: #5a3d6d;
-$gradient-bottom: #0d0b0e;
+$gradient-top: #2b1c35;
+$gradient-middle: #5a3d6d;
+$gradient-bottom: #8f6aa4;
 $white: #fff;
 $yellow: #ffc122;
 $panel-bg: rgba(255, 255, 255, 0.1);
@@ -9,7 +10,9 @@ $danger: #ff5c5c;
 .mon-compte-page {
   min-height: 100vh;
   min-height: 100dvh;
-  background: linear-gradient(180deg, $gradient-top 0%, $gradient-bottom 100%);
+  background: radial-gradient(circle at 50% 11%, rgb(143 106 164 / 0.36), transparent 27%),
+    radial-gradient(circle at 50% 43%, rgb(255 214 102 / 0.08), transparent 22%),
+    linear-gradient(180deg, $gradient-top 0%, $gradient-middle 24%, $gradient-bottom 100%);
 }
 
 .account-header {
@@ -213,9 +216,12 @@ $danger: #ff5c5c;
   box-shadow: 0 10px 24px rgba(11, 7, 15, 0.12);
 
   &.danger {
+    background: rgba(255, 92, 92, 0.12);
+    border-color: rgba(255, 92, 92, 0.26);
+
     .menu-icon,
     .menu-label {
-      color: $danger;
+      color: rgba(255, 218, 218, 0.96);
     }
   }
 }
@@ -253,13 +259,13 @@ $danger: #ff5c5c;
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  background: rgba(13, 11, 14, 0.8);
-  border: 1px solid rgba($white, 0.45);
+  background: linear-gradient(135deg, rgba(90, 61, 109, 0.78), rgba(43, 28, 53, 0.88));
+  border: 1px solid rgba(247, 244, 248, 0.28);
   border-radius: 6px;
   color: $white;
   font-size: 0.96rem;
   font-weight: 600;
-  box-shadow: inset 0 1px 0 rgba($white, 0.04);
+  box-shadow: 0 12px 28px rgba(43, 28, 53, 0.24), inset 0 1px 0 rgba($white, 0.08);
 
   svg {
     flex-shrink: 0;

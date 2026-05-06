@@ -517,14 +517,86 @@ $white: #fff;
   font-size: 0.9rem;
   color: $text-color;
   line-height: 1.6;
+}
+
+:host ::ng-deep .legal-modal-body {
+  h2 {
+    margin: 0 0 1.35rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid rgba($primary-color, 0.16);
+    color: $primary-dark;
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.2;
+  }
 
   h3 {
-    margin: 1rem 0 0.5rem;
-    font-size: 0.95rem;
+    margin: 0 0 0.85rem;
+    color: $primary-dark;
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1.35;
+  }
+
+  p {
+    margin: 0 0 0.95rem;
+  }
+
+  .legal-updated {
+    display: inline-block;
+    margin: -0.55rem 0 0.45rem;
+    padding: 0.45rem 0.7rem;
+    border-radius: 8px;
+    background: rgba($primary-color, 0.07);
+    color: rgba($text-color, 0.72);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .legal-section {
+    padding-top: 1.35rem;
+    margin-top: 1.35rem;
+    border-top: 1px solid rgba($primary-color, 0.12);
+
+    &:first-of-type {
+      padding-top: 0;
+      margin-top: 0;
+      border-top: 0;
+    }
+  }
+
+  .legal-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin: 0.9rem 0 1.15rem;
+    padding: 0.9rem;
+    border-radius: 8px;
+    background: rgba($primary-color, 0.06);
+    border: 1px solid rgba($primary-color, 0.1);
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .legal-contact {
+    display: inline-block;
+    margin-top: 0.1rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: 8px;
+    background: rgba($primary-color, 0.08);
+    color: $primary-dark;
+    font-weight: 700;
   }
 
   ul {
-    padding-left: 1.2rem;
+    margin: 0 0 1rem;
+    padding-left: 1.15rem;
+  }
+
+  li {
+    margin-bottom: 0.55rem;
   }
 }
 

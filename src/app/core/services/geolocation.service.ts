@@ -85,7 +85,6 @@ export class GeolocationService {
       try {
         const permStatus = await Geolocation.checkPermissions();
         if (permStatus.location === 'granted' || permStatus.coarseLocation === 'granted') {
-          localStorage.setItem(GeolocationService.LOCATION_GRANTED_KEY, 'true');
           localStorage.setItem(GeolocationService._LOCATION_GRANTED_KEY, 'true');
           this._fetchPosition();
         } else if (permStatus.location === 'denied') {
