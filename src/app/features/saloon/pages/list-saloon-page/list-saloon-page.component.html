@@ -63,26 +63,9 @@
   }
 
   <!-- Liste des saloons si position disponible OU reviewer/admin -->
-  @if (geoLocationStatus() === 'granted' || isReviewerOrAdmin) {
-  <!-- Filtres par type -->
-  <div class="filters-section">
-    <div class="filters-grid">
-      @for (tab of filterTabs; track tab.value) {
-      <button
-        type="button"
-        class="filter-chip"
-        [class.active]="activeFilter() === tab.value"
-        [class.hot]="tab.value === 'CHAUD'"
-        (click)="setFilter(tab.value)"
-      >
-        {{ tab.label }}
-      </button>
-      }
-    </div>
-  </div>
-
-  @if (saloons$ | async; as saloons) { @if (saloons.length > 0) { @if (geoLocationStatus() !==
-  'granted' && isReviewerOrAdmin) {
+  @if (geoLocationStatus() === 'granted' || isReviewerOrAdmin) { @if (saloons$ | async; as saloons)
+  { @if (saloons.length > 0) { @if ((geoLocationStatus() === 'denied' || geoLocationStatus() ===
+  'unavailable') && isReviewerOrAdmin) {
   <div class="location-message info">
     <i class="fas fa-info-circle"></i>
     <p>Accès reviewer/admin : les saloons privés sont visibles même sans localisation.</p>
@@ -91,12 +74,6 @@
     </button>
   </div>
   }
-  <p class="saloons-count">
-    <span class="count">{{ filteredSaloonsCount() }}</span> saloon{{
-      filteredSaloonsCount() > 1 ? 's' : ''
-    }}
-    @if (activeFilter() === 'CHAUD') { les plus populaires } @else { à proximité }
-  </p>
   <div class="list-places">
     @for (saloon of saloons; track saloon.id) {
     <app-saloon-card

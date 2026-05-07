@@ -15,6 +15,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FileUploadComponent } from '../../../../common/components/file-upload/file-upload.component';
 import { FieldErrorComponent } from '../../common/field-error/field-error.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { PRIVACY_POLICY_TEXT, TERMS_TEXT } from '../../legal/legal-texts';
 
 @Component({
   selector: 'app-register-profil',
@@ -38,6 +39,8 @@ export class RegisterProfilComponent implements OnInit {
   showPassword = false;
   showConfirmPassword = false;
   showConditionsModal = false;
+  termsText = TERMS_TEXT;
+  privacyPolicyText = PRIVACY_POLICY_TEXT;
 
   private _fb = inject(FormBuilder);
   private _userService = inject(UserService);

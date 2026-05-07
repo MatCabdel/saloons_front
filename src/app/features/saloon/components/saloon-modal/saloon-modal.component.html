@@ -135,13 +135,13 @@
       <img [src]="saloon.imgUrl" [alt]="saloon.name" class="saloon-image" loading="lazy" />
       } }
 
-      <!-- Nom du saloon -->
-      <h2 class="saloon-name" [class.saloon-name-small]="eventInfo">{{ saloon.name }}</h2>
-
       <!-- Type -->
       @if (typeLabel) {
       <span class="saloon-type-badge">{{ typeLabel }}</span>
       }
+
+      <!-- Nom du saloon -->
+      <h2 class="saloon-name" [class.saloon-name-small]="eventInfo">{{ saloon.name }}</h2>
 
       <!-- Adresse -->
       @if (saloon.address) {

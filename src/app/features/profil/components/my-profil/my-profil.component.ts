@@ -29,4 +29,15 @@ export class MyProfilComponent {
   navigateToEdit(): void {
     this._router.navigate(['/profil/edit']);
   }
+
+  getDisplayName(user: UserDTO): string {
+    return user.userName || `${user.firstName} ${user.lastName}`.trim();
+  }
+
+  getProfileDescription(user: UserDTO): string {
+    return (
+      user.description?.trim() ||
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sit amet velit quam. Proin sagittis... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sit amet velit quam. Proin sagittis...'
+    );
+  }
 }

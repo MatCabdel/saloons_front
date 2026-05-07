@@ -21,7 +21,7 @@ export class EventApiService {
     page = 0,
     size = 10,
     lat?: number | null,
-    lng?: number | null,
+    lng?: number | null
   ): Observable<PagedEvents> {
     let params = new HttpParams()
       .set('period', period)

@@ -227,15 +227,10 @@
 <!-- Modal RGPD -->
 <div class="modal-rgpd" *ngIf="showConditionsModal">
   <div class="modal-content">
-    <h2>Conditions d’utilisation et RGPD</h2>
-    <div class="modal-body">
-      <!-- Place ici ton texte RGPD complet -->
-      <p>
-        En vous inscrivant, vous acceptez nos conditions d’utilisation et la politique de
-        confidentialité RGPD. Vos données seront utilisées uniquement pour la gestion de votre
-        compte et ne seront jamais transmises à des tiers sans votre consentement.
-        <!-- ...etc... -->
-      </p>
+    <h2>Conditions d’utilisation et confidentialité</h2>
+    <div class="modal-body legal-modal-body">
+      <div [innerHTML]="termsText"></div>
+      <div [innerHTML]="privacyPolicyText"></div>
     </div>
     <button type="button" (click)="closeConditionsModal()">Fermer</button>
   </div>

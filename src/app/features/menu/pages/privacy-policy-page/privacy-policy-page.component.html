@@ -1,0 +1,13 @@
+<div class="legal-document-page">
+  <app-header
+    [title]="'Confidentialité'"
+    [showBackButton]="true"
+    [showMenu]="false"
+    [usePageBackground]="true"
+    [backRoute]="'/mon-compte'"
+  ></app-header>
+
+  <div class="page-content">
+    <div class="legal-card" [innerHTML]="legalText"></div>
+  </div>
+</div>

@@ -1,44 +1,58 @@
-$gradient-top: #413443;
-$gradient-bottom: #a483a9;
+$gradient-top: #2b1c35;
+$gradient-middle: #5a3d6d;
+$gradient-bottom: #8f6aa4;
 $white: #fff;
 $yellow: #ffc122;
+$panel-bg: rgba(255, 255, 255, 0.1);
+$panel-border: rgba(255, 255, 255, 0.1);
+$error: #ff6b6b;
 
 .contact-page {
   min-height: 100vh;
-  background: linear-gradient(to right, $gradient-top 0%, lighten($gradient-top, 10%) 100%);
+  min-height: 100dvh;
+  background: radial-gradient(circle at 50% 11%, rgb(143 106 164 / 0.36), transparent 27%),
+    radial-gradient(circle at 50% 43%, rgb(255 214 102 / 0.08), transparent 22%),
+    linear-gradient(180deg, $gradient-top 0%, $gradient-middle 24%, $gradient-bottom 100%);
 }
 
 .page-content {
-  padding: 1.5rem;
+  padding: 1.35rem 1rem calc(96px + var(--safe-bottom));
   color: $white;
 }
 
-// Introduction
 .intro-section {
-  margin-bottom: 2rem;
+  margin-bottom: 1.35rem;
 
   h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
+    margin: 0 0 0.35rem;
+    font-size: 1.55rem;
+    font-weight: 700;
+    line-height: 1.1;
   }
 
   .intro-text {
-    font-size: 1rem;
-    opacity: 0.9;
-    line-height: 1.5;
+    margin: 0;
+    font-size: 0.95rem;
+    color: rgba($white, 0.78);
+    line-height: 1.45;
   }
 }
 
-// Formulaire
 .contact-form {
+  padding: 1rem;
+  border: 1px solid $panel-border;
+  border-radius: 10px;
+  background: rgba(178, 160, 197, 0.22);
+  box-shadow: 0 14px 34px rgba(15, 8, 19, 0.16);
+
   .form-group {
-    margin-bottom: 1.25rem;
+    margin-bottom: 1rem;
 
     label {
       display: block;
       font-size: 0.9rem;
-      font-weight: 500;
+      font-weight: 600;
+      color: rgba($white, 0.9);
       margin-bottom: 0.5rem;
     }
 
@@ -46,11 +60,11 @@ $yellow: #ffc122;
     select,
     textarea {
       width: 100%;
-      padding: 0.875rem 1rem;
-      font-size: 1rem;
-      border: 2px solid rgba($white, 0.2);
-      border-radius: 12px;
-      background: rgba($white, 0.1);
+      padding: 0.85rem 0.95rem;
+      font-size: 0.95rem;
+      border: 1px solid $panel-border;
+      border-radius: 8px;
+      background: $panel-bg;
       color: $white;
       transition: all 0.2s ease;
       box-sizing: border-box;
@@ -61,12 +75,14 @@ $yellow: #ffc122;
 
       &:focus {
         outline: none;
-        border-color: $yellow;
-        background: rgba($white, 0.15);
+        border-color: rgba($yellow, 0.55);
+        background: rgba($white, 0.14);
+        box-shadow: 0 0 0 3px rgba($yellow, 0.1);
       }
 
       &.invalid {
-        border-color: #ff6b6b;
+        border-color: rgba($error, 0.75);
+        background: rgba($error, 0.08);
       }
     }
 
@@ -79,7 +95,7 @@ $yellow: #ffc122;
       cursor: pointer;
 
       option {
-        background: $gradient-top;
+        background: $gradient-middle;
         color: $white;
       }
     }
@@ -92,43 +108,41 @@ $yellow: #ffc122;
     .error-text {
       display: block;
       font-size: 0.8rem;
-      color: #ff6b6b;
+      color: #ffb2b2;
       margin-top: 0.5rem;
     }
   }
 }
 
-// Erreur serveur
 .error-banner {
-  background: rgba(#ff6b6b, 0.2);
-  border: 1px solid #ff6b6b;
+  background: rgba($error, 0.14);
+  border: 1px solid rgba($error, 0.34);
   border-radius: 8px;
-  padding: 1rem;
+  padding: 0.875rem 1rem;
   margin-bottom: 1rem;
   font-size: 0.9rem;
-  color: #ff6b6b;
+  color: #ffd1d1;
 }
 
-// Bouton submit
 .btn-submit {
   width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: $gradient-top;
-  background: $yellow;
+  min-height: 50px;
+  padding: 0.9rem 1rem;
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: #4d335b;
+  background: linear-gradient(135deg, $yellow, darken($yellow, 12%));
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  box-shadow: 0 12px 24px rgba(67, 42, 4, 0.18);
 
   &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba($yellow, 0.3);
+    box-shadow: 0 14px 28px rgba(67, 42, 4, 0.24);
   }
 
   &:disabled {
@@ -140,7 +154,7 @@ $yellow: #ffc122;
     width: 18px;
     height: 18px;
     border: 2px solid transparent;
-    border-top-color: $gradient-top;
+    border-top-color: #4d335b;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -152,38 +166,44 @@ $yellow: #ffc122;
   }
 }
 
-// Confirmation
 .confirmation-container {
-  text-align: center;
-  padding: 2rem 1rem;
+  padding: 1.25rem 1rem;
+  border: 1px solid $panel-border;
+  border-radius: 10px;
+  background: rgba(178, 160, 197, 0.22);
+  box-shadow: 0 14px 34px rgba(15, 8, 19, 0.16);
 
   .confirmation-icon {
-    font-size: 4rem;
+    font-size: 3.2rem;
     margin-bottom: 1rem;
+    text-align: center;
   }
 
   h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
+    margin: 0 0 0.75rem;
+    font-size: 1.45rem;
+    font-weight: 700;
+    text-align: center;
   }
 
   .confirmation-message {
-    font-size: 1rem;
-    line-height: 1.6;
-    opacity: 0.9;
-    margin-bottom: 2rem;
+    margin: 0 0 1.35rem;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: rgba($white, 0.82);
+    text-align: center;
   }
 
   .btn-new-message {
     width: 100%;
-    padding: 1rem;
-    font-size: 1rem;
+    min-height: 50px;
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: $white;
     background: transparent;
-    border: 2px solid $white;
-    border-radius: 12px;
+    border: 1px solid rgba($white, 0.24);
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
     margin-bottom: 1rem;
@@ -195,19 +215,19 @@ $yellow: #ffc122;
 
   .btn-back-saloons {
     width: 100%;
-    padding: 1rem;
-    font-size: 1rem;
-    font-weight: 600;
-    color: $gradient-top;
-    background: $yellow;
+    min-height: 50px;
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #4d335b;
+    background: linear-gradient(135deg, $yellow, darken($yellow, 12%));
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    box-shadow: 0 12px 24px rgba(67, 42, 4, 0.18);
 
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba($yellow, 0.3);
+      box-shadow: 0 14px 28px rgba(67, 42, 4, 0.24);
     }
   }
 }

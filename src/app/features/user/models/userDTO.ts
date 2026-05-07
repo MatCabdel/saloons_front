@@ -1,3 +1,5 @@
+export type AuthProvider = 'EMAIL' | 'GOOGLE' | 'FACEBOOK' | 'APPLE';
+
 export type UserDTO = {
   id: number;
   email: string;
@@ -12,6 +14,7 @@ export type UserDTO = {
   birthDate?: string | null;
   age?: number | null;
   isPremium?: boolean;
+  authProvider?: AuthProvider;
 };
 
 export type UserRegistrationDTO = {

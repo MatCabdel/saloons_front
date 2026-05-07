@@ -1,13 +1,19 @@
-import { Component } from '@angular/core';
-import { HeaderComponent } from 'src/app/common/components/header/header.component';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { NavbarComponent } from 'src/app/common/components/navbar/navbar.component';
 import { EditProfilComponent } from '../../components/edit-profil/edit-profil.component';
 
 @Component({
   selector: 'app-edit-profil-page',
   standalone: true,
-  imports: [EditProfilComponent, HeaderComponent, NavbarComponent],
+  imports: [EditProfilComponent, NavbarComponent],
   templateUrl: './edit-profil-page.component.html',
   styleUrl: './edit-profil-page.component.scss',
 })
-export class EditProfilPageComponent {}
+export class EditProfilPageComponent {
+  private _router = inject(Router);
+
+  goBack(): void {
+    this._router.navigate(['/profil']);
+  }
+}

@@ -2,11 +2,16 @@
 $navbar-height: 70px;
 
 :host {
-  display: block;
-  width: 100%;
-  // Hauteur = 100% du parent + débordement sous la navbar pour cacher Leaflet
-  height: calc(100% + #{$navbar-height} + 20px);
-  margin-bottom: -#{$navbar-height + 20px};
+  // Positionné en absolu pour sortir du flux du content-wrapper (overflow-y: auto)
+  // qui empêcherait Leaflet d'avoir une hauteur correcte sur iOS/WKWebView.
+  // Le content-wrapper a position: relative, donc ce bloc s'y ancre.
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  // Descend sous la navbar (annule le padding-bottom du content-wrapper)
+  bottom: calc(-#{$navbar-height});
+  overflow: hidden;
 }
 
 app-map {

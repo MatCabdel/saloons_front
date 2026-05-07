@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { environment } from '../environments/environment';
 import { signal } from '@angular/core';
+import { GeolocationService } from './core/services/geolocation.service';
 
 type ApiStatus = 'checking' | 'ok' | 'error';
 
@@ -14,8 +15,10 @@ type ApiStatus = 'checking' | 'ok' | 'error';
 })
 export class AppComponent implements OnInit {
   readonly apiStatus = signal<ApiStatus>('checking');
+  private _geoService = inject(GeolocationService);
 
   ngOnInit(): void {
+    this._geoService.init();
     this._checkApiReachability();
   }
 

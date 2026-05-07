@@ -1,12 +1,13 @@
-<div class="legal-notices-page">
-  <app-header [showBackButton]="true"></app-header>
+<div class="legal-document-page">
+  <app-header
+    [title]="'Mentions légales'"
+    [showBackButton]="true"
+    [showMenu]="false"
+    [usePageBackground]="true"
+    [backRoute]="'/mon-compte'"
+  ></app-header>
 
   <div class="page-content">
-    <div class="legal-header">
-      <h1>Mentions légales</h1>
-      <p>Informations légales liées à l’application SALOONS</p>
-    </div>
-
     <div class="legal-card" [innerHTML]="legalText"></div>
   </div>
 </div>

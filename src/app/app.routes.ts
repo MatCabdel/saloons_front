@@ -44,6 +44,8 @@ import { FaqPageComponent } from './features/menu/pages/faq-page/faq-page.compon
 import { ContactPageComponent } from './features/menu/pages/contact-page/contact-page.component';
 import { ForgotPasswordPageComponent } from './features/auth/pages/forgot-password-page/forgot-password-page.component';
 import { LegalNoticesPageComponent } from './features/menu/pages/legal-notices-page/legal-notices-page.component';
+import { TermsPageComponent } from './features/menu/pages/terms-page/terms-page.component';
+import { PrivacyPolicyPageComponent } from './features/menu/pages/privacy-policy-page/privacy-policy-page.component';
 import { WelcomePageComponent } from './features/home/pages/welcome-page/welcome-page.component';
 import { EventSwitcherPageComponent } from './features/event/pages/event-switcher-page/event-switcher-page.component';
 import { EventsPageComponent } from './features/event/pages/events-page/events-page.component';
@@ -131,6 +133,16 @@ export const routes: Routes = [
   {
     path: 'mentions-legales',
     component: LegalNoticesPageComponent,
+    canActivate: [isLoggedInGuard],
+  },
+  {
+    path: 'cgu',
+    component: TermsPageComponent,
+    canActivate: [isLoggedInGuard],
+  },
+  {
+    path: 'politique-confidentialite',
+    component: PrivacyPolicyPageComponent,
     canActivate: [isLoggedInGuard],
   },
   {
