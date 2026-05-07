@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { Subject, debounceTime, switchMap, takeUntil, catchError, skip, tap, of, map } from 'rxjs';
+import { Subject, debounceTime, switchMap, takeUntil, catchError, EMPTY, skip, tap, of, map } from 'rxjs';
 import { SaloonModalComponent } from '../saloon-modal/saloon-modal.component';
 import { SaloonMapItem } from '../../services/presence.service';
 import { SaloonApiService } from '../../services/saloon-api.service';
@@ -87,7 +87,6 @@ export class MapComponent implements OnInit, OnDestroy {
   private _cachedSaloons: SaloonMapItem[] = [];
   private _loadedBounds: L.LatLngBounds | null = null;
   private _currentTypeFilter: SaloonType | null = null;
-  private _isProgrammaticMove = false;
 
   // Effet réactif : dès que la position change dans le service, mettre à jour la carte
   private _positionEffect = effect(() => {
@@ -97,9 +96,6 @@ export class MapComponent implements OnInit, OnDestroy {
 
     if (status === 'granted' && lat !== null && lng !== null && this.map) {
       this._addUserMarker();
-      // Marquer le déplacement comme programmatique pour éviter le double-trigger
-      // via moveend (qui causerait une annulation switchMap sur réseau lent)
-      this._isProgrammaticMove = true;
       this.map.setView([lat, lng], USER_ZOOM);
     }
   });
@@ -113,8 +109,8 @@ export class MapComponent implements OnInit, OnDestroy {
     this._setupMapMoveListener();
     this._setupFilterListener();
 
-    // Le fetch initial est déclenché depuis _initMap() → map.whenReady()
-    // pour garantir que la taille du conteneur est correcte (critique sur iOS/WKWebView)
+    // Chargement initial avec les bounds visibles
+    this._triggerFetch();
 
     // Géolocalisation
     this._geoService.init();
@@ -152,17 +148,6 @@ export class MapComponent implements OnInit, OnDestroy {
       chunkedLoading: true,
     });
     this.map.addLayer(this._clusterGroup);
-
-    // Sur iOS/WKWebView, le conteneur peut avoir une taille nulle ou incorrecte
-    // au premier frame. On attend que la map ait vraiment ses dimensions finales
-    // avant de déclencher le premier fetch.
-    this.map.whenReady(() => {
-      requestAnimationFrame(() => {
-        this.map.invalidateSize();
-        // Déclencher le fetch initial ici, après que la taille soit correcte
-        this._triggerFetch();
-      });
-    });
   }
 
   // ==================== Pipeline de chargement ====================
@@ -187,16 +172,18 @@ export class MapComponent implements OnInit, OnDestroy {
               tap(() => {
                 this._loadedBounds = expanded;
               }),
-              switchMap(saloons =>
-                saloons.length > 0 ? of(saloons) : this._loadAllAccessibleSaloons(type)
-              ),
+              switchMap(saloons => {
+                if (saloons.length > 0) return of(saloons);
+                // Bbox vide : on charge tous les saloons accessibles.
+                // On set _loadedBounds à world pour que tout setView() ultérieur
+                // (affinement GPS) ne déclenche pas de re-fetch qui annulerait ce fallback.
+                this._loadedBounds = L.latLngBounds([-90, -180], [90, 180]);
+                return this._loadAllAccessibleSaloons(type);
+              }),
               catchError(err => {
                 console.error('Erreur chargement saloons map:', err);
                 return this._loadAllAccessibleSaloons(type).pipe(
-                  catchError(fallbackErr => {
-                    console.error('Fallback saloons also failed:', fallbackErr);
-                    return of([] as SaloonMapItem[]);
-                  })
+                  catchError(() => EMPTY)
                 );
               })
             );
@@ -214,8 +201,8 @@ export class MapComponent implements OnInit, OnDestroy {
     type: SaloonType | null
   ): ReturnType<SaloonApiService['getSaloonsForMap']> {
     return this._saloonApiService.getListSaloon(type).pipe(
-      map(saloons => saloons.filter(saloon => saloon.latitude && saloon.longitude)),
-      map(saloons => saloons.map(saloon => this._toMapItem(saloon)))
+      map(saloons => saloons.filter(s => s.latitude && s.longitude)),
+      map(saloons => saloons.map(s => this._toMapItem(s)))
     );
   }
 
@@ -237,20 +224,10 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Écoute moveend avec debounce, ne recharge que si hors zone tampon.
-   * Les déplacements programmatiques (setView depuis l'effect) déclenchent
-   * directement un fetch unique pour éviter la race condition avec switchMap.
+   * Écoute moveend avec debounce, ne recharge que si hors zone tampon
    */
   private _setupMapMoveListener(): void {
-    this.map.on('moveend', () => {
-      if (this._isProgrammaticMove) {
-        this._isProgrammaticMove = false;
-        this._loadedBounds = null;
-        this._triggerFetch();
-        return;
-      }
-      this._mapMove$.next();
-    });
+    this.map.on('moveend', () => this._mapMove$.next());
 
     this._mapMove$.pipe(debounceTime(DEBOUNCE_MS), takeUntil(this._destroy$)).subscribe(() => {
       const bounds = this.map.getBounds();
@@ -272,11 +249,18 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Déclenche un fetch avec les bounds actuels et le filtre courant
+   * Déclenche un fetch avec les bounds actuels et le filtre courant.
+   *
+   * On set _loadedBounds de façon optimiste AVANT la réponse HTTP, pour que
+   * tout setView() (affinement GPS, position cache) arrivant pendant le vol
+   * passe par _isWithinLoadedBuffer() et ne déclenche pas de re-fetch parasite
+   * qui annulerait via switchMap la requête en cours.
    */
   private _triggerFetch(): void {
+    const bounds = this.map.getBounds();
+    this._loadedBounds = this._expandBounds(bounds);
     this._fetchTrigger$.next({
-      bounds: this.map.getBounds(),
+      bounds,
       type: this._currentTypeFilter,
     });
   }
