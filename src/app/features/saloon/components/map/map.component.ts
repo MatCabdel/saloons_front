@@ -97,6 +97,8 @@ export class MapComponent implements OnInit, OnDestroy {
     if (status === 'granted' && lat !== null && lng !== null && this.map) {
       this._addUserMarker();
       this.map.setView([lat, lng], USER_ZOOM);
+      this._loadedBounds = null;
+      requestAnimationFrame(() => this._triggerFetch());
     }
   });
 

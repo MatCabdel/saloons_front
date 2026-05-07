@@ -46,14 +46,17 @@ export class GeolocationService {
    * Les appels suivants retournent immédiatement le dernier état connu.
    */
   async init(): Promise<void> {
-    // Si déjà en train de fetch ou si on a déjà la position, ne rien faire
     if (this._fetching) return;
-    if (this.status() === 'granted' && this.hasPosition()) return;
 
     // Si déjà initialisé et status n'est pas 'prompt', ne pas re-vérifier
     if (this._initialized && this.status() !== 'prompt') return;
 
     this._initialized = true;
+    if (this.status() === 'granted' && this.hasPosition()) {
+      this._fetchPosition();
+      return;
+    }
+
     await this._checkPermissionAndFetch();
   }
 
