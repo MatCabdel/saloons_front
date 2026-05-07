@@ -1,4 +1,4 @@
-export type AuthProvider = 'EMAIL' | 'GOOGLE' | 'FACEBOOK';
+export type AuthProvider = 'EMAIL' | 'GOOGLE' | 'FACEBOOK' | 'APPLE';
 
 export type UserDTO = {
   id: number;

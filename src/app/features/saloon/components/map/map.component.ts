@@ -2,11 +2,21 @@ import { Component, OnInit, OnDestroy, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { Subject, debounceTime, switchMap, takeUntil, catchError, EMPTY, skip, tap } from 'rxjs';
+import {
+  Subject,
+  debounceTime,
+  switchMap,
+  takeUntil,
+  catchError,
+  skip,
+  tap,
+  of,
+  map,
+} from 'rxjs';
 import { SaloonModalComponent } from '../saloon-modal/saloon-modal.component';
 import { SaloonMapItem } from '../../services/presence.service';
 import { SaloonApiService } from '../../services/saloon-api.service';
-import { SaloonType } from '../../models/saloonModel';
+import { Saloon, SaloonType } from '../../models/saloonModel';
 import { GeolocationService, GeoLocationStatus } from 'src/app/core/services/geolocation.service';
 import { SaloonBrowseStateService } from '../../services/saloon-browse-state.service';
 import { toSaloonTypeFilter } from '../../models/saloon-browse.model';
@@ -87,6 +97,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private _cachedSaloons: SaloonMapItem[] = [];
   private _loadedBounds: L.LatLngBounds | null = null;
   private _currentTypeFilter: SaloonType | null = null;
+  private _isProgrammaticMove = false;
 
   // Effet réactif : dès que la position change dans le service, mettre à jour la carte
   private _positionEffect = effect(() => {
@@ -96,9 +107,10 @@ export class MapComponent implements OnInit, OnDestroy {
 
     if (status === 'granted' && lat !== null && lng !== null && this.map) {
       this._addUserMarker();
+      // Marquer le déplacement comme programmatique pour éviter le double-trigger
+      // via moveend (qui causerait une annulation switchMap sur réseau lent)
+      this._isProgrammaticMove = true;
       this.map.setView([lat, lng], USER_ZOOM);
-      this._loadedBounds = null;
-      requestAnimationFrame(() => this._triggerFetch());
     }
   });
 
@@ -150,6 +162,7 @@ export class MapComponent implements OnInit, OnDestroy {
       chunkedLoading: true,
     });
     this.map.addLayer(this._clusterGroup);
+    requestAnimationFrame(() => this.map.invalidateSize());
   }
 
   // ==================== Pipeline de chargement ====================
@@ -174,9 +187,17 @@ export class MapComponent implements OnInit, OnDestroy {
               tap(() => {
                 this._loadedBounds = expanded;
               }),
+              switchMap(saloons =>
+                saloons.length > 0 ? of(saloons) : this._loadAllAccessibleSaloons(type)
+              ),
               catchError(err => {
                 console.error('Erreur chargement saloons map:', err);
-                return EMPTY;
+                return this._loadAllAccessibleSaloons(type).pipe(
+                  catchError(fallbackErr => {
+                    console.error('Fallback saloons also failed:', fallbackErr);
+                    return of([] as SaloonMapItem[]);
+                  })
+                );
               })
             );
         }),
@@ -189,11 +210,47 @@ export class MapComponent implements OnInit, OnDestroy {
       });
   }
 
+  private _loadAllAccessibleSaloons(type: SaloonType | null): ReturnType<
+    SaloonApiService['getSaloonsForMap']
+  > {
+    return this._saloonApiService.getListSaloon(type).pipe(
+      map(saloons => saloons.filter(saloon => saloon.latitude && saloon.longitude)),
+      map(saloons => saloons.map(saloon => this._toMapItem(saloon)))
+    );
+  }
+
+  private _toMapItem(saloon: Saloon): SaloonMapItem {
+    return {
+      id: saloon.id,
+      name: saloon.name,
+      imgUrl: saloon.imgUrl,
+      address: saloon.address,
+      city: saloon.city || '',
+      latitude: saloon.latitude || 0,
+      longitude: saloon.longitude || 0,
+      radiusMeters: saloon.radiusMeters || 0,
+      distanceMeters: null,
+      connectedCount: saloon.connectedCount || saloon.visitors || saloon.visitorNumber || 0,
+      type: saloon.type,
+      isPrivate: saloon.isPrivate,
+    };
+  }
+
   /**
-   * Écoute moveend avec debounce, ne recharge que si hors zone tampon
+   * Écoute moveend avec debounce, ne recharge que si hors zone tampon.
+   * Les déplacements programmatiques (setView depuis l'effect) déclenchent
+   * directement un fetch unique pour éviter la race condition avec switchMap.
    */
   private _setupMapMoveListener(): void {
-    this.map.on('moveend', () => this._mapMove$.next());
+    this.map.on('moveend', () => {
+      if (this._isProgrammaticMove) {
+        this._isProgrammaticMove = false;
+        this._loadedBounds = null;
+        this._triggerFetch();
+        return;
+      }
+      this._mapMove$.next();
+    });
 
     this._mapMove$.pipe(debounceTime(DEBOUNCE_MS), takeUntil(this._destroy$)).subscribe(() => {
       const bounds = this.map.getBounds();

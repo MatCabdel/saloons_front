@@ -137,7 +137,7 @@ export class AuthPageComponent implements OnInit {
     });
   }
 
-  onFacebookAuth(): void {
+  onAppleAuth(): void {
     // Vérifier si Firebase est configuré
     if (environment.firebase.apiKey === 'YOUR_FIREBASE_API_KEY') {
       this.errorMessage.set(
@@ -149,7 +149,7 @@ export class AuthPageComponent implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    this._firebaseAuth.signInWithFacebook().subscribe({
+    this._firebaseAuth.signInWithApple().subscribe({
       next: response => {
         this.isLoading.set(false);
         this._handleAuthSuccess(response.newUser, response.user.profileStatus, response.user.role);
