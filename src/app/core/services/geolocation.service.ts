@@ -204,8 +204,7 @@ export class GeolocationService {
         this._setPosition(position.coords.latitude, position.coords.longitude);
       })
       .catch(error => {
-        const isDenied =
-          error.message?.includes('denied') || error.message?.includes('permission');
+        const isDenied = error.message?.includes('denied') || error.message?.includes('permission');
 
         if (isDenied) {
           this._fetching = false;
