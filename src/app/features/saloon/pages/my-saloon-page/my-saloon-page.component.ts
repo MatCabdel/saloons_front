@@ -51,7 +51,8 @@ export class MySaloonPageComponent implements OnInit {
   );
 
   saloon$: Observable<Saloon> = this._route.paramMap.pipe(
-    switchMap(params => this._saloonApi.getSaloonById(params.get('id')!))
+    switchMap(params => this._saloonApi.getSaloonById(params.get('id')!)),
+    shareReplay({ bufferSize: 1, refCount: true })
   );
 
   showModal = false;

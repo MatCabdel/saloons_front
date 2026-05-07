@@ -2,15 +2,27 @@ import { Component, OnInit, OnDestroy, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { Subject, debounceTime, switchMap, takeUntil, catchError, EMPTY, skip, tap } from 'rxjs';
+import {
+  Subject,
+  debounceTime,
+  switchMap,
+  takeUntil,
+  catchError,
+  EMPTY,
+  skip,
+  tap,
+  of,
+  map,
+} from 'rxjs';
 import { SaloonModalComponent } from '../saloon-modal/saloon-modal.component';
 import { SaloonMapItem } from '../../services/presence.service';
 import { SaloonApiService } from '../../services/saloon-api.service';
-import { SaloonType } from '../../models/saloonModel';
+import { Saloon, SaloonType } from '../../models/saloonModel';
 import { GeolocationService, GeoLocationStatus } from 'src/app/core/services/geolocation.service';
 import { SaloonBrowseStateService } from '../../services/saloon-browse-state.service';
 import { toSaloonTypeFilter } from '../../models/saloon-browse.model';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { AuthApiService } from 'src/app/features/auth/services/auth-api.service';
 
 // Constantes de configuration
 const DEBOUNCE_MS = 400;
@@ -42,6 +54,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private _saloonApiService = inject(SaloonApiService);
   private _geoService = inject(GeolocationService);
   private _browseState = inject(SaloonBrowseStateService);
+  private _authApiService = inject(AuthApiService);
 
   // Modal state
   showModal = false;
@@ -56,6 +69,11 @@ export class MapComponent implements OnInit, OnDestroy {
   }
   get geoLocationStatus(): GeoLocationStatus {
     return this._geoService.status();
+  }
+
+  get isReviewerOrAdmin(): boolean {
+    const roles = this._authApiService.getUserRoles();
+    return roles.includes('ROLE_REVIEWER') || roles.includes('ROLE_ADMIN');
   }
 
   private _customIcon = L.icon({
@@ -165,9 +183,17 @@ export class MapComponent implements OnInit, OnDestroy {
               tap(() => {
                 this._loadedBounds = expanded;
               }),
+              switchMap(saloons => {
+                if (saloons.length > 0) return of(saloons);
+                // Bbox vide : on charge tous les saloons accessibles.
+                // On set _loadedBounds à world pour que tout setView() ultérieur
+                // (affinement GPS) ne déclenche pas de re-fetch qui annulerait ce fallback.
+                this._loadedBounds = L.latLngBounds([-90, -180], [90, 180]);
+                return this._loadAllAccessibleSaloons(type);
+              }),
               catchError(err => {
                 console.error('Erreur chargement saloons map:', err);
-                return EMPTY;
+                return this._loadAllAccessibleSaloons(type).pipe(catchError(() => EMPTY));
               })
             );
         }),
@@ -180,20 +206,44 @@ export class MapComponent implements OnInit, OnDestroy {
       });
   }
 
+  private _loadAllAccessibleSaloons(
+    type: SaloonType | null
+  ): ReturnType<SaloonApiService['getSaloonsForMap']> {
+    return this._saloonApiService.getListSaloon(type).pipe(
+      map(saloons => saloons.filter(s => s.latitude && s.longitude)),
+      map(saloons => saloons.map(s => this._toMapItem(s)))
+    );
+  }
+
+  private _toMapItem(saloon: Saloon): SaloonMapItem {
+    return {
+      id: saloon.id,
+      name: saloon.name,
+      imgUrl: saloon.imgUrl,
+      address: saloon.address,
+      city: saloon.city || '',
+      latitude: saloon.latitude || 0,
+      longitude: saloon.longitude || 0,
+      radiusMeters: saloon.radiusMeters || 0,
+      distanceMeters: null,
+      connectedCount: saloon.connectedCount || saloon.visitors || saloon.visitorNumber || 0,
+      type: saloon.type,
+      isPrivate: saloon.isPrivate,
+    };
+  }
+
   /**
    * Écoute moveend avec debounce, ne recharge que si hors zone tampon
    */
   private _setupMapMoveListener(): void {
     this.map.on('moveend', () => this._mapMove$.next());
 
-    this._mapMove$
-      .pipe(debounceTime(DEBOUNCE_MS), takeUntil(this._destroy$))
-      .subscribe(() => {
-        const bounds = this.map.getBounds();
-        if (!this._isWithinLoadedBuffer(bounds)) {
-          this._triggerFetch();
-        }
-      });
+    this._mapMove$.pipe(debounceTime(DEBOUNCE_MS), takeUntil(this._destroy$)).subscribe(() => {
+      const bounds = this.map.getBounds();
+      if (!this._isWithinLoadedBuffer(bounds)) {
+        this._triggerFetch();
+      }
+    });
   }
 
   /**
@@ -208,11 +258,18 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Déclenche un fetch avec les bounds actuels et le filtre courant
+   * Déclenche un fetch avec les bounds actuels et le filtre courant.
+   *
+   * On set _loadedBounds de façon optimiste AVANT la réponse HTTP, pour que
+   * tout setView() (affinement GPS, position cache) arrivant pendant le vol
+   * passe par _isWithinLoadedBuffer() et ne déclenche pas de re-fetch parasite
+   * qui annulerait via switchMap la requête en cours.
    */
   private _triggerFetch(): void {
+    const bounds = this.map.getBounds();
+    this._loadedBounds = this._expandBounds(bounds);
     this._fetchTrigger$.next({
-      bounds: this.map.getBounds(),
+      bounds,
       type: this._currentTypeFilter,
     });
   }

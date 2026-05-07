@@ -1,29 +1,35 @@
 .match-list {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  transform: translateY(50%);
   display: flex;
-  gap: 16px;
+  gap: 14px;
   background: transparent;
-  z-index: 10;
-  padding: 0 12px;
+  padding: 0 1rem;
+  margin-top: 0;
   overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overflow-y: visible;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .match-item {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0.4rem;
+  width: 64px;
+  flex-shrink: 0;
+  padding-bottom: 0;
 }
 .avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
   object-fit: cover;
-  border: 4px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 2px 8px rgba(108, 71, 182, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 6px 14px rgba(34, 22, 49, 0.18);
 }
 
 .avatar.session-expired {
@@ -31,12 +37,14 @@
   opacity: 0.6;
 }
 .username {
-  margin-top: 6px;
-  font-size: 0.95em;
-  color: #6c47b6;
+  font-size: 0.68rem;
+  line-height: 1.2;
+  color: #53445f;
   text-align: center;
-  max-width: 80px;
-  word-break: break-word;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .match-item {
@@ -49,7 +57,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.92);
+    outline: 2px solid rgba(92, 65, 118, 0.85);
     outline-offset: 4px;
     border-radius: 18px;
   }

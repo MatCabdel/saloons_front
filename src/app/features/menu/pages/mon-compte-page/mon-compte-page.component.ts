@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { HeaderComponent } from 'src/app/common/components/header/header.component';
+import { NavbarComponent } from 'src/app/common/components/navbar/navbar.component';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { AuthApiService } from 'src/app/features/auth/services/auth-api.service';
 import { UserDTO } from 'src/app/features/user/models/userDTO';
@@ -9,7 +9,7 @@ import { UserDTO } from 'src/app/features/user/models/userDTO';
 @Component({
   selector: 'app-mon-compte-page',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, RouterModule],
+  imports: [CommonModule, RouterModule, NavbarComponent],
   templateUrl: './mon-compte-page.component.html',
   styleUrls: ['./mon-compte-page.component.scss'],
 })
@@ -22,7 +22,15 @@ export class MonComptePageComponent implements OnInit {
     return this.user()?.isPremium ?? false;
   });
   canChangePassword = computed(() => {
-    return (this.user()?.authProvider ?? 'EMAIL') === 'EMAIL';
+    return (this.user()?.authProvider || 'EMAIL').toUpperCase() === 'EMAIL';
+  });
+  displayName = computed(() => {
+    const user = this.user();
+    if (!user) return '';
+    return user.userName ? `@${user.userName}` : `${user.firstName} ${user.lastName}`.trim();
+  });
+  displayCity = computed(() => {
+    return this.user()?.city || 'Ville non renseignée';
   });
 
   ngOnInit(): void {
@@ -43,6 +51,10 @@ export class MonComptePageComponent implements OnInit {
 
   goToPremium(): void {
     // TODO: Navigation vers la page premium
+  }
+
+  getProfileDisplayImage(): string | null {
+    return this.user()?.imgUrl || null;
   }
 
   logout(): void {

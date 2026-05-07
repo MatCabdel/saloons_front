@@ -1,8 +1,4 @@
-// Variables
 $gradient-top: #413443;
-$gradient-bottom: #a483a9;
-$menu-gradient-top: #0d0b0e;
-$menu-gradient-bottom: #5a3d6d;
 $yellow: #ffc122;
 $white: #fff;
 
@@ -27,7 +23,7 @@ $white: #fff;
   }
 
   .header-spacer {
-    width: 44px; // Même taille que le burger pour équilibrer
+    width: 44px;
   }
 
   .back-btn {
@@ -74,171 +70,38 @@ $white: #fff;
     }
   }
 
-  .burger-btn {
+  .page-title {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: default;
+  }
+
+  .plus-btn {
     width: 44px;
     height: 44px;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    align-items: center;
-    gap: 5px;
-    background: none;
+    background: transparent;
     border: none;
-    cursor: pointer;
-    padding: 10px;
-    border-radius: 8px;
-    transition: background 0.2s ease;
-
-    &:hover {
-      background: rgba($white, 0.1);
-    }
-
-    .burger-line {
-      width: 22px;
-      height: 2px;
-      background: $white;
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
-
-    &.active {
-      .burger-line:nth-child(1) {
-        transform: rotate(45deg) translate(5px, 5px);
-      }
-      .burger-line:nth-child(2) {
-        opacity: 0;
-      }
-      .burger-line:nth-child(3) {
-        transform: rotate(-45deg) translate(5px, -5px);
-      }
-    }
-  }
-}
-
-// Menu Overlay
-.menu-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 70px; // S'arrête avant la navbar
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 998;
-  backdrop-filter: blur(4px);
-}
-
-// Menu Panel
-.menu-panel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 280px;
-  max-width: 85vw;
-  height: calc(100vh - 70px); // Hauteur moins la navbar
-  height: calc(100dvh - 70px);
-  padding-top: var(--safe-top);
-  padding-right: var(--safe-right);
-  background: linear-gradient(180deg, $menu-gradient-top 0%, $menu-gradient-bottom 100%);
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
-  border-bottom-left-radius: 20px; // Arrondi en bas à gauche
-
-  .menu-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid rgba($white, 0.1);
-
-    h2 {
-      color: $white;
-      font-family: 'Koulen', sans-serif;
-      font-size: 1.8rem;
-      margin: 0;
-      letter-spacing: 2px;
-
-      .yellow {
-        color: $yellow;
-      }
-    }
-
-    .close-btn {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba($white, 0.1);
-      border: none;
-      border-radius: 50%;
-      color: $white;
-      cursor: pointer;
-      transition: all 0.2s ease;
-
-      &:hover {
-        background: rgba($white, 0.2);
-        transform: rotate(90deg);
-      }
-    }
-  }
-
-  .menu-content {
-    flex: 1;
-    padding: 1rem 0;
-    overflow-y: auto;
-  }
-
-  .menu-item {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 1rem 1.5rem;
     color: $white;
-    text-decoration: none;
-    font-size: 1.1rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    border-left: 3px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    border-radius: 0;
+    transition: transform 0.2s ease;
 
-    .menu-icon {
-      width: 24px;
-      height: 24px;
-      filter: brightness(0) invert(1);
+    span {
+      font-size: 2rem;
+      font-weight: 300;
+      line-height: 1;
+      transform: translateY(-1px);
     }
 
     &:hover {
-      background: rgba($white, 0.1);
-      border-left-color: $yellow;
-      padding-left: calc(1.5rem + 4px);
-    }
-  }
-
-  .menu-footer {
-    padding: 1.5rem;
-    border-top: 1px solid rgba($white, 0.1);
-
-    .logout-btn {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 14px 20px;
-      background: rgba($white, 0.1);
-      border: 1px solid rgba($white, 0.2);
-      border-radius: 12px;
-      color: $white;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-
-      &:hover {
-        background: rgba(#e74c3c, 0.8);
-        border-color: #e74c3c;
-      }
+      transform: scale(1.05);
     }
   }
 }

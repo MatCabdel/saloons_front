@@ -1,37 +1,98 @@
 // Variables
-$gradient-top: #413443;
+$gradient-top: #5a3d6d;
+$gradient-bottom: #0d0b0e;
+$white: #fff;
 
 .messages-container {
-  background-color: #faf9f6;
+  background: linear-gradient(180deg, $gradient-top 0%, $gradient-bottom 100%);
   min-width: 100vw;
   margin: 0 auto;
-  height: 100vh;
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
+}
 
-  .header-messages {
-    position: relative;
+.messages-header {
+  flex-shrink: 0;
+  min-height: calc(60px + var(--safe-top));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--header-safe-padding-top);
+  padding-left: max(16px, var(--safe-left));
+  padding-right: max(16px, var(--safe-right));
+  padding-bottom: 0.35rem;
+}
+
+.header-spacer {
+  width: 44px;
+  flex-shrink: 0;
+}
+
+.header-title {
+  margin: 0;
+  color: rgba($white, 0.94);
+  font-family: 'Urbanist', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  flex: 1;
+}
+
+.winks-section {
+  flex-shrink: 0;
+  padding: 0.5rem 0 1.25rem;
+}
+
+.conversations-section {
+  flex: 1;
+  min-height: 0;
+  background: #faf9f6;
+  border-top-left-radius: 22px;
+  border-top-right-radius: 22px;
+  padding-top: 1.1rem;
+  position: relative;
+}
+
+.reciprocal-winks-row {
+  margin-top: -2.45rem;
+  margin-bottom: 2.55rem;
+  padding-top: 0.1rem;
+  overflow: visible;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0 1rem;
+  margin-bottom: 0.85rem;
+  font-family: 'Urbanist', sans-serif;
+  font-size: 1.08rem;
+  font-weight: 700;
+
+  .section-icon {
+    width: 1.2rem;
+    height: 1.2rem;
     flex-shrink: 0;
-    height: calc(140px + var(--safe-top));
-    background: linear-gradient(to right, $gradient-top 0%, lighten($gradient-top, 10%) 100%);
+  }
+}
 
-    .nav-header {
-      width: 100%;
+.section-heading-light {
+  color: $white;
+  padding-bottom: 0.85rem;
+}
 
-      app-header {
-        display: block;
-        width: 100%;
-      }
-    }
+.section-heading-dark {
+  color: #5c4176;
+  margin-top: 0.95rem;
 
-    h1 {
-      text-align: left;
-      color: white;
-      padding-top: 12px;
-      padding-left: 20px;
-      margin-top: calc(-1 * var(--safe-top));
-      font-size: 1.2em;
-      margin: 0;
-    }
+  .section-icon-chat {
+    object-fit: contain;
+    filter: brightness(0) saturate(100%) invert(27%) sepia(15%) saturate(1276%) hue-rotate(235deg)
+      brightness(93%) contrast(87%);
   }
 }

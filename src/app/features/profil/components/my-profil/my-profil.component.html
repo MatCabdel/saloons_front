@@ -2,21 +2,31 @@
   @if (user$ | async; as user) {
   <div class="profile-card">
     <div class="img-section">
+      @if (user.imgUrl) {
       <img [src]="user.imgUrl" alt="profil" />
+      } @else {
+      <div class="img-placeholder">
+        <span>{{ getDisplayName(user).charAt(0) }}</span>
+      </div>
+      }
     </div>
     <div class="info-section">
       <div class="header-row">
-        <h1>{{ user.userName }}, {{ user.age }}</h1>
-        <span class="city-tag">{{ user.city }}</span>
+        <h1>{{ getDisplayName(user) }}, {{ user.age || 0 }} ans</h1>
+        <span class="city-tag">
+          <img src="assets/icons/location.svg" alt="" aria-hidden="true" />
+          <span>{{ user.city || 'Ville non renseignée' }}</span>
+        </span>
       </div>
+      <div class="divider" aria-hidden="true"></div>
       <div class="about-section">
         <h2>À propos</h2>
-        <p>{{ user.description || 'Aucune description pour le moment.' }}</p>
+        <p>{{ getProfileDescription(user) }}</p>
       </div>
-      <button class="action-button edit" type="button" (click)="navigateToEdit()">
-        Modifier mon profil
-      </button>
     </div>
   </div>
+  <button class="action-button edit" type="button" (click)="navigateToEdit()">
+    Modifier mon profil
+  </button>
   }
 </div>
