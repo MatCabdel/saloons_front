@@ -2,17 +2,7 @@ import { Component, OnInit, OnDestroy, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import {
-  Subject,
-  debounceTime,
-  switchMap,
-  takeUntil,
-  catchError,
-  skip,
-  tap,
-  of,
-  map,
-} from 'rxjs';
+import { Subject, debounceTime, switchMap, takeUntil, catchError, skip, tap, of, map } from 'rxjs';
 import { SaloonModalComponent } from '../saloon-modal/saloon-modal.component';
 import { SaloonMapItem } from '../../services/presence.service';
 import { SaloonApiService } from '../../services/saloon-api.service';
@@ -210,9 +200,9 @@ export class MapComponent implements OnInit, OnDestroy {
       });
   }
 
-  private _loadAllAccessibleSaloons(type: SaloonType | null): ReturnType<
-    SaloonApiService['getSaloonsForMap']
-  > {
+  private _loadAllAccessibleSaloons(
+    type: SaloonType | null
+  ): ReturnType<SaloonApiService['getSaloonsForMap']> {
     return this._saloonApiService.getListSaloon(type).pipe(
       map(saloons => saloons.filter(saloon => saloon.latitude && saloon.longitude)),
       map(saloons => saloons.map(saloon => this._toMapItem(saloon)))
