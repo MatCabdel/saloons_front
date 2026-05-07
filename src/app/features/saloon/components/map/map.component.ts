@@ -113,8 +113,8 @@ export class MapComponent implements OnInit, OnDestroy {
     this._setupMapMoveListener();
     this._setupFilterListener();
 
-    // Chargement initial avec les bounds visibles
-    this._triggerFetch();
+    // Le fetch initial est déclenché depuis _initMap() → map.whenReady()
+    // pour garantir que la taille du conteneur est correcte (critique sur iOS/WKWebView)
 
     // Géolocalisation
     this._geoService.init();
@@ -152,7 +152,17 @@ export class MapComponent implements OnInit, OnDestroy {
       chunkedLoading: true,
     });
     this.map.addLayer(this._clusterGroup);
-    requestAnimationFrame(() => this.map.invalidateSize());
+
+    // Sur iOS/WKWebView, le conteneur peut avoir une taille nulle ou incorrecte
+    // au premier frame. On attend que la map ait vraiment ses dimensions finales
+    // avant de déclencher le premier fetch.
+    this.map.whenReady(() => {
+      requestAnimationFrame(() => {
+        this.map.invalidateSize();
+        // Déclencher le fetch initial ici, après que la taille soit correcte
+        this._triggerFetch();
+      });
+    });
   }
 
   // ==================== Pipeline de chargement ====================

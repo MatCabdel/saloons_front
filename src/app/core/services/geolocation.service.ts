@@ -35,6 +35,10 @@ export class GeolocationService {
   private _initialized = false;
   // Flag interne : fetch en cours ?
   private _fetching = false;
+  // Compteur de tentatives pour les erreurs GPS temporaires (kCLErrorLocationUnknown)
+  private _gpsRetryCount = 0;
+  private static readonly _MAX_GPS_RETRIES = 3;
+  private static readonly _GPS_RETRY_DELAY_MS = 3000;
 
   constructor() {
     this._hydrateCachedState();
@@ -52,11 +56,9 @@ export class GeolocationService {
     if (this._initialized && this.status() !== 'prompt') return;
 
     this._initialized = true;
-    if (this.status() === 'granted' && this.hasPosition()) {
-      this._fetchPosition();
-      return;
-    }
-
+    // Toujours vérifier la permission réelle (native ou web) même si le cache indique
+    // 'granted' : la permission peut avoir été révoquée depuis la dernière session,
+    // ce qui provoquerait une erreur "User denied Geolocation" au lieu d'un état 'denied' propre.
     await this._checkPermissionAndFetch();
   }
 
@@ -191,22 +193,41 @@ export class GeolocationService {
   }
 
   /**
-   * Fallback : GPS haute précision si le réseau échoue
+   * Fallback : GPS haute précision si le réseau échoue.
+   * Retente automatiquement sur les erreurs temporaires (kCLErrorLocationUnknown)
+   * avant de passer à l'état unavailable.
    */
   private _fetchHighAccuracy(): void {
     Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 10000 })
       .then(position => {
+        this._gpsRetryCount = 0;
         this._setPosition(position.coords.latitude, position.coords.longitude);
       })
       .catch(error => {
-        console.warn('Géolocalisation non disponible:', error.message);
-        this._fetching = false;
-        if (error.message?.includes('denied') || error.message?.includes('permission')) {
+        const isDenied =
+          error.message?.includes('denied') || error.message?.includes('permission');
+
+        if (isDenied) {
+          this._fetching = false;
+          this._gpsRetryCount = 0;
           localStorage.removeItem(GeolocationService._LOCATION_GRANTED_KEY);
           this.status.set('denied');
-        } else {
-          this.status.set(this.hasPosition() ? 'granted' : 'unavailable');
+          return;
         }
+
+        // Erreur temporaire (kCLErrorLocationUnknown = signal faible, démarrage GPS à froid…)
+        // → retenter avant d'abandonner
+        if (this._gpsRetryCount < GeolocationService._MAX_GPS_RETRIES) {
+          this._gpsRetryCount++;
+          this._fetching = false;
+          setTimeout(() => this._fetchPosition(), GeolocationService._GPS_RETRY_DELAY_MS);
+          return;
+        }
+
+        // Max tentatives atteint
+        this._fetching = false;
+        this._gpsRetryCount = 0;
+        this.status.set(this.hasPosition() ? 'granted' : 'unavailable');
       });
   }
 
