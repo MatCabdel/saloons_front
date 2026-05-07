@@ -2,7 +2,18 @@ import { Component, OnInit, OnDestroy, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { Subject, debounceTime, switchMap, takeUntil, catchError, EMPTY, skip, tap, of, map } from 'rxjs';
+import {
+  Subject,
+  debounceTime,
+  switchMap,
+  takeUntil,
+  catchError,
+  EMPTY,
+  skip,
+  tap,
+  of,
+  map,
+} from 'rxjs';
 import { SaloonModalComponent } from '../saloon-modal/saloon-modal.component';
 import { SaloonMapItem } from '../../services/presence.service';
 import { SaloonApiService } from '../../services/saloon-api.service';
@@ -182,9 +193,7 @@ export class MapComponent implements OnInit, OnDestroy {
               }),
               catchError(err => {
                 console.error('Erreur chargement saloons map:', err);
-                return this._loadAllAccessibleSaloons(type).pipe(
-                  catchError(() => EMPTY)
-                );
+                return this._loadAllAccessibleSaloons(type).pipe(catchError(() => EMPTY));
               })
             );
         }),
