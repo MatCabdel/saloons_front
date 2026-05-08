@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import * as L from 'leaflet';
+import { L } from './leaflet-setup';
 import 'leaflet.markercluster';
 import {
   Subject,
@@ -210,7 +210,7 @@ export class MapComponent implements OnInit, OnDestroy {
     type: SaloonType | null
   ): ReturnType<SaloonApiService['getSaloonsForMap']> {
     return this._saloonApiService.getListSaloon(type).pipe(
-      map(saloons => saloons.filter(s => s.latitude && s.longitude)),
+      map(saloons => (saloons ?? []).filter(s => s.latitude && s.longitude)),
       map(saloons => saloons.map(s => this._toMapItem(s)))
     );
   }
