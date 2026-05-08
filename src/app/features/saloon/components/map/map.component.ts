@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import * as L from 'leaflet';
+import { L } from './leaflet-setup';
 import 'leaflet.markercluster';
 import {
   Subject,
