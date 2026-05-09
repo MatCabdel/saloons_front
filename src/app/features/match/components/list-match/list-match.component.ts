@@ -48,9 +48,11 @@ export class ListMatchComponent implements OnInit, OnChanges {
   }
 
   filterMatches(): void {
-    // Exclure les utilisateurs avec conversation ET ceux passés en input
+    // Exclure les utilisateurs avec conversation, ceux passés en input, et les matchs expirés
     const allExcluded = [...new Set([...this.userIdsWithConversations, ...this.excludeUserIds])];
-    this.matches = this._sortMatches(this.allMatches.filter(u => !allExcluded.includes(u.id)));
+    this.matches = this._sortMatches(
+      this.allMatches.filter(u => !allExcluded.includes(u.id) && !u.sessionExpired)
+    );
   }
 
   private _sortMatches(matches: MatchUser[]): MatchUser[] {

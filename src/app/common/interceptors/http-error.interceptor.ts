@@ -16,8 +16,8 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
 
       // Si l'utilisateur n'est plus authentifié ou autorisé (compte supprimé, token expiré, etc.)
       if ((error.status === 401 || error.status === 403) && !isLoggingOut) {
-        // Ne pas déconnecter si c'est une requête d'authentification
-        if (!req.url.includes('/auth/')) {
+        // Ne pas déconnecter si c'est une requête d'authentification ou de suppression de compte
+        if (!req.url.includes('/auth/') && !req.url.includes('/delete-account')) {
           console.log('🔒 Utilisateur non autorisé, déconnexion forcée...');
           isLoggingOut = true;
 

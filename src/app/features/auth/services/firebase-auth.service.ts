@@ -571,7 +571,7 @@ export class FirebaseAuthService {
         } as any);
         localStorage.removeItem('saloon_auth_token');
         localStorage.removeItem('user');
-        this._router.navigate(['/']);
+        this._router.navigate(['/auth']);
       })
     );
   }
