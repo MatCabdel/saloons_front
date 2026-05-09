@@ -101,6 +101,6 @@ export class AuthApiService {
       description: '',
       age: 0,
     } as UserDTO);
-    this._router.navigate(['/']);
+    this._router.navigate(['/auth']);
   }
 }
