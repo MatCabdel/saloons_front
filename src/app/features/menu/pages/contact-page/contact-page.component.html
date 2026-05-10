@@ -82,12 +82,46 @@
       <!-- Sujet -->
       <div class="form-group">
         <label for="subject">Sujet *</label>
-        <select id="subject" formControlName="subject" [class.invalid]="isFieldInvalid('subject')">
-          <option value="" disabled>Sélectionne un sujet</option>
-          @for (subject of subjects; track subject.value) {
-          <option [value]="subject.value">{{ subject.label }}</option>
+        <div
+          class="subject-select"
+          [class.open]="isSubjectDropdownOpen()"
+          [class.invalid]="isFieldInvalid('subject')"
+        >
+          <button
+            type="button"
+            id="subject"
+            class="subject-trigger"
+            [attr.aria-expanded]="isSubjectDropdownOpen()"
+            aria-haspopup="listbox"
+            (click)="toggleSubjectDropdown()"
+            (keydown.escape)="closeSubjectDropdown()"
+          >
+            <span class="subject-value" [class.placeholder]="!form.get('subject')?.value">
+              {{ selectedSubjectLabel() }}
+            </span>
+            <span class="subject-chevron" aria-hidden="true">⌄</span>
+          </button>
+
+          @if (isSubjectDropdownOpen()) {
+          <div class="subject-options" role="listbox" aria-labelledby="subject">
+            @for (subject of subjects; track subject.value) {
+            <button
+              type="button"
+              class="subject-option"
+              role="option"
+              [class.selected]="form.get('subject')?.value === subject.value"
+              [attr.aria-selected]="form.get('subject')?.value === subject.value"
+              (click)="selectSubject(subject.value)"
+            >
+              <span>{{ subject.label }}</span>
+              @if (form.get('subject')?.value === subject.value) {
+              <span class="subject-check" aria-hidden="true">✓</span>
+              }
+            </button>
+            }
+          </div>
           }
-        </select>
+        </div>
         @if (isFieldInvalid('subject')) {
         <span class="error-text">Sélectionne un sujet</span>
         }

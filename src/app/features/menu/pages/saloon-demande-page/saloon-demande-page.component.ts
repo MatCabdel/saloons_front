@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -19,6 +19,8 @@ export class SaloonDemandePageComponent {
   isSubmitting = signal(false);
   isSubmitted = signal(false);
   errorMessage = signal<string | null>(null);
+  isPlaceTypeDropdownOpen = signal(false);
+  private _elementRef = inject(ElementRef<HTMLElement>);
 
   placeTypes = Object.values(PlaceType);
   placeTypeLabels = PLACE_TYPE_LABELS;
@@ -69,6 +71,7 @@ export class SaloonDemandePageComponent {
 
   resetForm(): void {
     this.form.reset();
+    this.isPlaceTypeDropdownOpen.set(false);
     this.isSubmitted.set(false);
     this.errorMessage.set(null);
   }
@@ -76,5 +79,33 @@ export class SaloonDemandePageComponent {
   isFieldInvalid(fieldName: string): boolean {
     const field = this.form.get(fieldName);
     return field ? field.invalid && field.touched : false;
+  }
+
+  togglePlaceTypeDropdown(): void {
+    this.isPlaceTypeDropdownOpen.update(isOpen => !isOpen);
+  }
+
+  closePlaceTypeDropdown(): void {
+    this.isPlaceTypeDropdownOpen.set(false);
+  }
+
+  selectPlaceType(type: PlaceType): void {
+    const control = this.form.get('placeType');
+    control?.setValue(type);
+    control?.markAsTouched();
+    control?.updateValueAndValidity();
+    this.isPlaceTypeDropdownOpen.set(false);
+  }
+
+  selectedPlaceTypeLabel(): string {
+    const type = this.form.get('placeType')?.value as PlaceType | null;
+    return type ? this.placeTypeLabels[type] : 'Sélectionne un type';
+  }
+
+  @HostListener('document:click', ['$event'])
+  closeDropdownOnOutsideClick(event: MouseEvent): void {
+    if (!this.isPlaceTypeDropdownOpen()) return;
+    if (this._elementRef.nativeElement.contains(event.target as Node)) return;
+    this.isPlaceTypeDropdownOpen.set(false);
   }
 }
