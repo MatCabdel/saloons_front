@@ -2,7 +2,7 @@ import { SaloonType } from './saloonModel';
 
 export type SaloonBrowseFilter = 'ALL' | 'CHAUD' | SaloonType;
 
-export const MAX_DISTANCE_METERS = 50000;
+export const MAX_DISTANCE_METERS = 25000;
 
 export const SALOON_FILTER_TABS: { value: SaloonBrowseFilter; label: string }[] = [
   { value: 'ALL', label: 'Tous' },

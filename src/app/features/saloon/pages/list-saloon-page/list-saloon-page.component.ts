@@ -79,7 +79,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   }
 
   // Saloons triés par distance avec mise à jour temps réel de la présence
-  // Filtrés à MAX_DISTANCE_METERS (50km) de l'utilisateur
+  // Filtrés à MAX_DISTANCE_METERS de l'utilisateur
   saloons$: Observable<(Saloon & { distanceMeters: number | null })[]> = combineLatest([
     this._saloons$,
     this._userPosition$,
@@ -112,7 +112,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
         };
       });
 
-      // Filtrer les saloons à moins de MAX_DISTANCE_METERS (50km)
+      // Filtrer les saloons à moins de MAX_DISTANCE_METERS
       // Exception: reviewers/admins voient les saloons privés même s'ils sont loin
       let filteredSaloons = [] as (Saloon & { distanceMeters: number | null })[];
       if (position) {
