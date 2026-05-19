@@ -170,7 +170,7 @@ $text-light: rgba(65, 52, 67, 0.72);
 
       .about-section {
         min-height: 7rem;
-        margin-bottom: 0;
+        margin-bottom: 0.75rem;
 
         h2 {
           font-size: 0.9rem;
@@ -181,10 +181,11 @@ $text-light: rgba(65, 52, 67, 0.72);
         }
 
         p {
+          min-height: 4.55rem;
           font-size: 0.88rem;
           color: $text-light;
           line-height: 1.72;
-          margin: 0;
+          margin: 0 0 0.8rem;
         }
       }
     }
@@ -257,6 +258,7 @@ $text-light: rgba(65, 52, 67, 0.72);
 
         .about-section {
           min-height: 5.5rem;
+          margin-bottom: 0.55rem;
 
           h2 {
             font-size: 0.82rem;
@@ -264,6 +266,7 @@ $text-light: rgba(65, 52, 67, 0.72);
           }
 
           p {
+            min-height: 3.1rem;
             font-size: 0.8rem;
             line-height: 1.55;
           }
@@ -304,6 +307,7 @@ $text-light: rgba(65, 52, 67, 0.72);
 
         .about-section {
           min-height: 5rem;
+          margin-bottom: 0.5rem;
 
           h2 {
             font-size: 0.82rem;
@@ -311,6 +315,7 @@ $text-light: rgba(65, 52, 67, 0.72);
           }
 
           p {
+            min-height: 3rem;
             font-size: 0.79rem;
             line-height: 1.5;
           }

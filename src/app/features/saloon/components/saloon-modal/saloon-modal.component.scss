@@ -135,10 +135,10 @@ $white: #fff;
 }
 
 .close-btn {
-  background: rgba($white, 0.82);
+  background: rgba($white, 0.14);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba($gradient-top, 0.08);
+  border: 1px solid rgba($white, 0.28);
   border-radius: 50%;
   width: 38px;
   height: 38px;
@@ -147,12 +147,12 @@ $white: #fff;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
-  color: $gradient-top;
-  box-shadow: 0 10px 24px rgba(16, 8, 19, 0.18);
+  color: $white;
+  box-shadow: 0 10px 24px rgba(16, 8, 19, 0.24), inset 0 1px 0 rgba($white, 0.14);
 
   &:hover {
-    background: $white;
-    transform: scale(1.1);
+    background: rgba($white, 0.22);
+    transform: scale(1.06);
   }
 }
 
@@ -243,18 +243,34 @@ $white: #fff;
 .saloon-address-card {
   display: flex;
   gap: 0.65rem;
-  align-items: flex-start;
+  align-items: center;
   margin-top: 0.85rem;
   padding: 0.78rem 0.85rem;
   border-radius: 12px;
   background: #f6f1fb;
   color: $gradient-top;
+}
 
-  svg {
-    flex-shrink: 0;
-    margin-top: 0.1rem;
-    color: $gradient-bottom;
-  }
+.saloon-address-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba($white, 0.8);
+  color: $gradient-bottom;
+}
+
+.saloon-address-label {
+  display: block;
+  margin-bottom: 0.12rem;
+  color: rgba($gradient-top, 0.55);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .saloon-address {
@@ -630,16 +646,16 @@ $white: #fff;
   gap: 0.55rem;
   min-width: 0;
   padding: 0.68rem 0.72rem;
-  border: 1px solid rgba($yellow, 0.32);
+  border: 1px solid rgba($gradient-bottom, 0.22);
   border-radius: 12px;
   color: $gradient-top;
-  background: linear-gradient(180deg, rgba($yellow, 0.19), rgba($yellow, 0.08));
+  background: linear-gradient(180deg, rgba($gradient-bottom, 0.16), rgba($gradient-top, 0.06));
 
   svg {
     width: 17px;
     height: 17px;
     flex-shrink: 0;
-    color: #b98305;
+    color: $gradient-bottom;
   }
 
   span {
