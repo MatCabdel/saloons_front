@@ -11,6 +11,8 @@ $yellow: #ffc122;
 }
 
 .page-content {
+  width: min(100%, 980px);
+  margin: 0 auto;
   padding: 1.35rem 1rem calc(32px + var(--safe-bottom));
   color: $white;
 }
@@ -114,5 +116,26 @@ $yellow: #ffc122;
   .page-content {
     padding-left: 0.8rem;
     padding-right: 0.8rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .page-content {
+    padding: 2rem 1.5rem calc(48px + var(--safe-bottom));
+  }
+
+  .legal-card {
+    border-radius: 14px;
+    padding: 2.25rem 2.1rem 2.4rem;
+    font-size: 1rem;
+    line-height: 1.68;
+
+    h2 {
+      font-size: 1.75rem;
+    }
+
+    h3 {
+      font-size: 1.18rem;
+    }
   }
 }

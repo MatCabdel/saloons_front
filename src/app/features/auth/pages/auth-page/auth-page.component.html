@@ -119,14 +119,14 @@
 
         <p class="legal-consent">
           En cliquant sur «&nbsp;S’inscrire&nbsp;», vous acceptez nos
-          <button type="button" class="legal-link" (click)="openTerms()">
-            Conditions d’utilisation
-          </button>
+          <a class="legal-link" routerLink="/cgu"> Conditions d’utilisation </a>
           et notre
-          <button type="button" class="legal-link" (click)="openPrivacyPolicy()">
+          <a class="legal-link" routerLink="/politique-confidentialite">
             Politique de confidentialité
-          </button>
+          </a>
           .
+          <br />
+          <a class="legal-link" routerLink="/mentions-legales">Mentions légales</a>
         </p>
 
         <!-- Lien connexion -->
@@ -472,30 +472,3 @@
     </div>
   </div>
 </div>
-
-@if (showLegalModal()) {
-<div
-  class="legal-modal-overlay"
-  (click)="closeLegalModal()"
-  (keyup.escape)="closeLegalModal()"
-  tabindex="0"
->
-  <div
-    class="legal-modal"
-    (click)="$event.stopPropagation()"
-    (keyup.escape)="closeLegalModal()"
-    tabindex="0"
-    role="dialog"
-    aria-modal="true"
-  >
-    <div class="legal-modal-header">
-      <h3>{{ legalModalTitle() }}</h3>
-      <button type="button" class="close-btn" (click)="closeLegalModal()">✕</button>
-    </div>
-    <div class="legal-modal-body" [innerHTML]="legalModalContent()"></div>
-    <div class="legal-modal-footer">
-      <button type="button" class="close-btn-action" (click)="closeLegalModal()">Fermer</button>
-    </div>
-  </div>
-</div>
-}
