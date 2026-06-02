@@ -35,16 +35,50 @@
     @if (saloon) {
     <div class="saloon-info">
       <!-- ─── EVENT INFO (optionnel) ─── -->
-      @if (eventInfo) { @if (eventInfo.imageUrl) {
-      <img [src]="eventInfo.imageUrl" [alt]="eventInfo.title" class="saloon-image" loading="lazy" />
-      } @else if (saloon.imgUrl) {
-      <img [src]="saloon.imgUrl" [alt]="saloon.name" class="saloon-image" loading="lazy" />
+      @if (eventInfo) { @if (eventInfo.imageUrl || saloon.imgUrl) {
+      <div class="saloon-hero">
+        <img
+          [src]="eventInfo.imageUrl || saloon.imgUrl"
+          [alt]="eventInfo.imageUrl ? eventInfo.title : saloon.name"
+          class="saloon-image"
+          loading="lazy"
+        />
+        <div class="saloon-hero-gradient"></div>
+        @if (typeLabel) {
+        <span class="saloon-type-badge">{{ typeLabel }}</span>
+        }
+      </div>
       }
 
+      <div class="event-modal-tabs" role="tablist" aria-label="Détails événement et saloon">
+        <button
+          type="button"
+          class="event-modal-tab"
+          role="tab"
+          [class.active]="activeEventModalTab === 'event'"
+          [attr.aria-selected]="activeEventModalTab === 'event'"
+          (click)="setEventModalTab('event')"
+        >
+          Événement
+        </button>
+        <button
+          type="button"
+          class="event-modal-tab"
+          role="tab"
+          [class.active]="activeEventModalTab === 'saloon'"
+          [attr.aria-selected]="activeEventModalTab === 'saloon'"
+          (click)="setEventModalTab('saloon')"
+        >
+          Saloon
+        </button>
+      </div>
+
       <!-- Carte événement -->
+      @if (activeEventModalTab === 'event') {
       <div class="event-card">
         <div class="event-card-accent"></div>
         <div class="event-card-body">
+          <span class="event-card-eyebrow">Événement</span>
           <div class="event-card-header">
             <h3 class="event-card-title">{{ eventInfo.title }}</h3>
             @if (eventInfo.subTitle) {
@@ -69,7 +103,10 @@
                 <line x1="8" y1="2" x2="8" y2="6" />
                 <line x1="3" y1="10" x2="21" y2="10" />
               </svg>
-              {{ eventInfo.startDateTime | date : 'EEE d MMM yyyy' : '' : 'fr' }}
+              <span>
+                <span class="event-chip-label">Date</span>
+                <strong>{{ eventInfo.startDateTime | date : 'EEE d MMM yyyy' : '' : 'fr' }}</strong>
+              </span>
             </span>
             <span class="event-chip">
               <svg
@@ -86,7 +123,10 @@
                 <circle cx="12" cy="12" r="10" />
                 <polyline points="12 6 12 12 16 14" />
               </svg>
-              {{ eventInfo.startDateTime | date : 'HH:mm' : '' : 'fr' }}
+              <span>
+                <span class="event-chip-label">Heure</span>
+                <strong>{{ eventInfo.startDateTime | date : 'HH:mm' : '' : 'fr' }}</strong>
+              </span>
             </span>
           </div>
           @if (eventInfo.description) {
@@ -123,65 +163,118 @@
           </div>
         </div>
       </div>
-
-      <div class="event-saloon-divider">
-        <span class="event-saloon-divider-line"></span>
-        <span class="event-saloon-divider-text">Son saloon</span>
-        <span class="event-saloon-divider-line"></span>
-      </div>
-      } @else {
+      } } @else {
       <!-- Image saloon standard (sans événement) -->
       @if (saloon.imgUrl) {
-      <img [src]="saloon.imgUrl" [alt]="saloon.name" class="saloon-image" loading="lazy" />
-      } }
-
-      <!-- Type -->
-      @if (typeLabel) {
-      <span class="saloon-type-badge">{{ typeLabel }}</span>
-      }
-
-      <!-- Nom du saloon -->
-      <h2 class="saloon-name" [class.saloon-name-small]="eventInfo">{{ saloon.name }}</h2>
-
-      <!-- Adresse -->
-      @if (saloon.address) {
-      <p class="saloon-address">{{ saloon.address }}</p>
-      } @if (saloon.city) {
-      <p class="saloon-city">{{ saloon.city }}</p>
-      }
-
-      <!-- Présence -->
-      <div class="presence-info">
-        <span class="presence-count">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
-          @if (connectedCount === 0) { Aucun visiteur } @else {
-          {{ connectedCount }} connecté{{ connectedCount > 1 ? 's' : '' }}
-          }
-        </span>
-      </div>
-
-      <!-- Distance -->
-      @if (distanceMessage) {
-      <p class="distance" [class.too-far]="isTooFar">
-        {{ distanceMessage }}
-        @if (isTooFar) {
-        <span class="warning">- Rapprochez-vous pour entrer</span>
+      <div class="saloon-hero">
+        <img [src]="saloon.imgUrl" [alt]="saloon.name" class="saloon-image" loading="lazy" />
+        <div class="saloon-hero-gradient"></div>
+        @if (typeLabel) {
+        <span class="saloon-type-badge">{{ typeLabel }}</span>
         }
-      </p>
-      }
+      </div>
+      } } @if (!eventInfo || activeEventModalTab === 'saloon') {
+      <section class="saloon-details">
+        <div class="saloon-title-row">
+          <div class="saloon-title-copy">
+            <!-- Nom du saloon -->
+            <h2 class="saloon-name" [class.saloon-name-small]="eventInfo">{{ saloon.name }}</h2>
+          </div>
+        </div>
+
+        <!-- Adresse -->
+        @if (saloon.address || saloon.city) {
+        <div class="saloon-address-card">
+          <span class="saloon-address-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+          </span>
+          <div>
+            <span class="saloon-address-label">Adresse</span>
+            @if (saloon.address) {
+            <p class="saloon-address">{{ saloon.address }}</p>
+            } @if (saloon.city) {
+            <p class="saloon-city">{{ saloon.city }}</p>
+            }
+          </div>
+        </div>
+        }
+
+        <div class="saloon-stats">
+          <!-- Présence -->
+          <div class="saloon-stat">
+            <span class="saloon-stat-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </span>
+            <span>
+              <span class="saloon-stat-label">Visiteurs</span>
+              <span class="saloon-stat-value">
+                @if (connectedCount === 0) { Aucun visiteur } @else {
+                {{ connectedCount }} connecté{{ connectedCount > 1 ? 's' : '' }}
+                }
+              </span>
+            </span>
+          </div>
+
+          <!-- Distance -->
+          @if (distanceMessage) {
+          <div
+            class="saloon-stat distance-stat"
+            [class.can-enter]="!isTooFar"
+            [class.too-far]="isTooFar"
+          >
+            <span class="saloon-stat-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m12 2 7 19-7-4-7 4 7-19Z" />
+              </svg>
+            </span>
+            <span>
+              <span class="saloon-stat-label">Distance</span>
+              <span class="saloon-stat-value">{{ distanceMessage }}</span>
+            </span>
+          </div>
+          }
+        </div>
+
+        @if (isTooFar) {
+        <p class="distance-warning">Rapprochez-vous pour entrer</p>
+        }
+      </section>
 
       <!-- Message d'erreur -->
       @if (errorMessage) {
@@ -197,35 +290,55 @@
         <button type="button" class="btn btn-primary" (click)="goToSaloon()">
           Revenir dans ce saloon
         </button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="leaveSaloon()"
-          [disabled]="isLoading"
-        >
+        <button type="button" class="btn btn-leave" (click)="leaveSaloon()" [disabled]="isLoading">
           @if (isLoading) {
           <span class="spinner"></span>
           } @else { Quitter ce saloon }
         </button>
         } @else if (hasSessionElsewhere) {
         <!-- Session active dans un autre saloon -->
-        <p class="session-warning">
-          Vous êtes actuellement dans "{{ activeSession?.saloonName }}".
-        </p>
-        <button type="button" class="btn btn-primary" (click)="goToSaloon()">
-          Revenir dans {{ activeSession?.saloonName }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-warning"
-          (click)="leaveSaloon()"
-          [disabled]="isLoading"
-        >
-          @if (isLoading) {
-          <span class="spinner"></span>
-          } @else { Quitter {{ activeSession?.saloonName }}
-          }
-        </button>
+        <div class="session-switch-panel">
+          <div class="session-warning">
+            <span class="session-warning-icon" aria-hidden="true">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v5" />
+                <path d="M12 16h.01" />
+              </svg>
+            </span>
+            <span>
+              <span class="session-warning-label">Saloon actif</span>
+              <span class="session-warning-text">
+                Vous êtes actuellement dans {{ activeSession?.saloonName }}.
+              </span>
+            </span>
+          </div>
+
+          <button type="button" class="btn btn-primary" (click)="goToSaloon()">
+            Revenir dans {{ activeSession?.saloonName }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-leave"
+            (click)="leaveSaloon()"
+            [disabled]="isLoading"
+          >
+            @if (isLoading) {
+            <span class="spinner"></span>
+            } @else { Quitter {{ activeSession?.saloonName }}
+            }
+          </button>
+        </div>
         } @else {
         <!-- Peut rejoindre -->
         @if (!isLocationGranted && !canJoinWithoutLocation) {
@@ -255,6 +368,7 @@
         </button>
         }
       </div>
+      }
     </div>
     }
   </div>

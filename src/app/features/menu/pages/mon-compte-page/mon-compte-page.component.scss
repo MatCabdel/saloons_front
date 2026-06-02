@@ -6,13 +6,12 @@ $yellow: #ffc122;
 $panel-bg: rgba(255, 255, 255, 0.1);
 $panel-border: rgba(255, 255, 255, 0.1);
 $danger: #ff5c5c;
+$profile-card-bg: #f6f1fb;
 
 .mon-compte-page {
   min-height: 100vh;
   min-height: 100dvh;
-  background: radial-gradient(circle at 50% 11%, rgb(143 106 164 / 0.36), transparent 27%),
-    radial-gradient(circle at 50% 43%, rgb(255 214 102 / 0.08), transparent 22%),
-    linear-gradient(180deg, $gradient-top 0%, $gradient-middle 24%, $gradient-bottom 100%);
+  background: linear-gradient(180deg, #5a3d6d 0%, #2b1c35 100%);
 }
 
 .account-header {
@@ -53,12 +52,12 @@ $danger: #ff5c5c;
   padding: 1rem;
   gap: 0.95rem;
   margin-bottom: 1.35rem;
-  background: #faf9f6;
-  border: 1px solid rgba($gradient-top, 0.12);
+  background: linear-gradient(135deg, #fbf8fc 0%, #eee4f4 52%, #d9c4e5 100%);
+  border: 1px solid rgba($white, 0.78);
   border-radius: 10px;
   color: $gradient-top;
   text-decoration: none;
-  box-shadow: 0 14px 34px rgba(15, 8, 19, 0.14), inset 0 1px 0 rgba($white, 0.72);
+  box-shadow: 0 16px 36px rgba(15, 8, 19, 0.18), inset 0 1px 0 rgba($white, 0.82);
 
   .card-arrow {
     color: $gradient-top;
@@ -220,12 +219,18 @@ $danger: #ff5c5c;
   box-shadow: 0 10px 24px rgba(11, 7, 15, 0.12);
 
   &.danger {
-    background: rgba(255, 92, 92, 0.12);
-    border-color: rgba(255, 92, 92, 0.26);
+    background: rgba(255, 107, 107, 0.2);
+    border-color: rgba(255, 193, 34, 0.34);
+    box-shadow: 0 12px 26px rgba(72, 18, 33, 0.22), inset 0 1px 0 rgba($white, 0.08);
 
     .menu-icon,
     .menu-label {
-      color: rgba(255, 218, 218, 0.96);
+      color: #ffe4e4;
+      font-weight: 700;
+    }
+
+    .card-arrow {
+      color: rgba(255, 228, 228, 0.9);
     }
   }
 }
@@ -263,13 +268,13 @@ $danger: #ff5c5c;
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  background: linear-gradient(135deg, rgba(90, 61, 109, 0.78), rgba(43, 28, 53, 0.88));
-  border: 1px solid rgba(247, 244, 248, 0.28);
+  background: #faf9f6;
+  border: 1px solid rgba(236, 228, 239, 0.95);
   border-radius: 6px;
-  color: $white;
+  color: $gradient-top;
   font-size: 0.96rem;
-  font-weight: 600;
-  box-shadow: 0 12px 28px rgba(43, 28, 53, 0.24), inset 0 1px 0 rgba($white, 0.08);
+  font-weight: 700;
+  box-shadow: 0 14px 30px rgba(43, 28, 53, 0.2), inset 0 1px 0 rgba($white, 0.72);
 
   svg {
     flex-shrink: 0;

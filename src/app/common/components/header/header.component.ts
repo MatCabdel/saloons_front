@@ -25,8 +25,10 @@ export class HeaderComponent {
   goBack(): void {
     if (this.backRoute()) {
       this._router.navigate([this.backRoute()]);
-    } else {
+    } else if (window.history.length > 1) {
       window.history.back();
+    } else {
+      this._router.navigate(['/home']);
     }
   }
 

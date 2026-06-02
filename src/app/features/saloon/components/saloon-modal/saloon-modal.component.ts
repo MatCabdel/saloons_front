@@ -56,6 +56,7 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
   activeSession: ActiveSession | null = null;
   isInThisSaloon = false;
   realConnectedCount: number | null = null;
+  activeEventModalTab: 'event' | 'saloon' = 'event';
 
   // Modal de confirmation de sortie
   showConfirmLeaveModal = false;
@@ -137,6 +138,9 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
     if (changes['saloon'] && this.saloon) {
       this._loadConnectedCount();
     }
+    if (changes['eventInfo']) {
+      this.activeEventModalTab = 'event';
+    }
   }
 
   ngOnDestroy(): void {
@@ -199,6 +203,10 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
         }
       },
     });
+  }
+
+  setEventModalTab(tab: 'event' | 'saloon'): void {
+    this.activeEventModalTab = tab;
   }
 
   /**

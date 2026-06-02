@@ -22,12 +22,15 @@
   </div>
 
   @if (!loading() && events().length > 0) {
-  <p class="events-count">
-    <span class="count">{{ eventsCount() }}</span> événement{{
-      eventsCount() > 1 ? 's' : ''
-    }}
-    saloons {{ periodLabel() }}
-  </p>
+  <div class="events-count">
+    <span class="events-count-badge">
+      <img src="assets/icons/OneDoor.svg" alt="" aria-hidden="true" />
+      <span class="events-count-number">{{ eventsCount() }}</span>
+    </span>
+    <span class="events-count-text">
+      Événement{{ eventsCount() > 1 ? 's' : '' }} saloons {{ periodLabel() }}
+    </span>
+  </div>
   <div class="events-list">
     @for (event of events(); track event.id) {
     <app-event-card

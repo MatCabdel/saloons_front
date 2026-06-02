@@ -33,11 +33,4 @@ export class MyProfilComponent {
   getDisplayName(user: UserDTO): string {
     return user.userName || `${user.firstName} ${user.lastName}`.trim();
   }
-
-  getProfileDescription(user: UserDTO): string {
-    return (
-      user.description?.trim() ||
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sit amet velit quam. Proin sagittis... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sit amet velit quam. Proin sagittis...'
-    );
-  }
 }

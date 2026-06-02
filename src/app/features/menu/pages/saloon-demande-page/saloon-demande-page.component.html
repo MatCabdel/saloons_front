@@ -78,16 +78,46 @@
       <!-- Type de lieu -->
       <div class="form-group">
         <label for="placeType">Type de lieu *</label>
-        <select
-          id="placeType"
-          formControlName="placeType"
+        <div
+          class="place-type-select"
+          [class.open]="isPlaceTypeDropdownOpen()"
           [class.invalid]="isFieldInvalid('placeType')"
         >
-          <option value="" disabled>Sélectionne un type</option>
-          @for (type of placeTypes; track type) {
-          <option [value]="type">{{ placeTypeLabels[type] }}</option>
+          <button
+            type="button"
+            id="placeType"
+            class="place-type-trigger"
+            [attr.aria-expanded]="isPlaceTypeDropdownOpen()"
+            aria-haspopup="listbox"
+            (click)="togglePlaceTypeDropdown()"
+            (keydown.escape)="closePlaceTypeDropdown()"
+          >
+            <span class="place-type-value" [class.placeholder]="!form.get('placeType')?.value">
+              {{ selectedPlaceTypeLabel() }}
+            </span>
+            <span class="place-type-chevron" aria-hidden="true">⌄</span>
+          </button>
+
+          @if (isPlaceTypeDropdownOpen()) {
+          <div class="place-type-options" role="listbox" aria-labelledby="placeType">
+            @for (type of placeTypes; track type) {
+            <button
+              type="button"
+              class="place-type-option"
+              role="option"
+              [class.selected]="form.get('placeType')?.value === type"
+              [attr.aria-selected]="form.get('placeType')?.value === type"
+              (click)="selectPlaceType(type)"
+            >
+              <span>{{ placeTypeLabels[type] }}</span>
+              @if (form.get('placeType')?.value === type) {
+              <span class="place-type-check" aria-hidden="true">✓</span>
+              }
+            </button>
+            }
+          </div>
           }
-        </select>
+        </div>
         @if (isFieldInvalid('placeType')) {
         <span class="error-text">Sélectionne un type de lieu</span>
         }
