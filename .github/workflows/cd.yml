@@ -46,24 +46,38 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Set Docker image tag and dockerfile
+      - name: Set Docker image tag and build configurations
         id: set_tag
         run: |
           if [[ "${GITHUB_REF##*/}" == "production" ]]; then
             echo "tag=production" >> "$GITHUB_OUTPUT"
-            echo "dockerfile=Dockerfile.production" >> "$GITHUB_OUTPUT"
+            echo "app_configuration=production" >> "$GITHUB_OUTPUT"
+            echo "landing_configuration=production-landing" >> "$GITHUB_OUTPUT"
           else
             echo "tag=staging" >> "$GITHUB_OUTPUT"
-            echo "dockerfile=Dockerfile.staging" >> "$GITHUB_OUTPUT"
+            echo "app_configuration=staging" >> "$GITHUB_OUTPUT"
+            echo "landing_configuration=staging-landing" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Build and Push Docker image
+      - name: Build and Push app Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ${{ steps.set_tag.outputs.dockerfile }}
+          file: Dockerfile.app
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/saloons-frontend:${{ steps.set_tag.outputs.tag }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/saloons-app:${{ steps.set_tag.outputs.tag }}
+          build-args: |
+            BUILD_CONFIGURATION=${{ steps.set_tag.outputs.app_configuration }}
+
+      - name: Build and Push landing Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile.landing
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/saloons-landing:${{ steps.set_tag.outputs.tag }}
+          build-args: |
+            BUILD_CONFIGURATION=${{ steps.set_tag.outputs.landing_configuration }}
 
   deploy:
     name: 🚀 Deploy to VPS
