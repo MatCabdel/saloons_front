@@ -3,7 +3,7 @@ export const environment = {
   name: 'production',
   apiUrl: 'https://api.saloons.fr',
   BASE_URL: 'https://api.saloons.fr',
-  frontendUrl: 'https://saloons.fr',
+  frontendUrl: 'https://app.saloons.fr',
   firebase: {
     apiKey: 'AIzaSyCRpCxE31epQAFrXVB6lXbIySPI_L83GX4',
     authDomain: 'saloons-ba99c.firebaseapp.com',
