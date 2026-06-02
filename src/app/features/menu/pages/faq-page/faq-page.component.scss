@@ -9,9 +9,7 @@ $panel-border: rgba(255, 255, 255, 0.1);
 .faq-page {
   min-height: 100vh;
   min-height: 100dvh;
-  background: radial-gradient(circle at 50% 11%, rgb(143 106 164 / 0.36), transparent 27%),
-    radial-gradient(circle at 50% 43%, rgb(255 214 102 / 0.08), transparent 22%),
-    linear-gradient(180deg, $gradient-top 0%, $gradient-middle 24%, $gradient-bottom 100%);
+  background: linear-gradient(180deg, #5a3d6d 0%, #2b1c35 100%);
 }
 
 .page-content {

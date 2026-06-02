@@ -69,7 +69,48 @@
                   "maximumError": "48kB"
                 }
               ],
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": true
+                },
+                "fonts": false
+              },
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractLicenses": true
+            },
+            "production-landing": {
+              "browser": "src/main.landing.ts",
+              "outputPath": "dist/landing",
+              "tsConfig": "tsconfig.landing.json",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.production.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2MB",
+                  "maximumError": "3MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "24kB",
+                  "maximumError": "48kB"
+                }
+              ],
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": true
+                },
+                "fonts": false
+              },
               "outputHashing": "all",
               "sourceMap": false,
               "extractLicenses": true
@@ -87,7 +128,29 @@
                   "minify": true,
                   "inlineCritical": false
                 },
-                "fonts": true
+                "fonts": false
+              },
+              "outputHashing": "none",
+              "sourceMap": true,
+              "extractLicenses": false
+            },
+            "staging-landing": {
+              "browser": "src/main.landing.ts",
+              "outputPath": "dist/landing",
+              "tsConfig": "tsconfig.landing.json",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
+                }
+              ],
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": false
               },
               "outputHashing": "none",
               "sourceMap": true,
@@ -126,6 +189,12 @@
             },
             "staging": {
               "buildTarget": "frontend:build:staging"
+            },
+            "production-landing": {
+              "buildTarget": "frontend:build:production-landing"
+            },
+            "staging-landing": {
+              "buildTarget": "frontend:build:staging-landing"
             },
             "development": {
               "buildTarget": "frontend:build:development"

@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { FirebaseAuthService } from '../../services/firebase-auth.service';
 import { environment } from 'src/environments/environment';
-import { LEGAL_NOTICES_TEXT, PRIVACY_POLICY_TEXT, TERMS_TEXT } from '../../legal/legal-texts';
 
 type AuthMode = 'register' | 'login' | 'register-email';
 
@@ -25,9 +24,6 @@ export class AuthPageComponent implements OnInit {
   errorMessage = signal<string | null>(null);
   showPassword = signal(false);
   showConfirmPassword = signal(false);
-  showLegalModal = signal(false);
-  legalModalTitle = signal('');
-  legalModalContent = signal('');
 
   // Pour détecter si l'utilisateur est déjà connecté
   get isAlreadyAuthenticated(): boolean {
@@ -90,22 +86,6 @@ export class AuthPageComponent implements OnInit {
 
   toggleConfirmPasswordVisibility(): void {
     this.showConfirmPassword.update(v => !v);
-  }
-
-  openTerms(): void {
-    this._openLegalModal('Conditions d’utilisation', TERMS_TEXT);
-  }
-
-  openPrivacyPolicy(): void {
-    this._openLegalModal('Politique de confidentialité', PRIVACY_POLICY_TEXT);
-  }
-
-  openLegalNotices(): void {
-    this._openLegalModal('Mentions légales', LEGAL_NOTICES_TEXT);
-  }
-
-  closeLegalModal(): void {
-    this.showLegalModal.set(false);
   }
 
   async logout(): Promise<void> {
@@ -235,12 +215,6 @@ export class AuthPageComponent implements OnInit {
     } else {
       this._router.navigate(['/map']);
     }
-  }
-
-  private _openLegalModal(title: string, content: string): void {
-    this.legalModalTitle.set(title);
-    this.legalModalContent.set(content);
-    this.showLegalModal.set(true);
   }
 
   private _getErrorMessage(error: unknown): string {

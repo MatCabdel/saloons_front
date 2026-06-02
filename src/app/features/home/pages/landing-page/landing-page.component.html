@@ -1,0 +1,257 @@
+<div class="landing-bg" aria-hidden="true"></div>
+<div class="landing">
+  <!-- HEADER -->
+  <header class="landing-header">
+    <div class="header-inner">
+      <a class="header-brand" routerLink="/">
+        <span class="brand-logo">SAL<span class="brand-oo">OO</span>NS</span>
+      </a>
+      <nav class="header-nav">
+        <a href="#how-it-works">Comment ça marche</a>
+        <a href="#partners">Partenaires</a>
+        <a routerLink="/contact">Nous contacter</a>
+      </nav>
+      <a class="header-cta" href="#cta-final">Obtenir l'app</a>
+      <button
+        type="button"
+        class="mobile-menu-btn"
+        aria-label="Menu"
+        (click)="mobileMenuOpen = !mobileMenuOpen"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    @if (mobileMenuOpen) {
+    <nav class="mobile-nav">
+      <a href="#how-it-works">Comment ça marche</a>
+      <a href="#partners">Partenaires</a>
+      <a routerLink="/contact">Nous contacter</a>
+      <a class="mobile-nav-cta" href="#cta-final">Obtenir l'app</a>
+    </nav>
+    }
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          Ici, on ne swipe pas.<br /><span class="hero-title-accent">On se rencontre.</span>
+        </h1>
+        <p class="hero-subtitle">
+          SALOONS te connecte aux personnes présentes dans les mêmes lieux que toi&nbsp;: bars,
+          événements, campus, salles de sport ou lieux de sortie. Entre dans un saloon, envoie un
+          clin d'œil et laisse la vraie rencontre commencer.
+        </p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="#cta-final">Télécharger l'application</a>
+          <a class="btn-secondary" href="#how-it-works">Découvrir le concept</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="phone-mockup">
+          <div class="mockup-screen">
+            <div class="mockup-header">
+              <span class="mockup-logo">SAL<span class="brand-oo">OO</span>NS</span>
+            </div>
+            <div class="mockup-card">
+              <div class="mockup-card-icon">📍</div>
+              <div class="mockup-card-title">Bar La Comète</div>
+              <div class="mockup-card-meta">12 personnes connectées</div>
+            </div>
+            <div class="mockup-card mockup-card--alt">
+              <div class="mockup-card-icon">😉</div>
+              <div class="mockup-card-title">Clin d'œil envoyé !</div>
+              <div class="mockup-card-meta">En attente de réponse…</div>
+            </div>
+            <div class="mockup-card mockup-card--match">
+              <div class="mockup-card-icon">💬</div>
+              <div class="mockup-card-title">Match réciproque</div>
+              <div class="mockup-card-meta">La conversation peut commencer</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section how-it-works" id="how-it-works">
+    <div class="section-inner">
+      <h2 class="section-title">Comment ça marche ?</h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Repère un lieu autour de toi</h3>
+          <p>Découvre les saloons disponibles près de ta position.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>Entre dans le saloon</h3>
+          <p>Connecte-toi au lieu pendant une durée limitée.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Envoie un clin d'œil</h3>
+          <p>Montre ton intérêt simplement, sans pression.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h3>Discute si c'est réciproque</h3>
+          <p>Quand le clin d'œil est partagé, la conversation peut commencer.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIFFERENTIATOR -->
+  <section class="section differentiator">
+    <div class="section-inner">
+      <h2 class="section-title">Pensé pour le réel,<br />pas pour scroller sans fin.</h2>
+      <p class="section-lead">
+        Une app pensée pour créer des occasions réelles, pas pour multiplier les conversations sans
+        lendemain.
+      </p>
+      <div class="diff-grid">
+        <div class="diff-item">
+          <span class="diff-icon">🚫</span>
+          <span>Pas de swipe infini</span>
+        </div>
+        <div class="diff-item">
+          <span class="diff-icon">📍</span>
+          <span>Des rencontres liées à des lieux réels</span>
+        </div>
+        <div class="diff-item">
+          <span class="diff-icon">⏳</span>
+          <span>Des conversations éphémères</span>
+        </div>
+        <div class="diff-item">
+          <span class="diff-icon">⚡</span>
+          <span>Une expérience locale et spontanée</span>
+        </div>
+        <div class="diff-item">
+          <span class="diff-icon">🔒</span>
+          <span>Respect de la vie privée</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLACES -->
+  <section class="section places">
+    <div class="section-inner">
+      <h2 class="section-title">Des rencontres là où la vie se passe.</h2>
+      <p class="section-lead">
+        SALOONS transforme les lieux du quotidien en espaces de rencontre simples, spontanés et
+        vivants.
+      </p>
+      <div class="places-grid">
+        <div class="place-badge">🍸 Bars</div>
+        <div class="place-badge">🎉 Événements</div>
+        <div class="place-badge">🎓 Campus</div>
+        <div class="place-badge">💪 Salles de sport</div>
+        <div class="place-badge">💻 Coworking</div>
+        <div class="place-badge">🌳 Parcs & quais</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECURITY -->
+  <section class="section security" id="security">
+    <div class="section-inner">
+      <h2 class="section-title">Ta position n'est pas un outil de surveillance.</h2>
+      <p class="section-lead">
+        SALOONS utilise ta position uniquement pour vérifier que tu es proche d'un lieu compatible.
+        L'objectif est de favoriser les rencontres locales, pas de suivre les utilisateurs en temps
+        réel.
+      </p>
+      <div class="security-grid">
+        <div class="security-item">
+          <span class="security-icon">🚨</span>
+          <span>Signalement utilisateur</span>
+        </div>
+        <div class="security-item">
+          <span class="security-icon">🛡️</span>
+          <span>Modération active</span>
+        </div>
+        <div class="security-item">
+          <span class="security-icon">⏱️</span>
+          <span>Expérience limitée dans le temps</span>
+        </div>
+        <div class="security-item">
+          <span class="security-icon">👁️</span>
+          <span>Affichage contrôlé des profils</span>
+        </div>
+        <div class="security-item">
+          <span class="security-icon">🔐</span>
+          <span>Respect de la vie privée</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNERS -->
+  <section class="section partners" id="partners">
+    <div class="section-inner">
+      <h2 class="section-title">Vous gérez un bar, un événement ou un lieu de vie ?</h2>
+      <p class="section-lead">
+        SALOONS peut aider votre lieu à devenir un point de rencontre local, vivant et connecté.
+      </p>
+      <a class="btn-primary" routerLink="/contact">Nous contacter</a>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="section cta-final" id="cta-final">
+    <div class="section-inner">
+      <div class="cta-card">
+        <h2>Prêt à rencontrer autrement ?</h2>
+        <p>Rejoins SALOONS et découvre les personnes qui partagent déjà les mêmes lieux que toi.</p>
+        <div class="cta-buttons">
+          <a class="btn-primary btn-lg" href="https://apps.apple.com" target="_blank" rel="noopener"
+            >Bientôt sur l'App Store</a
+          >
+          <a
+            class="btn-primary btn-lg"
+            href="https://play.google.com"
+            target="_blank"
+            rel="noopener"
+            >Bientôt sur Google Play</a
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="landing-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="brand-logo">SAL<span class="brand-oo">OO</span>NS</span>
+        <p class="footer-tagline">L'application de rencontre locale pensée pour le réel.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <a href="#how-it-works">Comment ça marche</a>
+          <a href="#partners">Partenaires</a>
+          <a href="#cta-final">Télécharger</a>
+        </div>
+        <div class="footer-col">
+          <h4>Légal</h4>
+          <a routerLink="/cgu">CGU</a>
+          <a routerLink="/politique-confidentialite">Politique de confidentialité</a>
+          <a routerLink="/mentions-legales">Mentions légales</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© {{ currentYear }} SALOONS — Tous droits réservés.</p>
+        <p class="footer-disclaimer">
+          SALOONS n'est pas affilié aux établissements, événements ou lieux affichés, sauf mention
+          contraire explicite.
+        </p>
+      </div>
+    </div>
+  </footer>
+</div>

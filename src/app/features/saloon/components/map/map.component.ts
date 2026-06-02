@@ -201,8 +201,8 @@ export class MapComponent implements OnInit, OnDestroy {
       )
       .subscribe(saloons => {
         this._cachedSaloons = saloons;
-        this._browseState.setVisibleSaloonCount(saloons.length);
         this._updateMarkers();
+        this._updateVisibleSaloonCount();
       });
   }
 
@@ -240,6 +240,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this._mapMove$.pipe(debounceTime(DEBOUNCE_MS), takeUntil(this._destroy$)).subscribe(() => {
       const bounds = this.map.getBounds();
+      this._updateVisibleSaloonCount(bounds);
       if (!this._isWithinLoadedBuffer(bounds)) {
         this._triggerFetch();
       }
@@ -318,6 +319,15 @@ export class MapComponent implements OnInit, OnDestroy {
       });
 
     this._clusterGroup.addLayers(markers);
+  }
+
+  private _updateVisibleSaloonCount(bounds = this.map.getBounds()): void {
+    const visibleCount = this._cachedSaloons.filter(
+      saloon =>
+        saloon.latitude && saloon.longitude && bounds.contains([saloon.latitude, saloon.longitude])
+    ).length;
+
+    this._browseState.setVisibleSaloonCount(visibleCount);
   }
 
   /**

@@ -47,6 +47,7 @@ import { LegalNoticesPageComponent } from './features/menu/pages/legal-notices-p
 import { TermsPageComponent } from './features/menu/pages/terms-page/terms-page.component';
 import { PrivacyPolicyPageComponent } from './features/menu/pages/privacy-policy-page/privacy-policy-page.component';
 import { WelcomePageComponent } from './features/home/pages/welcome-page/welcome-page.component';
+import { LandingPageComponent } from './features/home/pages/landing-page/landing-page.component';
 import { EventSwitcherPageComponent } from './features/event/pages/event-switcher-page/event-switcher-page.component';
 import { EventsPageComponent } from './features/event/pages/events-page/events-page.component';
 import { CreateEventPageComponent } from './features/admin/pages/create-event-page/create-event-page.component';
@@ -56,6 +57,8 @@ import { EventsListPageComponent } from './features/admin/pages/events-list-page
 export const routes: Routes = [
   // Splash screen au lancement
   { path: '', component: WelcomePageComponent },
+  // Landing page publique
+  { path: 'home', component: LandingPageComponent },
   // Page d'accueil auth
   { path: 'auth', component: AuthPageComponent, canActivate: [authGuard] },
   // Page de connexion
@@ -129,21 +132,18 @@ export const routes: Routes = [
   },
   { path: 'saloon-demande', component: SaloonDemandePageComponent, canActivate: [isLoggedInGuard] },
   { path: 'faq', component: FaqPageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'contact', component: ContactPageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'contact', component: ContactPageComponent },
   {
     path: 'mentions-legales',
     component: LegalNoticesPageComponent,
-    canActivate: [isLoggedInGuard],
   },
   {
     path: 'cgu',
     component: TermsPageComponent,
-    canActivate: [isLoggedInGuard],
   },
   {
     path: 'politique-confidentialite',
     component: PrivacyPolicyPageComponent,
-    canActivate: [isLoggedInGuard],
   },
   {
     path: 'dashboard',
