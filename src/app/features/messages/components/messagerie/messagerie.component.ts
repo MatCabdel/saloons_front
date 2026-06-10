@@ -52,6 +52,7 @@ export class MessagerieComponent implements OnInit, OnDestroy, AfterViewInit, Af
   myImgUrl?: string;
   participants: User[] = [];
   isMatchMode = false; // true si on est en mode match (pas de conversation)
+  selectedMessageKey: string | null = null;
 
   private _hasScrolledToBottom = false;
 
@@ -222,6 +223,66 @@ export class MessagerieComponent implements OnInit, OnDestroy, AfterViewInit, Af
     if (!messageExists) {
       this.messages.push(msg);
     }
+  }
+
+  toggleMessageTime(msg: Message, index: number): void {
+    const key = this._getMessageKey(msg, index);
+    this.selectedMessageKey = this.selectedMessageKey === key ? null : key;
+  }
+
+  isMessageTimeVisible(msg: Message, index: number): boolean {
+    return this.selectedMessageKey === this._getMessageKey(msg, index);
+  }
+
+  shouldShowDateSeparator(index: number): boolean {
+    if (index === 0) {
+      return true;
+    }
+
+    const currentMessage = this.messages[index];
+    const previousMessage = this.messages[index - 1];
+
+    if (!currentMessage || !previousMessage) {
+      return false;
+    }
+
+    return !this._isSameDay(currentMessage.sentAt, previousMessage.sentAt);
+  }
+
+  getDateSeparatorLabel(sentAt: string): string {
+    const messageDate = new Date(sentAt);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    if (this._isSameDay(messageDate, today)) {
+      return "Aujourd'hui";
+    }
+
+    if (this._isSameDay(messageDate, yesterday)) {
+      return 'Hier';
+    }
+
+    return new Intl.DateTimeFormat('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: messageDate.getFullYear() === today.getFullYear() ? undefined : 'numeric',
+    }).format(messageDate);
+  }
+
+  private _getMessageKey(msg: Message, index: number): string {
+    return msg.id ? `id-${msg.id}` : `local-${index}-${msg.sender}-${msg.sentAt}`;
+  }
+
+  private _isSameDay(firstDate: string | Date, secondDate: string | Date): boolean {
+    const first = new Date(firstDate);
+    const second = new Date(secondDate);
+
+    return (
+      first.getFullYear() === second.getFullYear() &&
+      first.getMonth() === second.getMonth() &&
+      first.getDate() === second.getDate()
+    );
   }
 
   loadMessages(): void {

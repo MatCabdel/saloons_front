@@ -1,32 +1,10 @@
 <div class="messages-container">
   <div class="header-messages">
-    <app-header [showBackButton]="true" backRoute="/chat"></app-header>
-    <div class="onglets">
-      <div class="spacer"></div>
-      <div
-        class="user-header"
-        (click)="goToUserProfil()"
-        (keyup.enter)="goToUserProfil()"
-        [class.clickable]="!isMatchCancelled"
-        [attr.tabindex]="isMatchCancelled ? null : 0"
-        role="button"
-      >
-        <!-- Match annulé : avatar grisé -->
-        @if (isMatchCancelled) {
-        <div class="avatar-placeholder">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-            />
-          </svg>
-        </div>
-        <span class="username">{{ userTarget?.userName ?? 'Utilisateur' }}</span>
-        } @else if (userTarget) {
-        <!-- Conversation normale ou expirée (quitté saloon) : photo normale -->
-        <img [src]="userTarget.imgUrl" alt="avatar" class="avatar-header" />
-        <span class="username">{{ userTarget.userName }}</span>
-        }
-      </div>
+    <div class="conversation-topbar">
+      <button type="button" class="back-btn" (click)="goBack()" aria-label="Retour">
+        <span>‹</span>
+      </button>
+      <h1>{{ userTarget?.userName ?? 'Messages' }}</h1>
       <div class="menu-container">
         <button
           type="button"
@@ -54,6 +32,26 @@
         </div>
         }
       </div>
+    </div>
+    <div
+      class="user-header"
+      (click)="goToUserProfil()"
+      (keyup.enter)="goToUserProfil()"
+      [class.clickable]="!isMatchCancelled"
+      [attr.tabindex]="isMatchCancelled ? null : 0"
+      role="button"
+    >
+      @if (isMatchCancelled) {
+      <div class="avatar-placeholder">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+          />
+        </svg>
+      </div>
+      } @else if (userTarget) {
+      <img [src]="userTarget.imgUrl" alt="avatar" class="avatar-header" />
+      }
     </div>
   </div>
   <div class="messagerie-content">
