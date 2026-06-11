@@ -133,7 +133,7 @@
         @for (saloon of saloons(); track saloon.id) {
         <tr>
           <td class="cell-image">
-            <img [src]="saloon.imgUrl" [alt]="saloon.name" />
+            <img [src]="saloon.imgUrl" [alt]="saloon.name" loading="lazy" />
           </td>
           <td class="cell-name">{{ saloon.name }}</td>
           <td class="cell-type">
@@ -369,7 +369,7 @@
     @for (saloon of saloons(); track saloon.id) {
     <div class="saloon-card" [class.expanded]="isSaloonExpanded(saloon.id)">
       <button type="button" class="saloon-card-header" (click)="toggleSaloonExpand(saloon.id)">
-        <img [src]="saloon.imgUrl" [alt]="saloon.name" class="saloon-image" />
+        <img [src]="saloon.imgUrl" [alt]="saloon.name" class="saloon-image" loading="lazy" />
         <div class="saloon-main-info">
           <span class="saloon-name">{{ saloon.name }}</span>
           <span class="saloon-type-badge-small">{{ getTypeLabel(saloon.type) }}</span>
@@ -593,9 +593,13 @@
           @for (user of saloonUsers; track user.id) {
           <div class="user-item">
             <img
-              [src]="user.imgUrl || 'assets/default-avatar.png'"
+              [src]="
+                (user.imgUrl | versionedImageUrl : user.profileImageUpdatedAt) ||
+                'assets/default-avatar.png'
+              "
               [alt]="user.userName"
               class="user-avatar"
+              loading="lazy"
             />
             <div class="user-info">
               <span class="user-name">{{ user.userName || user.firstname }}</span>

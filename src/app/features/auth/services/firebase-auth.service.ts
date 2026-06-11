@@ -25,6 +25,7 @@ export type UserDTO = {
   email: string;
   userName: string | null;
   imgUrl: string | null;
+  profileImageUpdatedAt?: string | null;
   age: number;
   city: string | null;
   description: string | null;
@@ -427,6 +428,7 @@ export class FirebaseAuthService {
               email: response.email,
               userName: response.userName,
               imgUrl: response.imgUrl,
+              profileImageUpdatedAt: response.profileImageUpdatedAt,
               age: response.age,
               city: response.city,
               description: response.description,
@@ -449,6 +451,7 @@ export class FirebaseAuthService {
             email: response.email,
             userName: response.userName,
             imgUrl: response.imgUrl,
+            profileImageUpdatedAt: response.profileImageUpdatedAt,
             age: response.age,
             city: response.city,
             description: response.description,

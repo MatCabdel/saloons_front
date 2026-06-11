@@ -56,7 +56,7 @@
         @for (event of events(); track event.id) {
         <tr>
           <td>
-            <img class="event-thumb" [src]="event.imageUrl" [alt]="event.title" />
+            <img class="event-thumb" [src]="event.imageUrl" [alt]="event.title" loading="lazy" />
           </td>
           <td>
             <strong>{{ event.title }}</strong>
@@ -105,7 +105,7 @@
     @for (event of events(); track event.id) {
     <div class="event-card-admin">
       <div class="card-header">
-        <img [src]="event.imageUrl" [alt]="event.title" />
+        <img [src]="event.imageUrl" [alt]="event.title" loading="lazy" />
         <div class="card-info">
           <strong>{{ event.title }}</strong>
           <small>{{ event.saloonName }}</small>

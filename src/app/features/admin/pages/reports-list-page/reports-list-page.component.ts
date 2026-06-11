@@ -7,13 +7,14 @@ import {
   ReportStatus,
   REPORT_STATUS_LABELS,
 } from 'src/app/features/report/models/report.model';
+import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
 
 type FilterOption = 'ALL' | ReportStatus;
 
 @Component({
   selector: 'app-reports-list-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, VersionedImageUrlPipe],
   templateUrl: './reports-list-page.component.html',
   styleUrl: './reports-list-page.component.scss',
 })

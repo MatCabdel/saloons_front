@@ -50,7 +50,11 @@
         </svg>
       </div>
       } @else if (userTarget) {
-      <img [src]="userTarget.imgUrl" alt="avatar" class="avatar-header" />
+      <img
+        [src]="userTarget.imgUrl | versionedImageUrl : userTarget.profileImageUpdatedAt"
+        alt="avatar"
+        class="avatar-header"
+      />
       }
     </div>
   </div>

@@ -24,11 +24,12 @@ import { Message, HeartRequestStatus } from 'src/app/features/conversation/model
 import { PresenceService } from 'src/app/features/saloon/services/presence.service';
 import { combineLatest, map, mergeMap, Observable, of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
 
 @Component({
   selector: 'app-messagerie',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, VersionedImageUrlPipe],
   templateUrl: './messagerie.component.html',
   styleUrl: './messagerie.component.scss',
 })

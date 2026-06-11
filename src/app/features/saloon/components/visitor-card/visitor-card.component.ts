@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
 import { User } from 'src/app/features/user/models/user';
 import { UserPresence } from '../../services/presence.service';
 
@@ -8,7 +9,7 @@ type VisitorUser = User | UserPresence;
 @Component({
   selector: 'app-visitor-card',
   standalone: true,
-  imports: [],
+  imports: [VersionedImageUrlPipe],
   templateUrl: './visitor-card.component.html',
   styleUrl: './visitor-card.component.scss',
 })

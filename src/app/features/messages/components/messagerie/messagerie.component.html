@@ -27,8 +27,13 @@
   <div class="message-row" [ngClass]="{ me: msg.sender === myId, other: msg.sender !== myId }">
     @if (msg.sender !== myId) {
     <img
-      [src]="getParticipantById(msg.sender)?.imgUrl || 'assets/img/default-avatar.png'"
+      [src]="
+        (getParticipantById(msg.sender)?.imgUrl
+          | versionedImageUrl : getParticipantById(msg.sender)?.profileImageUpdatedAt) ||
+        'assets/img/default-avatar.png'
+      "
       alt="avatar"
+      loading="lazy"
     />
     }
     <div class="message-wrapper">

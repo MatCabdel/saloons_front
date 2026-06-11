@@ -2,7 +2,10 @@
   @if (data$ | async; as data) {
   <div class="profile-card">
     <div class="img-section">
-      <img [src]="data.user.imgUrl" alt="profil" />
+      <img
+        [src]="data.user.imgUrl | versionedImageUrl : data.user.profileImageUpdatedAt"
+        alt="profil"
+      />
       @if (data.user.id !== myId) {
       <button class="options-button" type="button" (click)="toggleMenu()" aria-label="Options">
         <svg

@@ -5,7 +5,11 @@
   (keydown.enter)="onCardClick()"
 >
   <div class="img-card">
-    <img [src]="user.imgUrl" [alt]="user.userName" loading="lazy" />
+    <img
+      [src]="user.imgUrl | versionedImageUrl : user.profileImageUpdatedAt"
+      [alt]="user.userName"
+      loading="lazy"
+    />
     <div class="title-img">
       <h1>{{ user.userName }}</h1>
       @if (userCity) {

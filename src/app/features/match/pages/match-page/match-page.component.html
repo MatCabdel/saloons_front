@@ -3,8 +3,14 @@
   <h2>RECIPROQUE !</h2>
   <div class="match-img">
     @if (users$ | async; as users) {
-    <img [src]="users.user2.imgUrl" alt="Profil matché" />
-    <img [src]="users.user1.imgUrl" alt="Mon profil" />
+    <img
+      [src]="users.user2.imgUrl | versionedImageUrl : users.user2.profileImageUpdatedAt"
+      alt="Profil matché"
+    />
+    <img
+      [src]="users.user1.imgUrl | versionedImageUrl : users.user1.profileImageUpdatedAt"
+      alt="Mon profil"
+    />
     }
   </div>
   <p>Vous avez désormais 3 heures pour faire connaissances</p>

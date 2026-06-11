@@ -18,6 +18,7 @@ export type UserPresence = {
   id: number;
   userName: string;
   imgUrl: string;
+  profileImageUpdatedAt?: string | null;
   age: number | null;
   city: string | null;
 };
