@@ -112,22 +112,18 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
         };
       });
 
-      // Filtrer les saloons à moins de MAX_DISTANCE_METERS
-      // Exception: reviewers/admins voient les saloons privés même s'ils sont loin
+      // Filtrer les saloons à moins de MAX_DISTANCE_METERS.
+      // Les saloons privés reçus du backend restent visibles sans limite de distance:
+      // le backend ne les renvoie qu'aux profils autorisés.
       let filteredSaloons = [] as (Saloon & { distanceMeters: number | null })[];
       if (position) {
-        filteredSaloons = this.isReviewerOrAdmin
-          ? saloonsWithDistance.filter(saloon =>
-              saloon.isPrivate === true
-                ? true
-                : saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
-            )
-          : saloonsWithDistance.filter(
-              saloon =>
-                saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
-            );
-      } else if (this.isReviewerOrAdmin) {
-        // Sans position, montrer uniquement les privés pour les reviewers/admins
+        filteredSaloons = saloonsWithDistance.filter(saloon =>
+          saloon.isPrivate === true
+            ? true
+            : saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
+        );
+      } else {
+        // Sans position, montrer uniquement les privés accessibles renvoyés par le backend.
         filteredSaloons = saloonsWithDistance.filter(saloon => saloon.isPrivate === true);
       }
 
