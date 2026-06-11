@@ -191,6 +191,7 @@ export class MapComponent implements OnInit, OnDestroy {
                 this._loadedBounds = L.latLngBounds([-90, -180], [90, 180]);
                 return this._loadAllAccessibleSaloons(type);
               }),
+              switchMap(saloons => this._mergeAccessiblePrivateSaloons(saloons, type)),
               catchError(err => {
                 console.error('Erreur chargement saloons map:', err);
                 return this._loadAllAccessibleSaloons(type).pipe(catchError(() => EMPTY));
@@ -212,6 +213,25 @@ export class MapComponent implements OnInit, OnDestroy {
     return this._saloonApiService.getListSaloon(type).pipe(
       map(saloons => (saloons ?? []).filter(s => s.latitude && s.longitude)),
       map(saloons => saloons.map(s => this._toMapItem(s)))
+    );
+  }
+
+  private _mergeAccessiblePrivateSaloons(
+    saloons: SaloonMapItem[],
+    type: SaloonType | null
+  ): ReturnType<SaloonApiService['getSaloonsForMap']> {
+    return this._saloonApiService.getListSaloon(type).pipe(
+      map(accessibleSaloons =>
+        (accessibleSaloons ?? [])
+          .filter(saloon => saloon.isPrivate === true && saloon.latitude && saloon.longitude)
+          .map(saloon => this._toMapItem(saloon))
+      ),
+      map(privateSaloons => {
+        const merged = new Map<number, SaloonMapItem>();
+        saloons.forEach(saloon => merged.set(saloon.id, saloon));
+        privateSaloons.forEach(saloon => merged.set(saloon.id, saloon));
+        return Array.from(merged.values());
+      })
     );
   }
 

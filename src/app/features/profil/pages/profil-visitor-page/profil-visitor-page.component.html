@@ -1,6 +1,8 @@
 <div class="visitor-profil-page">
   <header class="visitor-header">
-    <button type="button" class="back-button" (click)="goBack()" aria-label="Retour">‹</button>
+    <button type="button" class="back-button" (click)="goBack()" aria-label="Retour">
+      <span>‹</span>
+    </button>
     <h1 class="page-title">{{ (profileName$ | async) || 'Profil' }}</h1>
     <div class="header-spacer" aria-hidden="true"></div>
   </header>

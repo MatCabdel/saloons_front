@@ -39,7 +39,14 @@
       </div>
       } @else {
       <div class="avatar-wrapper">
-        <img [src]="otherParticipant(conv)?.imgUrl" alt="avatar" loading="lazy" />
+        <img
+          [src]="
+            otherParticipant(conv)?.imgUrl
+              | versionedImageUrl : otherParticipant(conv)?.profileImageUpdatedAt
+          "
+          alt="avatar"
+          loading="lazy"
+        />
         @if (!conv.isPermanent) {
         <span class="ephemeral-badge" aria-hidden="true">
           <img src="assets/icons/time-bomb.svg" alt="" />

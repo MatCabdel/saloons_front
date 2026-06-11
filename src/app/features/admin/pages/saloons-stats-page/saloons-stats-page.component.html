@@ -135,7 +135,7 @@
       <div class="saloons-list">
         @for (saloon of getSaloonsForCity(city); track saloon.id) {
         <div class="saloon-item" [class.has-users]="saloon.connectedCount > 0">
-          <img [src]="saloon.imgUrl" [alt]="saloon.name" class="saloon-img" />
+          <img [src]="saloon.imgUrl" [alt]="saloon.name" class="saloon-img" loading="lazy" />
           <div class="saloon-info">
             <span class="saloon-name">{{ saloon.name }}</span>
           </div>

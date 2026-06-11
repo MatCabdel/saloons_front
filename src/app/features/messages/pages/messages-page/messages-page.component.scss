@@ -1,4 +1,5 @@
-$gradient-top: #413443;
+$gradient-top: #5a3d6d;
+$gradient-bottom: #2b1c35;
 $white: #fff;
 
 :host {
@@ -26,83 +27,64 @@ $white: #fff;
     width: 100%;
     flex-shrink: 0;
     box-sizing: border-box;
-    background: linear-gradient(to right, $gradient-top 0%, lighten($gradient-top, 10%) 100%);
+    padding: var(--header-safe-padding-top) max(16px, var(--safe-right)) 18px
+      max(16px, var(--safe-left));
+    background: linear-gradient(180deg, $gradient-top 0%, $gradient-bottom 100%);
 
-    app-header {
-      display: block;
-      width: 100%;
-    }
-
-    .onglets {
+    .conversation-topbar {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 12px 16px;
+      justify-content: space-between;
+      min-height: 52px;
+      gap: 12px;
 
-      .spacer {
-        // Même taille que .menu-container
-        width: 21px;
+      .back-btn {
+        width: 44px;
+        height: 44px;
+        border: none;
+        background: transparent;
+        color: $white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+        padding: 0;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+
+        span {
+          font-size: 2rem;
+          line-height: 1;
+          transform: translateY(-1px);
+        }
+
+        &:hover {
+          opacity: 0.7;
+          transform: translateX(-1px);
+        }
       }
 
-      .user-header {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-
-        &.clickable {
-          cursor: pointer;
-
-          &:hover {
-            .avatar-header {
-              transform: scale(1.05);
-              box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-            }
-          }
-        }
-
-        .avatar-header {
-          width: 48px;
-          height: 48px;
-          border-radius: 50%;
-          object-fit: cover;
-          border: 2px solid $white;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-          transition: all 0.2s ease;
-        }
-
-        .avatar-placeholder {
-          width: 48px;
-          height: 48px;
-          border-radius: 50%;
-          background: rgba($white, 0.3);
-          border: 2px solid $white;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-
-          svg {
-            width: 28px;
-            height: 28px;
-            color: $white;
-            opacity: 0.8;
-          }
-        }
-
-        .username {
-          color: $white;
-          font-size: 0.85rem;
-          font-weight: 500;
-          max-width: 120px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
+      h1 {
+        margin: 0;
+        color: $white;
+        font-family: 'Urbanist', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-width: 0;
+        flex: 1;
       }
 
       .menu-container {
         position: relative;
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
 
         .dots-menu-btn {
           display: flex;
@@ -112,8 +94,12 @@ $white: #fff;
           background: transparent;
           border: none;
           cursor: pointer;
-          border-radius: 8px;
+          border-radius: 14px;
           transition: background 0.2s ease;
+          width: 44px;
+          height: 44px;
+          align-items: center;
+          justify-content: center;
 
           &:hover {
             background: rgba($white, 0.15);
@@ -166,6 +152,52 @@ $white: #fff;
               color: #7f8c8d;
             }
           }
+        }
+      }
+    }
+
+    .user-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-top: 4px;
+
+      &.clickable {
+        cursor: pointer;
+
+        &:hover {
+          .avatar-header {
+            transform: scale(1.04);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+          }
+        }
+      }
+
+      .avatar-header,
+      .avatar-placeholder {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        border: 2px solid rgba($white, 0.92);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.24);
+      }
+
+      .avatar-header {
+        object-fit: cover;
+        transition: all 0.2s ease;
+      }
+
+      .avatar-placeholder {
+        background: rgba($white, 0.22);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+          width: 30px;
+          height: 30px;
+          color: $white;
+          opacity: 0.84;
         }
       }
     }

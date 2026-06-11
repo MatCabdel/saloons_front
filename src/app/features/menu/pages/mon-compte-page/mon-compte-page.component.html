@@ -9,7 +9,11 @@
     <a class="profile-card" routerLink="/profil">
       <div class="avatar-container">
         @if (getProfileDisplayImage()) {
-        <img [src]="getProfileDisplayImage()!" alt="Photo de profil" class="avatar" />
+        <img
+          [src]="getProfileDisplayImage() | versionedImageUrl : user()?.profileImageUpdatedAt"
+          alt="Photo de profil"
+          class="avatar"
+        />
         } @else {
         <div class="avatar-placeholder">
           <span>{{ getInitials() }}</span>

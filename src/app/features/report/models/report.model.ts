@@ -32,6 +32,7 @@ export type ReporterDTO = {
   id: number;
   userName: string;
   imgUrl: string;
+  profileImageUpdatedAt?: string | null;
   city: string;
 };
 
@@ -39,6 +40,7 @@ export type ReportedDTO = {
   id: number;
   userName: string;
   imgUrl: string;
+  profileImageUpdatedAt?: string | null;
   city: string;
 };
 

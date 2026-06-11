@@ -2,9 +2,14 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { HeaderComponent } from 'src/app/common/components/header/header.component';
 import { environment } from 'src/environments/environment';
+import { jwtDecode } from 'jwt-decode';
+
+type JwtPayload = {
+  exp?: number;
+};
 
 @Component({
   selector: 'app-delete-account-page',
@@ -45,25 +50,64 @@ export class DeleteAccountPageComponent {
       return;
     }
 
+    const token = localStorage.getItem('saloon_auth_token');
+
+    if (!token) {
+      this.errorMessage.set('Ta session a expiré. Reconnecte-toi avant de supprimer ton compte.');
+      return;
+    }
+
+    if (!this._isTokenUsable(token)) {
+      localStorage.removeItem('saloon_auth_token');
+      this.errorMessage.set('Ta session a expiré. Reconnecte-toi avant de supprimer ton compte.');
+      return;
+    }
+
     this.isDeleting.set(true);
     this.errorMessage.set(null);
 
-    this._http.delete(`${environment.apiUrl}/user/delete-account`).subscribe({
-      next: () => {
-        this.isDeleting.set(false);
-        // Clear local storage and redirect
-        localStorage.clear();
-        this._router.navigate(['/unauthorized'], {
-          queryParams: { reason: 'account-deleted' },
-        });
-      },
-      error: (err: { error?: { message?: string } }) => {
-        this.isDeleting.set(false);
-        this.errorMessage.set(
-          err.error?.message || 'Une erreur est survenue lors de la suppression.'
-        );
-      },
-    });
+    this._http
+      .delete(`${environment.apiUrl}/user/delete-account`, {
+        headers: new HttpHeaders({
+          Authorization: `Bearer ${token}`,
+        }),
+      })
+      .subscribe({
+        next: () => {
+          this.isDeleting.set(false);
+          // Clear local storage and redirect
+          localStorage.clear();
+          this._router.navigate(['/unauthorized'], {
+            queryParams: { reason: 'account-deleted' },
+          });
+        },
+        error: (err: HttpErrorResponse) => {
+          this.isDeleting.set(false);
+          this.errorMessage.set(this._getDeleteErrorMessage(err));
+        },
+      });
+  }
+
+  private _getDeleteErrorMessage(err: HttpErrorResponse): string {
+    if (err.status === 401) {
+      return 'Ta session a expiré ou n’est plus valide. Reconnecte-toi avant de supprimer ton compte.';
+    }
+
+    return err.error?.message || 'Une erreur est survenue lors de la suppression.';
+  }
+
+  private _isTokenUsable(token: string): boolean {
+    try {
+      const decodedToken = jwtDecode<JwtPayload>(token);
+
+      if (!decodedToken.exp) {
+        return false;
+      }
+
+      return decodedToken.exp * 1000 > Date.now();
+    } catch {
+      return false;
+    }
   }
 
   goBack(): void {

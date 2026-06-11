@@ -16,6 +16,7 @@
         type="button"
         class="mobile-menu-btn"
         aria-label="Menu"
+        [attr.aria-expanded]="mobileMenuOpen"
         (click)="mobileMenuOpen = !mobileMenuOpen"
       >
         <span></span><span></span><span></span>
@@ -36,6 +37,10 @@
     <div class="hero-bg"></div>
     <div class="hero-content">
       <div class="hero-text">
+        <div class="hero-kicker">
+          <span class="kicker-dot"></span>
+          Réseau social local
+        </div>
         <h1 class="hero-title">
           Ici, on ne swipe pas.<br /><span class="hero-title-accent">On se rencontre.</span>
         </h1>
@@ -48,10 +53,19 @@
           <a class="btn-primary" href="#cta-final">Télécharger l'application</a>
           <a class="btn-secondary" href="#how-it-works">Découvrir le concept</a>
         </div>
+        <div class="hero-highlights" aria-label="Points forts de SALOONS">
+          <span>Local</span>
+          <span>Spontané</span>
+          <span>Confidentiel</span>
+        </div>
       </div>
       <div class="hero-visual">
         <div class="phone-mockup">
           <div class="mockup-screen">
+            <div class="mockup-status" aria-hidden="true">
+              <span></span>
+              <span></span>
+            </div>
             <div class="mockup-header">
               <span class="mockup-logo">SAL<span class="brand-oo">OO</span>NS</span>
             </div>

@@ -6,7 +6,7 @@ $yellow: #ffc122;
 $panel-bg: rgba(255, 255, 255, 0.1);
 $panel-border: rgba(255, 255, 255, 0.1);
 $danger: #ff5c5c;
-$profile-card-bg: #f6f1fb;
+$profile-card-bg: rgba(213, 196, 230, 0.46);
 
 .mon-compte-page {
   min-height: 100vh;
@@ -52,15 +52,15 @@ $profile-card-bg: #f6f1fb;
   padding: 1rem;
   gap: 0.95rem;
   margin-bottom: 1.35rem;
-  background: linear-gradient(135deg, #fbf8fc 0%, #eee4f4 52%, #d9c4e5 100%);
-  border: 1px solid rgba($white, 0.78);
+  background: linear-gradient(135deg, rgba(222, 210, 238, 0.58), rgba(171, 139, 196, 0.34));
+  border: 1px solid rgba(230, 218, 242, 0.42);
   border-radius: 10px;
-  color: $gradient-top;
+  color: $white;
   text-decoration: none;
-  box-shadow: 0 16px 36px rgba(15, 8, 19, 0.18), inset 0 1px 0 rgba($white, 0.82);
+  box-shadow: 0 16px 36px rgba(15, 8, 19, 0.17), inset 0 1px 0 rgba($white, 0.34);
 
   .card-arrow {
-    color: $gradient-top;
+    color: rgba($white, 0.86);
   }
 }
 
@@ -76,7 +76,7 @@ $profile-card-bg: #f6f1fb;
 
   .avatar {
     object-fit: cover;
-    border: 2px solid $gradient-top;
+    border: 2px solid rgba($gradient-top, 0.54);
   }
 
   .avatar-placeholder {
@@ -103,6 +103,7 @@ $profile-card-bg: #f6f1fb;
   font-size: 1.3rem;
   font-weight: 700;
   line-height: 1.1;
+  color: rgba($white, 0.76);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -111,7 +112,7 @@ $profile-card-bg: #f6f1fb;
 .user-city {
   margin: 0;
   font-size: 0.92rem;
-  color: rgba($gradient-top, 0.72);
+  color: rgba($white, 0.76);
 }
 
 .card-arrow {
