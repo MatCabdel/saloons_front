@@ -5,11 +5,12 @@ import { NavbarComponent } from 'src/app/common/components/navbar/navbar.compone
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { AuthApiService } from 'src/app/features/auth/services/auth-api.service';
 import { UserDTO } from 'src/app/features/user/models/userDTO';
+import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
 
 @Component({
   selector: 'app-mon-compte-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, NavbarComponent],
+  imports: [CommonModule, RouterModule, NavbarComponent, VersionedImageUrlPipe],
   templateUrl: './mon-compte-page.component.html',
   styleUrls: ['./mon-compte-page.component.scss'],
 })

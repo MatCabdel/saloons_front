@@ -6,6 +6,7 @@ export type UserDTO = {
   role: string;
   token: string;
   imgUrl: string;
+  profileImageUpdatedAt?: string | null;
   firstName: string;
   lastName: string;
   userName: string;

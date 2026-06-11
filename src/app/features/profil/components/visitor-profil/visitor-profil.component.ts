@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
 import { combineLatest, map, Observable, switchMap, take } from 'rxjs';
 import { MatchService } from 'src/app/features/match/services/match.service';
 import {
@@ -15,7 +16,7 @@ import { SaloonApiService } from 'src/app/features/saloon/services/saloon-api.se
 @Component({
   selector: 'app-visitor-profil',
   standalone: true,
-  imports: [CommonModule, ReportModalComponent],
+  imports: [CommonModule, ReportModalComponent, VersionedImageUrlPipe],
   templateUrl: './visitor-profil.component.html',
   styleUrl: './visitor-profil.component.scss',
 })

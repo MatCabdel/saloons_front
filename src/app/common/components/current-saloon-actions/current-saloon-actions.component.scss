@@ -7,7 +7,7 @@ $text-color: #fff;
 .floating-actions {
   position: fixed;
   left: 50%;
-  bottom: calc(70px + var(--safe-bottom) + 10px);
+  bottom: calc(74px + var(--safe-bottom) + 16px);
   transform: translateX(-50%);
   width: min(calc(100vw - 32px), 320px);
   display: flex;

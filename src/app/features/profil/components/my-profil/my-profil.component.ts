@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
 import { map, Observable } from 'rxjs';
 import { UserDTO } from 'src/app/features/user/models/userDTO';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
@@ -8,7 +9,7 @@ import { UserStoreService } from 'src/app/features/user/store/user-store.service
 @Component({
   selector: 'app-my-profil',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, VersionedImageUrlPipe],
   templateUrl: './my-profil.component.html',
   styleUrl: './my-profil.component.scss',
 })

@@ -10,10 +10,11 @@
     (keyup.space)="openConversationWith(user)"
   >
     <img
-      [src]="user.imgUrl"
+      [src]="user.imgUrl | versionedImageUrl : user.profileImageUpdatedAt"
       alt="avatar"
       class="avatar"
       [class.session-expired]="user.sessionExpired"
+      loading="lazy"
     />
     <div class="username">{{ user.userName }}</div>
   </div>

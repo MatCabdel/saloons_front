@@ -3,7 +3,7 @@
   <div class="profile-card">
     <div class="img-section">
       @if (user.imgUrl) {
-      <img [src]="user.imgUrl" alt="profil" />
+      <img [src]="user.imgUrl | versionedImageUrl : user.profileImageUpdatedAt" alt="profil" />
       } @else {
       <div class="img-placeholder">
         <span>{{ getDisplayName(user).charAt(0) }}</span>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService, PagedResponse } from '../../services/admin.service';
 import { User } from '../../../user/models/user';
+import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
 
 type SortOption =
   | 'name-asc'
@@ -15,7 +16,7 @@ type SortOption =
 @Component({
   selector: 'app-users-list-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, VersionedImageUrlPipe],
   templateUrl: './users-list-page.component.html',
   styleUrl: './users-list-page.component.scss',
 })

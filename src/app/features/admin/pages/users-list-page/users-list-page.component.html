@@ -126,7 +126,11 @@
         <tr>
           <td class="cell-image">
             @if (user.imgUrl) {
-            <img [src]="user.imgUrl" [alt]="user.userName" />
+            <img
+              [src]="user.imgUrl | versionedImageUrl : user.profileImageUpdatedAt"
+              [alt]="user.userName"
+              loading="lazy"
+            />
             } @else {
             <div class="avatar-placeholder">
               {{
@@ -308,7 +312,12 @@
     <div class="user-card" [class.expanded]="isUserExpanded(user.id)">
       <button type="button" class="user-card-header" (click)="toggleUserExpand(user.id)">
         @if (user.imgUrl) {
-        <img [src]="user.imgUrl" [alt]="user.userName" class="user-avatar" />
+        <img
+          [src]="user.imgUrl | versionedImageUrl : user.profileImageUpdatedAt"
+          [alt]="user.userName"
+          class="user-avatar"
+          loading="lazy"
+        />
         } @else {
         <div class="avatar-placeholder">
           {{
@@ -486,7 +495,9 @@
         <div class="profile-header">
           @if (selectedUser()!.imgUrl) {
           <img
-            [src]="selectedUser()!.imgUrl"
+            [src]="
+              selectedUser()!.imgUrl | versionedImageUrl : selectedUser()!.profileImageUpdatedAt
+            "
             [alt]="selectedUser()!.userName"
             class="profile-avatar"
           />

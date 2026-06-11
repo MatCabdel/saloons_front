@@ -6,11 +6,12 @@ import { User } from 'src/app/features/user/models/user';
 import { UserService } from 'src/app/features/user/services/user.service';
 import { MatchService } from '../../services/match.service';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
+import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
 
 @Component({
   selector: 'app-match-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, VersionedImageUrlPipe],
   templateUrl: './match-page.component.html',
   styleUrl: './match-page.component.scss',
 })

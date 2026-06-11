@@ -7,7 +7,8 @@ export type User = {
   email: string;
   password: string;
   role: string;
-  imgUrl: FileHandle[];
+  imgUrl: FileHandle[] | string | null;
+  profileImageUpdatedAt?: string | null;
   userName: string;
   description: string;
   birthdate: Date;
