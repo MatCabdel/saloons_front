@@ -1,10 +1,9 @@
-$gradient-top: #413443;
-$gradient-bottom: #a483a9;
+$gradient-top: #5a3d6d;
+$gradient-bottom: #0d0b0e;
 $white: #fff;
-$text-dark: #2d2d2d;
-$text-light: #888;
-$yellow: #ffc122;
-$about-bg: #f5f0f6;
+$text-light: rgba(255, 255, 255, 0.64);
+$field-bg: rgba(255, 255, 255, 0.14);
+$field-border: rgba(255, 255, 255, 0.14);
 
 :host {
   display: flex;
@@ -18,27 +17,58 @@ $about-bg: #f5f0f6;
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 0.8rem 0 1rem;
   min-height: 0;
   overflow-y: auto;
 
   .edit-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1.1rem;
     flex: 1;
   }
 
   .photo-section {
     display: flex;
     justify-content: center;
-    margin-bottom: 10px;
+    margin-bottom: 0.35rem;
+
+    ::ng-deep .upload {
+      gap: 0.75rem;
+    }
+
+    ::ng-deep .upload img {
+      width: 98px;
+      height: 98px;
+      border: none;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+    }
+
+    ::ng-deep .upload .button-with-icon {
+      min-width: 174px;
+      padding: 0.78rem 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.34);
+      border-radius: 0.32rem;
+      background: transparent;
+      box-shadow: none;
+      gap: 0;
+    }
+
+    ::ng-deep .upload .button-with-icon .icon {
+      display: none;
+    }
+
+    ::ng-deep .upload .button-with-icon span {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: rgba($white, 0.92);
+    }
   }
 
   .form-fields {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 0.75rem;
     flex: 1;
   }
 
@@ -48,20 +78,18 @@ $about-bg: #f5f0f6;
     position: relative;
 
     .label-form {
-      font-weight: 600;
-      font-size: 0.85rem;
-      color: $gradient-top;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: $white;
+      margin-bottom: 0.35rem;
     }
 
     .input-form {
-      padding: 14px 16px;
-      border: 2px solid rgba($gradient-top, 0.15);
-      border-radius: 12px;
-      background: $about-bg;
-      color: $text-dark;
+      padding: 0.95rem 1rem;
+      border: 1px solid $field-border;
+      border-radius: 0.24rem;
+      background: $field-bg;
+      color: $white;
       font-size: 0.95rem;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
@@ -71,14 +99,14 @@ $about-bg: #f5f0f6;
 
       &:focus {
         outline: none;
-        border-color: $gradient-top;
-        box-shadow: 0 0 0 3px rgba($gradient-top, 0.1);
+        border-color: rgba($white, 0.32);
+        box-shadow: 0 0 0 3px rgba($white, 0.06);
       }
     }
 
     .textarea {
-      resize: vertical;
-      min-height: 100px;
+      resize: none;
+      min-height: 8rem;
       font-family: inherit;
     }
 
@@ -99,16 +127,15 @@ $about-bg: #f5f0f6;
 
   .btn-actions {
     display: flex;
-    gap: 12px;
     margin-top: auto;
-    padding-top: 20px;
+    padding-top: 0.35rem;
 
     button {
-      flex: 1;
-      padding: 16px 24px;
-      border-radius: 14px;
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border-radius: 0.24rem;
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.25s ease;
 
@@ -118,26 +145,15 @@ $about-bg: #f5f0f6;
       }
     }
 
-    .btn-cancel {
-      background: transparent;
-      color: $gradient-top;
-      border: 2px solid rgba($gradient-top, 0.3);
-
-      &:hover:not(:disabled) {
-        border-color: $gradient-top;
-        background: rgba($gradient-top, 0.05);
-      }
-    }
-
     .btn-save {
-      background: $gradient-top;
-      color: $white;
+      background: rgba($white, 0.98);
+      color: $gradient-top;
       border: none;
-      box-shadow: 0 4px 15px rgba($gradient-top, 0.3);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
 
       &:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba($gradient-top, 0.4);
+        transform: translateY(-1px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
       }
 
       &:active:not(:disabled) {

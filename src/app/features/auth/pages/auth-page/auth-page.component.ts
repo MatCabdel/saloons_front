@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { FirebaseAuthService } from '../../services/firebase-auth.service';
 import { environment } from 'src/environments/environment';
-import { LEGAL_NOTICES_TEXT, PRIVACY_POLICY_TEXT, TERMS_TEXT } from '../../legal/legal-texts';
 
 type AuthMode = 'register' | 'login' | 'register-email';
 
@@ -25,9 +24,6 @@ export class AuthPageComponent implements OnInit {
   errorMessage = signal<string | null>(null);
   showPassword = signal(false);
   showConfirmPassword = signal(false);
-  showLegalModal = signal(false);
-  legalModalTitle = signal('');
-  legalModalContent = signal('');
 
   // Pour détecter si l'utilisateur est déjà connecté
   get isAlreadyAuthenticated(): boolean {
@@ -92,22 +88,6 @@ export class AuthPageComponent implements OnInit {
     this.showConfirmPassword.update(v => !v);
   }
 
-  openTerms(): void {
-    this._openLegalModal('Conditions d’utilisation', TERMS_TEXT);
-  }
-
-  openPrivacyPolicy(): void {
-    this._openLegalModal('Politique de confidentialité', PRIVACY_POLICY_TEXT);
-  }
-
-  openLegalNotices(): void {
-    this._openLegalModal('Mentions légales', LEGAL_NOTICES_TEXT);
-  }
-
-  closeLegalModal(): void {
-    this.showLegalModal.set(false);
-  }
-
   async logout(): Promise<void> {
     await this._firebaseAuth.signOut();
     this.errorMessage.set('Déconnexion réussie');
@@ -137,7 +117,7 @@ export class AuthPageComponent implements OnInit {
     });
   }
 
-  onFacebookAuth(): void {
+  onAppleAuth(): void {
     // Vérifier si Firebase est configuré
     if (environment.firebase.apiKey === 'YOUR_FIREBASE_API_KEY') {
       this.errorMessage.set(
@@ -149,7 +129,7 @@ export class AuthPageComponent implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    this._firebaseAuth.signInWithFacebook().subscribe({
+    this._firebaseAuth.signInWithApple().subscribe({
       next: response => {
         this.isLoading.set(false);
         this._handleAuthSuccess(response.newUser, response.user.profileStatus, response.user.role);
@@ -237,66 +217,62 @@ export class AuthPageComponent implements OnInit {
     }
   }
 
-  private _openLegalModal(title: string, content: string): void {
-    this.legalModalTitle.set(title);
-    this.legalModalContent.set(content);
-    this.showLegalModal.set(true);
-  }
-
   private _getErrorMessage(error: unknown): string {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const err = error as any;
 
     console.error('Auth error:', err);
-    console.error('Error code:', err?.code);
-    console.error('Error message:', err?.message);
-    console.error('Error status:', err?.status);
-    console.error('Error body:', err?.error);
 
     // Firebase error codes
     if (err?.code) {
       switch (err.code) {
         case 'auth/popup-closed-by-user':
-          return 'Connexion annulée';
+        case 'auth/cancelled-popup-request':
+          return 'Connexion annulée.';
         case 'auth/account-exists-with-different-credential':
-          return 'Un compte existe déjà avec cet email';
+          return 'Un compte existe déjà avec cet email via un autre mode de connexion.';
         case 'auth/user-not-found':
-          return 'Aucun compte trouvé avec cet email';
         case 'auth/wrong-password':
-          return 'Mot de passe incorrect';
+        case 'auth/invalid-credential':
+          return 'Identifiants incorrects. Veuillez réessayer.';
         case 'auth/email-already-in-use':
-          return 'Cet email est déjà utilisé';
+          return 'Cet email est déjà utilisé.';
         case 'auth/unauthorized-domain':
-          return 'Domaine non autorisé. Ajoutez ce domaine dans Firebase Console.';
+          return 'Domaine non autorisé pour la connexion.';
         case 'auth/operation-not-allowed':
-          return "Cette méthode de connexion n'est pas activée dans Firebase.";
+          return "Cette méthode de connexion n'est pas disponible.";
+        case 'auth/network-request-failed':
+          return 'Erreur réseau. Vérifiez votre connexion internet.';
+        case 'auth/too-many-requests':
+          return 'Trop de tentatives. Veuillez réessayer plus tard.';
         default:
-          return `Erreur Firebase: ${err.code}`;
+          return 'Une erreur est survenue lors de la connexion. Veuillez réessayer.';
       }
     }
 
-    // HTTP error from backend
+    // HTTP errors from backend
+    if (err?.status === 0) {
+      return 'Erreur réseau. Vérifiez votre connexion internet.';
+    }
+
+    if (err?.status === 409) {
+      return 'Cet email est déjà utilisé.';
+    }
+
     if (err?.status === 401 || err?.status === 400) {
-      // Message du backend
-      if (err?.error?.message) {
-        return err.error.message;
+      // Only show "identifiants incorrects" for email login mode
+      if (this.mode() === 'login') {
+        return 'Identifiants incorrects. Veuillez réessayer.';
       }
-      if (typeof err?.error === 'string') {
-        return err.error;
-      }
-      return 'Email ou mot de passe incorrect';
+      return 'Impossible de finaliser votre inscription. Veuillez réessayer.';
     }
 
     if (err?.status === 404) {
-      return 'Aucun compte trouvé avec cet email';
+      return 'Aucun compte trouvé avec cet email.';
     }
 
-    if (err?.error?.message) {
-      return err.error.message;
-    }
-
-    if (err?.message) {
-      return err.message;
+    if (err?.status >= 500) {
+      return 'Le serveur est temporairement indisponible. Veuillez réessayer.';
     }
 
     return 'Une erreur est survenue. Veuillez réessayer.';

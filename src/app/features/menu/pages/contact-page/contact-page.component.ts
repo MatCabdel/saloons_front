@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -16,18 +16,20 @@ import { environment } from 'src/environments/environment';
 export class ContactPageComponent {
   private _fb = inject(FormBuilder);
   private _http = inject(HttpClient);
+  private _elementRef = inject(ElementRef<HTMLElement>);
 
   isSubmitting = signal(false);
   isSubmitted = signal(false);
   errorMessage = signal<string | null>(null);
+  isSubjectDropdownOpen = signal(false);
 
   subjects = [
-    { value: 'QUESTION', label: '❓ Question générale' },
-    { value: 'SUGGESTION', label: "💡 Suggestion d'amélioration" },
-    { value: 'BUG', label: '🐛 Signaler un bug' },
-    { value: 'PARTNERSHIP', label: '🤝 Proposition de partenariat' },
-    { value: 'REPORT', label: '🚨 Signalement' },
-    { value: 'OTHER', label: '📝 Autre' },
+    { value: 'QUESTION', label: 'Question générale' },
+    { value: 'SUGGESTION', label: "Suggestion d'amélioration" },
+    { value: 'BUG', label: 'Signaler un bug' },
+    { value: 'PARTNERSHIP', label: 'Proposition de partenariat' },
+    { value: 'REPORT', label: 'Signalement' },
+    { value: 'OTHER', label: 'Autre' },
   ];
 
   form: FormGroup = this._fb.group({
@@ -41,6 +43,30 @@ export class ContactPageComponent {
   isFieldInvalid(fieldName: string): boolean {
     const field = this.form.get(fieldName);
     return field ? field.invalid && field.touched : false;
+  }
+
+  toggleSubjectDropdown(): void {
+    this.isSubjectDropdownOpen.update(isOpen => !isOpen);
+  }
+
+  closeSubjectDropdown(): void {
+    this.isSubjectDropdownOpen.set(false);
+  }
+
+  selectSubject(value: string): void {
+    const control = this.form.get('subject');
+    control?.setValue(value);
+    control?.markAsTouched();
+    control?.updateValueAndValidity();
+    this.isSubjectDropdownOpen.set(false);
+  }
+
+  selectedSubjectLabel(): string {
+    const selectedValue = this.form.get('subject')?.value as string | null;
+    return (
+      this.subjects.find(subject => subject.value === selectedValue)?.label ??
+      'Sélectionne un sujet'
+    );
   }
 
   onSubmit(): void {
@@ -68,7 +94,15 @@ export class ContactPageComponent {
 
   resetForm(): void {
     this.form.reset();
+    this.isSubjectDropdownOpen.set(false);
     this.isSubmitted.set(false);
     this.errorMessage.set(null);
+  }
+
+  @HostListener('document:click', ['$event'])
+  closeDropdownOnOutsideClick(event: MouseEvent): void {
+    if (!this.isSubjectDropdownOpen()) return;
+    if (this._elementRef.nativeElement.contains(event.target as Node)) return;
+    this.isSubjectDropdownOpen.set(false);
   }
 }

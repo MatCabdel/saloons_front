@@ -4,7 +4,7 @@ import {
   Auth,
   signInWithPopup,
   GoogleAuthProvider,
-  FacebookAuthProvider,
+  OAuthProvider,
   signOut,
   User as FirebaseUser,
 } from '@angular/fire/auth';
@@ -14,16 +14,18 @@ import { Observable, from, tap, switchMap, map, catchError, throwError } from 'r
 import { environment } from 'src/environments/environment';
 import { UserStoreService } from '../../user/store/user-store.service';
 import { SocialLogin } from '@capgo/capacitor-social-login';
+import type { GoogleLoginOptions } from '@capgo/capacitor-social-login';
 import { PushNotificationService } from '../../../core/services/push-notification.service';
 
 export type ProfileStatus = 'PROFILE_INCOMPLETE' | 'ACTIVE';
-export type AuthProvider = 'EMAIL' | 'GOOGLE' | 'FACEBOOK';
+export type AuthProvider = 'EMAIL' | 'GOOGLE' | 'FACEBOOK' | 'APPLE';
 
 export type UserDTO = {
   id: number;
   email: string;
   userName: string | null;
   imgUrl: string | null;
+  profileImageUpdatedAt?: string | null;
   age: number;
   city: string | null;
   description: string | null;
@@ -194,14 +196,12 @@ export class FirebaseAuthService {
 
       // Android: éviter les scopes custom sans config native supplémentaire.
       // iOS conserve les scopes existants.
-      const loginPayload: {
-        provider: 'google';
-        options: { scopes: string[] };
-      } = {
-        provider: 'google',
-        options: {
-          scopes: Capacitor.getPlatform() !== 'android' ? ['email', 'profile'] : [],
-        },
+      const loginOptions: GoogleLoginOptions =
+        Capacitor.getPlatform() === 'android' ? {} : { scopes: ['email', 'profile'] };
+
+      const loginPayload = {
+        provider: 'google' as const,
+        options: loginOptions,
       };
 
       const result = await SocialLogin.login(loginPayload);
@@ -281,21 +281,29 @@ export class FirebaseAuthService {
   }
 
   /**
-   * Sign in with Facebook.
-   * On web: signInWithPopup. On native: not yet implemented with SocialLogin plugin.
+   * Sign in with Apple.
    */
-  signInWithFacebook(): Observable<AuthResponse> {
+  signInWithApple(): Observable<AuthResponse> {
     const platform = this._isNativePlatform() ? 'native' : 'web';
-    console.log(`[FirebaseAuth][F1] signInWithFacebook() called — platform=${platform}`);
+    console.log(`[FirebaseAuth][A1] signInWithApple() called — platform=${platform}`);
     this.isLoading.set(true);
 
-    const provider = new FacebookAuthProvider();
+    if (this._isNativePlatform() && Capacitor.getPlatform() === 'ios') {
+      return this._signInWithAppleNative();
+    }
 
-    console.log('[FirebaseAuth][F2] Using signInWithPopup');
+    const provider = new OAuthProvider('apple.com');
+    provider.addScope('email');
+    provider.addScope('name');
+    provider.setCustomParameters({
+      locale: 'fr',
+    });
+
+    console.log('[FirebaseAuth][A2] Using signInWithPopup');
     return from(signInWithPopup(this._auth, provider)).pipe(
       tap(result => {
         console.log(
-          '[FirebaseAuth][F4] signInWithPopup resolved — uid:',
+          '[FirebaseAuth][A4] signInWithPopup resolved — uid:',
           result.user?.uid,
           'email:',
           result.user?.email
@@ -305,7 +313,85 @@ export class FirebaseAuthService {
       tap(response => this._handleAuthResponse(response)),
       tap(() => this.isLoading.set(false)),
       catchError(error => {
-        console.error('[FirebaseAuth][F5] signInWithPopup error:', error?.code, error?.message);
+        console.error('[FirebaseAuth][A5] signInWithPopup error:', error?.code, error?.message);
+        this.isLoading.set(false);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Native iOS Apple sign-in via @capgo/capacitor-social-login.
+   * The Apple idToken is exchanged for a Firebase ID token through Firebase REST,
+   * then sent to the same backend endpoint as Google/Firebase web auth.
+   */
+  private _signInWithAppleNative(): Observable<AuthResponse> {
+    console.log('[FirebaseAuth][A2] Native iOS → using SocialLogin plugin');
+
+    const nativeLogin = async (): Promise<string> => {
+      const appleClientId = (environment as any).apple?.clientId ?? environment.firebase.authDomain;
+
+      await SocialLogin.initialize({
+        apple: {
+          clientId: appleClientId,
+        },
+      });
+
+      const result = await SocialLogin.login({
+        provider: 'apple',
+        options: {
+          scopes: ['email', 'name'],
+        },
+      });
+
+      const appleIdToken = (result?.result as any)?.idToken;
+      if (!appleIdToken) {
+        throw new Error('No idToken returned from native Apple sign-in');
+      }
+
+      const firebaseApiKey = environment.firebase.apiKey;
+      const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${firebaseApiKey}`;
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          postBody: `id_token=${appleIdToken}&providerId=apple.com`,
+          requestUri: 'https://localhost',
+          returnIdpCredential: true,
+          returnSecureToken: true,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.text();
+        console.error('[FirebaseAuth][A3] Firebase REST API error:', response.status, errorBody);
+        throw new Error(`Firebase REST signInWithIdp failed: ${response.status} ${errorBody}`);
+      }
+
+      const data = await response.json();
+      const firebaseIdToken = data.idToken;
+
+      if (!firebaseIdToken) {
+        throw new Error('No Firebase ID token in Apple REST response');
+      }
+
+      return firebaseIdToken;
+    };
+
+    return from(nativeLogin()).pipe(
+      switchMap(firebaseIdToken =>
+        this._http.post<AuthResponse>(`${this._BASE_URL}/auth/firebase`, {
+          firebaseToken: firebaseIdToken,
+        })
+      ),
+      tap(response => this._handleAuthResponse(response)),
+      tap(() => this.isLoading.set(false)),
+      catchError(error => {
+        console.error(
+          '[FirebaseAuth][A4] Native Apple sign-in error:',
+          error?.code || error?.message || error
+        );
         this.isLoading.set(false);
         return throwError(() => error);
       })
@@ -342,6 +428,7 @@ export class FirebaseAuthService {
               email: response.email,
               userName: response.userName,
               imgUrl: response.imgUrl,
+              profileImageUpdatedAt: response.profileImageUpdatedAt,
               age: response.age,
               city: response.city,
               description: response.description,
@@ -364,6 +451,7 @@ export class FirebaseAuthService {
             email: response.email,
             userName: response.userName,
             imgUrl: response.imgUrl,
+            profileImageUpdatedAt: response.profileImageUpdatedAt,
             age: response.age,
             city: response.city,
             description: response.description,
@@ -486,7 +574,7 @@ export class FirebaseAuthService {
         } as any);
         localStorage.removeItem('saloon_auth_token');
         localStorage.removeItem('user');
-        this._router.navigate(['/']);
+        this._router.navigate(['/auth']);
       })
     );
   }

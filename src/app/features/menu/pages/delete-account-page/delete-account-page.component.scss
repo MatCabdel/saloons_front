@@ -1,56 +1,67 @@
-$gradient-top: #413443;
-$gradient-bottom: #a483a9;
+$gradient-top: #2b1c35;
+$gradient-middle: #5a3d6d;
+$gradient-bottom: #8f6aa4;
 $white: #fff;
 $yellow: #ffc122;
 $danger: #ff6b6b;
+$panel-bg: rgba(255, 255, 255, 0.1);
+$panel-border: rgba(255, 255, 255, 0.1);
 
 .delete-account-page {
   min-height: 100vh;
-  background: linear-gradient(to right, $gradient-top 0%, lighten($gradient-top, 10%) 100%);
+  min-height: 100dvh;
+  background: linear-gradient(180deg, #5a3d6d 0%, #2b1c35 100%);
 }
 
 .page-content {
-  padding: 1.5rem;
+  padding: 1.35rem 1rem calc(96px + var(--safe-bottom));
   color: $white;
 }
 
-// Warning Section
 .warning-section {
-  text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.35rem;
+  padding: 1rem;
+  border: 1px solid rgba($danger, 0.26);
+  border-radius: 10px;
+  background: rgba($danger, 0.1);
+  box-shadow: 0 14px 34px rgba(15, 8, 19, 0.16);
 
   .warning-icon {
-    font-size: 4rem;
-    margin-bottom: 1rem;
+    font-size: 2.8rem;
+    margin-bottom: 0.8rem;
+    text-align: center;
   }
 
   h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    color: $danger;
+    margin: 0 0 0.55rem;
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #ffd1d1;
+    text-align: center;
   }
 
   .warning-text {
-    font-size: 1rem;
-    opacity: 0.9;
-    line-height: 1.5;
+    margin: 0;
+    font-size: 0.95rem;
+    color: rgba($white, 0.82);
+    line-height: 1.45;
+    text-align: center;
   }
 }
 
-// Consequences Section
 .consequences-section {
-  background: rgba($danger, 0.1);
-  border: 1px solid rgba($danger, 0.3);
-  border-radius: 12px;
-  padding: 1.25rem;
-  margin-bottom: 2rem;
+  background: $panel-bg;
+  border: 1px solid $panel-border;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1.35rem;
+  box-shadow: 0 10px 24px rgba(11, 7, 15, 0.12);
 
   h3 {
-    font-size: 1rem;
+    margin: 0 0 0.85rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    margin-bottom: 1rem;
-    color: $danger;
+    color: rgba($white, 0.92);
   }
 
   .consequences-list {
@@ -62,9 +73,10 @@ $danger: #ff6b6b;
       display: flex;
       align-items: flex-start;
       gap: 0.75rem;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.7rem;
       font-size: 0.9rem;
-      line-height: 1.4;
+      line-height: 1.45;
+      color: rgba($white, 0.82);
 
       &:last-child {
         margin-bottom: 0;
@@ -78,47 +90,52 @@ $danger: #ff6b6b;
   }
 }
 
-// Confirmation Section
 .confirmation-section {
-  text-align: center;
+  padding: 1rem;
+  border: 1px solid $panel-border;
+  border-radius: 10px;
+  background: rgba(178, 160, 197, 0.22);
+  box-shadow: 0 14px 34px rgba(15, 8, 19, 0.16);
 
   .confirm-icon {
-    font-size: 4rem;
+    font-size: 3rem;
     margin-bottom: 1rem;
+    text-align: center;
   }
 
   h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
+    margin: 0 0 0.75rem;
+    font-size: 1.45rem;
+    font-weight: 700;
+    text-align: center;
   }
 
   .confirm-text {
-    font-size: 1rem;
-    opacity: 0.9;
+    margin: 0 0 1.35rem;
+    font-size: 0.95rem;
+    color: rgba($white, 0.82);
     line-height: 1.5;
-    margin-bottom: 1.5rem;
+    text-align: center;
 
     strong {
-      color: $danger;
-      font-weight: 600;
+      color: #ffd1d1;
+      font-weight: 700;
     }
   }
 }
 
-// Form
 .confirm-form {
   .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 
     input {
       width: 100%;
-      padding: 1rem;
-      font-size: 1rem;
+      padding: 0.9rem 1rem;
+      font-size: 0.95rem;
       text-align: center;
-      border: 2px solid rgba($danger, 0.3);
-      border-radius: 12px;
-      background: rgba($white, 0.1);
+      border: 1px solid rgba($danger, 0.34);
+      border-radius: 8px;
+      background: $panel-bg;
       color: $white;
       transition: all 0.2s ease;
       box-sizing: border-box;
@@ -133,25 +150,24 @@ $danger: #ff6b6b;
 
       &:focus {
         outline: none;
-        border-color: $danger;
-        background: rgba($white, 0.15);
+        border-color: rgba($danger, 0.75);
+        background: rgba($white, 0.14);
+        box-shadow: 0 0 0 3px rgba($danger, 0.1);
       }
     }
   }
 }
 
-// Error Banner
 .error-banner {
-  background: rgba($danger, 0.2);
-  border: 1px solid $danger;
+  background: rgba($danger, 0.14);
+  border: 1px solid rgba($danger, 0.34);
   border-radius: 8px;
-  padding: 1rem;
+  padding: 0.875rem 1rem;
   margin-bottom: 1rem;
   font-size: 0.9rem;
-  color: $danger;
+  color: #ffd1d1;
 }
 
-// Action Buttons
 .action-buttons {
   display: flex;
   flex-direction: column;
@@ -160,23 +176,23 @@ $danger: #ff6b6b;
 
 .btn-danger {
   width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
-  font-weight: 600;
+  min-height: 50px;
+  padding: 0.9rem 1rem;
+  font-size: 0.96rem;
+  font-weight: 700;
   color: $white;
-  background: $danger;
+  background: linear-gradient(135deg, $danger, darken($danger, 12%));
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  box-shadow: 0 12px 24px rgba(84, 11, 19, 0.2);
 
   &:hover:not(:disabled) {
-    background: darken($danger, 10%);
-    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(84, 11, 19, 0.26);
   }
 
   &:disabled {
@@ -196,13 +212,14 @@ $danger: #ff6b6b;
 
 .btn-cancel {
   width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
-  font-weight: 500;
+  min-height: 50px;
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: $white;
   background: transparent;
-  border: 2px solid rgba($white, 0.3);
-  border-radius: 12px;
+  border: 1px solid rgba($white, 0.24);
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
 

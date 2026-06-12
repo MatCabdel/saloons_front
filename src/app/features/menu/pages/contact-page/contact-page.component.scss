@@ -1,134 +1,263 @@
-$gradient-top: #413443;
-$gradient-bottom: #a483a9;
+$gradient-top: #2b1c35;
+$gradient-middle: #5a3d6d;
+$gradient-bottom: #8f6aa4;
 $white: #fff;
 $yellow: #ffc122;
+$panel-bg: rgba(255, 255, 255, 0.1);
+$panel-border: rgba(255, 255, 255, 0.1);
+$error: #ff6b6b;
+$field-bg: rgba(255, 255, 255, 0.2);
+$field-border: rgba(255, 255, 255, 0.26);
 
 .contact-page {
   min-height: 100vh;
-  background: linear-gradient(to right, $gradient-top 0%, lighten($gradient-top, 10%) 100%);
+  min-height: 100dvh;
+  background: linear-gradient(180deg, #5a3d6d 0%, #2b1c35 100%);
 }
 
 .page-content {
-  padding: 1.5rem;
+  padding: 1.25rem 1rem calc(96px + var(--safe-bottom));
   color: $white;
 }
 
-// Introduction
 .intro-section {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 
   h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
+    margin: 0 0 0.45rem;
+    font-size: 1.65rem;
+    font-weight: 800;
+    line-height: 1.1;
   }
 
   .intro-text {
-    font-size: 1rem;
-    opacity: 0.9;
-    line-height: 1.5;
+    margin: 0;
+    font-size: 0.95rem;
+    color: rgba($white, 0.78);
+    line-height: 1.45;
   }
 }
 
-// Formulaire
 .contact-form {
+  padding: 1rem;
+  border: 1px solid rgba($white, 0.16);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(178, 160, 197, 0.2), rgba(255, 255, 255, 0.08));
+  box-shadow: 0 18px 38px rgba(15, 8, 19, 0.22), inset 0 1px 0 rgba($white, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
   .form-group {
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.9rem;
 
     label {
       display: block;
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: rgba($white, 0.82);
+      margin-bottom: 0.45rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
 
     input,
-    select,
     textarea {
       width: 100%;
-      padding: 0.875rem 1rem;
-      font-size: 1rem;
-      border: 2px solid rgba($white, 0.2);
-      border-radius: 12px;
-      background: rgba($white, 0.1);
+      padding: 0.95rem 1rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      border: 1px solid $field-border;
+      border-radius: 8px;
+      background: $field-bg;
       color: $white;
       transition: all 0.2s ease;
       box-sizing: border-box;
+      box-shadow: inset 0 1px 0 rgba($white, 0.06);
 
       &::placeholder {
-        color: rgba($white, 0.5);
+        color: rgba($white, 0.46);
       }
 
       &:focus {
         outline: none;
-        border-color: $yellow;
-        background: rgba($white, 0.15);
+        border-color: rgba($yellow, 0.76);
+        background: rgba($white, 0.17);
+        box-shadow: 0 0 0 3px rgba($yellow, 0.13), inset 0 1px 0 rgba($white, 0.08);
       }
 
       &.invalid {
-        border-color: #ff6b6b;
-      }
-    }
-
-    select {
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 1rem center;
-      padding-right: 2.5rem;
-      cursor: pointer;
-
-      option {
-        background: $gradient-top;
-        color: $white;
+        border-color: rgba($error, 0.75);
+        background: rgba($error, 0.08);
       }
     }
 
     textarea {
       resize: vertical;
-      min-height: 120px;
+      min-height: 132px;
+      line-height: 1.45;
     }
 
     .error-text {
       display: block;
       font-size: 0.8rem;
-      color: #ff6b6b;
-      margin-top: 0.5rem;
+      color: #ffb2b2;
+      margin-top: 0.45rem;
+      font-weight: 600;
     }
   }
 }
 
-// Erreur serveur
-.error-banner {
-  background: rgba(#ff6b6b, 0.2);
-  border: 1px solid #ff6b6b;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-  color: #ff6b6b;
+.subject-select {
+  position: relative;
+  z-index: 3;
+
+  &.open {
+    z-index: 20;
+
+    .subject-trigger {
+      border-color: rgba($yellow, 0.76);
+      background: rgba($white, 0.17);
+      box-shadow: 0 0 0 3px rgba($yellow, 0.13), inset 0 1px 0 rgba($white, 0.08);
+    }
+
+    .subject-chevron {
+      transform: rotate(180deg);
+    }
+  }
+
+  &.invalid .subject-trigger {
+    border-color: rgba($error, 0.75);
+    background: rgba($error, 0.08);
+  }
 }
 
-// Bouton submit
+.subject-trigger {
+  width: 100%;
+  min-height: 51px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid $field-border;
+  border-radius: 8px;
+  background: $field-bg;
+  color: $white;
+  font: inherit;
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba($white, 0.06);
+  transition: all 0.2s ease;
+}
+
+.subject-value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &.placeholder {
+    color: rgba($white, 0.46);
+  }
+}
+
+.subject-chevron {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: rgba($white, 0.1);
+  color: rgba($white, 0.86);
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.subject-options {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  left: 0;
+  right: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 0.35rem;
+  border: 1px solid rgba($yellow, 0.3);
+  border-radius: 10px;
+  background: linear-gradient(180deg, #f6f1fb 0%, #eadff0 100%);
+  box-shadow: 0 18px 34px rgba(15, 8, 19, 0.28), inset 0 1px 0 rgba($white, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.subject-option {
+  width: 100%;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 0.8rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba($gradient-top, 0.82);
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+
+  &:hover,
+  &.selected {
+    background: rgba(143, 106, 164, 0.14);
+    color: $gradient-top;
+  }
+
+  &.selected {
+    box-shadow: inset 3px 0 0 $yellow;
+  }
+}
+
+.subject-check {
+  flex-shrink: 0;
+  color: #b98305;
+  font-weight: 800;
+}
+
+.error-banner {
+  background: rgba($error, 0.16);
+  border: 1px solid rgba($error, 0.38);
+  border-radius: 8px;
+  padding: 0.875rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #ffd1d1;
+}
+
 .btn-submit {
   width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: $gradient-top;
-  background: $yellow;
+  min-height: 52px;
+  padding: 0.95rem 1rem;
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: #4d335b;
+  background: linear-gradient(135deg, $yellow, darken($yellow, 12%));
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  box-shadow: 0 12px 24px rgba(67, 42, 4, 0.18);
 
   &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba($yellow, 0.3);
+    box-shadow: 0 14px 28px rgba(67, 42, 4, 0.24);
+    transform: translateY(-1px);
   }
 
   &:disabled {
@@ -140,7 +269,7 @@ $yellow: #ffc122;
     width: 18px;
     height: 18px;
     border: 2px solid transparent;
-    border-top-color: $gradient-top;
+    border-top-color: #4d335b;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -152,38 +281,46 @@ $yellow: #ffc122;
   }
 }
 
-// Confirmation
 .confirmation-container {
-  text-align: center;
-  padding: 2rem 1rem;
+  padding: 1.25rem 1rem;
+  border: 1px solid rgba($white, 0.16);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(178, 160, 197, 0.2), rgba(255, 255, 255, 0.08));
+  box-shadow: 0 18px 38px rgba(15, 8, 19, 0.22), inset 0 1px 0 rgba($white, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 
   .confirmation-icon {
-    font-size: 4rem;
+    font-size: 3.2rem;
     margin-bottom: 1rem;
+    text-align: center;
   }
 
   h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
+    margin: 0 0 0.75rem;
+    font-size: 1.45rem;
+    font-weight: 700;
+    text-align: center;
   }
 
   .confirmation-message {
-    font-size: 1rem;
-    line-height: 1.6;
-    opacity: 0.9;
-    margin-bottom: 2rem;
+    margin: 0 0 1.35rem;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: rgba($white, 0.82);
+    text-align: center;
   }
 
   .btn-new-message {
     width: 100%;
-    padding: 1rem;
-    font-size: 1rem;
+    min-height: 50px;
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: $white;
     background: transparent;
-    border: 2px solid $white;
-    border-radius: 12px;
+    border: 1px solid rgba($white, 0.24);
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
     margin-bottom: 1rem;
@@ -195,19 +332,102 @@ $yellow: #ffc122;
 
   .btn-back-saloons {
     width: 100%;
-    padding: 1rem;
-    font-size: 1rem;
-    font-weight: 600;
-    color: $gradient-top;
-    background: $yellow;
+    min-height: 50px;
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #4d335b;
+    background: linear-gradient(135deg, $yellow, darken($yellow, 12%));
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    box-shadow: 0 12px 24px rgba(67, 42, 4, 0.18);
 
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba($yellow, 0.3);
+      box-shadow: 0 14px 28px rgba(67, 42, 4, 0.24);
     }
+  }
+}
+
+// === DESKTOP ===
+@media (min-width: 768px) {
+  .page-content {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 5rem;
+  }
+
+  .intro-section {
+    text-align: center;
+    margin-bottom: 2.5rem;
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .intro-text {
+      font-size: 1rem;
+      color: rgba($white, 0.7);
+    }
+  }
+
+  .contact-form {
+    padding: 2rem 2.25rem;
+    border-radius: 20px;
+    border: 1px solid rgba($white, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba($white, 0.08);
+
+    .form-group {
+      margin-bottom: 1.1rem;
+
+      label {
+        font-size: 0.72rem;
+        letter-spacing: 0.06em;
+        margin-bottom: 0.5rem;
+        color: rgba($white, 0.6);
+      }
+
+      input,
+      textarea {
+        padding: 0.85rem 1rem;
+        border-radius: 10px;
+        border: 1px solid rgba($white, 0.12);
+        background: rgba($white, 0.06);
+        font-size: 0.92rem;
+
+        &:focus {
+          border-color: rgba($yellow, 0.6);
+          background: rgba($white, 0.1);
+          box-shadow: 0 0 0 3px rgba($yellow, 0.08);
+        }
+      }
+    }
+  }
+
+  .btn-submit {
+    margin-top: 0.75rem;
+    border-radius: 12px;
+    min-height: 48px;
+    font-size: 0.9rem;
+  }
+
+  .confirmation-container {
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-content {
+    max-width: 520px;
+    padding: 5rem 1.5rem 6rem;
+  }
+
+  .contact-form {
+    padding: 2.5rem 2.75rem;
   }
 }

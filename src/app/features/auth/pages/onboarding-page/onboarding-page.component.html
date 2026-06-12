@@ -208,7 +208,12 @@
 
       <div class="step-actions">
         <button type="button" class="secondary-btn" (click)="prevStep()">Retour</button>
-        <button type="button" class="primary-btn" (click)="nextStep()" [disabled]="!selectedCity()">
+        <button
+          type="button"
+          class="primary-btn"
+          (click)="nextStep()"
+          [disabled]="!canContinueFromCity"
+        >
           Continuer
         </button>
       </div>
@@ -220,7 +225,7 @@
     <div class="step-container">
       <h2 class="step-title">{{ stepTitles['photo'] }}</h2>
       <p class="step-description">
-        Ajoutez une photo pour que les autres puissent vous reconnaître
+        Ajoutez une photo pour que les autres puissent vous reconnaître (obligatoire)
       </p>
 
       <div class="photo-upload">
@@ -271,7 +276,6 @@
 
       <div class="step-actions">
         <button type="button" class="secondary-btn" (click)="prevStep()">Retour</button>
-        <button type="button" class="text-btn" (click)="skipPhoto()">Passer</button>
         <button
           type="button"
           class="primary-btn"

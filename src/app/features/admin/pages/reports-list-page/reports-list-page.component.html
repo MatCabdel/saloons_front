@@ -70,8 +70,13 @@
         <div class="users-info">
           <div class="user-avatar reporter">
             <img
-              [src]="report.reporter.imgUrl || 'assets/default-avatar.png'"
+              [src]="
+                (report.reporter.imgUrl
+                  | versionedImageUrl : report.reporter.profileImageUpdatedAt) ||
+                'assets/default-avatar.png'
+              "
               [alt]="report.reporter.userName"
+              loading="lazy"
             />
           </div>
           <div class="arrow-icon">
@@ -88,8 +93,13 @@
           </div>
           <div class="user-avatar reported">
             <img
-              [src]="report.reported.imgUrl || 'assets/default-avatar.png'"
+              [src]="
+                (report.reported.imgUrl
+                  | versionedImageUrl : report.reported.profileImageUpdatedAt) ||
+                'assets/default-avatar.png'
+              "
               [alt]="report.reported.userName"
+              loading="lazy"
             />
           </div>
         </div>
@@ -204,7 +214,11 @@
         <div class="users-comparison">
           <div class="user-card">
             <img
-              [src]="selectedReport()!.reporter.imgUrl || 'assets/default-avatar.png'"
+              [src]="
+                (selectedReport()!.reporter.imgUrl
+                  | versionedImageUrl : selectedReport()!.reporter.profileImageUpdatedAt) ||
+                'assets/default-avatar.png'
+              "
               [alt]="selectedReport()!.reporter.userName"
             />
             <span class="user-name">{{ selectedReport()!.reporter.userName }}</span>
@@ -227,7 +241,11 @@
           </div>
           <div class="user-card">
             <img
-              [src]="selectedReport()!.reported.imgUrl || 'assets/default-avatar.png'"
+              [src]="
+                (selectedReport()!.reported.imgUrl
+                  | versionedImageUrl : selectedReport()!.reported.profileImageUpdatedAt) ||
+                'assets/default-avatar.png'
+              "
               [alt]="selectedReport()!.reported.userName"
             />
             <span class="user-name">{{ selectedReport()!.reported.userName }}</span>

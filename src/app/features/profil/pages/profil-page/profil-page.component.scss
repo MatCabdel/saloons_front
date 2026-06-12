@@ -1,21 +1,76 @@
-$gradient-top: #413443;
+$gradient-top: #5a3d6d;
+$gradient-bottom: #0d0b0e;
 $white: #fff;
+$yellow: #ffc122;
 
 .profil-page {
   display: flex;
   flex-direction: column;
   height: 100dvh;
-  background: linear-gradient(to right, $gradient-top 0%, lighten($gradient-top, 10%) 100%);
+  background: linear-gradient(180deg, $gradient-top 0%, $gradient-bottom 100%);
+}
 
-  app-header {
-    flex-shrink: 0;
+.profile-header {
+  flex-shrink: 0;
+  min-height: calc(60px + var(--safe-top));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--header-safe-padding-top);
+  padding-left: max(16px, var(--safe-left));
+  padding-right: max(16px, var(--safe-right));
+}
+
+.back-button,
+.header-spacer {
+  width: 44px;
+  flex-shrink: 0;
+}
+
+.back-button {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  span {
+    color: $white;
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1;
   }
 
-  .profil-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    margin-bottom: 70px; // Space for navbar
+  &:hover {
+    opacity: 0.7;
   }
+}
+
+.page-title {
+  margin: 0;
+  color: rgba($white, 0.94);
+  font-family: 'Urbanist', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  flex: 1;
+  white-space: nowrap;
+
+  @media (max-width: 380px) {
+    font-size: 0.78rem;
+  }
+}
+
+.profil-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin-bottom: 70px;
 }

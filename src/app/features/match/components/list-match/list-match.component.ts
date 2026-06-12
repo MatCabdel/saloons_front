@@ -4,11 +4,12 @@ import { ConversationService } from 'src/app/features/conversation/services/conv
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { Router } from '@angular/router';
 import { MatchUser } from '../../models/match-user';
+import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
 
 @Component({
   selector: 'app-list-match',
   standalone: true,
-  imports: [],
+  imports: [VersionedImageUrlPipe],
   templateUrl: './list-match.component.html',
   styleUrl: './list-match.component.scss',
 })
@@ -48,9 +49,11 @@ export class ListMatchComponent implements OnInit, OnChanges {
   }
 
   filterMatches(): void {
-    // Exclure les utilisateurs avec conversation ET ceux passés en input
+    // Exclure les utilisateurs avec conversation, ceux passés en input, et les matchs expirés
     const allExcluded = [...new Set([...this.userIdsWithConversations, ...this.excludeUserIds])];
-    this.matches = this._sortMatches(this.allMatches.filter(u => !allExcluded.includes(u.id)));
+    this.matches = this._sortMatches(
+      this.allMatches.filter(u => !allExcluded.includes(u.id) && !u.sessionExpired)
+    );
   }
 
   private _sortMatches(matches: MatchUser[]): MatchUser[] {

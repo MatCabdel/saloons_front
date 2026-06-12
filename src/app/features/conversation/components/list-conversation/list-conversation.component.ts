@@ -6,11 +6,12 @@ import { Conversation } from '../../models/Conversation';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { CommonModule } from '@angular/common';
 import { BehaviorSubject, map, Observable, switchMap, tap } from 'rxjs';
+import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
 
 @Component({
   selector: 'app-list-conversation',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, VersionedImageUrlPipe],
   templateUrl: './list-conversation.component.html',
   styleUrl: './list-conversation.component.scss',
 })

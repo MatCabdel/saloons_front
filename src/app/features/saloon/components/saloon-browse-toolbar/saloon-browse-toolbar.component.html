@@ -1,0 +1,34 @@
+<section
+  class="browse-toolbar"
+  [class.at-end]="filtersScrollHint() === 'start'"
+  [class.no-overflow]="filtersScrollHint() === 'none'"
+>
+  <div class="filters-scroller" #filtersScroller (scroll)="onFiltersScroll(filtersScroller)">
+    <div class="filters-grid">
+      @for (tab of filterTabs; track tab.value) {
+      <button
+        type="button"
+        class="filter-chip"
+        [class.active]="activeFilter() === tab.value"
+        (click)="setFilter(tab.value)"
+      >
+        {{ tab.label }}
+      </button>
+      }
+    </div>
+  </div>
+
+  <div class="browse-summary">
+    <div class="summary-title">
+      <span class="summary-badge">
+        <img src="assets/icons/OneDoor.svg" alt="" aria-hidden="true" />
+        <span class="summary-count">{{ visibleSaloonCount() }}</span>
+      </span>
+      <div class="summary-copy">
+        <span class="summary-text">{{ summaryLabel() }}</span>
+      </div>
+    </div>
+
+    <app-switch-list-map></app-switch-list-map>
+  </div>
+</section>

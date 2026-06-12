@@ -12,13 +12,12 @@ const config: CapacitorConfig = {
     SocialLogin: {
       providers: {
         google: true,
-        apple: false,
+        apple: true,
         facebook: false,
         twitter: false,
       },
     },
     FirebaseMessaging: {
-      // Présentation de la permission avec explication
       presentationOptions: ['badge', 'sound', 'alert'],
     },
   },

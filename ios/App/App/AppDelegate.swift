@@ -7,10 +7,19 @@ import FirebaseMessaging
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
 
     var window: UIWindow?
+    private let launchBackgroundColor = UIColor(
+        red: 43.0 / 255.0,
+        green: 28.0 / 255.0,
+        blue: 53.0 / 255.0,
+        alpha: 1
+    )
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Initialize Firebase
         FirebaseApp.configure()
+
+        window?.backgroundColor = launchBackgroundColor
+        window?.rootViewController?.view.backgroundColor = launchBackgroundColor
         
         // Set up push notifications
         UNUserNotificationCenter.current().delegate = self

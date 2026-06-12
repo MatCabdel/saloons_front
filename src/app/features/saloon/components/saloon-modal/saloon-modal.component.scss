@@ -10,58 +10,65 @@ $white: #fff;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba($gradient-top, 0.7);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background: radial-gradient(circle at 50% 16%, rgba($yellow, 0.14), transparent 28%),
+    rgba($gradient-top, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
-  padding: 1rem;
+  z-index: 100000;
+  padding: 1rem 1rem calc(1rem + var(--safe-bottom));
   padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
 }
 
 .modal-content {
-  background: $white;
-  border-radius: 24px;
-  max-width: 400px;
+  background: #fbf8fc;
+  border: 1px solid rgba($white, 0.34);
+  border-radius: 18px;
+  max-width: 420px;
   width: 100%;
-  max-height: 85vh;
+  max-height: calc(100dvh - 2rem - var(--safe-bottom));
   overflow-y: auto;
+  overscroll-behavior: contain;
   position: relative;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 28px 70px rgba(14, 7, 18, 0.44);
 
   // Responsive pour petits écrans (iPhone SE, etc.)
   @media (max-height: 700px) {
     max-height: 80vh;
-    border-radius: 20px;
+    border-radius: 14px;
 
-    .saloon-image {
+    .saloon-hero {
       height: 150px;
+    }
+
+    .saloon-details {
+      margin: 0 0.85rem;
+      padding: 0.85rem;
     }
 
     .saloon-name {
       font-size: 1.25rem;
-      margin: 1rem 1.25rem 0.5rem;
     }
 
-    .saloon-address,
-    .saloon-city {
-      margin: 0.2rem 1.25rem;
-      font-size: 0.85rem;
+    .saloon-address-card,
+    .saloon-stats {
+      margin-top: 0.6rem;
     }
 
-    .presence-info {
-      margin: 0.75rem 1.25rem;
-      padding: 0.75rem;
+    .saloon-stat {
+      min-height: 40px;
+      padding: 0.55rem 0.65rem;
     }
 
-    .distance {
-      margin: 0.4rem 1.25rem;
+    .saloon-type-badge {
+      bottom: -1rem;
+      padding: 0.48rem 0.72rem;
     }
 
     .actions {
-      padding: 1rem 1.25rem;
+      padding: 0.85rem 1rem 1rem;
       gap: 0.5rem;
     }
 
@@ -75,29 +82,26 @@ $white: #fff;
   @media (max-height: 600px) {
     max-height: 75vh;
 
-    .saloon-image {
+    .saloon-hero {
       height: 120px;
+    }
+
+    .saloon-details {
+      margin: 0 0.85rem;
+      padding: 0.75rem;
     }
 
     .saloon-name {
       font-size: 1.1rem;
-      margin: 0.75rem 1rem 0.25rem;
     }
 
-    .saloon-address,
-    .saloon-city {
-      margin: 0.15rem 1rem;
-      font-size: 0.8rem;
-    }
-
-    .presence-info {
-      margin: 0.5rem 1rem;
+    .saloon-address-card,
+    .saloon-stat {
       padding: 0.5rem;
     }
 
-    .distance {
-      margin: 0.25rem 1rem;
-      font-size: 0.85rem;
+    .saloon-stats {
+      flex-direction: column;
     }
 
     .error-message,
@@ -123,7 +127,7 @@ $white: #fff;
 .modal-header {
   display: flex;
   justify-content: flex-end;
-  padding: 1rem;
+  padding: 0.85rem;
   position: absolute;
   top: 0;
   right: 0;
@@ -131,101 +135,249 @@ $white: #fff;
 }
 
 .close-btn {
-  background: rgba($white, 0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: none;
+  background: rgba($white, 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba($white, 0.28);
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  color: $white;
+  box-shadow: 0 10px 24px rgba(16, 8, 19, 0.24), inset 0 1px 0 rgba($white, 0.14);
 
   &:hover {
-    background: $white;
-    transform: scale(1.1);
+    background: rgba($white, 0.22);
+    transform: scale(1.06);
   }
 }
 
 .saloon-info {
-  text-align: center;
+  text-align: left;
+}
+
+.saloon-hero {
+  position: relative;
+  width: 100%;
+  height: 214px;
+  overflow: visible;
+  border-radius: 18px 18px 0 0;
+  background: linear-gradient(135deg, rgba($gradient-top, 0.18), rgba($gradient-bottom, 0.22));
 }
 
 .saloon-image {
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 24px 24px 0 0;
+  display: block;
+  border-radius: 18px 18px 0 0;
+}
+
+.saloon-hero-gradient {
+  position: absolute;
+  inset: auto 0 0;
+  height: 46%;
+  background: linear-gradient(180deg, transparent, rgba($gradient-top, 0.55));
+  pointer-events: none;
+}
+
+.saloon-details {
+  margin: 0 1rem;
+  padding: 1.4rem 1rem 1rem;
+  position: relative;
+  z-index: 2;
+  border: 1px solid rgba($gradient-bottom, 0.14);
+  border-radius: 0 0 16px 16px;
+  background: rgba($white, 0.94);
+  box-shadow: 0 14px 34px rgba($gradient-top, 0.12);
+}
+
+.saloon-info > .saloon-details:first-child {
+  margin-top: 1rem;
+}
+
+.saloon-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.85rem;
+}
+
+.saloon-title-copy {
+  min-width: 0;
 }
 
 .saloon-name {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 1.25rem 1.5rem 0.5rem;
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0.3rem 0 0;
   color: $gradient-top;
 }
 
 .saloon-type-badge {
-  display: inline-block;
-  background: linear-gradient(135deg, $gradient-top, $gradient-bottom);
-  color: $white;
-  padding: 0.35rem 1rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  position: absolute;
+  right: 1.1rem;
+  bottom: -1rem;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  background: $yellow;
+  border: 3px solid #fbf8fc;
+  color: $gradient-top;
+  padding: 0.56rem 0.86rem;
+  border-radius: 9px;
+  font-family: 'Urbanist', sans-serif;
+  font-size: 0.74rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.07em;
+  box-shadow: 0 12px 24px rgba($gradient-top, 0.2);
 }
 
-.saloon-address,
-.saloon-city {
-  color: #666;
-  margin: 0.25rem 1.5rem;
-  font-size: 0.9rem;
-}
-
-.presence-info {
-  margin: 1rem 1.5rem;
-  padding: 1rem;
-  background: rgba($gradient-bottom, 0.1);
-  border-radius: 12px;
-}
-
-.presence-count {
+.saloon-address-card {
   display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  margin-top: 0.85rem;
+  padding: 0.78rem 0.85rem;
+  border-radius: 12px;
+  background: #f6f1fb;
+  color: $gradient-top;
+}
+
+.saloon-address-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  color: $gradient-top;
-  font-weight: 600;
+  border-radius: 50%;
+  background: rgba($white, 0.8);
+  color: $gradient-bottom;
+}
 
-  svg {
-    stroke: $gradient-bottom;
+.saloon-address-label {
+  display: block;
+  margin-bottom: 0.12rem;
+  color: rgba($gradient-top, 0.55);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.saloon-address {
+  color: $gradient-top;
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.saloon-city {
+  color: rgba($gradient-top, 0.66);
+  margin: 0.1rem 0 0;
+  font-size: 0.84rem;
+  line-height: 1.3;
+}
+
+.saloon-stats {
+  display: flex;
+  gap: 0.65rem;
+  margin-top: 0.8rem;
+}
+
+.saloon-stat {
+  flex: 1 1 0;
+  min-height: 70px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.78rem 0.75rem;
+  border: 1px solid rgba($gradient-bottom, 0.16);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba($gradient-bottom, 0.11), rgba($gradient-bottom, 0.055));
+  color: $gradient-top;
+  min-width: 0;
+
+  &.distance-stat.can-enter {
+    background: rgba(34, 197, 94, 0.12);
+    border-color: rgba(34, 197, 94, 0.28);
+    color: #166534;
+
+    .saloon-stat-icon {
+      color: #16a34a;
+    }
+
+    .saloon-stat-label,
+    .saloon-stat-value {
+      color: #166534;
+    }
+  }
+
+  &.distance-stat.too-far {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #dc2626;
+
+    .saloon-stat-icon,
+    .saloon-stat-label,
+    .saloon-stat-value {
+      color: #dc2626;
+    }
   }
 }
 
-.distance {
-  margin: 0.5rem 1.5rem;
-  font-size: 0.9rem;
-  color: #22c55e;
-  font-weight: 500;
+.saloon-stat-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba($white, 0.8);
+  color: $gradient-bottom;
+}
 
-  &.too-far {
-    color: #ef4444;
-  }
+.saloon-stat-label,
+.saloon-stat-value {
+  display: block;
+}
 
-  .warning {
-    font-weight: 600;
-  }
+.saloon-stat-label {
+  margin-bottom: 0.12rem;
+  color: rgba($gradient-top, 0.55);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.saloon-stat-value {
+  color: $gradient-top;
+  font-size: 0.94rem;
+  font-weight: 850;
+  line-height: 1.15;
+}
+
+.distance-warning {
+  margin: 0.65rem 0 0;
+  color: #dc2626;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
 }
 
 .error-message {
-  margin: 1rem 1.5rem;
+  margin: 1rem;
   padding: 1rem;
   background: #fef2f2;
   border: 1px solid #fecaca;
@@ -235,27 +387,71 @@ $white: #fff;
 }
 
 .session-warning {
-  margin: 1rem 1.5rem;
-  padding: 1rem;
-  background: #fffbeb;
-  border: 1px solid #fde68a;
-  border-radius: 12px;
-  color: #b45309;
-  font-size: 0.9rem;
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  padding: 0.85rem;
+  border: 1px solid rgba($yellow, 0.34);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba($yellow, 0.16), rgba($yellow, 0.07));
+  color: $gradient-top;
 }
 
 .actions {
-  padding: 1.5rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+.session-switch-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.75rem;
+  border: 1px solid rgba($gradient-bottom, 0.14);
+  border-radius: 16px;
+  background: rgba($white, 0.72);
+}
+
+.session-warning-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba($yellow, 0.24);
+  color: #8a6200;
+}
+
+.session-warning-label,
+.session-warning-text {
+  display: block;
+}
+
+.session-warning-label {
+  margin-bottom: 0.1rem;
+  color: rgba($gradient-top, 0.58);
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.session-warning-text {
+  color: $gradient-top;
+  font-size: 0.9rem;
+  font-weight: 750;
+  line-height: 1.28;
 }
 
 .location-actions {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
-  margin: 0 1.5rem 0.5rem;
+  margin: 0 1rem 0.5rem;
 
   .btn {
     flex: 1 1 140px;
@@ -266,7 +462,7 @@ $white: #fff;
   width: 100%;
   padding: 1rem;
   border: none;
-  border-radius: 14px;
+  border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -285,6 +481,7 @@ $white: #fff;
 .btn-primary {
   background: linear-gradient(135deg, $gradient-top 0%, $gradient-bottom 100%);
   color: $white;
+  box-shadow: 0 12px 26px rgba($gradient-top, 0.22);
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
@@ -301,12 +498,26 @@ $white: #fff;
   }
 }
 
-.btn-warning {
-  background: #fef3c7;
-  color: #b45309;
+.btn-leave {
+  background: linear-gradient(135deg, $yellow 0%, darken($yellow, 12%) 100%);
+  border: 1px solid rgba($gradient-top, 0.1);
+  color: $gradient-top;
+  box-shadow: 0 12px 24px rgba(67, 42, 4, 0.16), inset 0 1px 0 rgba($white, 0.36);
 
   &:hover:not(:disabled) {
-    background: #fde68a;
+    background: linear-gradient(135deg, lighten($yellow, 4%) 0%, darken($yellow, 8%) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(67, 42, 4, 0.2), inset 0 1px 0 rgba($white, 0.42);
+  }
+}
+
+.btn-warning {
+  background: rgba($gradient-top, 0.08);
+  border: 1px solid rgba($gradient-top, 0.12);
+  color: $gradient-top;
+
+  &:hover:not(:disabled) {
+    background: rgba($gradient-top, 0.13);
   }
 }
 
@@ -323,4 +534,222 @@ $white: #fff;
   to {
     transform: rotate(360deg);
   }
+}
+
+// ─── Event card (quand la modale est ouverte depuis un événement) ───
+.event-modal-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.2rem;
+  margin: 1.45rem 1rem 0;
+  padding: 0.18rem;
+  border: 1px solid rgba($gradient-bottom, 0.12);
+  border-radius: 10px;
+  background: rgba($gradient-top, 0.055);
+}
+
+.event-modal-tab {
+  min-height: 30px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba($gradient-top, 0.58);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba($gradient-bottom, 0.08);
+    color: $gradient-top;
+  }
+
+  &.active {
+    background: linear-gradient(135deg, rgba($gradient-bottom, 0.32), rgba($gradient-top, 0.18));
+    color: $gradient-top;
+    box-shadow: inset 0 1px 0 rgba($white, 0.32), 0 4px 12px rgba($gradient-top, 0.08);
+  }
+}
+
+.event-card {
+  position: relative;
+  margin: 0.85rem 1rem 0;
+  display: flex;
+  border: 1px solid rgba($gradient-bottom, 0.16);
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba($white, 0.98), #f6f1fb 100%);
+  box-shadow: 0 16px 34px rgba($gradient-top, 0.14), inset 0 1px 0 rgba($white, 0.8);
+}
+
+.event-card-accent {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: linear-gradient(90deg, $yellow, rgba($gradient-bottom, 0.52), $yellow);
+}
+
+.event-card-body {
+  flex: 1;
+  padding: 1rem;
+  min-width: 0;
+  text-align: left;
+}
+
+.event-card-eyebrow {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 0.55rem;
+  padding: 0.32rem 0.62rem;
+  border: 1px solid rgba($yellow, 0.42);
+  border-radius: 8px;
+  background: rgba($yellow, 0.16);
+  color: #8a6200;
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.event-card-header {
+  margin-bottom: 0.75rem;
+}
+
+.event-card-title {
+  font-size: 1.18rem;
+  font-weight: 850;
+  color: $gradient-top;
+  margin: 0 0 0.16rem;
+  line-height: 1.18;
+}
+
+.event-card-subtitle {
+  font-size: 0.86rem;
+  color: rgba($gradient-top, 0.66);
+  margin: 0;
+  line-height: 1.4;
+  font-weight: 650;
+}
+
+.event-card-chips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-bottom: 0.75rem;
+}
+
+.event-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+  padding: 0.68rem 0.72rem;
+  border: 1px solid rgba($gradient-bottom, 0.22);
+  border-radius: 12px;
+  color: $gradient-top;
+  background: linear-gradient(180deg, rgba($gradient-bottom, 0.16), rgba($gradient-top, 0.06));
+
+  svg {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    color: $gradient-bottom;
+  }
+
+  span {
+    min-width: 0;
+  }
+
+  strong {
+    display: block;
+    overflow: hidden;
+    color: $gradient-top;
+    font-size: 0.82rem;
+    font-weight: 850;
+    line-height: 1.12;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.event-chip-label {
+  display: block;
+  margin-bottom: 0.1rem;
+  color: rgba($gradient-top, 0.52);
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.event-card-description {
+  padding: 0.78rem 0.82rem;
+  border: 1px solid rgba($gradient-bottom, 0.12);
+  border-radius: 12px;
+  background: rgba($white, 0.74);
+  color: rgba($gradient-top, 0.76);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  margin: 0;
+  white-space: pre-line;
+}
+
+.event-card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba($gradient-bottom, 0.12);
+}
+
+.event-interest-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 38px;
+  background: rgba($yellow, 0.18);
+  border: 1px solid rgba($yellow, 0.4);
+  border-radius: 10px;
+  padding: 0.5rem 0.78rem;
+  color: $gradient-top;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover {
+    background: rgba($yellow, 0.26);
+    color: $gradient-top;
+    border-color: rgba($yellow, 0.52);
+  }
+
+  &.interested {
+    background: linear-gradient(135deg, $yellow 0%, darken($yellow, 10%) 100%);
+    border-color: rgba($gradient-top, 0.08);
+    box-shadow: 0 12px 24px rgba(67, 42, 4, 0.2), inset 0 1px 0 rgba($white, 0.42);
+  }
+
+  .event-interest-count {
+    background: rgba($gradient-top, 0.1);
+    padding: 0.1rem 0.4rem;
+    border-radius: 10px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  &.interested .event-interest-count {
+    background: rgba($white, 0.32);
+  }
+}
+
+.saloon-name-small {
+  font-size: 1.24rem !important;
 }

@@ -6,11 +6,12 @@ import { User } from 'src/app/features/user/models/user';
 import { UserService } from 'src/app/features/user/services/user.service';
 import { MatchService } from '../../services/match.service';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
+import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
 
 @Component({
   selector: 'app-heart-confirmed-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, VersionedImageUrlPipe],
   templateUrl: './heart-confirmed-page.component.html',
   styleUrl: './heart-confirmed-page.component.scss',
 })

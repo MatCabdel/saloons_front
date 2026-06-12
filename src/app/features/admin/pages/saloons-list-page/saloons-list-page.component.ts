@@ -5,13 +5,14 @@ import { FormsModule } from '@angular/forms';
 import { AdminService, PagedResponse } from '../../services/admin.service';
 import { Saloon, SALOON_TYPE_LABELS, SaloonType } from '../../../saloon/models/saloonModel';
 import { User } from '../../../user/models/user';
+import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
 
 type SortOption = 'name-asc' | 'name-desc' | 'connected-desc' | 'connected-asc';
 
 @Component({
   selector: 'app-saloons-list-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, VersionedImageUrlPipe],
   templateUrl: './saloons-list-page.component.html',
   styleUrl: './saloons-list-page.component.scss',
 })

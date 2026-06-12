@@ -19,24 +19,37 @@
     <h3>Aucun message pour l'instant</h3>
     <p>Soyez le premier à briser la glace !</p>
   </div>
-  } @else { @for (msg of messages; track $index) {
+  } @else { @for (msg of messages; track $index) { @if (shouldShowDateSeparator($index)) {
+  <div class="date-separator">
+    <span>{{ getDateSeparatorLabel(msg.sentAt) }}</span>
+  </div>
+  }
   <div class="message-row" [ngClass]="{ me: msg.sender === myId, other: msg.sender !== myId }">
     @if (msg.sender !== myId) {
     <img
-      [src]="getParticipantById(msg.sender)?.imgUrl || 'assets/img/default-avatar.png'"
+      [src]="
+        (getParticipantById(msg.sender)?.imgUrl
+          | versionedImageUrl : getParticipantById(msg.sender)?.profileImageUpdatedAt) ||
+        'assets/img/default-avatar.png'
+      "
       alt="avatar"
+      loading="lazy"
     />
     }
     <div class="message-wrapper">
-      <span class="name">
-        @if (msg.sender === myId) { Moi } @else {
-        {{ getParticipantById(msg.sender)?.userName || 'Inconnu' }}
-        }
-      </span>
-      <div class="bubble">
+      <button
+        type="button"
+        class="bubble"
+        [class.time-visible]="isMessageTimeVisible(msg, $index)"
+        (click)="toggleMessageTime(msg, $index)"
+        [attr.aria-expanded]="isMessageTimeVisible(msg, $index)"
+        aria-label="Afficher ou masquer l'heure du message"
+      >
         <span class="content">{{ msg.content }}</span>
-      </div>
+      </button>
+      @if (isMessageTimeVisible(msg, $index)) {
       <span class="time">{{ msg.sentAt | date : 'HH:mm' }}</span>
+      }
     </div>
   </div>
   } }

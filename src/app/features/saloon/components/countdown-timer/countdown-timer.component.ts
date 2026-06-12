@@ -68,7 +68,7 @@ export class CountdownTimerComponent implements OnInit {
 
     // Charger la session active au démarrage
     // prettier-ignore
-    this._presenceService.getMySession().pipe(takeUntilDestroyed(this._destroyRef))
+    this._presenceService.ensureMySessionLoaded().pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe();
   }
 

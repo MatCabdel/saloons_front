@@ -1,50 +1,56 @@
-$gradient-top: #413443;
-$gradient-bottom: #a483a9;
+$gradient-top: #2b1c35;
+$gradient-middle: #5a3d6d;
+$gradient-bottom: #8f6aa4;
 $white: #fff;
 $yellow: #ffc122;
+$panel-bg: rgba(255, 255, 255, 0.1);
+$panel-border: rgba(255, 255, 255, 0.1);
 
 .faq-page {
   min-height: 100vh;
-  background: linear-gradient(to right, $gradient-top 0%, lighten($gradient-top, 10%) 100%);
+  min-height: 100dvh;
+  background: linear-gradient(180deg, #5a3d6d 0%, #2b1c35 100%);
 }
 
 .page-content {
-  padding: 1.5rem;
-  padding-bottom: 100px;
+  padding: 1.35rem 1rem calc(96px + var(--safe-bottom));
+  color: $white;
 }
 
 .faq-intro {
-  text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.35rem;
   color: $white;
 
   h1 {
-    font-size: 1.8rem;
+    margin: 0 0 0.35rem;
+    font-size: 1.55rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    line-height: 1.1;
   }
 
   p {
-    font-size: 1rem;
-    opacity: 0.85;
+    margin: 0;
+    font-size: 0.95rem;
+    color: rgba($white, 0.78);
   }
 }
 
 .faq-sections {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.75rem;
 }
 
 .faq-section {
-  background: rgba($white, 0.08);
-  border-radius: 16px;
+  background: $panel-bg;
+  border: 1px solid $panel-border;
+  border-radius: 8px;
   overflow: hidden;
-  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(11, 7, 15, 0.12);
 
   &.open {
     .section-header {
-      background: rgba($white, 0.1);
+      background: rgba(178, 160, 197, 0.2);
     }
   }
 }
@@ -53,29 +59,33 @@ $yellow: #ffc122;
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 1rem 1.25rem;
-  background: rgba($white, 0.05);
+  gap: 0.85rem;
+  min-height: 54px;
+  padding: 0.85rem 0.95rem;
+  background: transparent;
   border: none;
   cursor: pointer;
   transition: background 0.2s ease;
 
   &:hover {
-    background: rgba($white, 0.1);
+    background: rgba($white, 0.08);
   }
 
   &:focus {
     outline: none;
-    background: rgba($white, 0.1);
+    background: rgba($white, 0.08);
   }
 
   .section-icon {
-    font-size: 1.5rem;
+    width: 22px;
+    flex-shrink: 0;
+    text-align: center;
+    font-size: 1.05rem;
   }
 
   h2 {
     flex: 1;
-    font-size: 1.1rem;
+    font-size: 0.96rem;
     font-weight: 600;
     color: $white;
     margin: 0;
@@ -86,8 +96,8 @@ $yellow: #ffc122;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     background: rgba($white, 0.1);
     color: $white;
@@ -95,7 +105,8 @@ $yellow: #ffc122;
 
     &.rotated {
       transform: rotate(180deg);
-      background: rgba($yellow, 0.3);
+      background: rgba($yellow, 0.24);
+      color: $yellow;
     }
 
     svg {
@@ -108,7 +119,7 @@ $yellow: #ffc122;
 .questions-list {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid rgba($white, 0.1);
+  border-top: 1px solid $panel-border;
   animation: slideDown 0.3s ease;
 }
 
@@ -120,7 +131,7 @@ $yellow: #ffc122;
   }
 
   &.open {
-    background: rgba($white, 0.03);
+    background: rgba($white, 0.05);
   }
 }
 
@@ -129,8 +140,8 @@ $yellow: #ffc122;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  padding: 1rem 1.25rem;
+  gap: 0.75rem;
+  padding: 0.9rem 0.95rem;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -149,9 +160,9 @@ $yellow: #ffc122;
 
 .question-text {
   flex: 1;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  color: $white;
+  color: rgba($white, 0.95);
   line-height: 1.4;
 }
 
@@ -160,8 +171,8 @@ $yellow: #ffc122;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: rgba($white, 0.1);
   color: $white;
@@ -169,7 +180,8 @@ $yellow: #ffc122;
 
   &.rotated {
     transform: rotate(180deg);
-    background: rgba($yellow, 0.3);
+    background: rgba($yellow, 0.24);
+    color: $yellow;
   }
 
   svg {
@@ -179,13 +191,13 @@ $yellow: #ffc122;
 }
 
 .answer-content {
-  padding: 0 1.25rem 1.25rem;
+  padding: 0 0.95rem 1rem 3.65rem;
   animation: slideDown 0.3s ease;
 
   p {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     line-height: 1.6;
-    color: rgba($white, 0.85);
+    color: rgba($white, 0.78);
     margin: 0;
   }
 }
@@ -202,42 +214,46 @@ $yellow: #ffc122;
 }
 
 .faq-footer {
-  margin-top: 2.5rem;
-  text-align: center;
-  padding: 1.5rem;
-  background: rgba($white, 0.08);
-  border-radius: 16px;
-  backdrop-filter: blur(10px);
+  margin-top: 1.35rem;
+  padding: 1rem;
+  background: rgba(178, 160, 197, 0.22);
+  border: 1px solid $panel-border;
+  border-radius: 10px;
+  box-shadow: 0 14px 34px rgba(15, 8, 19, 0.16);
 
   .footer-message {
-    font-size: 0.95rem;
-    color: rgba($white, 0.9);
-    font-style: italic;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba($white, 0.15);
+    margin: 0 0 1rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid $panel-border;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: rgba($white, 0.82);
   }
 
   .footer-question {
-    font-size: 0.95rem;
-    color: rgba($white, 0.85);
-    margin-bottom: 1rem;
+    margin: 0 0 0.85rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: rgba($white, 0.92);
   }
 
   .contact-link {
-    display: inline-block;
-    padding: 12px 28px;
-    background: $yellow;
-    color: $gradient-top;
-    font-size: 1rem;
-    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    background: linear-gradient(135deg, $yellow, darken($yellow, 12%));
+    color: #4d335b;
+    font-size: 0.95rem;
+    font-weight: 700;
     text-decoration: none;
-    border-radius: 25px;
-    transition: all 0.2s ease;
+    box-shadow: 0 12px 24px rgba(67, 42, 4, 0.18);
 
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba($yellow, 0.4);
+      box-shadow: 0 14px 28px rgba(67, 42, 4, 0.24);
     }
   }
 }

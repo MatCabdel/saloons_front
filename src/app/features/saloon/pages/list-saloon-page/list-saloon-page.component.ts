@@ -1,5 +1,6 @@
-import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import {
   BehaviorSubject,
@@ -10,7 +11,7 @@ import {
   Subject,
   takeUntil,
 } from 'rxjs';
-import { Saloon, SaloonType } from '../../models/saloonModel';
+import { Saloon } from '../../models/saloonModel';
 import { SaloonCardComponent } from '../../components/saloon-card/saloon-card.component';
 import { SaloonApiService } from '../../services/saloon-api.service';
 import { SaloonModalComponent } from '../../components/saloon-modal/saloon-modal.component';
@@ -18,27 +19,11 @@ import { SaloonMapItem, PresenceService } from '../../services/presence.service'
 import { SaloonPresenceRealtimeService } from '../../services/saloon-presence-realtime.service';
 import { AuthApiService } from 'src/app/features/auth/services/auth-api.service';
 import { GeolocationService } from 'src/app/core/services/geolocation.service';
-
-// Distance maximale pour afficher les saloons (en mètres)
-const MAX_DISTANCE_METERS = 50000; // 50km
+import { SaloonBrowseStateService } from '../../services/saloon-browse-state.service';
+import { MAX_DISTANCE_METERS, toSaloonTypeFilter } from '../../models/saloon-browse.model';
 
 // Pagination
 const ITEMS_PER_PAGE = 5;
-
-// Type pour les filtres
-type FilterType = 'ALL' | 'CHAUD' | SaloonType;
-
-// Configuration des filtres
-const FILTER_TABS: { value: FilterType; label: string }[] = [
-  { value: 'ALL', label: 'Tous' },
-  { value: 'CHAUD', label: 'Populaire' },
-  { value: 'BAR', label: 'Bar' },
-  { value: 'PUBLIC', label: 'Public' },
-  { value: 'LOISIRS', label: 'Loisirs' },
-  { value: 'SPORT', label: 'Sport' },
-  { value: 'DISCO', label: 'Disco' },
-  { value: 'TRAVAIL', label: 'Travail' },
-];
 
 @Component({
   selector: 'app-list-saloon-page',
@@ -54,6 +39,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   private _router = inject(Router);
   private _authApiService = inject(AuthApiService);
   private _geoService = inject(GeolocationService);
+  private _browseState = inject(SaloonBrowseStateService);
   private _destroy$ = new Subject<void>();
 
   // Position utilisateur (délégué au service partagé)
@@ -71,11 +57,11 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
     return this._geoService.status;
   }
   totalSaloonsCount = signal<number>(0);
-
-  // Filtres
-  filterTabs = FILTER_TABS;
-  activeFilter = signal<FilterType>('ALL');
-  private _activeFilter$ = new BehaviorSubject<FilterType>('ALL');
+  readonly activeFilter = this._browseState.activeFilter;
+  private _activeFilter$ = toObservable(this._browseState.activeFilter);
+  private _saloons$ = combineLatest([this._refreshTrigger$, this._activeFilter$]).pipe(
+    switchMap(([, filter]) => this._saloonApiService.getListSaloon(toSaloonTypeFilter(filter)))
+  );
 
   // Pagination
   currentPage = signal<number>(1);
@@ -93,9 +79,9 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   }
 
   // Saloons triés par distance avec mise à jour temps réel de la présence
-  // Filtrés à MAX_DISTANCE_METERS (50km) de l'utilisateur
+  // Filtrés à MAX_DISTANCE_METERS de l'utilisateur
   saloons$: Observable<(Saloon & { distanceMeters: number | null })[]> = combineLatest([
-    this._refreshTrigger$.pipe(switchMap(() => this._saloonApiService.getListSaloon())),
+    this._saloons$,
     this._userPosition$,
     this._presenceRealtimeService.presenceCounts$,
     this._activeFilter$,
@@ -126,22 +112,18 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
         };
       });
 
-      // Filtrer les saloons à moins de MAX_DISTANCE_METERS (50km)
-      // Exception: reviewers/admins voient les saloons privés même s'ils sont loin
+      // Filtrer les saloons à moins de MAX_DISTANCE_METERS.
+      // Les saloons privés reçus du backend restent visibles sans limite de distance:
+      // le backend ne les renvoie qu'aux profils autorisés.
       let filteredSaloons = [] as (Saloon & { distanceMeters: number | null })[];
       if (position) {
-        filteredSaloons = this.isReviewerOrAdmin
-          ? saloonsWithDistance.filter(saloon =>
-              saloon.isPrivate === true
-                ? true
-                : saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
-            )
-          : saloonsWithDistance.filter(
-              saloon =>
-                saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
-            );
-      } else if (this.isReviewerOrAdmin) {
-        // Sans position, montrer uniquement les privés pour les reviewers/admins
+        filteredSaloons = saloonsWithDistance.filter(saloon =>
+          saloon.isPrivate === true
+            ? true
+            : saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
+        );
+      } else {
+        // Sans position, montrer uniquement les privés accessibles renvoyés par le backend.
         filteredSaloons = saloonsWithDistance.filter(saloon => saloon.isPrivate === true);
       }
 
@@ -168,6 +150,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
 
       // Sauvegarder le nombre de résultats filtrés (avant pagination)
       this.filteredSaloonsCount.set(filteredSaloons.length);
+      this._browseState.setVisibleSaloonCount(filteredSaloons.length);
 
       // Calculer le nombre total de pages
       const total = Math.ceil(filteredSaloons.length / ITEMS_PER_PAGE);
@@ -180,6 +163,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   );
 
   ngOnInit(): void {
+    this._browseState.setVisibleSaloonCount(0);
     // Initialiser la géolocalisation via le service partagé
     this._geoService.init();
     // S'abonner aux changements de position du service
@@ -198,9 +182,14 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
     // Charger la session active de l'utilisateur (pour savoir s'il est dans un saloon)
     // prettier-ignore
     this._presenceService
-      .getMySession()
+      .ensureMySessionLoaded()
       .pipe(takeUntil(this._destroy$))
       .subscribe();
+
+    this._activeFilter$.pipe(takeUntil(this._destroy$)).subscribe(() => {
+      this.currentPage.set(1);
+      this._currentPage$.next(1);
+    });
   }
 
   ngOnDestroy(): void {
@@ -256,14 +245,6 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   closeModal(): void {
     this.showModal = false;
     this.selectedSaloon = null;
-  }
-
-  setFilter(filter: FilterType): void {
-    this.activeFilter.set(filter);
-    this._activeFilter$.next(filter);
-    // Réinitialiser la pagination quand on change de filtre
-    this.currentPage.set(1);
-    this._currentPage$.next(1);
   }
 
   goToPage(page: number): void {

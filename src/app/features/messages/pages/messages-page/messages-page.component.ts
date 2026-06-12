@@ -1,7 +1,7 @@
 import { Component, HostListener, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { HeaderComponent } from '../../../../common/components/header/header.component';
 import { MessagerieComponent } from '../../components/messagerie/messagerie.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
 import { ConversationService } from 'src/app/features/conversation/services/conversation.service';
 import { HeartRequestService } from 'src/app/features/conversation/services/heart-request.service';
 import {
@@ -24,7 +24,7 @@ import { MatchService } from 'src/app/features/match/services/match.service';
 @Component({
   selector: 'app-messages-page',
   standalone: true,
-  imports: [HeaderComponent, MessagerieComponent, ReportModalComponent],
+  imports: [MessagerieComponent, ReportModalComponent, VersionedImageUrlPipe],
   templateUrl: './messages-page.component.html',
   styleUrl: './messages-page.component.scss',
 })
@@ -179,6 +179,10 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._countdownSubscription?.unsubscribe();
     this._leaveConfirmedSubscription?.unsubscribe();
+  }
+
+  goBack(): void {
+    this._router.navigate(['/chat']);
   }
 
   private _loadHeartRequestStatus(): void {

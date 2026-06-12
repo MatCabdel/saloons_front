@@ -44,11 +44,21 @@ import { FaqPageComponent } from './features/menu/pages/faq-page/faq-page.compon
 import { ContactPageComponent } from './features/menu/pages/contact-page/contact-page.component';
 import { ForgotPasswordPageComponent } from './features/auth/pages/forgot-password-page/forgot-password-page.component';
 import { LegalNoticesPageComponent } from './features/menu/pages/legal-notices-page/legal-notices-page.component';
+import { TermsPageComponent } from './features/menu/pages/terms-page/terms-page.component';
+import { PrivacyPolicyPageComponent } from './features/menu/pages/privacy-policy-page/privacy-policy-page.component';
 import { WelcomePageComponent } from './features/home/pages/welcome-page/welcome-page.component';
+import { LandingPageComponent } from './features/home/pages/landing-page/landing-page.component';
+import { EventSwitcherPageComponent } from './features/event/pages/event-switcher-page/event-switcher-page.component';
+import { EventsPageComponent } from './features/event/pages/events-page/events-page.component';
+import { CreateEventPageComponent } from './features/admin/pages/create-event-page/create-event-page.component';
+import { EditEventPageComponent } from './features/admin/pages/edit-event-page/edit-event-page.component';
+import { EventsListPageComponent } from './features/admin/pages/events-list-page/events-list-page.component';
 
 export const routes: Routes = [
   // Splash screen au lancement
   { path: '', component: WelcomePageComponent },
+  // Landing page publique
+  { path: 'home', component: LandingPageComponent },
   // Page d'accueil auth
   { path: 'auth', component: AuthPageComponent, canActivate: [authGuard] },
   // Page de connexion
@@ -64,6 +74,12 @@ export const routes: Routes = [
       { path: '', component: ListSaloonPageComponent },
       { path: 'map', component: MapSaloonPageComponent },
     ],
+  },
+  {
+    path: 'events',
+    component: EventSwitcherPageComponent,
+    canActivate: [isLoggedInGuard, profileCompleteGuard],
+    children: [{ path: '', component: EventsPageComponent }],
   },
   { path: 'map', redirectTo: 'saloons/map', pathMatch: 'full' },
   // Legacy routes
@@ -116,11 +132,18 @@ export const routes: Routes = [
   },
   { path: 'saloon-demande', component: SaloonDemandePageComponent, canActivate: [isLoggedInGuard] },
   { path: 'faq', component: FaqPageComponent, canActivate: [isLoggedInGuard] },
-  { path: 'contact', component: ContactPageComponent, canActivate: [isLoggedInGuard] },
+  { path: 'contact', component: ContactPageComponent },
   {
     path: 'mentions-legales',
     component: LegalNoticesPageComponent,
-    canActivate: [isLoggedInGuard],
+  },
+  {
+    path: 'cgu',
+    component: TermsPageComponent,
+  },
+  {
+    path: 'politique-confidentialite',
+    component: PrivacyPolicyPageComponent,
   },
   {
     path: 'dashboard',
@@ -141,6 +164,9 @@ export const routes: Routes = [
       { path: 'create-saloon', component: CreateSaloonPageComponent },
       { path: 'edit-saloon/:id', component: EditSaloonPageComponent },
       { path: 'reports-list', component: ReportsListPageComponent },
+      { path: 'create-event', component: CreateEventPageComponent },
+      { path: 'events-list', component: EventsListPageComponent },
+      { path: 'edit-event/:id', component: EditEventPageComponent },
       { path: '', redirectTo: 'overview', pathMatch: 'full' },
     ],
     canActivate: [isLoggedInGuard],
