@@ -54,8 +54,8 @@ export class CreateSaloonPageComponent {
       }
 
       // Vérifier le type
-      if (!file.type.startsWith('image/')) {
-        this.error = 'Le fichier doit être une image';
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+        this.error = 'Le fichier doit être une image JPG, PNG ou WebP';
         return;
       }
 

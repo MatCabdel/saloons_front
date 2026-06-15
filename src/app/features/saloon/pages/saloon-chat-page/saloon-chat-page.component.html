@@ -1,11 +1,15 @@
 <div class="saloon-chat-container">
   <div class="chat-header">
-    <app-header [showBackButton]="true" [backRoute]="'/mysaloon/' + saloonId"></app-header>
+    <app-header
+      title="Tchat du saloon"
+      [showBackButton]="true"
+      [backRoute]="'/mysaloon/' + saloonId"
+      [showMenu]="false"
+      [usePageBackground]="true"
+    ></app-header>
     <div class="chat-info">
       @if (saloon$ | async; as saloon) {
-      <h1>💬 Tchat du Saloon</h1>
       <span class="saloon-name">{{ saloon.name }}</span>
-      }
       <div class="presence-badge" [class.active]="isChatEnabled">
         <span class="presence-dot"></span>
         @if (othersConnectedCount === 0) {
@@ -18,6 +22,7 @@
         >
         }
       </div>
+      }
     </div>
   </div>
 

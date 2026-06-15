@@ -12,7 +12,8 @@ export const SALOON_FILTER_TABS: { value: SaloonBrowseFilter; label: string }[] 
   { value: 'PUBLIC', label: 'Public' },
   { value: 'LOISIRS', label: 'Loisirs' },
   { value: 'DISCO', label: 'Disco' },
-  { value: 'TRAVAIL', label: 'Travail' },
+  // Filtre masqué temporairement, la logique TRAVAIL reste disponible.
+  // { value: 'TRAVAIL', label: 'Travail' },
 ];
 
 export function toSaloonTypeFilter(filter: SaloonBrowseFilter): SaloonType | null {
