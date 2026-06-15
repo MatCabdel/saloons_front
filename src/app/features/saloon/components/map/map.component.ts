@@ -32,6 +32,14 @@ const DEFAULT_CENTER: L.LatLngExpression = [44.837789, -0.57918];
 const DEFAULT_ZOOM = 14;
 const USER_ZOOM = 15;
 const MAX_CLUSTER_RADIUS = 80;
+const SALOON_MARKER_COLORS: Record<SaloonType, string> = {
+  BAR: '#ffc122',
+  SPORT: '#ff8a2a',
+  PUBLIC: '#35b86b',
+  DISCO: '#f05ba8',
+  LOISIRS: '#7b4bd8',
+  TRAVAIL: '#2f80ed',
+};
 
 @Component({
   selector: 'app-map',
@@ -75,13 +83,6 @@ export class MapComponent implements OnInit, OnDestroy {
     const roles = this._authApiService.getUserRoles();
     return roles.includes('ROLE_REVIEWER') || roles.includes('ROLE_ADMIN');
   }
-
-  private _customIcon = L.icon({
-    iconUrl: 'assets/icons/mapmarker.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -40],
-  });
 
   // Icône bleue pour la position de l'utilisateur
   private _userIcon = L.divIcon({
@@ -332,13 +333,41 @@ export class MapComponent implements OnInit, OnDestroy {
       .filter(s => s.latitude && s.longitude)
       .map(saloon => {
         const marker = L.marker([saloon.latitude, saloon.longitude], {
-          icon: this._customIcon,
+          icon: this._getSaloonIcon(saloon.type),
         });
         marker.on('click', () => this._openModal(saloon));
         return marker;
       });
 
     this._clusterGroup.addLayers(markers);
+  }
+
+  private _getSaloonIcon(type?: SaloonType): L.DivIcon {
+    const color = type ? SALOON_MARKER_COLORS[type] : SALOON_MARKER_COLORS.BAR;
+
+    return L.divIcon({
+      className: 'saloon-type-marker',
+      html: `
+        <svg
+          class="saloon-type-marker-svg"
+          style="--saloon-marker-color: ${color}"
+          xmlns="http://www.w3.org/2000/svg"
+          width="48"
+          height="48"
+          viewBox="0 0 48 48"
+          aria-hidden="true"
+        >
+          <path
+            class="saloon-type-marker-primary"
+            d="M24,6c7.732,0,14,5.641,14,12.6C38,29.963,24,42,24,42S10,30.064,10,18.6C10,11.641,16.268,6,24,6Z"
+          />
+          <circle class="saloon-type-marker-accent" cx="24" cy="20" r="7" />
+        </svg>
+      `,
+      iconSize: [48, 48],
+      iconAnchor: [24, 42],
+      popupAnchor: [0, -42],
+    });
   }
 
   private _updateVisibleSaloonCount(bounds = this.map.getBounds()): void {
