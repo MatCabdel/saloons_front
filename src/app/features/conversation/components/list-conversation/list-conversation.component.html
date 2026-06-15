@@ -23,7 +23,7 @@
         conv.isHeartWindowExpired
       "
       [class.permanent]="conv.isPermanent"
-      [class.ephemeral]="!conv.isPermanent && !conv.isMatchCancelled"
+      [class.ephemeral]="!conv.isPermanent && !conv.isMatchCancelled && !conv.otherParticipantLeft"
       [class.unread]="conv.unreadCount > 0"
       (click)="openConversation(conv.id)"
       (keydown.enter)="openConversation(conv.id)"
@@ -47,7 +47,7 @@
           alt="avatar"
           loading="lazy"
         />
-        @if (!conv.isPermanent) {
+        @if (!conv.isPermanent && !conv.otherParticipantLeft) {
         <span class="ephemeral-badge" aria-hidden="true">
           <img src="assets/icons/time-bomb.svg" alt="" />
         </span>
