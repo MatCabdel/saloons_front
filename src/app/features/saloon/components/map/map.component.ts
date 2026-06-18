@@ -245,7 +245,7 @@ export class MapComponent implements OnInit, OnDestroy {
       city: saloon.city || '',
       latitude: saloon.latitude || 0,
       longitude: saloon.longitude || 0,
-      radiusMeters: saloon.radiusMeters || 0,
+      radiusMeters: saloon.radiusMeters ?? null,
       distanceMeters: null,
       connectedCount: saloon.connectedCount || saloon.visitors || saloon.visitorNumber || 0,
       type: saloon.type,

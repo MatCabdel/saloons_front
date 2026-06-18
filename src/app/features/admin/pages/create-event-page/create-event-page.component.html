@@ -140,12 +140,29 @@
     <div class="form-section">
       <h2>Date et heure</h2>
 
-      <div class="form-group">
-        <label for="startDateTime">Date et heure *</label>
-        <input type="datetime-local" id="startDateTime" formControlName="startDateTime" />
-        @if (eventForm.get('startDateTime')?.invalid && eventForm.get('startDateTime')?.touched) {
-        <span class="field-error">La date est requise</span>
-        }
+      <div class="form-row">
+        <div class="form-group">
+          <label for="startDateTime">Date et heure *</label>
+          <input type="datetime-local" id="startDateTime" formControlName="startDateTime" />
+          @if (eventForm.get('startDateTime')?.invalid && eventForm.get('startDateTime')?.touched) {
+          <span class="field-error">La date est requise</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="radiusMeters">Rayon d'action (mètres)</label>
+          <input
+            type="number"
+            id="radiusMeters"
+            formControlName="radiusMeters"
+            placeholder="100"
+            [attr.disabled]="radiusUnlimited ? true : null"
+          />
+          <label class="toggle-row">
+            <input type="checkbox" formControlName="radiusUnlimited" />
+            <span>Sans limitation</span>
+          </label>
+        </div>
       </div>
     </div>
 

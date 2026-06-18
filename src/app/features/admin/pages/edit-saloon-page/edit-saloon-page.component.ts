@@ -43,9 +43,14 @@ export class EditSaloonPageComponent implements OnInit {
     latitude: [null, [Validators.required, Validators.min(-90), Validators.max(90)]],
     longitude: [null, [Validators.required, Validators.min(-180), Validators.max(180)]],
     radiusMeters: [100, [Validators.min(10), Validators.max(100000)]],
+    radiusUnlimited: [false],
     type: ['BAR', Validators.required],
     isPrivate: [false],
   });
+
+  get radiusUnlimited(): boolean {
+    return this.saloonForm.get('radiusUnlimited')?.value === true;
+  }
 
   ngOnInit(): void {
     const idParam = this._route.snapshot.paramMap.get('id');
@@ -74,7 +79,8 @@ export class EditSaloonPageComponent implements OnInit {
           country: 'France',
           latitude: saloon.latitude,
           longitude: saloon.longitude,
-          radiusMeters: saloon.radiusMeters || 100,
+          radiusMeters: saloon.radiusMeters ?? 100,
+          radiusUnlimited: saloon.radiusMeters == null,
           type: saloon.type || 'BAR',
           isPrivate: saloon.isPrivate ?? false,
         });
@@ -130,7 +136,10 @@ export class EditSaloonPageComponent implements OnInit {
       formData.append('country', this.saloonForm.get('country')?.value || 'France');
       formData.append('latitude', this.saloonForm.get('latitude')?.value);
       formData.append('longitude', this.saloonForm.get('longitude')?.value);
-      formData.append('radiusMeters', this.saloonForm.get('radiusMeters')?.value || '100');
+      formData.append('radiusUnlimited', this.radiusUnlimited ? 'true' : 'false');
+      if (!this.radiusUnlimited) {
+        formData.append('radiusMeters', this.saloonForm.get('radiusMeters')?.value || '100');
+      }
       formData.append('type', this.saloonForm.get('type')?.value || 'BAR');
       formData.append('isPrivate', this.saloonForm.get('isPrivate')?.value ? 'true' : 'false');
 
@@ -156,7 +165,10 @@ export class EditSaloonPageComponent implements OnInit {
         country: this.saloonForm.get('country')?.value || 'France',
         latitude: this.saloonForm.get('latitude')?.value,
         longitude: this.saloonForm.get('longitude')?.value,
-        radiusMeters: this.saloonForm.get('radiusMeters')?.value || 100,
+        radiusMeters: this.radiusUnlimited
+          ? null
+          : this.saloonForm.get('radiusMeters')?.value || 100,
+        radiusUnlimited: this.radiusUnlimited,
         type: this.saloonForm.get('type')?.value || 'BAR',
         isPrivate: this.saloonForm.get('isPrivate')?.value || false,
       };
@@ -186,7 +198,8 @@ export class EditSaloonPageComponent implements OnInit {
         country: 'France',
         latitude: this.saloon.latitude,
         longitude: this.saloon.longitude,
-        radiusMeters: this.saloon.radiusMeters || 100,
+        radiusMeters: this.saloon.radiusMeters ?? 100,
+        radiusUnlimited: this.saloon.radiusMeters == null,
         type: this.saloon.type || 'BAR',
         isPrivate: this.saloon.isPrivate ?? false,
       });

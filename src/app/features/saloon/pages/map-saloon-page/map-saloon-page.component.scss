@@ -1,6 +1,3 @@
-// Variables - hauteurs identiques au parent
-$navbar-height: 70px;
-
 :host {
   // Positionné en absolu pour sortir du flux du content-wrapper (overflow-y: auto)
   // qui empêcherait Leaflet d'avoir une hauteur correcte sur iOS/WKWebView.
@@ -10,7 +7,7 @@ $navbar-height: 70px;
   left: 0;
   right: 0;
   // Descend sous la navbar (annule le padding-bottom du content-wrapper)
-  bottom: calc(-#{$navbar-height});
+  bottom: calc(0px - var(--navbar-reserved-height));
   overflow: hidden;
 }
 

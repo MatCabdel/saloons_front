@@ -170,7 +170,7 @@ export class EventsPageComponent implements OnInit, AfterViewInit, OnDestroy {
       city: event.saloonCity || '',
       latitude: event.saloonLatitude || 0,
       longitude: event.saloonLongitude || 0,
-      radiusMeters: event.saloonRadiusMeters || 0,
+      radiusMeters: event.saloonRadiusMeters ?? null,
       distanceMeters: this._computeDistance(event),
       connectedCount: 0,
       type: (event.saloonType as SaloonMapItem['type']) || undefined,

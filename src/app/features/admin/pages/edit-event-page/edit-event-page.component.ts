@@ -36,7 +36,13 @@ export class EditEventPageComponent implements OnInit {
     description: ['', [Validators.maxLength(2000)]],
     startDateTime: ['', Validators.required],
     saloonId: [null, Validators.required],
+    radiusMeters: [100, [Validators.min(10), Validators.max(100000)]],
+    radiusUnlimited: [false],
   });
+
+  get radiusUnlimited(): boolean {
+    return this.eventForm.get('radiusUnlimited')?.value === true;
+  }
 
   ngOnInit(): void {
     const idParam = this._route.snapshot.paramMap.get('id');
@@ -78,6 +84,8 @@ export class EditEventPageComponent implements OnInit {
           description: event.description || '',
           startDateTime: this.toDatetimeLocal(event.startDateTime),
           saloonId: event.saloonId,
+          radiusMeters: event.radiusMeters ?? 100,
+          radiusUnlimited: event.radiusMeters == null,
         });
 
         this.isLoading = false;
@@ -136,6 +144,10 @@ export class EditEventPageComponent implements OnInit {
       formData.append('description', this.eventForm.get('description')?.value || '');
       formData.append('startDateTime', this.eventForm.get('startDateTime')?.value);
       formData.append('saloonId', this.eventForm.get('saloonId')?.value);
+      formData.append('radiusUnlimited', this.radiusUnlimited ? 'true' : 'false');
+      if (!this.radiusUnlimited) {
+        formData.append('radiusMeters', this.eventForm.get('radiusMeters')?.value || '100');
+      }
 
       this._adminService.updateEventWithImage(this.eventId, formData).subscribe({
         next: () => this._onSuccess(),
@@ -149,6 +161,10 @@ export class EditEventPageComponent implements OnInit {
         description: this.eventForm.get('description')?.value || '',
         startDateTime: this.eventForm.get('startDateTime')?.value,
         saloonId: this.eventForm.get('saloonId')?.value,
+        radiusMeters: this.radiusUnlimited
+          ? null
+          : this.eventForm.get('radiusMeters')?.value || 100,
+        radiusUnlimited: this.radiusUnlimited,
       };
 
       this._adminService.updateEvent(this.eventId, eventData).subscribe({
@@ -179,6 +195,8 @@ export class EditEventPageComponent implements OnInit {
         description: this.event.description || '',
         startDateTime: this.toDatetimeLocal(this.event.startDateTime),
         saloonId: this.event.saloonId,
+        radiusMeters: this.event.radiusMeters ?? 100,
+        radiusUnlimited: this.event.radiusMeters == null,
       });
       this.selectedFile = null;
       this.imagePreview = this.originalImageUrl;

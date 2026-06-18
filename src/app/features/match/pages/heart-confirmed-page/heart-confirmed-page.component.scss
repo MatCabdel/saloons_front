@@ -42,8 +42,9 @@
 }
 
 .heart-confirmed-container {
-  background-color: #413443;
+  background: linear-gradient(180deg, #5a3d6d 0%, #2b1c35 100%);
   min-height: 100vh;
+  min-height: 100dvh;
   min-width: 100vw;
   margin: 0 auto;
   display: flex;
