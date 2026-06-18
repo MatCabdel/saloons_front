@@ -2,6 +2,9 @@
 $gradient-top: #413443;
 $gradient-bottom: #a483a9;
 $yellow: #ffc122;
+$event-accent: #6f4a82;
+$event-accent-deep: #3a263f;
+$event-accent-ink: #2b1c35;
 $white: #fff;
 
 .modal-overlay {
@@ -135,10 +138,10 @@ $white: #fff;
 }
 
 .close-btn {
-  background: rgba($white, 0.14);
+  background: rgba(43, 28, 53, 0.72);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba($white, 0.28);
+  border: 1px solid rgba($white, 0.3);
   border-radius: 50%;
   width: 38px;
   height: 38px;
@@ -148,10 +151,10 @@ $white: #fff;
   cursor: pointer;
   transition: all 0.2s;
   color: $white;
-  box-shadow: 0 10px 24px rgba(16, 8, 19, 0.24), inset 0 1px 0 rgba($white, 0.14);
+  box-shadow: 0 12px 28px rgba(16, 8, 19, 0.32), inset 0 1px 0 rgba($white, 0.2);
 
   &:hover {
-    background: rgba($white, 0.22);
+    background: rgba(43, 28, 53, 0.86);
     transform: scale(1.06);
   }
 }
@@ -543,9 +546,9 @@ $white: #fff;
   gap: 0.2rem;
   margin: 1.45rem 1rem 0;
   padding: 0.18rem;
-  border: 1px solid rgba($gradient-bottom, 0.12);
+  border: 1px solid rgba($event-accent, 0.22);
   border-radius: 10px;
-  background: rgba($gradient-top, 0.055);
+  background: linear-gradient(180deg, rgba($event-accent, 0.16), rgba($gradient-top, 0.055));
 }
 
 .event-modal-tab {
@@ -561,15 +564,20 @@ $white: #fff;
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba($gradient-bottom, 0.08);
-    color: $gradient-top;
+    background: rgba($event-accent, 0.12);
+    color: $event-accent-ink;
   }
 
   &.active {
-    background: linear-gradient(135deg, rgba($gradient-bottom, 0.32), rgba($gradient-top, 0.18));
-    color: $gradient-top;
-    box-shadow: inset 0 1px 0 rgba($white, 0.32), 0 4px 12px rgba($gradient-top, 0.08);
+    background: linear-gradient(135deg, $event-accent-deep 0%, $event-accent 100%);
+    border: 1px solid rgba($white, 0.16);
+    color: $white;
+    box-shadow: inset 0 1px 0 rgba($white, 0.18), 0 8px 18px rgba($event-accent-deep, 0.22);
   }
+}
+
+.event-modal-tab.active:hover {
+  color: $white;
 }
 
 .event-card {
@@ -587,7 +595,7 @@ $white: #fff;
   position: absolute;
   inset: 0 0 auto;
   height: 4px;
-  background: linear-gradient(90deg, $yellow, rgba($gradient-bottom, 0.52), $yellow);
+  background: linear-gradient(90deg, $event-accent-deep, rgba($event-accent, 0.92), #a483a9);
 }
 
 .event-card-body {
@@ -602,10 +610,10 @@ $white: #fff;
   width: fit-content;
   margin-bottom: 0.55rem;
   padding: 0.32rem 0.62rem;
-  border: 1px solid rgba($yellow, 0.42);
+  border: 1px solid rgba($event-accent, 0.38);
   border-radius: 8px;
-  background: rgba($yellow, 0.16);
-  color: #8a6200;
+  background: rgba($event-accent, 0.13);
+  color: $event-accent-ink;
   font-size: 0.68rem;
   font-weight: 850;
   letter-spacing: 0.06em;
@@ -646,16 +654,16 @@ $white: #fff;
   gap: 0.55rem;
   min-width: 0;
   padding: 0.68rem 0.72rem;
-  border: 1px solid rgba($gradient-bottom, 0.22);
+  border: 1px solid rgba($event-accent-deep, 0.16);
   border-radius: 12px;
   color: $gradient-top;
-  background: linear-gradient(180deg, rgba($gradient-bottom, 0.16), rgba($gradient-top, 0.06));
+  background: linear-gradient(180deg, rgba($event-accent, 0.12), rgba($gradient-top, 0.045));
 
   svg {
     width: 17px;
     height: 17px;
     flex-shrink: 0;
-    color: $gradient-bottom;
+    color: $event-accent-deep;
   }
 
   span {
@@ -713,8 +721,8 @@ $white: #fff;
   justify-content: center;
   gap: 0.35rem;
   min-height: 38px;
-  background: rgba($yellow, 0.18);
-  border: 1px solid rgba($yellow, 0.4);
+  background: rgba($event-accent, 0.12);
+  border: 1px solid rgba($event-accent, 0.34);
   border-radius: 10px;
   padding: 0.5rem 0.78rem;
   color: $gradient-top;
@@ -725,15 +733,16 @@ $white: #fff;
   -webkit-tap-highlight-color: transparent;
 
   &:hover {
-    background: rgba($yellow, 0.26);
-    color: $gradient-top;
-    border-color: rgba($yellow, 0.52);
+    background: rgba($event-accent, 0.18);
+    color: $event-accent-ink;
+    border-color: rgba($event-accent-deep, 0.36);
   }
 
   &.interested {
-    background: linear-gradient(135deg, $yellow 0%, darken($yellow, 10%) 100%);
-    border-color: rgba($gradient-top, 0.08);
-    box-shadow: 0 12px 24px rgba(67, 42, 4, 0.2), inset 0 1px 0 rgba($white, 0.42);
+    background: linear-gradient(135deg, $event-accent-deep 0%, $event-accent 100%);
+    border-color: rgba($white, 0.12);
+    color: $white;
+    box-shadow: 0 12px 24px rgba($event-accent-deep, 0.22), inset 0 1px 0 rgba($white, 0.18);
   }
 
   .event-interest-count {

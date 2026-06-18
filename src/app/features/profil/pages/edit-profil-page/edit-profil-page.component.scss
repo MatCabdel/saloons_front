@@ -68,7 +68,7 @@ $white: #fff;
   display: flex;
   flex-direction: column;
   padding: 0 16px;
-  margin-bottom: 70px;
+  margin-bottom: var(--navbar-reserved-height);
   min-height: 0;
   overflow-y: auto;
 }
