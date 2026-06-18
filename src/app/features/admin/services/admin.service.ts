@@ -63,7 +63,8 @@ export type CreateSaloonRequest = {
   country?: string;
   latitude: number;
   longitude: number;
-  radiusMeters?: number;
+  radiusMeters?: number | null;
+  radiusUnlimited?: boolean;
   isPrivate?: boolean;
 };
 

@@ -149,6 +149,11 @@
       background: rgba(255, 255, 255, 0.08);
       box-shadow: 0 0 0 3px rgba(255, 193, 34, 0.15);
     }
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
   }
 
   .toggle-row {
@@ -156,6 +161,7 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.65rem 0.9rem;
+    margin-top: 0.75rem;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 10px;

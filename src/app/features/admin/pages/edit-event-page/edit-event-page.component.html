@@ -162,6 +162,21 @@
         <span class="field-error">La date est requise</span>
         }
       </div>
+
+      <div class="form-group">
+        <label for="radiusMeters">Rayon d'action (mètres)</label>
+        <input
+          type="number"
+          id="radiusMeters"
+          formControlName="radiusMeters"
+          placeholder="100"
+          [attr.disabled]="radiusUnlimited ? true : null"
+        />
+        <label class="toggle-row">
+          <input type="checkbox" formControlName="radiusUnlimited" />
+          <span>Sans limitation</span>
+        </label>
+      </div>
     </div>
 
     <div class="form-actions">
