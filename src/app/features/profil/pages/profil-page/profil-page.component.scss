@@ -72,5 +72,8 @@ $yellow: #ffc122;
   display: flex;
   flex-direction: column;
   min-height: 0;
-  margin-bottom: var(--navbar-reserved-height);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: var(--navbar-reserved-height);
+  -webkit-overflow-scrolling: touch;
 }
