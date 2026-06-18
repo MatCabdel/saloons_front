@@ -25,11 +25,6 @@ export class AuthPageComponent implements OnInit {
   showPassword = signal(false);
   showConfirmPassword = signal(false);
 
-  // Pour détecter si l'utilisateur est déjà connecté
-  get isAlreadyAuthenticated(): boolean {
-    return this._firebaseAuth.isAuthenticated();
-  }
-
   // Formulaire inscription email
   registerForm: FormGroup = this._fb.group({
     firstName: ['', [Validators.required, Validators.minLength(2)]],
@@ -86,11 +81,6 @@ export class AuthPageComponent implements OnInit {
 
   toggleConfirmPasswordVisibility(): void {
     this.showConfirmPassword.update(v => !v);
-  }
-
-  async logout(): Promise<void> {
-    await this._firebaseAuth.signOut();
-    this.errorMessage.set('Déconnexion réussie');
   }
 
   onGoogleAuth(): void {

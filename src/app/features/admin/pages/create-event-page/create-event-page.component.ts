@@ -30,7 +30,13 @@ export class CreateEventPageComponent implements OnInit {
     description: [''],
     startDateTime: ['', Validators.required],
     saloonId: [null, Validators.required],
+    radiusMeters: [100, [Validators.min(10), Validators.max(100000)]],
+    radiusUnlimited: [false],
   });
+
+  get radiusUnlimited(): boolean {
+    return this.eventForm.get('radiusUnlimited')?.value === true;
+  }
 
   ngOnInit(): void {
     this._adminService.getAllSaloons().subscribe({
@@ -83,6 +89,10 @@ export class CreateEventPageComponent implements OnInit {
     formData.append('description', this.eventForm.get('description')?.value || '');
     formData.append('startDateTime', this.eventForm.get('startDateTime')?.value);
     formData.append('saloonId', this.eventForm.get('saloonId')?.value);
+    formData.append('radiusUnlimited', this.radiusUnlimited ? 'true' : 'false');
+    if (!this.radiusUnlimited) {
+      formData.append('radiusMeters', this.eventForm.get('radiusMeters')?.value || '100');
+    }
 
     this._adminService.createEventWithImage(formData).subscribe({
       next: () => {
@@ -100,7 +110,10 @@ export class CreateEventPageComponent implements OnInit {
   }
 
   resetForm(): void {
-    this.eventForm.reset();
+    this.eventForm.reset({
+      radiusMeters: 100,
+      radiusUnlimited: false,
+    });
     this.selectedFile = null;
     this.imagePreview = null;
     this.error = null;

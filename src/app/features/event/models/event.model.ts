@@ -6,6 +6,7 @@ export type EventItem = {
   description?: string;
   startDateTime: string;
   endDateTime?: string;
+  radiusMeters?: number | null;
   saloonId: number;
   saloonName: string;
   saloonImgUrl?: string;
@@ -13,7 +14,7 @@ export type EventItem = {
   saloonCity?: string;
   saloonLatitude?: number;
   saloonLongitude?: number;
-  saloonRadiusMeters?: number;
+  saloonRadiusMeters?: number | null;
   saloonType?: string;
   saloonIsPrivate?: boolean;
   interestedCount?: number;

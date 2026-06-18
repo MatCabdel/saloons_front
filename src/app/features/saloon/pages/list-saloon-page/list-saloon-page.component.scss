@@ -6,9 +6,8 @@ $white: #fff;
 $text-muted: #8a7a8e;
 
 .list-saloons-container {
-  min-height: calc(100vh - 60px);
-  min-height: calc(100dvh - 60px);
-  padding-bottom: calc(80px + var(--floating-saloon-actions-offset)); // Space for navbar + capsule
+  min-height: 100%;
+  padding-bottom: 0;
 }
 
 // Messages d'état de géolocalisation

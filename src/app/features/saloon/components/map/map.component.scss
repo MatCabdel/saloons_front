@@ -3,7 +3,6 @@ $gradient-top: #413443;
 $gradient-bottom: #a483a9;
 $yellow: #ffc122;
 $white: #fff;
-$navbar-height: 70px;
 
 :host {
   display: block;
@@ -139,7 +138,7 @@ $navbar-height: 70px;
 // Bouton de recentrage - positionné au-dessus de la navbar
 .center-btn {
   position: fixed; // Fixed pour être toujours visible
-  bottom: calc(#{$navbar-height} + 20px + var(--floating-saloon-actions-offset));
+  bottom: calc(var(--navbar-reserved-height) + 20px + var(--floating-saloon-actions-offset));
   right: 20px;
   z-index: 500; // Sous le menu burger (z-index: 999)
   width: 48px;
