@@ -87,7 +87,7 @@
             #fileInput
             id="saloon-image-input"
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp"
             (change)="onFileSelected($event)"
           />
           @if (!imagePreview) {
@@ -106,7 +106,7 @@
               <polyline points="21 15 16 10 5 21" />
             </svg>
             <p>Cliquez pour sélectionner une image</p>
-            <p class="hint">PNG, JPG, JPEG - Max 5MB</p>
+            <p class="hint">PNG, JPG, WebP - Max 10MB</p>
           </div>
           } @else {
           <div class="image-preview">
@@ -149,7 +149,17 @@
 
         <div class="form-group">
           <label for="radiusMeters">Rayon (mètres)</label>
-          <input type="number" id="radiusMeters" formControlName="radiusMeters" placeholder="100" />
+          <input
+            type="number"
+            id="radiusMeters"
+            formControlName="radiusMeters"
+            placeholder="100"
+            [attr.disabled]="radiusUnlimited ? true : null"
+          />
+          <label class="toggle-row">
+            <input type="checkbox" formControlName="radiusUnlimited" />
+            <span>Sans limitation</span>
+          </label>
         </div>
       </div>
 

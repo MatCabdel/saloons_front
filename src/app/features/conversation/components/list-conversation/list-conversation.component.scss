@@ -10,8 +10,11 @@
     display: flex;
     flex-direction: column;
     gap: 0;
-    padding: 0 0 calc(80px + var(--floating-saloon-actions-offset));
-    padding-bottom: calc(80px + var(--floating-saloon-actions-offset));
+    padding: 0 0
+      calc(
+        var(--navbar-reserved-height) + var(--content-bottom-gap) +
+          var(--floating-saloon-actions-offset)
+      );
 
     .empty-state {
       display: flex;

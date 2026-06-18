@@ -79,7 +79,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
   }
 
   // Saloons triés par distance avec mise à jour temps réel de la présence
-  // Filtrés à MAX_DISTANCE_METERS de l'utilisateur
+  // Filtrés à MAX_DISTANCE_METERS de l'utilisateur.
   saloons$: Observable<(Saloon & { distanceMeters: number | null })[]> = combineLatest([
     this._saloons$,
     this._userPosition$,
@@ -113,18 +113,20 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
       });
 
       // Filtrer les saloons à moins de MAX_DISTANCE_METERS.
+      // Les saloons sans limitation restent visibles, quelle que soit la distance.
       // Les saloons privés reçus du backend restent visibles sans limite de distance:
       // le backend ne les renvoie qu'aux profils autorisés.
       let filteredSaloons = [] as (Saloon & { distanceMeters: number | null })[];
       if (position) {
         filteredSaloons = saloonsWithDistance.filter(saloon =>
-          saloon.isPrivate === true
+          saloon.isPrivate === true || saloon.radiusMeters == null
             ? true
             : saloon.distanceMeters !== null && saloon.distanceMeters <= MAX_DISTANCE_METERS
         );
       } else {
-        // Sans position, montrer uniquement les privés accessibles renvoyés par le backend.
-        filteredSaloons = saloonsWithDistance.filter(saloon => saloon.isPrivate === true);
+        filteredSaloons = saloonsWithDistance.filter(
+          saloon => saloon.isPrivate === true || saloon.radiusMeters == null
+        );
       }
 
       // Appliquer le filtre par type
@@ -233,7 +235,7 @@ export class ListSaloonPageComponent implements OnInit, OnDestroy {
       city: saloon.city || '',
       latitude: saloon.latitude || 0,
       longitude: saloon.longitude || 0,
-      radiusMeters: saloon.radiusMeters || 100,
+      radiusMeters: saloon.radiusMeters ?? null,
       distanceMeters: saloon.distanceMeters,
       connectedCount: saloon.connectedCount || saloon.visitorNumber || 0,
       type: saloon.type,

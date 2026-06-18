@@ -167,7 +167,17 @@
 
         <div class="form-group">
           <label for="radiusMeters">Rayon (mètres)</label>
-          <input type="number" id="radiusMeters" formControlName="radiusMeters" placeholder="100" />
+          <input
+            type="number"
+            id="radiusMeters"
+            formControlName="radiusMeters"
+            placeholder="100"
+            [attr.disabled]="radiusUnlimited ? true : null"
+          />
+          <label class="toggle-row">
+            <input type="checkbox" formControlName="radiusUnlimited" />
+            <span>Sans limitation</span>
+          </label>
         </div>
       </div>
 

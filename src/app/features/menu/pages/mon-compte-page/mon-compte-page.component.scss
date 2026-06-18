@@ -42,7 +42,7 @@ $profile-card-bg: rgba(213, 196, 230, 0.46);
 }
 
 .page-content {
-  padding: 1.35rem 1rem calc(96px + var(--safe-bottom));
+  padding: 1.35rem 1rem calc(var(--navbar-reserved-height) + var(--content-bottom-gap));
   color: $white;
 }
 

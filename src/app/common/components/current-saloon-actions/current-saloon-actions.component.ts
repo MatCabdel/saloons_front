@@ -5,7 +5,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { ActiveSession, PresenceService } from 'src/app/features/saloon/services/presence.service';
 
-const FLOATING_ACTIONS_OFFSET = '74px';
+const FLOATING_ACTIONS_OFFSET = 'var(--navbar-content-height)';
 
 @Component({
   selector: 'app-current-saloon-actions',

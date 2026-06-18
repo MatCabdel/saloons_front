@@ -10,9 +10,8 @@ $chip-active-text: #584268;
 $fade-color: rgba(90, 61, 109, 0.92);
 
 .events-container {
-  min-height: calc(100vh - 60px);
-  min-height: calc(100dvh - 60px);
-  padding-bottom: calc(80px + var(--floating-saloon-actions-offset));
+  min-height: 100%;
+  padding-bottom: 0;
 }
 
 // Section des filtres

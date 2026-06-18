@@ -68,7 +68,7 @@ export type SaloonMapItem = {
   city: string;
   latitude: number;
   longitude: number;
-  radiusMeters: number;
+  radiusMeters: number | null;
   distanceMeters: number | null;
   connectedCount: number;
   type?: SaloonType;

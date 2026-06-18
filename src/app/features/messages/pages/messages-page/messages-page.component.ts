@@ -108,7 +108,7 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
       next: (conv: Conversation) => {
         const myId = this._userStore.getUserId();
         this.userTarget = conv.participants.find((u: User) => u.id !== myId);
-        this.otherParticipantLeft = conv.otherParticipantLeft || false;
+        this.otherParticipantLeft = conv.otherParticipantLeft || !!conv.expiredAt;
         this.isMatchCancelled = conv.isMatchCancelled || false;
         this.isHeartWindowExpired = conv.isHeartWindowExpired || false;
         this.conversation = conv;

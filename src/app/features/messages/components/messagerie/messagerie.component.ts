@@ -312,6 +312,10 @@ export class MessagerieComponent implements OnInit, OnDestroy, AfterViewInit, Af
   }
 
   sendMessage(): void {
+    if (this._isSendingDisabled()) {
+      return;
+    }
+
     if (!this.newMessage.trim()) {
       return;
     }
@@ -362,7 +366,7 @@ export class MessagerieComponent implements OnInit, OnDestroy, AfterViewInit, Af
   }
 
   private _sendChatMessage(): void {
-    if (!this.conversationId) return;
+    if (!this.conversationId || this._isSendingDisabled()) return;
 
     const chatMessage = {
       conversation: { id: this.conversationId },
@@ -385,5 +389,13 @@ export class MessagerieComponent implements OnInit, OnDestroy, AfterViewInit, Af
         textarea.style.height = 'auto';
       }
     }, 0);
+  }
+
+  private _isSendingDisabled(): boolean {
+    return (
+      this.isMatchExpired ||
+      this.isMatchCancelled ||
+      (this.isConversationEnded && !this.isPermanent)
+    );
   }
 }

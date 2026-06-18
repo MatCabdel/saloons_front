@@ -19,7 +19,7 @@ export type Saloon = {
   latitude?: number;
   longitude?: number;
   city?: string;
-  radiusMeters?: number;
+  radiusMeters?: number | null;
   isActive?: boolean;
   isPrivate?: boolean;
   connectedCount?: number;

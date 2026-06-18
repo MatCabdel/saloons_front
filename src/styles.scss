@@ -56,6 +56,9 @@ button {
   --safe-bottom: env(safe-area-inset-bottom);
   --safe-left: env(safe-area-inset-left);
   --header-safe-padding-top: max(12px, var(--safe-top));
+  --navbar-content-height: clamp(68px, 8.4svh, 82px);
+  --navbar-reserved-height: calc(var(--navbar-content-height) + var(--safe-bottom));
+  --content-bottom-gap: 12px;
   --floating-saloon-actions-offset: 0px;
 }
 
