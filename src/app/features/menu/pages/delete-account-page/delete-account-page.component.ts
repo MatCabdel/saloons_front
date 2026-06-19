@@ -1,5 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, inject, signal } from '@angular/core';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
@@ -18,10 +18,11 @@ type JwtPayload = {
   templateUrl: './delete-account-page.component.html',
   styleUrls: ['./delete-account-page.component.scss'],
 })
-export class DeleteAccountPageComponent {
+export class DeleteAccountPageComponent implements AfterViewInit {
   private _fb = inject(FormBuilder);
   private _http = inject(HttpClient);
   private _router = inject(Router);
+  private _viewportScroller = inject(ViewportScroller);
 
   showConfirmation = signal(false);
   isDeleting = signal(false);
@@ -30,6 +31,10 @@ export class DeleteAccountPageComponent {
   form: FormGroup = this._fb.group({
     confirmText: ['', [Validators.required, Validators.pattern(/^SUPPRIMER$/)]],
   });
+
+  ngAfterViewInit(): void {
+    queueMicrotask(() => this._viewportScroller.scrollToPosition([0, 0]));
+  }
 
   proceedToConfirmation(): void {
     this.showConfirmation.set(true);
