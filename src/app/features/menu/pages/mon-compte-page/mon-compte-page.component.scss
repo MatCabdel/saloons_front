@@ -254,6 +254,23 @@ $profile-card-bg: rgba(213, 196, 230, 0.46);
   font-size: 1.08rem;
 }
 
+.lock-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: $white;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+  }
+}
+
 .menu-label {
   flex: 1;
   font-size: 0.92rem;
