@@ -102,8 +102,12 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
     return roles.includes('ROLE_REVIEWER') || roles.includes('ROLE_ADMIN');
   }
 
+  get isAdmin(): boolean {
+    return this._authApiService.getUserRoles().includes('ROLE_ADMIN');
+  }
+
   get canJoinWithoutLocation(): boolean {
-    return this.isReviewerOrAdmin && this.saloon?.isPrivate === true;
+    return this.isAdmin || (this.isReviewerOrAdmin && this.saloon?.isPrivate === true);
   }
 
   ngOnInit(): void {
@@ -309,6 +313,9 @@ export class SaloonModalComponent implements OnInit, OnDestroy, OnChanges {
     // Temporairement désactivé pour les tests
     // Si pas de position utilisateur, on autorise l'entrée (le backend validera)
     if (!this.saloon || !this.saloon.distanceMeters || !this.saloon.radiusMeters) {
+      return false;
+    }
+    if (this.isAdmin) {
       return false;
     }
     if (this.saloon.isPrivate === true && this.isReviewerOrAdmin) {

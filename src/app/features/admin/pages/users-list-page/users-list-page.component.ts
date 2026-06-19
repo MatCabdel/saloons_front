@@ -52,6 +52,7 @@ export class UsersListPageComponent implements OnInit {
 
   // Role update state
   updatingUserRoles = signal<Set<number>>(new Set());
+  pendingUserRoles = signal<Map<number, string>>(new Map());
 
   // Mobile expanded cards
   expandedUserIds = signal<Set<number>>(new Set());
@@ -252,8 +253,32 @@ export class UsersListPageComponent implements OnInit {
     });
   }
 
-  onRoleChange(user: User, role: string): void {
-    if (!role || role === user.role) {
+  getSelectedRole(user: User): string {
+    return this.pendingUserRoles().get(user.id) ?? user.role ?? 'ROLE_USER';
+  }
+
+  hasPendingRole(user: User): boolean {
+    return this.getSelectedRole(user) !== (user.role ?? 'ROLE_USER');
+  }
+
+  onRoleSelectionChange(user: User, role: string): void {
+    if (!role) {
+      return;
+    }
+    this.pendingUserRoles.update(roles => {
+      const next = new Map(roles);
+      if (role === (user.role ?? 'ROLE_USER')) {
+        next.delete(user.id);
+      } else {
+        next.set(user.id, role);
+      }
+      return next;
+    });
+  }
+
+  saveUserRole(user: User): void {
+    const role = this.getSelectedRole(user);
+    if (!this.hasPendingRole(user)) {
       return;
     }
 
@@ -264,6 +289,11 @@ export class UsersListPageComponent implements OnInit {
         this.users.update(users =>
           users.map(u => (u.id === user.id ? { ...u, role: updatedUser.role } : u))
         );
+        this.pendingUserRoles.update(roles => {
+          const next = new Map(roles);
+          next.delete(user.id);
+          return next;
+        });
         this.updatingUserRoles.update(ids => {
           const next = new Set(ids);
           next.delete(user.id);
