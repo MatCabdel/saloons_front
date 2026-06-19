@@ -18,6 +18,7 @@ export class MonComptePageComponent implements OnInit {
   private _userStore = inject(UserStoreService);
   private _authService = inject(AuthApiService);
 
+  readonly premiumActionsEnabled = false;
   user = signal<UserDTO | null>(null);
   isPremium = computed(() => {
     return this.user()?.isPremium ?? false;
