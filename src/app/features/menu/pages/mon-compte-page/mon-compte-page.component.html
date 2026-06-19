@@ -29,7 +29,7 @@
       <span class="card-arrow">›</span>
     </a>
 
-    @if (!isPremium()) {
+    @if (premiumActionsEnabled && !isPremium()) {
     <button type="button" class="premium-card" (click)="goToPremium()">
       <div class="premium-copy">
         <h3>Passer Premium</h3>
@@ -95,8 +95,7 @@
         <span class="menu-label">Modifier mon mot de passe</span>
         <span class="card-arrow">›</span>
       </a>
-      }
-
+      } @if (premiumActionsEnabled) {
       <button type="button" class="menu-row" (click)="goToPremium()">
         <span class="menu-icon">✨</span>
         <span class="menu-label">{{
@@ -104,6 +103,7 @@
         }}</span>
         <span class="card-arrow">›</span>
       </button>
+      }
 
       <a class="menu-row danger" routerLink="/mon-compte/supprimer-compte">
         <span class="menu-icon">✕</span>
