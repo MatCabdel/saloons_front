@@ -46,6 +46,7 @@ import { ForgotPasswordPageComponent } from './features/auth/pages/forgot-passwo
 import { LegalNoticesPageComponent } from './features/menu/pages/legal-notices-page/legal-notices-page.component';
 import { TermsPageComponent } from './features/menu/pages/terms-page/terms-page.component';
 import { PrivacyPolicyPageComponent } from './features/menu/pages/privacy-policy-page/privacy-policy-page.component';
+import { PublicDeleteAccountPageComponent } from './features/menu/pages/public-delete-account-page/public-delete-account-page.component';
 import { WelcomePageComponent } from './features/home/pages/welcome-page/welcome-page.component';
 import { LandingPageComponent } from './features/home/pages/landing-page/landing-page.component';
 import { EventSwitcherPageComponent } from './features/event/pages/event-switcher-page/event-switcher-page.component';
@@ -144,6 +145,10 @@ export const routes: Routes = [
   {
     path: 'politique-confidentialite',
     component: PrivacyPolicyPageComponent,
+  },
+  {
+    path: 'suppression-compte',
+    component: PublicDeleteAccountPageComponent,
   },
   {
     path: 'dashboard',

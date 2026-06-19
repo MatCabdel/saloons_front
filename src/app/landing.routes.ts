@@ -4,6 +4,7 @@ import { ContactPageComponent } from './features/menu/pages/contact-page/contact
 import { LegalNoticesPageComponent } from './features/menu/pages/legal-notices-page/legal-notices-page.component';
 import { TermsPageComponent } from './features/menu/pages/terms-page/terms-page.component';
 import { PrivacyPolicyPageComponent } from './features/menu/pages/privacy-policy-page/privacy-policy-page.component';
+import { PublicDeleteAccountPageComponent } from './features/menu/pages/public-delete-account-page/public-delete-account-page.component';
 
 export const landingRoutes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -11,5 +12,6 @@ export const landingRoutes: Routes = [
   { path: 'mentions-legales', component: LegalNoticesPageComponent },
   { path: 'cgu', component: TermsPageComponent },
   { path: 'politique-confidentialite', component: PrivacyPolicyPageComponent },
+  { path: 'suppression-compte', component: PublicDeleteAccountPageComponent },
   { path: '**', redirectTo: '' },
 ];

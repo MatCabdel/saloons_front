@@ -24,6 +24,7 @@ export class PushNotificationService {
   private readonly _http = inject(HttpClient);
   private readonly _router = inject(Router);
   private readonly _badgeService = inject(BadgeService);
+  private _listenersRegistered = false;
 
   /** Token FCM actuel (null si pas encore récupéré ou permission refusée) */
   private readonly _fcmToken$ = new BehaviorSubject<string | null>(null);
@@ -47,6 +48,9 @@ export class PushNotificationService {
     }
 
     try {
+      // Installer les listeners en premier pour capter un tap de notification au lancement.
+      this._setupListeners();
+
       // 1. Vérifier/demander la permission
       const permissionGranted = await this._requestPermission();
       if (!permissionGranted) {
@@ -60,10 +64,7 @@ export class PushNotificationService {
       // 3. S'abonner au topic "test" pour debug via Firebase Console
       await this._subscribeToTestTopic();
 
-      // 4. Configurer les listeners
-      this._setupListeners();
-
-      // 5. Rafraîchir le compteur de messages non lus et le badge iOS
+      // 4. Rafraîchir le compteur de messages non lus et le badge iOS
       await this._badgeService.refreshUnreadCount();
 
       console.log('🔔 Push notifications: initialized successfully');
@@ -168,6 +169,11 @@ export class PushNotificationService {
    * Configure les listeners pour les notifications.
    */
   private _setupListeners(): void {
+    if (this._listenersRegistered) {
+      return;
+    }
+
+    this._listenersRegistered = true;
     console.log('🔔 Setting up push notification listeners...');
 
     // Listener : nouveau token (refresh)
@@ -228,8 +234,16 @@ export class PushNotificationService {
    * Navigue vers la bonne page selon les data de la notification.
    */
   private _handleNotificationNavigation(data: Record<string, unknown>): void {
-    const conversationId = data['conversationId'] as string | undefined;
-    const messageType = data['type'] as string | undefined;
+    const conversationId = this._readNotificationValue(data, [
+      'conversationId',
+      'conversation_id',
+      'conversation',
+    ]);
+    const messageType = this._readNotificationValue(data, [
+      'type',
+      'notificationType',
+      'notification_type',
+    ]);
 
     switch (messageType) {
       case 'mutual_heart':
@@ -247,9 +261,9 @@ export class PushNotificationService {
         break;
 
       case 'saloon_chat': {
-        const saloonId = data['saloonId'] as string | undefined;
+        const saloonId = this._readNotificationValue(data, ['saloonId', 'saloon_id']);
         if (saloonId) {
-          this._router.navigate(['/saloon', saloonId, 'chat']);
+          this._router.navigate(['/saloon-chat', saloonId]);
         }
         break;
       }
@@ -261,6 +275,24 @@ export class PushNotificationService {
         }
         break;
     }
+  }
+
+  private _readNotificationValue(
+    data: Record<string, unknown>,
+    keys: string[]
+  ): string | undefined {
+    for (const key of keys) {
+      const value = data[key];
+      if (value === null || value === undefined || value === '') {
+        continue;
+      }
+
+      if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+        return String(value);
+      }
+    }
+
+    return undefined;
   }
 
   /**

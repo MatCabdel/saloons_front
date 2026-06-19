@@ -1,0 +1,122 @@
+<div class="public-delete-page">
+  <app-header
+    [title]="'Suppression de compte'"
+    [showBackButton]="true"
+    [showMenu]="false"
+    [usePageBackground]="true"
+  ></app-header>
+
+  <main class="page-content">
+    @if (isSubmitted()) {
+    <section class="confirmation-panel">
+      <div class="confirmation-mark" aria-hidden="true">✓</div>
+      <h1>Demande envoyée</h1>
+      <p>
+        Nous avons bien reçu ta demande. Pour des raisons de sécurité, la suppression n'est pas
+        automatique depuis ce formulaire public : nous vérifierons que l'adresse email indiquée
+        correspond bien au compte concerné avant traitement.
+      </p>
+      <div class="confirmation-actions">
+        <a routerLink="/" class="secondary-link">Retour à l'accueil</a>
+        <button type="button" class="outline-button" (click)="resetForm()">
+          Faire une autre demande
+        </button>
+      </div>
+    </section>
+    } @else {
+    <section class="intro-section">
+      <p class="eyebrow">Compte Saloons</p>
+      <h1>Demander la suppression de mon compte</h1>
+      <p>
+        Ce formulaire est public pour permettre une demande même si tu ne peux plus te connecter.
+        N'indique jamais ton mot de passe ici. Nous utiliserons l'adresse email fournie pour
+        vérifier que la demande vient bien du titulaire du compte.
+      </p>
+    </section>
+
+    <section class="security-note">
+      <h2>Comment la demande est sécurisée ?</h2>
+      <p>
+        Une demande publique ne doit pas supprimer un compte immédiatement. L'équipe Saloons vérifie
+        l'identité via l'email du compte avant toute suppression définitive.
+      </p>
+    </section>
+
+    <form [formGroup]="form" (ngSubmit)="submitRequest()" class="delete-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="firstName">Prénom *</label>
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            placeholder="Ex : Julie"
+            [class.invalid]="isFieldInvalid('firstName')"
+          />
+          @if (isFieldInvalid('firstName')) {
+          <span class="error-text">Le prénom est requis</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Nom *</label>
+          <input
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            placeholder="Ex : Martin"
+            [class.invalid]="isFieldInvalid('lastName')"
+          />
+          @if (isFieldInvalid('lastName')) {
+          <span class="error-text">Le nom est requis</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email du compte *</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="votre@email.com"
+          [class.invalid]="isFieldInvalid('email')"
+        />
+        @if (isFieldInvalid('email')) {
+        <span class="error-text">Indique un email valide</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message *</label>
+        <textarea
+          id="message"
+          rows="5"
+          formControlName="message"
+          placeholder="Indique toute information utile pour retrouver ton compte, sans mot de passe."
+          [class.invalid]="isFieldInvalid('message')"
+        ></textarea>
+        @if (isFieldInvalid('message')) {
+        <span class="error-text">Le message doit contenir au moins 10 caractères</span>
+        }
+      </div>
+
+      <label class="check-row" [class.invalid]="isFieldInvalid('confirmRequest')">
+        <input type="checkbox" formControlName="confirmRequest" />
+        <span> Je confirme demander la suppression du compte associé à cette adresse email. </span>
+      </label>
+      @if (isFieldInvalid('confirmRequest')) {
+      <span class="error-text standalone">Cette confirmation est obligatoire</span>
+      } @if (errorMessage()) {
+      <div class="error-banner">{{ errorMessage() }}</div>
+      }
+
+      <button type="submit" class="submit-button" [disabled]="isSubmitting()">
+        @if (isSubmitting()) {
+        <span class="spinner"></span>
+        Envoi en cours... } @else { Envoyer la demande }
+      </button>
+    </form>
+    }
+  </main>
+</div>
