@@ -162,14 +162,22 @@
             <div class="role-select-wrapper">
               <select
                 class="role-select"
-                [ngModel]="user.role || 'ROLE_USER'"
-                (ngModelChange)="onRoleChange(user, $event)"
+                [ngModel]="getSelectedRole(user)"
+                (ngModelChange)="onRoleSelectionChange(user, $event)"
                 [disabled]="isUpdatingRole(user.id)"
               >
                 @for (option of roleOptions; track option.value) {
                 <option [ngValue]="option.value">{{ option.label }}</option>
                 }
               </select>
+              <button
+                type="button"
+                class="role-save-btn"
+                [disabled]="!hasPendingRole(user) || isUpdatingRole(user.id)"
+                (click)="saveUserRole(user)"
+              >
+                Valider
+              </button>
               @if (isUpdatingRole(user.id)) {
               <span class="role-saving">...</span>
               }
@@ -389,14 +397,22 @@
           <span class="info-label">Rôle</span>
           <select
             class="role-select"
-            [ngModel]="user.role || 'ROLE_USER'"
-            (ngModelChange)="onRoleChange(user, $event)"
+            [ngModel]="getSelectedRole(user)"
+            (ngModelChange)="onRoleSelectionChange(user, $event)"
             [disabled]="isUpdatingRole(user.id)"
           >
             @for (option of roleOptions; track option.value) {
             <option [ngValue]="option.value">{{ option.label }}</option>
             }
           </select>
+          <button
+            type="button"
+            class="role-save-btn"
+            [disabled]="!hasPendingRole(user) || isUpdatingRole(user.id)"
+            (click)="saveUserRole(user)"
+          >
+            Valider
+          </button>
         </div>
       </div>
       <div class="user-card-actions">
