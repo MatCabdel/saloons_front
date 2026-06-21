@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { CanMatchFn, Routes } from '@angular/router';
 import { ListSaloonPageComponent } from './features/saloon/pages/list-saloon-page/list-saloon-page.component';
 import { AuthPageComponent } from './features/auth/pages/auth-page/auth-page.component';
 import { OnboardingPageComponent } from './features/auth/pages/onboarding-page/onboarding-page.component';
@@ -55,7 +55,20 @@ import { CreateEventPageComponent } from './features/admin/pages/create-event-pa
 import { EditEventPageComponent } from './features/admin/pages/edit-event-page/edit-event-page.component';
 import { EventsListPageComponent } from './features/admin/pages/events-list-page/events-list-page.component';
 
+const PUBLIC_LANDING_HOSTS = new Set(['saloons.fr', 'www.saloons.fr']);
+
+const publicLandingHostGuard: CanMatchFn = () => {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  return PUBLIC_LANDING_HOSTS.has(window.location.hostname);
+};
+
 export const routes: Routes = [
+  // Fallback de sécurité: si le build app est servi par erreur sur le domaine public,
+  // la racine doit rester la landing, jamais l'écran titre applicatif.
+  { path: '', component: LandingPageComponent, canMatch: [publicLandingHostGuard] },
   // Splash screen au lancement
   { path: '', component: WelcomePageComponent },
   // Landing page publique
