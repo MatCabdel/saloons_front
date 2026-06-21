@@ -108,7 +108,7 @@ export const TERMS_TEXT = `
       L’utilisateur peut signaler un comportement ou un contenu inapproprié depuis l’application
       ou par email à l’adresse suivante :
     </p>
-    <p class="legal-contact">contact@saloons.fr</p>
+    <p class="legal-contact">support@saloons.fr</p>
     <p>
       Saloons se réserve le droit de prendre toute mesure utile en cas de non-respect des présentes
       CGU, notamment la suppression d’un contenu, la suspension temporaire d’un compte ou la
@@ -163,7 +163,7 @@ export const TERMS_TEXT = `
     <h3>11. Droit applicable</h3>
     <p>Les présentes CGU sont régies par le droit français.</p>
     <p>En cas de difficulté, l’utilisateur est invité à contacter Saloons à l’adresse suivante :</p>
-    <p class="legal-contact">contact@saloons.fr</p>
+    <p class="legal-contact">support@saloons.fr</p>
     <p>À défaut de résolution amiable, le litige pourra être porté devant les juridictions compétentes.</p>
   </section>
 `;
@@ -183,7 +183,7 @@ export const PRIVACY_POLICY_TEXT = `
       <p>Mathieu Chauveau, entrepreneur individuel, exerçant sous le nom commercial Digital Saloons</p>
       <p>SIRET : 850 193 756 00028</p>
       <p>Adresse : 64 rue des Remparts, 33000 Bordeaux</p>
-      <p>Email : contact@saloons.fr</p>
+      <p>Email : support@saloons.fr</p>
     </div>
   </section>
 
@@ -329,7 +329,7 @@ export const PRIVACY_POLICY_TEXT = `
       Pour exercer ses droits ou demander la suppression de son compte, l’utilisateur peut utiliser
       la fonctionnalité prévue dans l’application ou contacter Saloons à l’adresse suivante :
     </p>
-    <p class="legal-contact">contact@saloons.fr</p>
+    <p class="legal-contact">support@saloons.fr</p>
     <p>L’utilisateur peut également introduire une réclamation auprès de la CNIL.</p>
   </section>
 
@@ -355,7 +355,7 @@ export const LEGAL_NOTICES_TEXT = `
       <p>Mathieu Chauveau, entrepreneur individuel, exerçant sous le nom commercial Digital Saloons</p>
       <p>SIRET : 850 193 756 00028</p>
       <p>Adresse : 64 rue des Remparts, 33000 Bordeaux</p>
-      <p>Email : contact@saloons.fr</p>
+      <p>Email : support@saloons.fr</p>
     </div>
     <p>Directeur de la publication : Mathieu Chauveau</p>
     <p>TVA non applicable, article 293 B du Code général des impôts.</p>
@@ -408,7 +408,7 @@ export const LEGAL_NOTICES_TEXT = `
       Pour toute demande relative aux données personnelles, l’utilisateur peut contacter Saloons à
       l’adresse suivante :
     </p>
-    <p class="legal-contact">contact@saloons.fr</p>
+    <p class="legal-contact">support@saloons.fr</p>
   </section>
 
   <section class="legal-section">
@@ -417,6 +417,6 @@ export const LEGAL_NOTICES_TEXT = `
       Pour toute question relative à l’application, à son fonctionnement, aux présentes mentions
       légales ou à un signalement, l’utilisateur peut contacter Saloons à l’adresse suivante :
     </p>
-    <p class="legal-contact">contact@saloons.fr</p>
+    <p class="legal-contact">support@saloons.fr</p>
   </section>
 `;
