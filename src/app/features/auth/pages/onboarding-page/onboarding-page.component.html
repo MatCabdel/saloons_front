@@ -119,20 +119,149 @@
 
       <form [formGroup]="birthdateForm" class="step-form">
         <div class="form-group">
-          <label for="birthDate">Date de naissance</label>
-          <input
-            type="date"
-            id="birthDate"
-            formControlName="birthDate"
-            [min]="minBirthDate"
-            [max]="maxBirthDate"
+          <label for="birth-date-button">Date de naissance</label>
+          <button
+            type="button"
+            id="birth-date-button"
+            class="birth-date-field"
+            (click)="openBirthDatePicker()"
             [class.invalid]="isFieldInvalid(birthdateForm, 'birthDate')"
-          />
+          >
+            <span [class.placeholder]="!birthdateForm.value.birthDate">{{
+              formattedBirthDate
+            }}</span>
+            <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+          </button>
           @if (isFieldInvalid(birthdateForm, 'birthDate')) {
           <span class="error-text">{{ getFieldError(birthdateForm, 'birthDate') }}</span>
           }
         </div>
       </form>
+
+      @if (isBirthDatePickerOpen()) {
+      <div class="birth-date-overlay">
+        <button
+          type="button"
+          class="birth-date-backdrop"
+          aria-label="Fermer le sélecteur de date"
+          (click)="closeBirthDatePicker()"
+        ></button>
+        <section
+          class="birth-date-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="birth-date-title"
+        >
+          <div class="birth-date-dialog-header">
+            <span class="birth-date-dialog-eyebrow">Date de naissance</span>
+            <h3 id="birth-date-title">
+              {{ selectedBirthDay() }} {{ birthMonths[selectedBirthMonth() - 1] }}
+              {{ selectedBirthYear() }}
+            </h3>
+          </div>
+
+          <div class="birth-date-selectors">
+            <div class="birth-date-selector">
+              <span>Jour</span>
+              <button
+                type="button"
+                class="birth-date-selector-trigger"
+                aria-haspopup="listbox"
+                [attr.aria-expanded]="activeBirthDateSelector() === 'day'"
+                (click)="toggleBirthDateSelector('day')"
+              >
+                {{ selectedBirthDay() }}
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              @if (activeBirthDateSelector() === 'day') {
+              <div class="birth-date-selector-options" role="listbox" aria-label="Jour">
+                @for (day of birthDays; track day) {
+                <button
+                  type="button"
+                  role="option"
+                  [class.selected]="day === selectedBirthDay()"
+                  [attr.aria-selected]="day === selectedBirthDay()"
+                  (click)="selectBirthDay(day)"
+                >
+                  {{ day }}
+                </button>
+                }
+              </div>
+              }
+            </div>
+            <div class="birth-date-selector month-selector">
+              <span>Mois</span>
+              <button
+                type="button"
+                class="birth-date-selector-trigger"
+                aria-haspopup="listbox"
+                [attr.aria-expanded]="activeBirthDateSelector() === 'month'"
+                (click)="toggleBirthDateSelector('month')"
+              >
+                {{ birthMonths[selectedBirthMonth() - 1] }}
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              @if (activeBirthDateSelector() === 'month') {
+              <div class="birth-date-selector-options" role="listbox" aria-label="Mois">
+                @for (month of birthMonths; track month; let index = $index) {
+                <button
+                  type="button"
+                  role="option"
+                  [class.selected]="index + 1 === selectedBirthMonth()"
+                  [attr.aria-selected]="index + 1 === selectedBirthMonth()"
+                  (click)="selectBirthMonth(index + 1)"
+                >
+                  {{ month }}
+                </button>
+                }
+              </div>
+              }
+            </div>
+            <div class="birth-date-selector">
+              <span>Année</span>
+              <button
+                type="button"
+                class="birth-date-selector-trigger"
+                aria-haspopup="listbox"
+                [attr.aria-expanded]="activeBirthDateSelector() === 'year'"
+                (click)="toggleBirthDateSelector('year')"
+              >
+                {{ selectedBirthYear() }}
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              @if (activeBirthDateSelector() === 'year') {
+              <div
+                class="birth-date-selector-options birth-year-options"
+                role="listbox"
+                aria-label="Année"
+              >
+                @for (year of birthYears; track year) {
+                <button
+                  type="button"
+                  role="option"
+                  [class.selected]="year === selectedBirthYear()"
+                  [attr.aria-selected]="year === selectedBirthYear()"
+                  (click)="selectBirthYear(year)"
+                >
+                  {{ year }}
+                </button>
+                }
+              </div>
+              }
+            </div>
+          </div>
+
+          <div class="birth-date-dialog-actions">
+            <button type="button" class="birth-date-cancel" (click)="closeBirthDatePicker()">
+              Annuler
+            </button>
+            <button type="button" class="birth-date-confirm" (click)="confirmBirthDate()">
+              Valider
+            </button>
+          </div>
+        </section>
+      </div>
+      }
 
       <div class="step-actions">
         <button type="button" class="secondary-btn" (click)="prevStep()">Retour</button>
@@ -248,7 +377,7 @@
           </button>
         </div>
         } @else {
-        <label class="photo-placeholder" for="photo-input">
+        <button type="button" class="photo-placeholder" (click)="openPhotoSourceChooser()">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="48"
@@ -263,8 +392,16 @@
             <polyline points="21 15 16 10 5 21"></polyline>
           </svg>
           <span>Cliquez pour ajouter une photo</span>
-        </label>
+        </button>
         }
+        <input
+          type="file"
+          id="camera-input"
+          accept="image/*"
+          capture="user"
+          (change)="onPhotoSelect($event)"
+          hidden
+        />
         <input
           type="file"
           id="photo-input"
@@ -273,6 +410,38 @@
           hidden
         />
       </div>
+
+      @if (isPhotoSourceChooserOpen()) {
+      <div class="photo-source-overlay">
+        <button
+          type="button"
+          class="photo-source-backdrop"
+          aria-label="Fermer le choix de la photo"
+          (click)="closePhotoSourceChooser()"
+        ></button>
+        <section
+          class="photo-source-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="photo-source-title"
+        >
+          <h3 id="photo-source-title">Ajouter une photo</h3>
+          <div class="photo-source-options">
+            <label class="photo-source-button" for="camera-input">
+              <i class="fa-solid fa-camera" aria-hidden="true"></i>
+              <span>Prendre une photo</span>
+            </label>
+            <label class="photo-source-button" for="photo-input">
+              <i class="fa-regular fa-image" aria-hidden="true"></i>
+              <span>Choisir dans la galerie</span>
+            </label>
+          </div>
+          <button type="button" class="photo-source-cancel" (click)="closePhotoSourceChooser()">
+            Annuler
+          </button>
+        </section>
+      </div>
+      }
 
       <div class="step-actions">
         <button type="button" class="secondary-btn" (click)="prevStep()">Retour</button>

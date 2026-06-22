@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FirebaseAuthService } from '../../services/firebase-auth.service';
 import { environment } from 'src/environments/environment';
 import {
@@ -17,6 +17,7 @@ import {
 } from 'rxjs';
 
 type OnboardingStep = 'username' | 'birthdate' | 'city' | 'photo' | 'bio' | 'warning';
+type BirthDateSelector = 'day' | 'month' | 'year';
 
 type CompleteProfileRequest = {
   userName: string;
@@ -45,6 +46,8 @@ type GeoCity = {
 })
 export class OnboardingPageComponent {
   private readonly _MIN_CITY_SEARCH_LENGTH = 2;
+  private readonly _MAX_SOURCE_PHOTO_SIZE_BYTES = 15 * 1024 * 1024;
+  private readonly _MAX_UPLOAD_PHOTO_SIZE_BYTES = 10 * 1024 * 1024;
   private _fb = inject(FormBuilder);
   private _http = inject(HttpClient);
   private _router = inject(Router);
@@ -55,6 +58,28 @@ export class OnboardingPageComponent {
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
   photoPreview = signal<string | null>(null);
+  isPhotoSourceChooserOpen = signal(false);
+  isBirthDatePickerOpen = signal(false);
+  activeBirthDateSelector = signal<BirthDateSelector | null>(null);
+  selectedBirthDay = signal(1);
+  selectedBirthMonth = signal(1);
+  selectedBirthYear = signal(new Date().getFullYear() - 18);
+
+  readonly birthMonths = [
+    'Janvier',
+    'Février',
+    'Mars',
+    'Avril',
+    'Mai',
+    'Juin',
+    'Juillet',
+    'Août',
+    'Septembre',
+    'Octobre',
+    'Novembre',
+    'Décembre',
+  ];
+  readonly birthYears = this._buildBirthYears();
 
   // L'ordre des étapes : username → birthdate → city → photo → bio → warning (à la fin)
   steps: OnboardingStep[] = ['username', 'birthdate', 'city', 'photo', 'bio', 'warning'];
@@ -259,6 +284,79 @@ export class OnboardingPageComponent {
     return this._formatDateForInput(date);
   }
 
+  get birthDays(): number[] {
+    const dayCount = new Date(this.selectedBirthYear(), this.selectedBirthMonth(), 0).getDate();
+    return Array.from({ length: dayCount }, (_, index) => index + 1);
+  }
+
+  get formattedBirthDate(): string {
+    const date = this._parseLocalDate(this.birthdateForm.value.birthDate);
+    if (!date) {
+      return 'Sélectionner une date';
+    }
+
+    return new Intl.DateTimeFormat('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(date);
+  }
+
+  openBirthDatePicker(): void {
+    const currentDate = this._parseLocalDate(this.birthdateForm.value.birthDate);
+    const defaultDate = currentDate ?? this._parseLocalDate(this.maxBirthDate);
+    if (defaultDate) {
+      this.selectedBirthDay.set(defaultDate.getDate());
+      this.selectedBirthMonth.set(defaultDate.getMonth() + 1);
+      this.selectedBirthYear.set(defaultDate.getFullYear());
+    }
+    this.isBirthDatePickerOpen.set(true);
+  }
+
+  closeBirthDatePicker(): void {
+    this.activeBirthDateSelector.set(null);
+    this.isBirthDatePickerOpen.set(false);
+  }
+
+  toggleBirthDateSelector(selector: BirthDateSelector): void {
+    this.activeBirthDateSelector.update(current => (current === selector ? null : selector));
+  }
+
+  selectBirthDay(day: number): void {
+    this.selectedBirthDay.set(day);
+    this.activeBirthDateSelector.set(null);
+  }
+
+  selectBirthMonth(month: number): void {
+    this.selectedBirthMonth.set(month);
+    this._clampSelectedBirthDay();
+    this.activeBirthDateSelector.set(null);
+  }
+
+  selectBirthYear(year: number): void {
+    this.selectedBirthYear.set(year);
+    this._clampSelectedBirthDay();
+    this.activeBirthDateSelector.set(null);
+  }
+
+  confirmBirthDate(): void {
+    const date = new Date(
+      this.selectedBirthYear(),
+      this.selectedBirthMonth() - 1,
+      this.selectedBirthDay()
+    );
+    const formattedDate = this._formatDateForInput(date);
+    if (formattedDate < this.minBirthDate || formattedDate > this.maxBirthDate) {
+      this.errorMessage.set('La date doit correspondre à un âge compris entre 18 et 100 ans.');
+      return;
+    }
+
+    this.birthdateForm.get('birthDate')?.setValue(formattedDate);
+    this.birthdateForm.get('birthDate')?.markAsTouched();
+    this.errorMessage.set(null);
+    this.closeBirthDatePicker();
+  }
+
   // Appelé quand l'utilisateur accepte les règles (dernière étape)
   acceptWarningAndSubmit(): void {
     this.submitProfile();
@@ -313,9 +411,18 @@ export class OnboardingPageComponent {
     }
   }
 
-  onPhotoSelect(event: Event): void {
+  openPhotoSourceChooser(): void {
+    this.isPhotoSourceChooserOpen.set(true);
+  }
+
+  closePhotoSourceChooser(): void {
+    this.isPhotoSourceChooserOpen.set(false);
+  }
+
+  async onPhotoSelect(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
+      this.closePhotoSourceChooser();
       const file = input.files[0];
 
       // Validate file type
@@ -325,16 +432,29 @@ export class OnboardingPageComponent {
         return;
       }
 
-      // Validate file size (max 10MB)
-      if (file.size > 10 * 1024 * 1024) {
+      // Keep source files bounded to avoid excessive memory usage while decoding on mobile.
+      if (file.size > this._MAX_SOURCE_PHOTO_SIZE_BYTES) {
         this._clearPhotoSelection(input);
-        this.errorMessage.set("L'image ne doit pas dépasser 10MB");
+        this.errorMessage.set("La photo d'origine ne doit pas dépasser 15 Mo");
         return;
       }
 
-      this._photoFile = file;
-      this.errorMessage.set(null);
-      this._setPhotoPreview(file);
+      try {
+        const normalizedPhoto = await this._normalizePhoto(file);
+        if (normalizedPhoto.size > this._MAX_UPLOAD_PHOTO_SIZE_BYTES) {
+          this._clearPhotoSelection(input);
+          this.errorMessage.set('La photo reste trop lourde après réduction (maximum 10 Mo)');
+          return;
+        }
+        this._photoFile = normalizedPhoto;
+        this.errorMessage.set(null);
+        this._setPhotoPreview(normalizedPhoto);
+      } catch {
+        this._clearPhotoSelection(input);
+        this.errorMessage.set(
+          'Cette photo ne peut pas être traitée. Essayez une autre photo ou une image JPG.'
+        );
+      }
     }
   }
 
@@ -384,9 +504,9 @@ export class OnboardingPageComponent {
           this.errorMessage.set(err.error?.message || 'Une erreur est survenue');
         },
       });
-    } catch {
+    } catch (error: unknown) {
       this.isLoading.set(false);
-      this.errorMessage.set('Erreur lors du téléchargement de la photo');
+      this.errorMessage.set(this._getPhotoUploadErrorMessage(error));
     }
   }
 
@@ -408,6 +528,65 @@ export class OnboardingPageComponent {
           error: err => reject(err),
         });
     });
+  }
+
+  private _normalizePhoto(file: File): Promise<File> {
+    return new Promise((resolve, reject) => {
+      const objectUrl = URL.createObjectURL(file);
+      const image = new Image();
+
+      image.onload = (): void => {
+        URL.revokeObjectURL(objectUrl);
+
+        const maxDimension = 1600;
+        const scale = Math.min(1, maxDimension / Math.max(image.naturalWidth, image.naturalHeight));
+        const width = Math.max(1, Math.round(image.naturalWidth * scale));
+        const height = Math.max(1, Math.round(image.naturalHeight * scale));
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+
+        const context = canvas.getContext('2d');
+        if (!context) {
+          reject(new Error('Canvas unavailable'));
+          return;
+        }
+
+        context.drawImage(image, 0, 0, width, height);
+        canvas.toBlob(
+          blob => {
+            if (!blob) {
+              reject(new Error('Image conversion failed'));
+              return;
+            }
+
+            resolve(new File([blob], 'profile-photo.jpg', { type: 'image/jpeg' }));
+          },
+          'image/jpeg',
+          0.88
+        );
+      };
+
+      image.onerror = (): void => {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error('Image decoding failed'));
+      };
+      image.src = objectUrl;
+    });
+  }
+
+  private _getPhotoUploadErrorMessage(error: unknown): string {
+    if (error instanceof HttpErrorResponse) {
+      const backendMessage = error.error?.message;
+      if (typeof backendMessage === 'string' && backendMessage.trim()) {
+        return backendMessage;
+      }
+      if (error.status === 401 || error.status === 403) {
+        return 'Votre session a expiré. Veuillez vous reconnecter.';
+      }
+    }
+
+    return 'Erreur lors du téléchargement de la photo';
   }
 
   // Form validation helpers
@@ -438,6 +617,22 @@ export class OnboardingPageComponent {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  private _buildBirthYears(): number[] {
+    const youngestYear = new Date().getFullYear() - 18;
+    const oldestYear = new Date().getFullYear() - 100;
+    return Array.from(
+      { length: youngestYear - oldestYear + 1 },
+      (_, index) => youngestYear - index
+    );
+  }
+
+  private _clampSelectedBirthDay(): void {
+    const lastDay = new Date(this.selectedBirthYear(), this.selectedBirthMonth(), 0).getDate();
+    if (this.selectedBirthDay() > lastDay) {
+      this.selectedBirthDay.set(lastDay);
+    }
   }
 
   private _parseLocalDate(dateValue: string | null | undefined): Date | null {
