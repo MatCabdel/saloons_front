@@ -44,11 +44,7 @@
           </svg>
           Signaler
         </button>
-        <button
-          type="button"
-          class="menu-item block"
-          (click)="openBlockConfirm(data.user)"
-        >
+        <button type="button" class="menu-item block" (click)="openBlockConfirm(data.user)">
           <svg
             width="16"
             height="16"
@@ -100,8 +96,7 @@
     (closed)="closeReportModal()"
     (reported)="onReported()"
   ></app-report-modal>
-  }
-  }
+  } }
 </div>
 
 <!-- Modal de confirmation de blocage — en dehors du conteneur pour éviter overflow:hidden -->
@@ -121,8 +116,7 @@
   >
     <h2>Bloquer {{ blockTargetName() }} ?</h2>
     <p>
-      Vous ne verrez plus ses messages, et vous n'apparaîtrez plus l'un pour l'autre dans ce
-      saloon.
+      Vous ne verrez plus ses messages, et vous n'apparaîtrez plus l'un pour l'autre dans ce saloon.
     </p>
     <div class="modal-actions">
       <button type="button" class="btn-cancel" (click)="cancelBlock()">Annuler</button>

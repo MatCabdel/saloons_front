@@ -18,16 +18,11 @@ export class BlockService {
   private _BASE_URL_API = environment.apiUrl;
 
   blockUser(userId: number): Observable<{ message: string }> {
-    return this._http.post<{ message: string }>(
-      `${this._BASE_URL_API}/users/${userId}/block`,
-      {}
-    );
+    return this._http.post<{ message: string }>(`${this._BASE_URL_API}/users/${userId}/block`, {});
   }
 
   getBlockedUserIds(): Observable<{ blockedUserIds: number[] }> {
-    return this._http.get<{ blockedUserIds: number[] }>(
-      `${this._BASE_URL_API}/users/blocked`
-    );
+    return this._http.get<{ blockedUserIds: number[] }>(`${this._BASE_URL_API}/users/blocked`);
   }
 
   getAllBlocks(): Observable<BlockedUserDTO[]> {
