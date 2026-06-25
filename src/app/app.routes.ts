@@ -28,6 +28,7 @@ import { CityStatsPageComponent } from './features/admin/pages/city-stats-page/c
 import { SaloonsStatsPageComponent } from './features/admin/pages/saloons-stats-page/saloons-stats-page.component';
 import { UserCityStatsPageComponent } from './features/admin/pages/user-city-stats-page/user-city-stats-page.component';
 import { ReportsListPageComponent } from './features/admin/pages/reports-list-page/reports-list-page.component';
+import { BlocksListPageComponent } from './features/admin/pages/blocks-list-page/blocks-list-page.component';
 import { OverviewStatsPageComponent } from './features/admin/pages/overview-stats-page/overview-stats-page.component';
 import { GrowthStatsPageComponent } from './features/admin/pages/growth-stats-page/growth-stats-page.component';
 import { SaloonEngagementStatsPageComponent } from './features/admin/pages/saloon-engagement-stats-page/saloon-engagement-stats-page.component';
@@ -182,6 +183,7 @@ export const routes: Routes = [
       { path: 'create-saloon', component: CreateSaloonPageComponent },
       { path: 'edit-saloon/:id', component: EditSaloonPageComponent },
       { path: 'reports-list', component: ReportsListPageComponent },
+      { path: 'blocks-list', component: BlocksListPageComponent },
       { path: 'create-event', component: CreateEventPageComponent },
       { path: 'events-list', component: EventsListPageComponent },
       { path: 'edit-event/:id', component: EditEventPageComponent },
