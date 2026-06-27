@@ -44,6 +44,20 @@
           </svg>
           Signaler
         </button>
+        <button type="button" class="menu-item block" (click)="openBlockConfirm(data.user)">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+          </svg>
+          Bloquer
+        </button>
       </div>
       } }
     </div>
@@ -84,3 +98,32 @@
   ></app-report-modal>
   } }
 </div>
+
+<!-- Modal de confirmation de blocage — en dehors du conteneur pour éviter overflow:hidden -->
+@if (showBlockConfirm()) {
+<div
+  class="modal-overlay"
+  (click)="cancelBlock()"
+  (keyup.escape)="cancelBlock()"
+  tabindex="0"
+  role="dialog"
+>
+  <div
+    class="modal-content"
+    (click)="$event.stopPropagation()"
+    (keyup.escape)="$event.stopPropagation()"
+    role="document"
+  >
+    <h2>Bloquer {{ blockTargetName() }} ?</h2>
+    <p>
+      Vous ne verrez plus ses messages, et vous n'apparaîtrez plus l'un pour l'autre dans ce saloon.
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn-cancel" (click)="cancelBlock()">Annuler</button>
+      <button type="button" class="btn-delete" (click)="confirmBlock()" [disabled]="blockLoading()">
+        {{ blockLoading() ? 'Blocage...' : 'Bloquer' }}
+      </button>
+    </div>
+  </div>
+</div>
+}

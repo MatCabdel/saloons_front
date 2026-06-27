@@ -311,6 +311,235 @@ $background: #f8f9fa;
   }
 }
 
+.birth-date-field {
+  width: 100%;
+  min-height: 52px;
+  padding: 0.875rem 1rem;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  background: $white;
+  color: $text-color;
+  font: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  text-align: left;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.12);
+  }
+
+  &.invalid {
+    border-color: $error-color;
+  }
+
+  .placeholder {
+    color: #888;
+  }
+
+  i {
+    color: $primary-color;
+    font-size: 1.15rem;
+  }
+}
+
+.birth-date-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+.birth-date-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: rgba(24, 16, 29, 0.55);
+}
+
+.birth-date-dialog {
+  position: relative;
+  width: min(100%, 430px);
+  overflow: visible;
+  border-radius: 8px;
+  background: $white;
+  box-shadow: 0 20px 50px rgba(24, 16, 29, 0.28);
+}
+
+.birth-date-dialog-header {
+  padding: 1.25rem 1.5rem;
+  border-radius: 8px 8px 0 0;
+  background: #f3edf6;
+  border-bottom: 1px solid #e3d9e8;
+
+  .birth-date-dialog-eyebrow {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: $primary-color;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  h3 {
+    margin: 0;
+    color: $primary-dark;
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+}
+
+.birth-date-selectors {
+  display: grid;
+  grid-template-columns: minmax(70px, 0.75fr) minmax(120px, 1.4fr) minmax(88px, 1fr);
+  gap: 0.75rem;
+  padding: 1.5rem;
+
+  .birth-date-selector {
+    position: relative;
+    min-width: 0;
+  }
+
+  .birth-date-selector > span {
+    display: block;
+    margin-bottom: 0.45rem;
+    color: $text-light;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .birth-date-selector-trigger {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 0.65rem;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    background: $white;
+    color: $text-color;
+    font: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.35rem;
+    text-align: left;
+    cursor: pointer;
+
+    i {
+      flex: 0 0 auto;
+      color: $primary-color;
+      font-size: 0.7rem;
+      transition: transform 0.15s ease;
+    }
+
+    &[aria-expanded='true'] i {
+      transform: rotate(180deg);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.12);
+    }
+  }
+
+  .birth-date-selector-options {
+    position: absolute;
+    z-index: 3;
+    top: calc(100% + 0.35rem);
+    left: 0;
+    width: 100%;
+    max-height: min(220px, 32svh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    background: $white;
+    box-shadow: 0 10px 28px rgba(24, 16, 29, 0.2);
+    scrollbar-width: thin;
+
+    button {
+      width: 100%;
+      min-height: 42px;
+      padding: 0.55rem 0.65rem;
+      border: 0;
+      border-bottom: 1px solid #eee8f0;
+      background: $white;
+      color: $text-color;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+
+      &.selected {
+        background: #f3edf6;
+        color: $primary-color;
+        font-weight: 700;
+      }
+
+      &:focus-visible {
+        position: relative;
+        outline: 2px solid $primary-color;
+        outline-offset: -2px;
+      }
+    }
+  }
+}
+
+.birth-date-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem 1.25rem;
+  border-top: 1px solid #eee8f0;
+  border-radius: 0 0 8px 8px;
+  background: $white;
+
+  button {
+    min-height: 44px;
+    padding: 0.7rem 1.15rem;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .birth-date-cancel {
+    border: 1px solid $border-color;
+    background: $white;
+    color: $text-color;
+  }
+
+  .birth-date-confirm {
+    border: 1px solid $primary-color;
+    background: $primary-color;
+    color: $white;
+  }
+}
+
+@media (max-width: 380px) {
+  .birth-date-selectors {
+    grid-template-columns: 1fr 1.35fr 1fr;
+    gap: 0.5rem;
+    padding: 1.25rem 1rem;
+  }
+
+  .birth-date-dialog-actions {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+}
+
 // Photo Upload
 .photo-upload {
   display: flex;
@@ -321,6 +550,7 @@ $background: #f8f9fa;
 .photo-placeholder {
   width: 200px;
   height: 200px;
+  padding: 0;
   border: 2px dashed $border-color;
   border-radius: 50%;
   display: flex;
@@ -347,6 +577,86 @@ $background: #f8f9fa;
     text-align: center;
     padding: 0 1rem;
   }
+}
+
+.photo-source-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+.photo-source-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: rgba(24, 16, 29, 0.55);
+}
+
+.photo-source-dialog {
+  position: relative;
+  width: min(100%, 380px);
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: $white;
+  box-shadow: 0 20px 50px rgba(24, 16, 29, 0.28);
+
+  h3 {
+    margin: 0 0 1.25rem;
+    color: $primary-dark;
+    font-size: 1.2rem;
+    text-align: center;
+  }
+}
+
+.photo-source-options {
+  width: 100%;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.photo-source-button {
+  flex: 1;
+  min-height: 112px;
+  padding: 1rem 0.75rem;
+  border: 2px solid rgba($primary-color, 0.35);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  background: $white;
+
+  i {
+    color: $primary-color;
+    font-size: 1.75rem;
+  }
+
+  span {
+    color: $text-color;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+  }
+}
+
+.photo-source-cancel {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 1rem;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  background: $white;
+  color: $text-color;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .photo-preview {

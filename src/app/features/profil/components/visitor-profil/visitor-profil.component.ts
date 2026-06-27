@@ -12,6 +12,7 @@ import { User } from 'src/app/features/user/models/user';
 import { UserService } from 'src/app/features/user/services/user.service';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { SaloonApiService } from 'src/app/features/saloon/services/saloon-api.service';
+import { BlockService } from 'src/app/features/block/services/block.service';
 
 @Component({
   selector: 'app-visitor-profil',
@@ -27,6 +28,7 @@ export class VisitorProfilComponent implements OnInit {
   private _matchService = inject(MatchService);
   private _userStore = inject(UserStoreService);
   private _saloonApi = inject(SaloonApiService);
+  private _blockService = inject(BlockService);
 
   data$!: Observable<{ user: User; saloonId: number }>;
   myId = this._userStore.getUserId();
@@ -38,6 +40,12 @@ export class VisitorProfilComponent implements OnInit {
   // Modal de signalement
   showReportModal = signal(false);
   reportModalData = signal<ReportModalData | null>(null);
+
+  // Modal de blocage
+  showBlockConfirm = signal(false);
+  blockTargetId = signal<number | null>(null);
+  blockTargetName = signal<string>('');
+  blockLoading = signal(false);
 
   ngOnInit(): void {
     this.data$ = combineLatest([this._route.paramMap, this._route.queryParamMap]).pipe(
@@ -114,6 +122,37 @@ export class VisitorProfilComponent implements OnInit {
   onReported(): void {
     // Le signalement a été envoyé avec succès
     this.closeReportModal();
+  }
+
+  openBlockConfirm(user: User): void {
+    this.isMenuOpen.set(false);
+    this.blockTargetId.set(user.id);
+    this.blockTargetName.set(user.userName);
+    this.showBlockConfirm.set(true);
+  }
+
+  cancelBlock(): void {
+    this.showBlockConfirm.set(false);
+    this.blockTargetId.set(null);
+    this.blockTargetName.set('');
+  }
+
+  confirmBlock(): void {
+    const targetId = this.blockTargetId();
+    if (!targetId) return;
+    this.blockLoading.set(true);
+    this._blockService.blockUser(targetId).subscribe({
+      next: () => {
+        this.blockLoading.set(false);
+        this.showBlockConfirm.set(false);
+        // Retour à la page précédente après blocage
+        window.history.back();
+      },
+      error: () => {
+        this.blockLoading.set(false);
+        this.showBlockConfirm.set(false);
+      },
+    });
   }
 
   private _computeAge(birthDateISO: string): number {
