@@ -1,0 +1,212 @@
+$white: #fff;
+$yellow: #ffc122;
+$gradient-top: #413443;
+$gradient-bottom: #a483a9;
+$block-color: #e67e22;
+
+.blocks-list-page {
+  padding: 24px;
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+
+    .header-content {
+      h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: white;
+        margin: 0 0 4px;
+      }
+
+      .subtitle {
+        font-size: 0.9rem;
+        color: #888;
+        margin: 0;
+      }
+    }
+
+    .total-badge {
+      background: rgba($block-color, 0.12);
+      color: $block-color;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+  }
+
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 60px;
+    color: #888;
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba($block-color, 0.2);
+      border-top-color: $block-color;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+  }
+
+  .error-message {
+    text-align: center;
+    padding: 40px;
+    color: #e74c3c;
+
+    button {
+      margin-top: 12px;
+      padding: 8px 20px;
+      background: #e74c3c;
+      color: $white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #ccc;
+
+    svg {
+      margin-bottom: 16px;
+      opacity: 0.4;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      color: #888;
+      margin: 0 0 8px;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin: 0;
+    }
+  }
+
+  .blocks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .block-card {
+      background: $white;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      }
+
+      .block-users {
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        .user-info {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          flex: 1;
+
+          .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+
+            .avatar-placeholder {
+              width: 100%;
+              height: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background: rgba($gradient-top, 0.1);
+              color: $gradient-top;
+              font-weight: 700;
+              font-size: 1.2rem;
+            }
+          }
+
+          .user-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            .user-name {
+              font-weight: 600;
+              font-size: 0.95rem;
+              color: $gradient-top;
+            }
+
+            .user-role {
+              font-size: 0.75rem;
+              color: #aaa;
+            }
+          }
+
+          &.blocked .user-avatar {
+            border: 2px solid rgba($block-color, 0.3);
+          }
+        }
+
+        .block-arrow {
+          color: $block-color;
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+
+      .block-footer {
+        padding: 10px 20px;
+        background: rgba(0, 0, 0, 0.02);
+        border-top: 1px solid rgba(0, 0, 0, 0.04);
+        display: flex;
+        align-items: center;
+
+        .block-date {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.78rem;
+          color: #999;
+
+          svg {
+            opacity: 0.6;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

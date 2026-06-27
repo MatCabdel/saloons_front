@@ -73,7 +73,10 @@ export class DashboardNavComponent {
       label: 'Notifications',
       icon: 'bell',
       expanded: false,
-      children: [{ label: 'Signalements', route: 'reports-list' }],
+      children: [
+        { label: 'Signalements', route: 'reports-list' },
+        { label: 'Blocages', route: 'blocks-list' },
+      ],
     },
   ];
 

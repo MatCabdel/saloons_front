@@ -22,6 +22,7 @@ import { Observable, Subscription } from 'rxjs';
 import { Saloon } from '../../models/saloonModel';
 import { PresenceService } from '../../services/presence.service';
 import { PresenceWebSocketService } from '../../services/presence-websocket.service';
+import { BlockService } from 'src/app/features/block/services/block.service';
 
 @Component({
   selector: 'app-saloon-chat-page',
@@ -40,6 +41,7 @@ export class SaloonChatPageComponent implements OnInit, OnDestroy, AfterViewChec
   private _chatService = inject(SaloonChatService);
   private _presenceService = inject(PresenceService);
   private _presenceWsService = inject(PresenceWebSocketService);
+  private _blockService = inject(BlockService);
 
   saloonId!: number;
   saloon$!: Observable<Saloon>;
@@ -51,6 +53,9 @@ export class SaloonChatPageComponent implements OnInit, OnDestroy, AfterViewChec
   isChatEnabled = false;
   joinedAt: Date | null = null;
   sessionEndsAt: Date | null = null;
+
+  /** IDs des utilisateurs mutuellement bloqués (pour filtrer en temps réel) */
+  private _mutuallyBlockedIds = new Set<number>();
 
   private _shouldScroll = false;
   private _messageSubscription?: Subscription;
@@ -75,7 +80,14 @@ export class SaloonChatPageComponent implements OnInit, OnDestroy, AfterViewChec
     this.saloonId = Number(this._route.snapshot.paramMap.get('saloonId'));
     this.saloon$ = this._saloonApi.getSaloonById(String(this.saloonId));
 
-    // Charger l'historique du chat (avec joinedAt de la session)
+    // Charger les blocages mutuels pour le filtrage en temps réel
+    this._blockService.getBlockedUserIds().subscribe({
+      next: res => {
+        this._mutuallyBlockedIds = new Set(res.blockedUserIds);
+      },
+    });
+
+    // Charger l'historique du chat (avec joinedAt de la session) — déjà filtré côté back
     this._chatService.getChatHistory(this.saloonId, 50).subscribe({
       next: history => {
         this.messages = history.messages;
@@ -111,13 +123,14 @@ export class SaloonChatPageComponent implements OnInit, OnDestroy, AfterViewChec
       }
     );
 
-    // S'abonner aux nouveaux messages via WebSocket
+    // S'abonner aux nouveaux messages via WebSocket — filtrer les bloqués en temps réel
     this._messageSubscription = this._chatService.messages$.subscribe(message => {
       // Éviter les doublons (le message qu'on vient d'envoyer)
-      if (!this.messages.some(m => m.id === message.id)) {
-        this.messages.push(message);
-        this._shouldScroll = true;
-      }
+      if (this.messages.some(m => m.id === message.id)) return;
+      // Filtrer les messages des utilisateurs mutuellement bloqués
+      if (this._mutuallyBlockedIds.has(message.senderId)) return;
+      this.messages.push(message);
+      this._shouldScroll = true;
     });
   }
 
