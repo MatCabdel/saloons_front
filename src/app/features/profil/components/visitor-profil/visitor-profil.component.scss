@@ -382,7 +382,60 @@ $text-light: rgba(65, 52, 67, 0.72);
       font-size: 0.88rem;
       color: rgba($gradient-top, 0.7);
       line-height: 1.5;
-      margin: 0 0 1.25rem;
+      margin: 0 0 1rem;
+    }
+
+    .reason-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+
+      .reason-option {
+        width: 100%;
+        padding: 0.7rem 0.85rem;
+        border-radius: 10px;
+        border: 1px solid rgba($gradient-top, 0.14);
+        background: rgba($gradient-top, 0.03);
+        color: $gradient-top;
+        font-size: 0.84rem;
+        font-weight: 600;
+        text-align: left;
+        cursor: pointer;
+
+        &.selected {
+          border-color: #e67e22;
+          background: rgba(#e67e22, 0.12);
+          color: #b85f12;
+        }
+      }
+    }
+
+    .description-label {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: rgba($gradient-top, 0.72);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .block-description {
+      width: 100%;
+      box-sizing: border-box;
+      resize: vertical;
+      min-height: 76px;
+      margin-bottom: 1.25rem;
+      padding: 0.7rem 0.85rem;
+      border-radius: 10px;
+      border: 1px solid rgba($gradient-top, 0.14);
+      color: $gradient-top;
+      font: inherit;
+      outline: none;
+
+      &:focus {
+        border-color: #e67e22;
+        box-shadow: 0 0 0 3px rgba(#e67e22, 0.12);
+      }
     }
 
     .modal-actions {

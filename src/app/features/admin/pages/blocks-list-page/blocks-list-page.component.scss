@@ -166,6 +166,12 @@ $block-color: #e67e22;
               font-size: 0.75rem;
               color: #aaa;
             }
+
+            .user-email {
+              font-size: 0.74rem;
+              color: #777;
+              overflow-wrap: anywhere;
+            }
           }
 
           &.blocked .user-avatar {
@@ -179,6 +185,36 @@ $block-color: #e67e22;
           display: flex;
           align-items: center;
           justify-content: center;
+        }
+      }
+
+      .block-reason {
+        margin: 0 20px 14px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        background: rgba($block-color, 0.08);
+        border: 1px solid rgba($block-color, 0.12);
+
+        .reason-label {
+          display: block;
+          font-size: 0.7rem;
+          color: #999;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          margin-bottom: 4px;
+        }
+
+        .reason-value {
+          font-size: 0.88rem;
+          font-weight: 600;
+          color: $block-color;
+        }
+
+        p {
+          margin: 8px 0 0;
+          font-size: 0.82rem;
+          line-height: 1.5;
+          color: #666;
         }
       }
 

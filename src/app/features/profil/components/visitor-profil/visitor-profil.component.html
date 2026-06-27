@@ -118,9 +118,36 @@
     <p>
       Vous ne verrez plus ses messages, et vous n'apparaîtrez plus l'un pour l'autre dans ce saloon.
     </p>
+    <div class="reason-options">
+      @for (reason of blockReasons; track reason.value) {
+      <button
+        type="button"
+        class="reason-option"
+        [class.selected]="selectedBlockReason() === reason.value"
+        (click)="selectBlockReason(reason.value)"
+      >
+        {{ reason.label }}
+      </button>
+      }
+    </div>
+    <label class="description-label" for="block-description">Description optionnelle</label>
+    <textarea
+      id="block-description"
+      class="block-description"
+      rows="3"
+      maxlength="500"
+      placeholder="Ajoutez un détail si nécessaire"
+      [value]="blockDescription()"
+      (input)="updateBlockDescription($event)"
+    ></textarea>
     <div class="modal-actions">
       <button type="button" class="btn-cancel" (click)="cancelBlock()">Annuler</button>
-      <button type="button" class="btn-delete" (click)="confirmBlock()" [disabled]="blockLoading()">
+      <button
+        type="button"
+        class="btn-delete"
+        (click)="confirmBlock()"
+        [disabled]="blockLoading() || !selectedBlockReason()"
+      >
         {{ blockLoading() ? 'Blocage...' : 'Bloquer' }}
       </button>
     </div>
