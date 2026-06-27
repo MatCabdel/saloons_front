@@ -34,6 +34,7 @@ export type ReporterDTO = {
   imgUrl: string;
   profileImageUpdatedAt?: string | null;
   city: string;
+  email: string;
 };
 
 export type ReportedDTO = {
@@ -42,6 +43,7 @@ export type ReportedDTO = {
   imgUrl: string;
   profileImageUpdatedAt?: string | null;
   city: string;
+  email: string;
 };
 
 export type SaloonInfoDTO = {

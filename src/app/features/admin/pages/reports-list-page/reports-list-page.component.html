@@ -114,6 +114,11 @@
           <span class="action-text">a signalé</span>
           <span class="reported-name">{{ report.reported.userName }}</span>
         </div>
+        <div class="report-emails">
+          <span>{{ report.reporter.email }}</span>
+          <span>→</span>
+          <span>{{ report.reported.email }}</span>
+        </div>
         <div class="report-reason">
           <svg
             width="14"
@@ -222,6 +227,7 @@
               [alt]="selectedReport()!.reporter.userName"
             />
             <span class="user-name">{{ selectedReport()!.reporter.userName }}</span>
+            <span class="user-email">{{ selectedReport()!.reporter.email }}</span>
             <span class="user-role reporter">Signaleur</span>
             <span class="user-city">{{
               selectedReport()!.reporter.city || 'Ville non renseignée'
@@ -249,6 +255,7 @@
               [alt]="selectedReport()!.reported.userName"
             />
             <span class="user-name">{{ selectedReport()!.reported.userName }}</span>
+            <span class="user-email">{{ selectedReport()!.reported.email }}</span>
             <span class="user-role reported">Signalé</span>
             <span class="user-city">{{
               selectedReport()!.reported.city || 'Ville non renseignée'
