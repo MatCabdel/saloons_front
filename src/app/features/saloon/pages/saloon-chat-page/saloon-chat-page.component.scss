@@ -258,7 +258,7 @@ $text-light: #888;
 
   .message-row {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     gap: 10px;
 
     &.me {
@@ -315,6 +315,7 @@ $text-light: #888;
       border-radius: 50%;
       object-fit: cover;
       flex-shrink: 0;
+      margin-top: 24px;
 
       &.clickable {
         cursor: pointer;
