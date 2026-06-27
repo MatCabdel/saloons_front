@@ -13,6 +13,7 @@ import { UserService } from 'src/app/features/user/services/user.service';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { SaloonApiService } from 'src/app/features/saloon/services/saloon-api.service';
 import { BlockService } from 'src/app/features/block/services/block.service';
+import { ReportReason, REPORT_REASON_LABELS } from 'src/app/features/report/models/report.model';
 
 @Component({
   selector: 'app-visitor-profil',
@@ -45,7 +46,15 @@ export class VisitorProfilComponent implements OnInit {
   showBlockConfirm = signal(false);
   blockTargetId = signal<number | null>(null);
   blockTargetName = signal<string>('');
+  selectedBlockReason = signal<ReportReason | null>(null);
+  blockDescription = signal('');
   blockLoading = signal(false);
+  readonly blockReasons: { value: ReportReason; label: string }[] = Object.entries(
+    REPORT_REASON_LABELS
+  ).map(([value, label]) => ({
+    value: value as ReportReason,
+    label,
+  }));
 
   ngOnInit(): void {
     this.data$ = combineLatest([this._route.paramMap, this._route.queryParamMap]).pipe(
@@ -135,24 +144,40 @@ export class VisitorProfilComponent implements OnInit {
     this.showBlockConfirm.set(false);
     this.blockTargetId.set(null);
     this.blockTargetName.set('');
+    this.selectedBlockReason.set(null);
+    this.blockDescription.set('');
+  }
+
+  selectBlockReason(reason: ReportReason): void {
+    this.selectedBlockReason.set(reason);
+  }
+
+  updateBlockDescription(event: Event): void {
+    this.blockDescription.set((event.target as HTMLTextAreaElement).value);
   }
 
   confirmBlock(): void {
     const targetId = this.blockTargetId();
-    if (!targetId) return;
+    const reason = this.selectedBlockReason();
+    if (!targetId || !reason) return;
+
     this.blockLoading.set(true);
-    this._blockService.blockUser(targetId).subscribe({
-      next: () => {
-        this.blockLoading.set(false);
-        this.showBlockConfirm.set(false);
-        // Retour à la page précédente après blocage
-        window.history.back();
-      },
-      error: () => {
-        this.blockLoading.set(false);
-        this.showBlockConfirm.set(false);
-      },
-    });
+    this._blockService
+      .blockUser(targetId, {
+        reason,
+        description: this.blockDescription().trim() || undefined,
+      })
+      .subscribe({
+        next: () => {
+          this.blockLoading.set(false);
+          this.showBlockConfirm.set(false);
+          this._router.navigate(['/chat']);
+        },
+        error: () => {
+          this.blockLoading.set(false);
+          this.showBlockConfirm.set(false);
+        },
+      });
   }
 
   private _computeAge(birthDateISO: string): number {
