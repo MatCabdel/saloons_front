@@ -217,6 +217,16 @@ $info: #3498db;
         }
       }
 
+      .report-emails {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+        font-size: 0.78rem;
+        color: #888;
+      }
+
       .report-reason,
       .report-saloon {
         display: flex;
@@ -406,6 +416,14 @@ $info: #3498db;
           font-weight: 600;
           color: #333;
           margin-bottom: 4px;
+        }
+
+        .user-email {
+          max-width: 100%;
+          margin-bottom: 6px;
+          font-size: 0.76rem;
+          color: #777;
+          overflow-wrap: anywhere;
         }
 
         .user-role {

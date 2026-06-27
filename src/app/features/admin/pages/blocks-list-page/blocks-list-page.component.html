@@ -57,6 +57,7 @@
           </div>
           <div class="user-details">
             <span class="user-name">{{ block.blocker.userName }}</span>
+            <span class="user-email">{{ block.blocker.email }}</span>
             <span class="user-role">a bloqué</span>
           </div>
         </div>
@@ -87,9 +88,18 @@
           </div>
           <div class="user-details">
             <span class="user-name">{{ block.blocked.userName }}</span>
+            <span class="user-email">{{ block.blocked.email }}</span>
             <span class="user-role">utilisateur bloqué</span>
           </div>
         </div>
+      </div>
+
+      <div class="block-reason">
+        <span class="reason-label">Raison</span>
+        <span class="reason-value">{{ block.reasonDisplayName || 'Non renseignée' }}</span>
+        @if (block.description) {
+        <p>{{ block.description }}</p>
+        }
       </div>
 
       <div class="block-footer">
