@@ -187,7 +187,7 @@ export const routes: Routes = [
       { path: 'create-event', component: CreateEventPageComponent },
       { path: 'events-list', component: EventsListPageComponent },
       { path: 'edit-event/:id', component: EditEventPageComponent },
-      { path: '', redirectTo: 'overview', pathMatch: 'full' },
+      { path: '', redirectTo: 'statistics', pathMatch: 'full' },
     ],
     canActivate: [isLoggedInGuard],
   },

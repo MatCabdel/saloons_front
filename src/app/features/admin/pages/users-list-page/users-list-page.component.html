@@ -152,7 +152,9 @@
           <td class="cell-created-at">{{ formatCreatedAt(user.createdAt) }}</td>
           <td class="cell-last-login">{{ formatLastLogin(user.lastLoginAt) }}</td>
           <td class="cell-status">
-            @if (user.profileStatus === 'ACTIVE') {
+            @if (!isUserActive(user)) {
+            <span class="badge badge-danger">Désactivé</span>
+            } @else if (user.profileStatus === 'ACTIVE') {
             <span class="badge badge-success">Actif</span>
             } @else {
             <span class="badge badge-warning">Incomplet</span>
@@ -213,6 +215,37 @@
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                 <circle cx="12" cy="12" r="3" />
               </svg>
+            </button>
+            <button
+              type="button"
+              class="btn-action"
+              [class.pause]="isUserActive(user)"
+              [class.play]="!isUserActive(user)"
+              (click)="confirmToggleActive(user)"
+              [title]="isUserActive(user) ? 'Désactiver le compte' : 'Réactiver le compte'"
+            >
+              @if (isUserActive(user)) {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <rect x="6" y="5" width="4" height="14" rx="1" />
+                <rect x="14" y="5" width="4" height="14" rx="1" />
+              </svg>
+              } @else {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              }
             </button>
             <button
               type="button"
@@ -347,7 +380,9 @@
           <span class="user-email">{{ user.email }}</span>
         </div>
         <div class="expand-indicator">
-          @if (user.profileStatus === 'ACTIVE') {
+          @if (!isUserActive(user)) {
+          <span class="status-dot inactive"></span>
+          } @else if (user.profileStatus === 'ACTIVE') {
           <span class="status-dot active"></span>
           } @else {
           <span class="status-dot incomplete"></span>
@@ -384,6 +419,10 @@
         <div class="user-info-item">
           <span class="info-label">Âge</span>
           <span class="info-value">{{ user.age ? user.age + ' ans' : '-' }}</span>
+        </div>
+        <div class="user-info-item">
+          <span class="info-label">Compte</span>
+          <span class="info-value">{{ isUserActive(user) ? 'Actif' : 'Désactivé' }}</span>
         </div>
         <div class="user-info-item">
           <span class="info-label">Dernière connexion</span>
@@ -430,6 +469,38 @@
             <circle cx="12" cy="12" r="3" />
           </svg>
           Profil
+        </button>
+        <button
+          type="button"
+          class="btn-action-mobile"
+          [class.pause]="isUserActive(user)"
+          [class.play]="!isUserActive(user)"
+          (click)="confirmToggleActive(user)"
+        >
+          @if (isUserActive(user)) {
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <rect x="6" y="5" width="4" height="14" rx="1" />
+            <rect x="14" y="5" width="4" height="14" rx="1" />
+          </svg>
+          <span>Pause</span>
+          } @else {
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          <span>Réactiver</span>
+          }
         </button>
         <button
           type="button"
@@ -568,6 +639,98 @@
           </div>
           }
         </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Modal de confirmation de désactivation/réactivation -->
+  @if (showActiveModal() && userToToggleActive()) {
+  <div
+    class="modal-overlay"
+    role="dialog"
+    aria-modal="true"
+    (click)="closeActiveModal()"
+    (keyup.escape)="closeActiveModal()"
+  >
+    <div
+      class="modal-content active-modal"
+      role="document"
+      (click)="$event.stopPropagation()"
+      (keyup.escape)="closeActiveModal()"
+    >
+      <div class="modal-header warning">
+        <h3>
+          {{ isUserActive(userToToggleActive()!) ? 'Désactiver ce compte' : 'Réactiver ce compte' }}
+        </h3>
+        <button type="button" class="close-btn" (click)="closeActiveModal()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="warning-icon account-state">
+          @if (isUserActive(userToToggleActive()!)) {
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <rect x="6" y="5" width="4" height="14" rx="1" />
+            <rect x="14" y="5" width="4" height="14" rx="1" />
+          </svg>
+          } @else {
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          }
+        </div>
+        <p class="warning-text">
+          Êtes-vous sûr de vouloir
+          {{ isUserActive(userToToggleActive()!) ? 'désactiver' : 'réactiver' }}
+          le compte de <strong>{{ userToToggleActive()!.userName }}</strong> ?
+        </p>
+        <p class="warning-subtext">
+          {{
+            isUserActive(userToToggleActive()!)
+              ? "L'utilisateur ne pourra plus se connecter et sera retiré de sa session active."
+              : "L'utilisateur pourra de nouveau se connecter."
+          }}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="closeActiveModal()">Annuler</button>
+        <button
+          type="button"
+          class="btn-toggle-active"
+          [class.reactivate]="!isUserActive(userToToggleActive()!)"
+          (click)="toggleActiveUser()"
+          [disabled]="togglingActive()"
+        >
+          @if (togglingActive()) {
+          <span class="spinner-small"></span>
+          Mise à jour... } @else {
+          {{ isUserActive(userToToggleActive()!) ? 'Désactiver' : 'Réactiver' }}
+          }
+        </button>
       </div>
     </div>
   </div>

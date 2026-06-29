@@ -33,6 +33,7 @@ export type OverviewStats = {
   totalMessages: number;
   citiesCovered: number;
   profilesCompleted: number;
+  pendingReports: number;
 };
 
 export type GrowthStats = {
