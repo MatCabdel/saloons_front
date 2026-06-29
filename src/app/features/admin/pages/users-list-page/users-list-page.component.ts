@@ -50,6 +50,11 @@ export class UsersListPageComponent implements OnInit {
   userToDelete = signal<User | null>(null);
   deleting = signal(false);
 
+  // Active/inactive modal state
+  showActiveModal = signal(false);
+  userToToggleActive = signal<User | null>(null);
+  togglingActive = signal(false);
+
   // Role update state
   updatingUserRoles = signal<Set<number>>(new Set());
   pendingUserRoles = signal<Map<number, string>>(new Map());
@@ -188,6 +193,41 @@ export class UsersListPageComponent implements OnInit {
       error: (err: unknown) => {
         console.error('Erreur lors de la suppression:', err);
         this.deleting.set(false);
+      },
+    });
+  }
+
+  isUserActive(user: User): boolean {
+    return user.isActive !== false;
+  }
+
+  confirmToggleActive(user: User): void {
+    this.userToToggleActive.set(user);
+    this.showActiveModal.set(true);
+  }
+
+  closeActiveModal(): void {
+    this.showActiveModal.set(false);
+    this.userToToggleActive.set(null);
+  }
+
+  toggleActiveUser(): void {
+    const user = this.userToToggleActive();
+    if (!user) return;
+
+    this.togglingActive.set(true);
+
+    this._adminService.toggleUserActive(user.id).subscribe({
+      next: updatedUser => {
+        this.users.update(users =>
+          users.map(u => (u.id === user.id ? { ...u, ...updatedUser } : u))
+        );
+        this.closeActiveModal();
+        this.togglingActive.set(false);
+      },
+      error: (err: unknown) => {
+        console.error("Erreur lors du changement d'état du compte:", err);
+        this.togglingActive.set(false);
       },
     });
   }

@@ -15,6 +15,7 @@ export type UserDTO = {
   birthDate?: string | null;
   age?: number | null;
   isPremium?: boolean;
+  isActive?: boolean;
   authProvider?: AuthProvider;
 };
 

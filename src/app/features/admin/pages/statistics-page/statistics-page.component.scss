@@ -88,6 +88,11 @@
     border-color: rgba(255, 193, 34, 0.3);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
   }
+
+  &.alert {
+    border-color: rgba(255, 107, 107, 0.4);
+    background: rgba(255, 107, 107, 0.08);
+  }
 }
 
 .stat-icon {
@@ -118,6 +123,11 @@
 
   &.connected {
     background: linear-gradient(135deg, #f093fb, #f5576c);
+  }
+
+  &.reports {
+    background: linear-gradient(135deg, #ff6b6b, #ffb347);
+    color: #1a1a2e;
   }
 }
 
