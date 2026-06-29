@@ -219,7 +219,9 @@ export class UsersListPageComponent implements OnInit {
 
     this._adminService.toggleUserActive(user.id).subscribe({
       next: updatedUser => {
-        this.users.update(users => users.map(u => (u.id === user.id ? { ...u, ...updatedUser } : u)));
+        this.users.update(users =>
+          users.map(u => (u.id === user.id ? { ...u, ...updatedUser } : u))
+        );
         this.closeActiveModal();
         this.togglingActive.set(false);
       },
