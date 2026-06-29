@@ -13,6 +13,7 @@ export type DashboardStats = {
   totalSaloons: number;
   saloonsByCity: Record<string, number>;
   connectedUsers: number;
+  pendingReports: number;
 };
 
 export type PremiumMonthlyStats = {
@@ -206,6 +207,10 @@ export class AdminService {
       `${this._BASE_URL}/admin/user/${id}/toggle-premium`,
       {}
     );
+  }
+
+  toggleUserActive(id: number): Observable<User> {
+    return this._http.patch<User>(`${this._BASE_URL}/admin/user/${id}/toggle-active`, {});
   }
 
   updateUserRole(id: number, role: string): Observable<User> {

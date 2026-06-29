@@ -15,6 +15,7 @@ export type User = {
   city: string;
   age: number;
   isPremium?: boolean;
+  isActive?: boolean;
   profileStatus?: string;
   authProvider?: string;
   lastLoginAt?: string;

@@ -443,6 +443,12 @@
       color: #ffc122;
       border: 1px solid rgba(255, 193, 34, 0.3);
     }
+
+    &.badge-danger {
+      background: rgba(255, 59, 48, 0.15);
+      color: #ff6b6b;
+      border: 1px solid rgba(255, 59, 48, 0.3);
+    }
   }
 }
 
@@ -573,6 +579,26 @@
       color: #667eea;
     }
 
+    &.pause {
+      color: #ffc122;
+
+      &:hover {
+        background: rgba(255, 193, 34, 0.1);
+        border-color: rgba(255, 193, 34, 0.3);
+        color: #ffc122;
+      }
+    }
+
+    &.play {
+      color: #2ecc71;
+
+      &:hover {
+        background: rgba(46, 204, 113, 0.1);
+        border-color: rgba(46, 204, 113, 0.3);
+        color: #2ecc71;
+      }
+    }
+
     &.delete:hover {
       background: rgba(255, 59, 48, 0.1);
       border-color: rgba(255, 59, 48, 0.3);
@@ -628,6 +654,15 @@
 
     h3 {
       color: #ff6b6b;
+    }
+  }
+
+  &.warning {
+    background: rgba(255, 193, 34, 0.1);
+    border-bottom-color: rgba(255, 193, 34, 0.2);
+
+    h3 {
+      color: #ffc122;
     }
   }
 
@@ -730,7 +765,8 @@
 }
 
 // Delete modal
-.delete-modal {
+.delete-modal,
+.active-modal {
   .warning-icon {
     display: flex;
     justify-content: center;
@@ -738,6 +774,10 @@
 
     svg {
       color: #ff6b6b;
+    }
+
+    &.account-state svg {
+      color: #ffc122;
     }
   }
 
@@ -757,6 +797,47 @@
     color: rgba(255, 255, 255, 0.5);
     font-size: 0.85rem;
     margin: 0;
+  }
+}
+
+.btn-toggle-active {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  background: #ffc122;
+  border: none;
+  border-radius: 8px;
+  color: #1a1a2e;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: #ffab00;
+  }
+
+  &.reactivate {
+    background: #2ecc71;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: #27ae60;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .spinner-small {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(26, 26, 46, 0.25);
+    border-top-color: #1a1a2e;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
 }
 
@@ -950,6 +1031,11 @@
           background: #ffc122;
           box-shadow: 0 0 8px rgba(255, 193, 34, 0.5);
         }
+
+        &.inactive {
+          background: #ff6b6b;
+          box-shadow: 0 0 8px rgba(255, 107, 107, 0.5);
+        }
       }
 
       .chevron-icon {
@@ -1051,6 +1137,22 @@
       &.view:active {
         background: rgba(102, 126, 234, 0.1);
         color: #667eea;
+      }
+
+      &.pause {
+        color: #ffc122;
+
+        &:active {
+          background: rgba(255, 193, 34, 0.1);
+        }
+      }
+
+      &.play {
+        color: #2ecc71;
+
+        &:active {
+          background: rgba(46, 204, 113, 0.1);
+        }
       }
 
       &.premium {
