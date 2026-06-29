@@ -358,110 +358,222 @@ $text-light: rgba(65, 52, 67, 0.72);
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 9999;
-  padding: 1rem;
+  align-items: flex-start;
+  z-index: 1000;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: max(16px, var(--safe-top)) 16px
+    calc(var(--navbar-reserved-height) + var(--content-bottom-gap) + 24px);
 
   .modal-content {
     background: $white;
-    border-radius: 16px;
-    padding: 1.5rem;
-    max-width: 340px;
+    border-radius: 20px;
     width: 100%;
+    max-width: 420px;
+    overflow: visible;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 
-    h2 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: $gradient-top;
-      margin: 0 0 0.75rem;
-    }
-
-    p {
-      font-size: 0.88rem;
-      color: rgba($gradient-top, 0.7);
-      line-height: 1.5;
-      margin: 0 0 1rem;
-    }
-
-    .reason-options {
+    .modal-header {
       display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      position: relative;
 
-      .reason-option {
-        width: 100%;
-        padding: 0.7rem 0.85rem;
-        border-radius: 10px;
-        border: 1px solid rgba($gradient-top, 0.14);
-        background: rgba($gradient-top, 0.03);
-        color: $gradient-top;
-        font-size: 0.84rem;
+      .icon-container {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(#e67e22, 0.1) 0%, rgba(#e67e22, 0.2) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        svg {
+          color: #e67e22;
+        }
+      }
+
+      h2 {
+        flex: 1;
+        margin: 0;
+        font-size: 1.15rem;
         font-weight: 600;
-        text-align: left;
-        cursor: pointer;
+        color: #333;
+      }
 
-        &.selected {
-          border-color: #e67e22;
-          background: rgba(#e67e22, 0.12);
-          color: #b85f12;
+      .close-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        color: #666;
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.06);
+          color: #333;
         }
       }
     }
 
-    .description-label {
-      display: block;
-      margin-bottom: 0.35rem;
-      color: rgba($gradient-top, 0.72);
-      font-size: 0.78rem;
-      font-weight: 600;
-    }
+    .modal-body {
+      padding: 20px;
 
-    .block-description {
-      width: 100%;
-      box-sizing: border-box;
-      resize: vertical;
-      min-height: 76px;
-      margin-bottom: 1.25rem;
-      padding: 0.7rem 0.85rem;
-      border-radius: 10px;
-      border: 1px solid rgba($gradient-top, 0.14);
-      color: $gradient-top;
-      font: inherit;
-      outline: none;
-
-      &:focus {
-        border-color: #e67e22;
-        box-shadow: 0 0 0 3px rgba(#e67e22, 0.12);
+      .instruction {
+        font-size: 0.95rem;
+        color: #555;
+        margin: 0 0 16px;
+        font-weight: 500;
       }
-    }
 
-    .modal-actions {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: flex-end;
+      .reason-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
 
-      .btn-cancel {
-        padding: 0.6rem 1.1rem;
-        border-radius: 8px;
-        border: 1px solid rgba($gradient-top, 0.2);
-        background: transparent;
-        color: $gradient-top;
-        font-size: 0.88rem;
+      .reason-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border: 2px solid rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        background: $white;
         cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: left;
+
+        &:hover {
+          border-color: #e67e22;
+          background: rgba(#e67e22, 0.03);
+        }
+
+        &.selected {
+          border-color: #e67e22;
+          background: rgba(#e67e22, 0.05);
+
+          .reason-icon {
+            background: #e67e22;
+            color: $white;
+          }
+
+          .reason-label {
+            color: $gradient-top;
+            font-weight: 600;
+          }
+
+          .check-icon {
+            color: #e67e22;
+          }
+        }
+
+        .reason-icon {
+          width: 36px;
+          height: 36px;
+          border-radius: 10px;
+          background: rgba(0, 0, 0, 0.06);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s ease;
+          flex-shrink: 0;
+          color: #666;
+        }
+
+        .reason-label {
+          flex: 1;
+          font-size: 0.9rem;
+          color: #444;
+          transition: all 0.2s ease;
+        }
+
+        .check-icon {
+          flex-shrink: 0;
+        }
       }
 
-      .btn-delete {
-        padding: 0.6rem 1.1rem;
-        border-radius: 8px;
+      .description-section {
+        margin-top: 4px;
+
+        label {
+          display: block;
+          font-size: 0.85rem;
+          font-weight: 500;
+          color: #555;
+          margin-bottom: 8px;
+        }
+
+        textarea {
+          width: 100%;
+          padding: 12px 14px;
+          border: 2px solid rgba(0, 0, 0, 0.08);
+          border-radius: 12px;
+          font-size: 0.9rem;
+          resize: none;
+          transition: all 0.2s ease;
+          font-family: inherit;
+          box-sizing: border-box;
+
+          &::placeholder {
+            color: #aaa;
+          }
+
+          &:focus {
+            outline: none;
+            border-color: #e67e22;
+          }
+        }
+
+        .char-count {
+          display: block;
+          text-align: right;
+          font-size: 0.75rem;
+          color: #999;
+          margin-top: 4px;
+        }
+      }
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 12px;
+      padding: 16px 20px 20px;
+      border-top: 1px solid rgba(0, 0, 0, 0.06);
+
+      button {
+        flex: 1;
+        padding: 14px 20px;
         border: none;
-        background: #e67e22;
-        color: $white;
-        font-size: 0.88rem;
+        border-radius: 12px;
+        font-size: 0.95rem;
         font-weight: 600;
         cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .btn-cancel {
+        background: rgba(0, 0, 0, 0.06);
+        color: #666;
+      }
+
+      .btn-submit {
+        background: #e67e22;
+        color: $white;
 
         &:disabled {
           opacity: 0.6;
