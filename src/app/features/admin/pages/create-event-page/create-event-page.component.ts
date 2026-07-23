@@ -30,7 +30,7 @@ export class CreateEventPageComponent implements OnInit {
     description: [''],
     startDateTime: ['', Validators.required],
     saloonId: [null, Validators.required],
-    radiusMeters: [100, [Validators.min(10), Validators.max(100000)]],
+    radiusMeters: [25000, [Validators.min(10), Validators.max(100000)]],
     radiusUnlimited: [false],
   });
 
@@ -91,7 +91,7 @@ export class CreateEventPageComponent implements OnInit {
     formData.append('saloonId', this.eventForm.get('saloonId')?.value);
     formData.append('radiusUnlimited', this.radiusUnlimited ? 'true' : 'false');
     if (!this.radiusUnlimited) {
-      formData.append('radiusMeters', this.eventForm.get('radiusMeters')?.value || '100');
+      formData.append('radiusMeters', this.eventForm.get('radiusMeters')?.value || '25000');
     }
 
     this._adminService.createEventWithImage(formData).subscribe({
@@ -111,7 +111,7 @@ export class CreateEventPageComponent implements OnInit {
 
   resetForm(): void {
     this.eventForm.reset({
-      radiusMeters: 100,
+      radiusMeters: 25000,
       radiusUnlimited: false,
     });
     this.selectedFile = null;

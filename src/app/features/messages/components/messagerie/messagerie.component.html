@@ -56,7 +56,7 @@
 </div>
 
 <!-- Zone d'envoi de message OU bouton coup de cœur -->
-@if (isMatchExpired) {
+@if (isMatchExpired && !isPermanent) {
 <!-- Match expiré : zone désactivée avec possibilité de supprimer -->
 <div class="conversation-expired-notice">
   <div class="expired-icon">⏰</div>
@@ -77,7 +77,7 @@
     </svg>
   </button>
 </div>
-} @else if (isConversationEnded && !isMatchCancelled && isHeartWindowExpired) {
+} @else if ( isConversationEnded && !isPermanent && !isMatchCancelled && isHeartWindowExpired ) {
 <!-- Conversation expirée ET fenêtre 12h passée : conversation définitivement terminée -->
 <div class="conversation-expired-notice">
   <div class="expired-icon">⏰</div>
@@ -98,7 +98,7 @@
     </svg>
   </button>
 </div>
-} @else if (isConversationEnded && !isMatchCancelled) {
+} @else if (isConversationEnded && !isPermanent && !isMatchCancelled) {
 <!-- Conversation expirée mais fenêtre 12h active : afficher le bouton coup de cœur -->
 <div class="heart-request-box">
   @if (isPermanent) {
