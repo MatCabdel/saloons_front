@@ -1,19 +1,22 @@
 <div class="app-shell">
   <router-outlet></router-outlet>
 
-  @if (apiStatus() !== 'ok') {
-  <div class="startup-overlay" role="alert" aria-live="polite">
+  @if (apiStatus() === 'error') {
+  <div class="startup-overlay" role="alert" aria-live="assertive">
     <div class="startup-card">
-      @if (apiStatus() === 'checking') {
-      <div class="startup-icon spinner"></div>
-      <h2>Connexion en cours</h2>
-      <p>Nous vérifions l'accès aux serveurs Saloons.</p>
-      } @else {
-      <div class="startup-icon warning">!</div>
-      <h2>Impossible de charger l'application</h2>
-      <p>Vérifie ta connexion internet puis réessaie.</p>
+      <div class="startup-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+          <path d="M8.5 16a6 6 0 0 1 7 0"></path>
+          <path d="M12 20h.01"></path>
+          <path d="M3 3l18 18"></path>
+        </svg>
+      </div>
+      <div class="startup-message">
+        <h2>Serveur temporairement indisponible</h2>
+        <p>Vérifie ta connexion puis réessaie.</p>
+      </div>
       <button type="button" class="retry-btn" (click)="retryApi()">Réessayer</button>
-      }
     </div>
   </div>
   }

@@ -31,6 +31,11 @@ export class UserStoreService {
 
   setUserConnected(user: UserDTO): void {
     this._userConnected$.next(user);
+    if (user?.id) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
   }
 
   getUserId(): number {
