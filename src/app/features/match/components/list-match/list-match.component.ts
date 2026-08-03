@@ -32,6 +32,7 @@ export class ListMatchComponent implements OnInit, OnChanges {
       this._conversationService.getUserConversations().subscribe(conversations => {
         // Exclure les utilisateurs qui ont déjà une conversation (active ou expirée)
         this.userIdsWithConversations = conversations.payload
+          .filter(conv => conv.lastMessage !== null)
           .flatMap(conv => conv.participants)
           .filter(p => p.id !== this.myId)
           .map(p => p.id);
@@ -49,17 +50,17 @@ export class ListMatchComponent implements OnInit, OnChanges {
   }
 
   filterMatches(): void {
-    // Exclure les utilisateurs avec conversation, ceux passés en input, et les matchs expirés
+    // Les matchs expirés restent visibles pendant leur fenêtre de coup de cœur.
     const allExcluded = [...new Set([...this.userIdsWithConversations, ...this.excludeUserIds])];
-    this.matches = this._sortMatches(
-      this.allMatches.filter(u => !allExcluded.includes(u.id) && !u.sessionExpired)
-    );
+    this.matches = this._sortMatches(this.allMatches.filter(u => !allExcluded.includes(u.id)));
   }
 
   private _sortMatches(matches: MatchUser[]): MatchUser[] {
     return [...matches].sort((a, b) => {
-      if (a.sessionExpired !== b.sessionExpired) {
-        return a.sessionExpired ? 1 : -1;
+      const aExpired = a.sessionExpired && !a.heartConfirmed;
+      const bExpired = b.sessionExpired && !b.heartConfirmed;
+      if (aExpired !== bExpired) {
+        return aExpired ? 1 : -1;
       }
       const timeA = a.matchedAt ? new Date(a.matchedAt).getTime() : 0;
       const timeB = b.matchedAt ? new Date(b.matchedAt).getTime() : 0;
@@ -84,7 +85,9 @@ export class ListMatchComponent implements OnInit, OnChanges {
         // Pas de conversation → ouvrir en mode "match"
         // Si session expirée, passer le paramètre pour afficher le mode expiré
         this._router.navigate(['/messages/match', user.id], {
-          queryParams: user.sessionExpired ? { expired: 'true' } : {},
+          queryParams: user.sessionExpired
+            ? { expired: 'true', expiredAt: user.sessionEndedAt }
+            : {},
         });
       }
     });

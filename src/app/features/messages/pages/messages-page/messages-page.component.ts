@@ -138,16 +138,12 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
   private _markConversationAsRead(): void {
     if (!this.conversationId) return;
 
-    // Mémoriser le nombre de non lus avant de marquer comme lu
-    const unreadBefore = this.conversation?.unreadCount || 0;
-
     this._conversationService.markAsRead(this.conversationId).subscribe({
       next: () => {
         console.log('📖 Conversation marked as read:', this.conversationId);
-        // Décrémenter le badge iOS du nombre qu'on vient de lire
-        if (unreadBefore > 0) {
-          this._badgeService.decrementUnread(unreadBefore);
-        }
+        // Le serveur reste la source de vérité, y compris si un message est
+        // arrivé pendant la requête de lecture.
+        void this._badgeService.refreshUnreadCount();
       },
       error: (err: HttpErrorResponse) => {
         console.error('Failed to mark conversation as read:', err);
@@ -161,6 +157,20 @@ export class MessagesPageComponent implements OnInit, OnDestroy {
     this._userService.getUserById(this.matchUserId).subscribe({
       next: (user: User) => {
         this.userTarget = user;
+        const expiredAt = this._route.snapshot.queryParamMap.get('expiredAt');
+        if (this.isMatchExpired && expiredAt && this.matchUserId) {
+          this._conversationService
+            .createConversation(this.matchUserId, undefined, expiredAt)
+            .subscribe({
+              next: conversation => {
+                this.conversationId = conversation.id;
+                this.isMatchExpired = false;
+                this.otherParticipantLeft = true;
+                this._loadConversation(false);
+              },
+              error: () => this._router.navigate(['/chat']),
+            });
+        }
       },
       error: () => {
         this._router.navigate(['/chat']);

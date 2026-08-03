@@ -37,8 +37,8 @@ export class AppComponent implements OnInit {
     const timeout = setTimeout(() => controller.abort(), 5000);
 
     try {
-      await fetch(environment.apiUrl, {
-        method: 'GET',
+      await fetch(`${environment.apiUrl}/v3/api-docs`, {
+        method: 'HEAD',
         mode: 'no-cors',
         cache: 'no-store',
         signal: controller.signal,

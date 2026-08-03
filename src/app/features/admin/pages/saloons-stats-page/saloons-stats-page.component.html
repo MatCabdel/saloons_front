@@ -134,7 +134,12 @@
       @if (isCityExpanded(city)) {
       <div class="saloons-list">
         @for (saloon of getSaloonsForCity(city); track saloon.id) {
-        <div class="saloon-item" [class.has-users]="saloon.connectedCount > 0">
+        <button
+          type="button"
+          class="saloon-item"
+          [class.has-users]="saloon.connectedCount > 0"
+          (click)="openSaloonStats(saloon.id)"
+        >
           <img [src]="saloon.imgUrl" [alt]="saloon.name" class="saloon-img" loading="lazy" />
           <div class="saloon-info">
             <span class="saloon-name">{{ saloon.name }}</span>
@@ -155,7 +160,7 @@
               <span class="stat-label">pic max</span>
             </div>
           </div>
-        </div>
+        </button>
         }
       </div>
       }

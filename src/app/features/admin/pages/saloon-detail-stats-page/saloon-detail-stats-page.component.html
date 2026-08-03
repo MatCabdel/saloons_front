@@ -1,0 +1,326 @@
+<div class="saloon-detail-stats-page">
+  <button type="button" class="back-button" (click)="goBack()">← Statistiques des saloons</button>
+
+  @if (loading()) {
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Chargement des statistiques...</p>
+  </div>
+  } @else if (error()) {
+  <div class="error-message">
+    <p>{{ error() }}</p>
+    <button type="button" (click)="onDateChange()">Réessayer</button>
+  </div>
+  } @else { @if (stats(); as data) {
+  <header class="page-header">
+    <h1>{{ data.saloonName }} — {{ data.city || 'Ville non renseignée' }}</h1>
+    <p>Analyse détaillée de la fréquentation</p>
+  </header>
+
+  <div class="stats-grid">
+    <article class="stat-card presence-card">
+      <span class="card-kicker">Temps réel</span>
+      <strong>{{ data.presenceAvailable ? data.currentPresence : '—' }}</strong>
+      <span>Personnes actuellement présentes</span>
+      @if (!data.presenceAvailable) {
+      <small>Présence momentanément indisponible</small>
+      }
+    </article>
+    <article class="stat-card">
+      <span class="card-kicker">30 derniers jours</span>
+      <strong>{{ data.thirtyDays.currentEntries }}</strong>
+      <span>Entrées</span>
+    </article>
+    <article class="stat-card">
+      <span class="card-kicker">30 derniers jours</span>
+      <strong>{{ data.thirtyDays.currentUniqueVisitors }}</strong>
+      <span>Visiteurs uniques</span>
+    </article>
+    <article class="stat-card">
+      <span class="card-kicker">Évolution sur 30 jours</span>
+      @if (data.thirtyDays.evolutionPercent !== null) {
+      <strong [class.positive-value]="data.thirtyDays.evolutionPercent >= 0">
+        {{ signedValue(data.thirtyDays.evolutionPercent) }} %
+      </strong>
+      <span>Par rapport aux 30 jours précédents</span>
+      } @else {
+      <strong>—</strong>
+      <span>Période précédente sans entrée</span>
+      }
+    </article>
+  </div>
+  <p class="tracking-note">
+    Depuis le début du suivi : {{ data.allTimeEntries }} entrées ·
+    {{ data.allTimeUniqueVisitors }} visiteurs uniques
+  </p>
+
+  <section class="comparison-strip">
+    <div>
+      <span>Période actuelle</span>
+      <strong>{{ data.thirtyDays.currentEntries }} entrées</strong>
+      <small>
+        {{ data.thirtyDays.currentStart | date : 'dd/MM/yyyy' }} –
+        {{ data.thirtyDays.currentEnd | date : 'dd/MM/yyyy' }}
+      </small>
+    </div>
+    <div>
+      <span>30 jours précédents</span>
+      <strong>{{ data.thirtyDays.previousEntries }} entrées</strong>
+      <small>
+        {{ data.thirtyDays.previousStart | date : 'dd/MM/yyyy' }} –
+        {{ data.thirtyDays.previousEnd | date : 'dd/MM/yyyy' }}
+      </small>
+    </div>
+    <div>
+      <span>Évolution</span>
+      @if (data.thirtyDays.evolutionPercent !== null) {
+      <strong [class.positive]="data.thirtyDays.evolutionPercent >= 0">
+        {{ signedValue(data.thirtyDays.evolutionPercent) }} %
+      </strong>
+      } @else {
+      <strong>Non calculable</strong>
+      <small>La période précédente contient zéro entrée</small>
+      }
+    </div>
+  </section>
+
+  <section class="chart-section">
+    <div class="section-header">
+      <div>
+        <h2>Connexions</h2>
+        <p>
+          {{ data.periodStart | date : 'dd/MM/yyyy' }} – {{ data.periodEnd | date : 'dd/MM/yyyy' }}
+        </p>
+      </div>
+      <strong class="period-total">
+        {{ data.totalConnections }} entrées · {{ data.uniqueVisitors }} visiteurs uniques
+      </strong>
+    </div>
+
+    <div class="period-toolbar">
+      <div class="period-tabs">
+        @for (item of periods; track item.value) {
+        <button
+          type="button"
+          [class.active]="period === item.value"
+          (click)="selectPeriod(item.value)"
+        >
+          {{ item.label }}
+        </button>
+        }
+      </div>
+      <div class="date-navigation">
+        <button type="button" aria-label="Période précédente" (click)="movePeriod(-1)">‹</button>
+        <input type="date" [(ngModel)]="selectedDate" [max]="maxDate" (change)="onDateChange()" />
+        <button
+          type="button"
+          aria-label="Période suivante"
+          [disabled]="selectedDate >= maxDate"
+          (click)="movePeriod(1)"
+        >
+          ›
+        </button>
+      </div>
+    </div>
+
+    @if (data.totalConnections === 0) {
+    <p class="empty-chart">Aucune connexion enregistrée sur cette période.</p>
+    }
+    <div class="chart-container">
+      <div class="chart" [class.dense]="data.connections.length > 16">
+        @for (point of data.connections; track point.label) {
+        <div class="chart-column">
+          <span class="bar-value">{{ point.value }}</span>
+          <div class="bar" [style.height]="barHeight(point, data.connections)"></div>
+          <span class="bar-label">{{ chartLabel(point.label) }}</span>
+        </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="chart-section">
+    <div class="section-header">
+      <div>
+        <h2>Moyenne par jour de la semaine</h2>
+        <p>
+          {{ data.referencePeriodStart | date : 'dd/MM/yyyy' }} –
+          {{ data.referencePeriodEnd | date : 'dd/MM/yyyy' }}, semaines complètes uniquement
+        </p>
+      </div>
+      <label class="compact-select">
+        Période de référence
+        <select [(ngModel)]="referenceWeeks" (change)="onReferenceChange()">
+          @for (weeks of referenceWeekOptions; track weeks) {
+          <option [ngValue]="weeks">{{ weeks }} semaines</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <div class="chart-container compact-chart">
+      <div class="chart weekday-chart">
+        @for (point of data.weekDayAverages; track point.label) {
+        <div class="chart-column">
+          <span class="bar-value">{{ point.value | number : '1.0-2' }}</span>
+          <div class="bar" [style.height]="barHeight(point, data.weekDayAverages)"></div>
+          <span class="bar-label">{{ point.label }}</span>
+        </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="chart-section hourly-section">
+    <div class="section-header hourly-header">
+      <div>
+        <h2>Répartition horaire</h2>
+        @if (hourlyMode === 'ACTUAL') {
+        <p>{{ selectedDate | date : 'fullDate' : '' : 'fr' }}</p>
+        } @else {
+        <p>Moyennes calculées sur {{ data.referenceWeeks }} semaines complètes</p>
+        }
+      </div>
+      <div class="hourly-controls">
+        <div class="period-tabs hourly-tabs" aria-label="Mode de répartition horaire">
+          <button
+            type="button"
+            [class.active]="hourlyMode === 'ACTUAL'"
+            (click)="selectHourlyMode('ACTUAL')"
+          >
+            Date précise
+          </button>
+          <button
+            type="button"
+            [class.active]="hourlyMode === 'USUAL'"
+            (click)="selectHourlyMode('USUAL')"
+          >
+            Habitudes
+          </button>
+        </div>
+        @if (hourlyMode === 'USUAL') {
+        <label class="compact-select">
+          Jour observé
+          <select [(ngModel)]="selectedWeekDay" (change)="onWeekDayChange()">
+            @for (day of weekDays; track day.value) {
+            <option [value]="day.value">{{ day.label }}</option>
+            }
+          </select>
+        </label>
+        }
+      </div>
+    </div>
+
+    @if (hourlyMode === 'ACTUAL') {
+    <div class="peak-highlight" [class.empty]="data.peakSlot.value === 0">
+      Créneau le plus fréquenté :
+      <strong>{{ data.peakSlot.label }}</strong
+      >, avec <strong>{{ data.peakSlot.value }} entrée(s)</strong>.
+    </div>
+    <div class="chart-container hourly">
+      <div class="chart dense">
+        @for (point of data.hourlyConnections; track point.label) {
+        <div class="chart-column">
+          <span class="bar-value">{{ point.value }}</span>
+          <div
+            class="bar hourly-bar"
+            [class.peak]="point.label === data.peakSlot.label && point.value > 0"
+            [style.height]="barHeight(point, data.hourlyConnections)"
+          ></div>
+          <span class="bar-label">{{ point.label.slice(0, 4) }}</span>
+        </div>
+        }
+      </div>
+    </div>
+    } @else {
+    <div class="peak-highlight" [class.empty]="data.averagePeakSlot.value === 0">
+      Le {{ weekDayName(data.selectedWeekDay) | lowercase }}, le créneau habituellement le plus
+      fréquenté est <strong>{{ data.averagePeakSlot.label }}</strong
+      >, avec
+      <strong>{{ data.averagePeakSlot.value | number : '1.0-2' }} entrée(s) en moyenne</strong>.
+    </div>
+    <div class="chart-container hourly">
+      <div class="chart dense">
+        @for (point of data.weekDayHourlyAverages; track point.label) {
+        <div class="chart-column">
+          <span class="bar-value">{{ point.value | number : '1.0-2' }}</span>
+          <div
+            class="bar hourly-bar"
+            [class.peak]="point.label === data.averagePeakSlot.label && point.value > 0"
+            [style.height]="barHeight(point, data.weekDayHourlyAverages)"
+          ></div>
+          <span class="bar-label">{{ point.label.slice(0, 4) }}</span>
+        </div>
+        }
+      </div>
+    </div>
+    }
+  </section>
+
+  <section class="summary-section">
+    <h2>Comparaisons</h2>
+    <div class="summary-grid">
+      <article class="summary-card">
+        <span class="card-kicker">Journée sélectionnée</span>
+        <strong>{{ data.selectedDayComparison.entries }} entrées</strong>
+        <p>
+          {{ data.selectedDayComparison.date | date : 'fullDate' : '' : 'fr' }} : contre
+          {{ data.selectedDayComparison.usualAverage | number : '1.0-2' }} habituellement le
+          {{ data.selectedDayComparison.weekDay | lowercase }}
+        </p>
+        <small>
+          Écart : {{ signedValue(data.selectedDayComparison.difference) }} entrée(s) @if
+          (data.selectedDayComparison.differencePercent !== null) { ·
+          {{ signedValue(data.selectedDayComparison.differencePercent) }} % } @else { · pourcentage
+          non calculable }
+        </small>
+      </article>
+      <article class="summary-card">
+        <span class="card-kicker">Semaine en cours</span>
+        <strong>{{ data.weeklySummary.currentEntries }} entrées</strong>
+        <p>
+          Du {{ data.weeklySummary.currentStart | date : 'dd/MM/yyyy' }} au
+          {{ data.weeklySummary.currentEnd | date : 'dd/MM/yyyy' }}.<br />
+          Moyenne historique du lundi au même jour sur {{ data.referenceWeeks }} semaines :
+          {{ data.weeklySummary.comparablePeriodAverage | number : '1.0-2' }}
+        </p>
+        <small>
+          Écart : {{ signedValue(data.weeklySummary.difference) }} @if
+          (data.weeklySummary.differencePercent !== null) { ·
+          {{ signedValue(data.weeklySummary.differencePercent) }} % }
+        </small>
+      </article>
+      <article class="summary-card monthly-card">
+        <span class="card-kicker">Synthèse mensuelle</span>
+        <div class="monthly-values">
+          <p>
+            <strong>{{ data.monthlySummary.currentMonthEntries }}</strong> mois en cours
+          </p>
+          <p>
+            <strong>{{ data.monthlySummary.previousMonthEntries }}</strong> mois précédent
+          </p>
+          <p>
+            <strong>
+              @if (data.monthlySummary.lastThreeCompleteMonthsAverage !== null) {
+              {{ data.monthlySummary.lastThreeCompleteMonthsAverage | number : '1.0-2' }}
+              } @else { — }
+            </strong>
+            moyenne 3 mois complets
+          </p>
+          <p>
+            <strong>
+              @if (data.monthlySummary.lastSixCompleteMonthsAverage !== null) {
+              {{ data.monthlySummary.lastSixCompleteMonthsAverage | number : '1.0-2' }}
+              } @else { — }
+            </strong>
+            moyenne 6 mois complets
+          </p>
+        </div>
+        @if (data.monthlySummary.historyMessage) {
+        <small class="history-warning">{{ data.monthlySummary.historyMessage }}</small>
+        }
+      </article>
+    </div>
+  </section>
+  } }
+</div>

@@ -5,4 +5,7 @@ export type MatchUser = {
   profileImageUpdatedAt?: string | null;
   matchedAt: string | null;
   sessionExpired: boolean;
+  sessionEndedAt: string | null;
+  heartWindowExpiresAt: string | null;
+  heartConfirmed: boolean;
 };

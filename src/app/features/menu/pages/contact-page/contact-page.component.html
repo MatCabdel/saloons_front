@@ -1,10 +1,14 @@
-<div class="contact-page">
+<div class="contact-page" [class.public-context]="usePublicHeader">
+  @if (usePublicHeader) {
+  <app-public-header />
+  } @else {
   <app-header
     [title]="'Contact'"
     [showBackButton]="true"
     [showMenu]="false"
     [usePageBackground]="true"
-  ></app-header>
+  />
+  }
 
   <div class="page-content">
     <!-- Message de confirmation -->

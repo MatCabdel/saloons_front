@@ -2,7 +2,7 @@
   @for (user of matches; track user.id) {
   <div
     class="match-item"
-    [class.session-expired]="user.sessionExpired"
+    [class.session-expired]="user.sessionExpired && !user.heartConfirmed"
     tabindex="0"
     role="button"
     (click)="openConversationWith(user)"
@@ -13,7 +13,7 @@
       [src]="user.imgUrl | versionedImageUrl : user.profileImageUpdatedAt"
       alt="avatar"
       class="avatar"
-      [class.session-expired]="user.sessionExpired"
+      [class.session-expired]="user.sessionExpired && !user.heartConfirmed"
       loading="lazy"
     />
     <div class="username">{{ user.userName }}</div>
