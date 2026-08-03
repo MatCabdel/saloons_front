@@ -55,6 +55,7 @@ import { EventsPageComponent } from './features/event/pages/events-page/events-p
 import { CreateEventPageComponent } from './features/admin/pages/create-event-page/create-event-page.component';
 import { EditEventPageComponent } from './features/admin/pages/edit-event-page/edit-event-page.component';
 import { EventsListPageComponent } from './features/admin/pages/events-list-page/events-list-page.component';
+import { SaloonDetailStatsPageComponent } from './features/admin/pages/saloon-detail-stats-page/saloon-detail-stats-page.component';
 
 const PUBLIC_LANDING_HOSTS = new Set(['saloons.fr', 'www.saloons.fr']);
 
@@ -177,6 +178,7 @@ export const routes: Routes = [
       { path: 'statistics', component: StatisticsPageComponent },
       { path: 'city-stats', component: CityStatsPageComponent },
       { path: 'saloons-stats', component: SaloonsStatsPageComponent },
+      { path: 'saloons/:id/stats', component: SaloonDetailStatsPageComponent },
       { path: 'user-city-stats', component: UserCityStatsPageComponent },
       { path: 'users-list', component: UsersListPageComponent },
       { path: 'saloons-list', component: SaloonsListPageComponent },

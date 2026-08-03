@@ -1,11 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AdminService, PagedResponse } from '../../services/admin.service';
 import { Saloon, SALOON_TYPE_LABELS, SaloonType } from '../../../saloon/models/saloonModel';
 import { User } from '../../../user/models/user';
 import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
+import { saloonStatsRoute } from '../../utils/saloon-stats-route';
 
 type SortOption = 'name-asc' | 'name-desc' | 'connected-desc' | 'connected-asc';
 
@@ -18,6 +19,7 @@ type SortOption = 'name-asc' | 'name-desc' | 'connected-desc' | 'connected-asc';
 })
 export class SaloonsListPageComponent implements OnInit {
   private _adminService = inject(AdminService);
+  private _router = inject(Router);
 
   // Saloons from server (already paginated and sorted)
   saloons = signal<Saloon[]>([]);
@@ -210,22 +212,8 @@ export class SaloonsListPageComponent implements OnInit {
     });
   }
 
-  viewUsers(saloon: Saloon): void {
-    this.selectedSaloon = saloon;
-    this.showUsersModal = true;
-    this.loadingUsers = true;
-    this.saloonUsers = [];
-
-    this._adminService.getSaloonUsers(saloon.id).subscribe({
-      next: users => {
-        this.saloonUsers = users;
-        this.loadingUsers = false;
-      },
-      error: err => {
-        console.error('Erreur chargement utilisateurs:', err);
-        this.loadingUsers = false;
-      },
-    });
+  openSaloonStats(saloon: Saloon): void {
+    void this._router.navigate(saloonStatsRoute(saloon.id));
   }
 
   closeModal(): void {

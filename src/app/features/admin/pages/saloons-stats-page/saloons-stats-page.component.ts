@@ -1,6 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminService, SaloonsByCityStats, SaloonStatsItem } from '../../services/admin.service';
+import { Router } from '@angular/router';
+import { saloonStatsRoute } from '../../utils/saloon-stats-route';
 
 @Component({
   selector: 'app-saloons-stats-page',
@@ -11,6 +13,7 @@ import { AdminService, SaloonsByCityStats, SaloonStatsItem } from '../../service
 })
 export class SaloonsStatsPageComponent implements OnInit {
   private _adminService = inject(AdminService);
+  private _router = inject(Router);
 
   stats: SaloonsByCityStats | null = null;
   isLoading = true;
@@ -87,5 +90,9 @@ export class SaloonsStatsPageComponent implements OnInit {
 
   isCityExpanded(city: string): boolean {
     return this.expandedCities.has(city);
+  }
+
+  openSaloonStats(saloonId: number): void {
+    void this._router.navigate(saloonStatsRoute(saloonId));
   }
 }

@@ -229,8 +229,8 @@
             <button
               type="button"
               class="btn-action view"
-              (click)="viewUsers(saloon)"
-              title="Voir les participants"
+              (click)="openSaloonStats(saloon)"
+              title="Voir les statistiques"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -476,7 +476,7 @@
           </svg>
           Activer }
         </button>
-        <button type="button" class="btn-action-mobile view" (click)="viewUsers(saloon)">
+        <button type="button" class="btn-action-mobile view" (click)="openSaloonStats(saloon)">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"

@@ -43,6 +43,73 @@ export type SaloonsByCityStats = {
   saloonsByCity: Record<string, SaloonStatsItem[]>;
 };
 
+export type SaloonStatsChartPoint = {
+  label: string;
+  value: number;
+};
+
+export type SaloonDetailStats = {
+  saloonId: number;
+  saloonName: string;
+  city: string;
+  currentPresence: number | null;
+  presenceAvailable: boolean;
+  period: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR';
+  periodStart: string;
+  periodEnd: string;
+  totalConnections: number;
+  uniqueVisitors: number;
+  allTimeEntries: number;
+  allTimeUniqueVisitors: number;
+  connections: SaloonStatsChartPoint[];
+  hourlyConnections: SaloonStatsChartPoint[];
+  peakSlot: SaloonStatsChartPoint;
+  thirtyDays: {
+    currentStart: string;
+    currentEnd: string;
+    currentEntries: number;
+    currentUniqueVisitors: number;
+    previousStart: string;
+    previousEnd: string;
+    previousEntries: number;
+    evolutionPercent: number | null;
+  };
+  referenceWeeks: number;
+  referencePeriodStart: string;
+  referencePeriodEnd: string;
+  weekDayAverages: SaloonStatsChartPoint[];
+  selectedWeekDay: string;
+  weekDayHourlyAverages: SaloonStatsChartPoint[];
+  averagePeakSlot: SaloonStatsChartPoint;
+  selectedDayComparison: {
+    date: string;
+    weekDay: string;
+    entries: number;
+    usualAverage: number;
+    difference: number;
+    differencePercent: number | null;
+  };
+  weeklySummary: {
+    currentStart: string;
+    currentEnd: string;
+    currentEntries: number;
+    comparablePeriodAverage: number;
+    difference: number;
+    differencePercent: number | null;
+  };
+  monthlySummary: {
+    currentMonthEntries: number;
+    previousMonthEntries: number;
+    lastThreeCompleteMonthsAverage: number | null;
+    lastSixCompleteMonthsAverage: number | null;
+    historyMessage: string | null;
+  };
+  averagePerDay: number;
+  averagePerWeek: number;
+  averagePerMonth: number | null;
+  averagesPeriod: string;
+};
+
 export type MonthlyActiveByCityPoint = {
   year: number;
   month: number;
@@ -111,6 +178,23 @@ export class AdminService {
 
   getSaloonsStatisticsByCity(): Observable<SaloonsByCityStats> {
     return this._http.get<SaloonsByCityStats>(`${this._BASE_URL}/admin/statistics/saloons-by-city`);
+  }
+
+  getSaloonDetailStats(
+    saloonId: number,
+    period: SaloonDetailStats['period'],
+    date: string,
+    referenceWeeks = 8,
+    weekDay?: string
+  ): Observable<SaloonDetailStats> {
+    const params = new HttpParams()
+      .set('period', period)
+      .set('date', date)
+      .set('referenceWeeks', referenceWeeks)
+      .set('weekDay', weekDay || '');
+    return this._http.get<SaloonDetailStats>(`${this._BASE_URL}/admin/stats/saloons/${saloonId}`, {
+      params,
+    });
   }
 
   getUserCityStats(): Observable<UserCityStats> {
