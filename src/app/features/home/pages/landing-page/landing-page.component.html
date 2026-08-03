@@ -1,36 +1,6 @@
 <div class="landing-bg" aria-hidden="true"></div>
 <div class="landing">
-  <!-- HEADER -->
-  <header class="landing-header">
-    <div class="header-inner">
-      <a class="header-brand" routerLink="/">
-        <span class="brand-logo">SAL<span class="brand-oo">OO</span>NS</span>
-      </a>
-      <nav class="header-nav">
-        <a href="#how-it-works">Comment ça marche</a>
-        <a href="#partners">Partenaires</a>
-        <a routerLink="/contact">Nous contacter</a>
-      </nav>
-      <a class="header-cta" href="#cta-final">Obtenir l'app</a>
-      <button
-        type="button"
-        class="mobile-menu-btn"
-        aria-label="Menu"
-        [attr.aria-expanded]="mobileMenuOpen"
-        (click)="mobileMenuOpen = !mobileMenuOpen"
-      >
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-    @if (mobileMenuOpen) {
-    <nav class="mobile-nav">
-      <a href="#how-it-works">Comment ça marche</a>
-      <a href="#partners">Partenaires</a>
-      <a routerLink="/contact">Nous contacter</a>
-      <a class="mobile-nav-cta" href="#cta-final">Obtenir l'app</a>
-    </nav>
-    }
-  </header>
+  <app-public-header />
 
   <!-- HERO -->
   <section class="hero">
@@ -50,7 +20,7 @@
           clin d'œil et laisse la vraie rencontre commencer.
         </p>
         <div class="hero-actions">
-          <a class="btn-primary" href="#cta-final">Télécharger l'application</a>
+          <a class="btn-primary" routerLink="/download">Télécharger l'application</a>
           <a class="btn-secondary" href="#how-it-works">Découvrir le concept</a>
         </div>
         <div class="hero-highlights" aria-label="Points forts de SALOONS">
@@ -60,32 +30,46 @@
         </div>
       </div>
       <div class="hero-visual">
-        <div class="phone-mockup">
-          <div class="mockup-screen">
-            <div class="mockup-status" aria-hidden="true">
-              <span></span>
-              <span></span>
-            </div>
-            <div class="mockup-header">
-              <span class="mockup-logo">SAL<span class="brand-oo">OO</span>NS</span>
-            </div>
-            <div class="mockup-card">
-              <div class="mockup-card-icon">📍</div>
-              <div class="mockup-card-title">Bar La Comète</div>
-              <div class="mockup-card-meta">12 personnes connectées</div>
-            </div>
-            <div class="mockup-card mockup-card--alt">
-              <div class="mockup-card-icon">😉</div>
-              <div class="mockup-card-title">Clin d'œil envoyé !</div>
-              <div class="mockup-card-meta">En attente de réponse…</div>
-            </div>
-            <div class="mockup-card mockup-card--match">
-              <div class="mockup-card-icon">💬</div>
-              <div class="mockup-card-title">Match réciproque</div>
-              <div class="mockup-card-meta">La conversation peut commencer</div>
-            </div>
-          </div>
+        <div class="phone-mockup phone-mockup--real">
+          <span class="phone-speaker" aria-hidden="true"></span>
+          <img
+            src="assets/images/app-screens/saloons-nearby.png"
+            alt="L'écran Saloons affichant les lieux et personnes à proximité"
+          />
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP PREVIEW -->
+  <section class="section app-preview" aria-labelledby="app-preview-title">
+    <div class="section-inner preview-inner">
+      <div class="preview-copy">
+        <p class="section-eyebrow">L'expérience SALOONS</p>
+        <h2 class="section-title" id="app-preview-title">
+          Tout part d'un lieu.<br />La suite se vit à deux.
+        </h2>
+        <p class="section-lead">
+          Explore les événements autour de toi, remarque les personnes présentes et échange
+          uniquement lorsque le clin d'œil est réciproque.
+        </p>
+        <a class="preview-link" routerLink="/download">Découvrir l'application <span>→</span></a>
+      </div>
+      <div class="preview-gallery">
+        <figure class="preview-phone preview-phone--back">
+          <img
+            src="assets/images/app-screens/saloons-events.png"
+            alt="Les événements proposés dans l'application Saloons"
+            loading="lazy"
+          />
+        </figure>
+        <figure class="preview-phone preview-phone--front">
+          <img
+            src="assets/images/app-screens/saloons-match.png"
+            alt="Un clin d'œil réciproque dans l'application Saloons"
+            loading="lazy"
+          />
+        </figure>
       </div>
     </div>
   </section>
@@ -97,8 +81,8 @@
       <div class="steps-grid">
         <div class="step-card">
           <div class="step-number">1</div>
-          <h3>Repère un lieu autour de toi</h3>
-          <p>Découvre les saloons disponibles près de ta position.</p>
+          <h3>Repère un lieu ou un événement autour de toi</h3>
+          <p>Découvre les saloons et les événements disponibles près de ta position.</p>
         </div>
         <div class="step-card">
           <div class="step-number">2</div>
@@ -124,8 +108,8 @@
     <div class="section-inner">
       <h2 class="section-title">Pensé pour le réel,<br />pas pour scroller sans fin.</h2>
       <p class="section-lead">
-        Une app pensée pour créer des occasions réelles, pas pour multiplier les conversations sans
-        lendemain.
+        Rejoins le chat du saloon pour échanger avec les personnes autour de toi, faire connaissance
+        et créer des liens amicaux — ou laisser naître un coup de cœur.
       </p>
       <div class="diff-grid">
         <div class="diff-item">
@@ -137,12 +121,20 @@
           <span>Des rencontres liées à des lieux réels</span>
         </div>
         <div class="diff-item">
-          <span class="diff-icon">⏳</span>
-          <span>Des conversations éphémères</span>
+          <span class="diff-icon">💬</span>
+          <span>Un chat local dans chaque saloon</span>
         </div>
         <div class="diff-item">
-          <span class="diff-icon">⚡</span>
-          <span>Une expérience locale et spontanée</span>
+          <span class="diff-icon">👋</span>
+          <span>Des échanges avec les personnes autour de toi</span>
+        </div>
+        <div class="diff-item">
+          <span class="diff-icon">💛</span>
+          <span>Des conversations qui continuent après un coup de cœur confirmé</span>
+        </div>
+        <div class="diff-item">
+          <span class="diff-icon">✨</span>
+          <span>Des rencontres amicales ou plus, selon tes envies</span>
         </div>
         <div class="diff-item">
           <span class="diff-icon">🔒</span>
@@ -171,14 +163,14 @@
     </div>
   </section>
 
-  <!-- SECURITY -->
+  <!-- TRUST -->
   <section class="section security" id="security">
     <div class="section-inner">
-      <h2 class="section-title">Ta position n'est pas un outil de surveillance.</h2>
+      <h2 class="section-title">Fais des rencontres en toute confiance.</h2>
       <p class="section-lead">
-        SALOONS utilise ta position uniquement pour vérifier que tu es proche d'un lieu compatible.
-        L'objectif est de favoriser les rencontres locales, pas de suivre les utilisateurs en temps
-        réel.
+        Tu gardes le contrôle de ton expérience à chaque instant. SALOONS privilégie des échanges
+        simples, respectueux et limités dans le temps pour que tu puisses profiter pleinement de la
+        rencontre.
       </p>
       <div class="security-grid">
         <div class="security-item">
@@ -195,7 +187,7 @@
         </div>
         <div class="security-item">
           <span class="security-icon">👁️</span>
-          <span>Affichage contrôlé des profils</span>
+          <span>Profils et interactions maîtrisés</span>
         </div>
         <div class="security-item">
           <span class="security-icon">🔐</span>
@@ -222,17 +214,50 @@
       <div class="cta-card">
         <h2>Prêt à rencontrer autrement ?</h2>
         <p>Rejoins SALOONS et découvre les personnes qui partagent déjà les mêmes lieux que toi.</p>
-        <div class="cta-buttons">
-          <a class="btn-primary btn-lg" href="https://apps.apple.com" target="_blank" rel="noopener"
-            >Bientôt sur l'App Store</a
-          >
+        <div class="cta-buttons store-cta-buttons">
           <a
-            class="btn-primary btn-lg"
-            href="https://play.google.com"
+            class="store-mini-badge"
+            href="https://apps.apple.com/fr/app/saloons/id6758464092"
             target="_blank"
             rel="noopener"
-            >Bientôt sur Google Play</a
           >
+            <span aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M16.35 12.76c-.02-2.42 1.98-3.58 2.07-3.64-1.13-1.66-2.9-1.89-3.52-1.91-1.5-.15-2.93.88-3.69.88-.77 0-1.95-.86-3.2-.84-1.65.02-3.17.96-4.02 2.44-1.71 2.98-.44 7.39 1.23 9.8.82 1.18 1.79 2.5 3.07 2.45 1.23-.05 1.7-.8 3.19-.8 1.49 0 1.91.8 3.21.77 1.33-.03 2.17-1.2 2.98-2.38.94-1.37 1.33-2.7 1.35-2.77-.03-.01-2.64-1.01-2.67-4Zm-2.43-7.14c.68-.82 1.14-1.96 1.01-3.1-.98.04-2.16.65-2.86 1.47-.63.73-1.18 1.9-1.03 3.02 1.09.08 2.2-.56 2.88-1.39Z"
+                />
+              </svg>
+            </span>
+            <span><small>Télécharger dans</small><strong>App Store</strong></span>
+          </a>
+          <a
+            class="store-mini-badge"
+            href="https://play.google.com/store/apps/details?id=com.saloons.app"
+            target="_blank"
+            rel="noopener"
+          >
+            <span aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  fill="#00a0ff"
+                  d="M3.45 2.37 14.53 12 3.45 21.63a2.4 2.4 0 0 1-.2-.98V3.35c0-.34.07-.67.2-.98Z"
+                />
+                <path
+                  fill="#00f076"
+                  d="m15.8 10.9 2.78-2.42L5.9 1.35c-.47-.27-.92-.33-1.31-.2L15.8 10.9Z"
+                />
+                <path
+                  fill="#ffce00"
+                  d="m15.8 13.1-11.21 9.75c.39.13.84.07 1.31-.2l12.68-7.13-2.78-2.42Z"
+                />
+                <path
+                  fill="#ff3a44"
+                  d="M20.41 9.51 17.07 12l3.34 2.49c1.34-.76 1.34-4.22 0-4.98Z"
+                />
+              </svg>
+            </span>
+            <span><small>Disponible sur</small><strong>Google Play</strong></span>
+          </a>
         </div>
       </div>
     </div>
@@ -250,7 +275,7 @@
           <h4>Navigation</h4>
           <a href="#how-it-works">Comment ça marche</a>
           <a href="#partners">Partenaires</a>
-          <a href="#cta-final">Télécharger</a>
+          <a routerLink="/download">Télécharger</a>
         </div>
         <div class="footer-col">
           <h4>Légal</h4>

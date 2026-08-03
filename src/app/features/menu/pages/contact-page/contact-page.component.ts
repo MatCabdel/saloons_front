@@ -1,22 +1,32 @@
 import { Component, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { HeaderComponent } from 'src/app/common/components/header/header.component';
 import { environment } from 'src/environments/environment';
+import { PublicHeaderComponent } from '../../../home/components/public-header/public-header.component';
 
 @Component({
   selector: 'app-contact-page',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, ReactiveFormsModule, RouterModule],
+  imports: [
+    CommonModule,
+    HeaderComponent,
+    PublicHeaderComponent,
+    ReactiveFormsModule,
+    RouterModule,
+  ],
   templateUrl: './contact-page.component.html',
   styleUrls: ['./contact-page.component.scss'],
 })
 export class ContactPageComponent {
+  private readonly _route = inject(ActivatedRoute);
   private _fb = inject(FormBuilder);
   private _http = inject(HttpClient);
   private _elementRef = inject(ElementRef<HTMLElement>);
+
+  readonly usePublicHeader = this._route.snapshot.data['publicHeader'] === true;
 
   isSubmitting = signal(false);
   isSubmitted = signal(false);
