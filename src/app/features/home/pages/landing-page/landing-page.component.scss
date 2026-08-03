@@ -310,11 +310,11 @@ $header-height-mobile: 72px;
 }
 
 .hero-title {
-  font-family: 'Urbanist', sans-serif;
+  font-family: 'Nunito', sans-serif;
   font-size: clamp(2.35rem, 5vw, 4.15rem);
-  line-height: 1.02;
+  line-height: 1.04;
   margin: 0 0 22px;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.04em;
   font-weight: 900;
 }
 
@@ -631,12 +631,12 @@ $header-height-mobile: 72px;
 }
 
 .section-title {
-  font-family: 'Urbanist', sans-serif;
+  font-family: 'Nunito', sans-serif;
   font-size: clamp(1.65rem, 3.2vw, 2.35rem);
-  line-height: 1.08;
+  line-height: 1.12;
   margin: 0 0 16px;
-  letter-spacing: -0.04em;
-  font-weight: 900;
+  letter-spacing: -0.03em;
+  font-weight: 850;
 }
 
 .section-lead {
@@ -668,9 +668,10 @@ $header-height-mobile: 72px;
   }
 
   h3 {
+    font-family: 'Nunito', sans-serif;
     font-size: 1.05rem;
     margin: 16px 0 8px;
-    font-weight: 700;
+    font-weight: 800;
   }
 
   p {
@@ -788,11 +789,11 @@ $header-height-mobile: 72px;
   text-align: center;
 
   h2 {
-    font-family: 'Urbanist', sans-serif;
+    font-family: 'Nunito', sans-serif;
     font-size: clamp(1.65rem, 3.4vw, 2.35rem);
-    line-height: 1.08;
-    letter-spacing: -0.04em;
-    font-weight: 900;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    font-weight: 850;
     margin: 0 0 16px;
   }
 
