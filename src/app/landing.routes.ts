@@ -6,10 +6,13 @@ import { TermsPageComponent } from './features/menu/pages/terms-page/terms-page.
 import { PrivacyPolicyPageComponent } from './features/menu/pages/privacy-policy-page/privacy-policy-page.component';
 import { PublicDeleteAccountPageComponent } from './features/menu/pages/public-delete-account-page/public-delete-account-page.component';
 import { MinorProtectionPageComponent } from './features/menu/pages/minor-protection-page/minor-protection-page.component';
+import { DownloadPageComponent } from './features/home/pages/download-page/download-page.component';
 
 export const landingRoutes: Routes = [
   { path: '', component: LandingPageComponent },
-  { path: 'contact', component: ContactPageComponent },
+  { path: 'download', component: DownloadPageComponent },
+  { path: 'telecharger', redirectTo: 'download', pathMatch: 'full' },
+  { path: 'contact', component: ContactPageComponent, data: { publicHeader: true } },
   { path: 'mentions-legales', component: LegalNoticesPageComponent },
   { path: 'cgu', component: TermsPageComponent },
   { path: 'politique-confidentialite', component: PrivacyPolicyPageComponent },

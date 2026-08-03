@@ -259,12 +259,18 @@
 }
 
 .saloon-item {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 1rem;
   padding: 0.75rem 1rem;
   background: rgba(255, 255, 255, 0.03);
+  border: 0;
   border-radius: 10px;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
   transition: all 0.2s ease;
 
   &:hover {

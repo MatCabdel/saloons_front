@@ -10,21 +10,31 @@ import { environment } from 'src/environments/environment';
 export class WebSocketService {
   private _stompClient!: Client;
   private _messageSubject = new Subject<Message>();
+  private _connectedSubject = new Subject<number>();
+  private _connectionGeneration = 0;
 
   connect(conversationId: number): void {
     this.disconnect();
+    const generation = ++this._connectionGeneration;
 
     const wsUrl = this.getWebSocketUrl();
     const token = localStorage.getItem('saloon_auth_token');
 
-    this._stompClient = new Client({
+    const client = new Client({
       webSocketFactory: (): any => new WebSocket(wsUrl),
       reconnectDelay: 5000,
       connectHeaders: token ? { Authorization: `Bearer ${token}` } : {},
     });
 
-    this._stompClient.onConnect = (): void => {
-      this._stompClient.subscribe(`/queue/conversation.${conversationId}`, (message: IMessage) => {
+    client.onConnect = (): void => {
+      // Une ancienne connexion peut finir après une navigation rapide. Elle ne
+      // doit jamais s'abonner à la place du client courant.
+      if (generation !== this._connectionGeneration || client !== this._stompClient) {
+        void client.deactivate();
+        return;
+      }
+
+      client.subscribe(`/queue/conversation.${conversationId}`, (message: IMessage) => {
         const parsed = JSON.parse(message.body);
         const normalized = this._normalizeMessage(parsed, conversationId);
 
@@ -35,9 +45,16 @@ export class WebSocketService {
 
         this._messageSubject.next(normalized);
       });
+
+      // L'abonnement est maintenant actif : le composant peut rattraper par
+      // HTTP les messages arrivés pendant la connexion ou une reconnexion.
+      this._connectedSubject.next(conversationId);
     };
 
-    this._stompClient.onStompError = (frame: any): void => {
+    client.onStompError = (frame: any): void => {
+      if (generation !== this._connectionGeneration || client !== this._stompClient) {
+        return;
+      }
       const msg: string = frame?.headers?.message ?? '';
       if (msg.includes('Access denied') || msg.includes('Authentication')) {
         this.disconnect();
@@ -47,7 +64,8 @@ export class WebSocketService {
       }
     };
 
-    this._stompClient.activate();
+    this._stompClient = client;
+    client.activate();
   }
 
   public getWebSocketUrl(): string {
@@ -77,9 +95,14 @@ export class WebSocketService {
     return this._messageSubject.asObservable();
   }
 
+  getConnectedConversations(): Observable<number> {
+    return this._connectedSubject.asObservable();
+  }
+
   disconnect(): void {
+    this._connectionGeneration++;
     if (this._stompClient && this._stompClient.active) {
-      this._stompClient.deactivate();
+      void this._stompClient.deactivate();
     }
   }
 

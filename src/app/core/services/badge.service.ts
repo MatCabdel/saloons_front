@@ -17,6 +17,15 @@ export class BadgeService {
   /** Nombre total de messages non lus (toutes conversations confondues) */
   private readonly _totalUnreadCount$ = new BehaviorSubject<number>(0);
   public readonly totalUnreadCount$ = this._totalUnreadCount$.asObservable();
+  private _activeConversationId: number | null = null;
+
+  setActiveConversation(conversationId: number | null): void {
+    this._activeConversationId = conversationId;
+  }
+
+  isConversationActive(conversationId: number): boolean {
+    return this._activeConversationId === conversationId;
+  }
 
   /**
    * Récupère le total des messages non lus depuis le backend

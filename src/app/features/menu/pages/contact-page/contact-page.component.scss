@@ -20,6 +20,10 @@ $field-border: rgba(255, 255, 255, 0.26);
   color: $white;
 }
 
+.public-context .page-content {
+  padding-top: 7rem;
+}
+
 .intro-section {
   margin-bottom: 1rem;
 
@@ -357,6 +361,10 @@ $field-border: rgba(255, 255, 255, 0.26);
     padding: 4rem 1.5rem 5rem;
   }
 
+  .public-context .page-content {
+    padding-top: 8rem;
+  }
+
   .intro-section {
     text-align: center;
     margin-bottom: 2.5rem;
@@ -425,6 +433,10 @@ $field-border: rgba(255, 255, 255, 0.26);
   .page-content {
     max-width: 520px;
     padding: 5rem 1.5rem 6rem;
+  }
+
+  .public-context .page-content {
+    padding-top: 8.5rem;
   }
 
   .contact-form {

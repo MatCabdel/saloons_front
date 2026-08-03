@@ -1,12 +1,32 @@
-import { Component, EventEmitter, HostListener, inject, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  HostListener,
+  inject,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { ConversationService } from '../../services/conversation.service';
 import { Router } from '@angular/router';
 import { User } from 'src/app/features/user/models/user';
 import { Conversation } from '../../models/Conversation';
 import { UserStoreService } from 'src/app/features/user/store/user-store.service';
 import { CommonModule } from '@angular/common';
-import { BehaviorSubject, map, Observable, switchMap, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  debounceTime,
+  interval,
+  map,
+  merge,
+  Observable,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
+import { ConversationRealtimeService } from '../../services/conversation-realtime.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BadgeService } from 'src/app/core/services/badge.service';
 
 @Component({
   selector: 'app-list-conversation',
@@ -25,6 +45,9 @@ export class ListConversationComponent implements OnInit {
   private _conversationService = inject(ConversationService);
   private _router = inject(Router);
   private _userStore = inject(UserStoreService);
+  private _realtimeService = inject(ConversationRealtimeService);
+  private _badgeService = inject(BadgeService);
+  private _destroyRef = inject(DestroyRef);
 
   myId = 0;
 
@@ -36,8 +59,26 @@ export class ListConversationComponent implements OnInit {
     }
   }
 
+  @HostListener('window:focus')
+  onWindowFocus(): void {
+    this._refreshConversations();
+    this._realtimeService.connect(this.myId);
+  }
+
   ngOnInit(): void {
     this.myId = this._userStore.getUserId();
+
+    merge(this._realtimeService.messages(), this._realtimeService.connected())
+      .pipe(debounceTime(50), takeUntilDestroyed(this._destroyRef))
+      .subscribe(() => this._refreshConversations());
+    this._realtimeService.connect(this.myId);
+    this._destroyRef.onDestroy(() => this._realtimeService.disconnect());
+
+    // Filet de sécurité peu fréquent pour les navigateurs qui suspendent une
+    // WebSocket en arrière-plan. Le temps réel reste assuré par STOMP.
+    interval(30000)
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe(() => this._refreshConversations());
 
     this.conversations$ = this._refresh$.pipe(
       switchMap(() => this._conversationService.getUserConversations()),
@@ -65,6 +106,11 @@ export class ListConversationComponent implements OnInit {
         this.conversationUserIdsChange.emit(ids);
       })
     );
+  }
+
+  private _refreshConversations(): void {
+    this._refresh$.next();
+    void this._badgeService.refreshUnreadCount();
   }
 
   toggleMenu(event: Event, conversationId: number): void {
