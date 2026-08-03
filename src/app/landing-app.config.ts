@@ -8,7 +8,10 @@ import { landingRoutes } from './landing.routes';
 export const landingAppConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(landingRoutes, withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
+    provideRouter(
+      landingRoutes,
+      withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })
+    ),
     provideHttpClient(),
     provideAnimationsAsync(),
   ],

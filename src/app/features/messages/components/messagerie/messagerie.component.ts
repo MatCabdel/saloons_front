@@ -22,9 +22,24 @@ import { UserStoreService } from 'src/app/features/user/store/user-store.service
 import { UserService } from 'src/app/features/user/services/user.service';
 import { Message, HeartRequestStatus } from 'src/app/features/conversation/models/Conversation';
 import { PresenceService } from 'src/app/features/saloon/services/presence.service';
-import { combineLatest, map, mergeMap, Observable, of, switchMap, tap } from 'rxjs';
+import {
+  combineLatest,
+  catchError,
+  debounceTime,
+  EMPTY,
+  filter,
+  map,
+  mergeMap,
+  Observable,
+  of,
+  Subject,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { VersionedImageUrlPipe } from 'src/app/common/pipes/versioned-image-url.pipe';
+import { BadgeService } from 'src/app/core/services/badge.service';
+import { mergeAndSortMessages } from './message-sync';
 
 @Component({
   selector: 'app-messagerie',
@@ -65,7 +80,9 @@ export class MessagerieComponent implements OnInit, OnDestroy, AfterViewInit, Af
   private _userStore = inject(UserStoreService);
   private _userService = inject(UserService);
   private _presenceService = inject(PresenceService);
+  private _badgeService = inject(BadgeService);
   private _destroyRef = inject(DestroyRef);
+  private _markAsRead$ = new Subject<void>();
 
   ngOnInit(): void {
     this.myId = Number(this._userStore.getUserId());
@@ -90,37 +107,69 @@ export class MessagerieComponent implements OnInit, OnDestroy, AfterViewInit, Af
     if (!this.conversationId) return;
 
     const conversation$ = this._conversationService.getConversation(this.conversationId);
-    const messages$ = conversation$.pipe(
-      switchMap(() => this._conversationService.getMessages(this.conversationId!))
-    );
-    const webSocketMessages$ = conversation$.pipe(
-      tap(() => this._webSocketService.connect(this.conversationId!)),
-      switchMap(() => this._webSocketService.getMessages())
-    );
+    const messages$ = this._conversationService.getMessages(this.conversationId);
 
     combineLatest([conversation$, messages$])
       .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe(([conv, messages]) => {
         this.participants = conv.participants ?? [];
         this.setupMyImage();
-        this.messages = messages.map(msg => ({
-          ...msg,
-          sender: Number(msg.sender ?? msg.senderId),
-        }));
+        this._mergeMessages(messages);
 
         this._hasScrolledToBottom = false;
         setTimeout(() => this.jumpToBottom(), 100);
       });
 
-    webSocketMessages$
+    this._webSocketService
+      .getMessages()
       .pipe(
         takeUntilDestroyed(this._destroyRef),
+        filter(msg => Number(msg.conversationId) === Number(this.conversationId)),
         mergeMap(msg => this.ensureParticipantExists(msg).pipe(map(() => msg)))
       )
       .subscribe(msg => {
         this.handleNewMessage(msg);
+        if (msg.sender !== this.myId) {
+          this._markAsRead$.next();
+        }
         setTimeout(() => this.jumpToBottom(), 50);
       });
+
+    this._webSocketService
+      .getConnectedConversations()
+      .pipe(
+        takeUntilDestroyed(this._destroyRef),
+        filter(id => id === this.conversationId),
+        switchMap(() => this._conversationService.getMessages(this.conversationId!))
+      )
+      .subscribe(messages => {
+        const knownIds = new Set(this.messages.map(message => message.id));
+        const hasRecoveredIncomingMessage = messages.some(
+          message => !knownIds.has(Number(message.id)) && Number(message.senderId) !== this.myId
+        );
+        this._mergeMessages(messages);
+        if (hasRecoveredIncomingMessage) {
+          this._markAsRead$.next();
+        }
+      });
+
+    this._markAsRead$
+      .pipe(
+        debounceTime(200),
+        takeUntilDestroyed(this._destroyRef),
+        switchMap(() =>
+          this._conversationService.markAsRead(this.conversationId!).pipe(
+            catchError(err => {
+              console.error('Failed to mark incoming messages as read:', err);
+              return EMPTY;
+            })
+          )
+        )
+      )
+      .subscribe(() => void this._badgeService.refreshUnreadCount());
+
+    this._badgeService.setActiveConversation(this.conversationId);
+    this._webSocketService.connect(this.conversationId);
   }
 
   private _initMatchMode(matchUserId: number): void {
@@ -162,6 +211,9 @@ export class MessagerieComponent implements OnInit, OnDestroy, AfterViewInit, Af
   }
 
   ngOnDestroy(): void {
+    if (this.conversationId && this._badgeService.isConversationActive(this.conversationId)) {
+      this._badgeService.setActiveConversation(null);
+    }
     this._webSocketService.disconnect();
   }
 
@@ -214,16 +266,15 @@ export class MessagerieComponent implements OnInit, OnDestroy, AfterViewInit, Af
 
     msg.sender = Number(msg.sender);
 
-    const messageExists = this.messages.some(
-      m =>
-        m.content === msg.content &&
-        m.sender === msg.sender &&
-        new Date(m.sentAt).getTime() === new Date(msg.sentAt).getTime()
-    );
+    const messageExists = this.messages.some(m => m.id === msg.id);
 
     if (!messageExists) {
-      this.messages.push(msg);
+      this.messages = mergeAndSortMessages(this.messages, [msg], this.conversationId);
     }
+  }
+
+  private _mergeMessages(messages: any[]): void {
+    this.messages = mergeAndSortMessages(this.messages, messages, this.conversationId);
   }
 
   toggleMessageTime(msg: Message, index: number): void {
@@ -293,10 +344,7 @@ export class MessagerieComponent implements OnInit, OnDestroy, AfterViewInit, Af
       .getMessages(this.conversationId)
       .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe(data => {
-        this.messages = data.map(msg => ({
-          ...msg,
-          sender: Number(msg.sender),
-        }));
+        this._mergeMessages(data);
       });
   }
 
@@ -337,6 +385,7 @@ export class MessagerieComponent implements OnInit, OnDestroy, AfterViewInit, Af
           this.conversationCreated.emit(conv.id);
 
           // Connecter au WebSocket
+          this._badgeService.setActiveConversation(conv.id);
           this._webSocketService.connect(conv.id);
 
           // S'abonner aux messages WebSocket
