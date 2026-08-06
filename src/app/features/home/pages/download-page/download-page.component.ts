@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PublicHeaderComponent } from '../../components/public-header/public-header.component';
 
@@ -9,16 +9,22 @@ import { PublicHeaderComponent } from '../../components/public-header/public-hea
   templateUrl: './download-page.component.html',
   styleUrl: './download-page.component.scss',
 })
-export class DownloadPageComponent implements OnInit {
+export class DownloadPageComponent {
   readonly appStoreUrl = 'https://apps.apple.com/fr/app/saloons/id6758464092';
   readonly googlePlayUrl = 'https://play.google.com/store/apps/details?id=com.saloons.app';
   readonly currentYear = new Date().getFullYear();
   showInstagramBrowserNotice = false;
 
-  ngOnInit(): void {
+  handleAppStoreClick(event: MouseEvent): void {
     const userAgent = navigator.userAgent;
-    this.showInstagramBrowserNotice =
-      /Instagram/i.test(userAgent) && /iPhone|iPad|iPod/i.test(userAgent);
+    const isInstagramOnIos = /Instagram/i.test(userAgent) && /iPhone|iPad|iPod/i.test(userAgent);
+
+    if (!isInstagramOnIos) {
+      return;
+    }
+
+    event.preventDefault();
+    this.showInstagramBrowserNotice = true;
   }
 
   openAppStoreOutsideInstagram(): void {
