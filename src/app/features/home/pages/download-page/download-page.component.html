@@ -47,7 +47,12 @@
         </p>
 
         <div class="store-actions app-store-badges" aria-label="Liens de téléchargement">
-          <a class="store-badge apple" [href]="appStoreUrl" rel="noopener">
+          <a
+            class="store-badge apple"
+            [href]="appStoreUrl"
+            rel="noopener"
+            (click)="handleAppStoreClick($event)"
+          >
             <svg viewBox="0 0 196 54" role="img" aria-label="Télécharger dans l’App Store">
               <rect width="196" height="54" rx="10" fill="#050505" />
               <path
